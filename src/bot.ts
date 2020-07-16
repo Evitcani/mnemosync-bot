@@ -20,10 +20,13 @@ export class Bot {
 
     public listen(): Promise<string> {
         this.client.on('message', (message: Message) => {
-            if (message.author.bot) {
-                console.log('Ignoring bot message!')
+            const contents = message.content;
+            if (message.author.bot || contents.substr(0,1) !== "$") {
                 return;
             }
+
+            const args = contents.substr(1).split(" ");
+            const cmd = args[0].toLowerCase();
 
             console.log("Message received! Contents: ", message.content);
 

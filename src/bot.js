@@ -25,10 +25,12 @@ let Bot = class Bot {
     }
     listen() {
         this.client.on('message', (message) => {
-            if (message.author.bot) {
-                console.log('Ignoring bot message!');
+            const contents = message.content;
+            if (message.author.bot || contents.substr(0, 1) !== "$") {
                 return;
             }
+            const args = contents.substr(1).split(" ");
+            const cmd = args[0].toLowerCase();
             console.log("Message received! Contents: ", message.content);
             this.messageResponder.handle(message).then(() => {
                 console.log("Response sent!");
