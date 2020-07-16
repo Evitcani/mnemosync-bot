@@ -27,7 +27,9 @@ export class MessageResponder {
 
         // Determine which handler to call.
         switch (cmd) {
-            case "bank" || "fund":
+            case "bank":
+                return this.partyFundCommandHandler.handleCommand(command, message);
+            case "fund":
                 return this.partyFundCommandHandler.handleCommand(command, message);
             default:
                 return message.channel.send("Unknown command. Try typing `$help` to see all commands.");
