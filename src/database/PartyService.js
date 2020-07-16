@@ -61,16 +61,27 @@ let PartyService = class PartyService {
             query += " WHERE id = " + id;
             return this.databaseService.query(query).then((res) => {
                 console.log(JSON.stringify(res));
-                return res;
+                return this.getFundById(id);
             }).catch((err) => {
                 console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
                 return null;
             });
         });
     }
+    getFundById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "SELECT * FROM party_funds WHERE id = " + id;
+            return this.doGetFund(query);
+        });
+    }
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
+            return this.doGetFund(query);
+        });
+    }
+    doGetFund(query) {
+        return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
                 console.log(JSON.stringify(res));
                 // @ts-ignore
