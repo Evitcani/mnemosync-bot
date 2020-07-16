@@ -120,22 +120,22 @@ class MoneyUtility {
     static searchForMoneyType(arg) {
         let place = arg.search("g");
         if (place >= 0) {
-            const num = arg.substr(0, place + 1);
+            const num = arg.substr(0, place);
             return num + " gold";
         }
         place = arg.search("c");
         if (place >= 0) {
-            const num = arg.substr(0, place + 1);
+            const num = arg.substr(0, place);
             return num + " copper";
         }
         place = arg.search("s");
         if (place >= 0) {
-            const num = arg.substr(0, place + 1);
+            const num = arg.substr(0, place);
             return num + " silver";
         }
         place = arg.search("p");
         if (place >= 0) {
-            const num = arg.substr(0, place + 1);
+            const num = arg.substr(0, place);
             return num + " platinum";
         }
         return arg;
