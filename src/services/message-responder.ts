@@ -23,6 +23,8 @@ export class MessageResponder {
         // Get the base command.
         const cmd = command.getName();
 
+        console.log("Command: " + cmd);
+
         // Determine which handler to call.
         switch (cmd) {
             case "bank" || "fund":
