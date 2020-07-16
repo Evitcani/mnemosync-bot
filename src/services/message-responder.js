@@ -87,7 +87,9 @@ let MessageResponder = class MessageResponder {
                 const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
                 return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
                     return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(updatedFund, updatedFund.type));
-                }).catch(() => {
+                }).catch((err) => {
+                    console.log("ERROR: COULD NOT UPDATE FUNDS ::: " + err.message);
+                    console.log(err.stack);
                     return null;
                 });
             });
