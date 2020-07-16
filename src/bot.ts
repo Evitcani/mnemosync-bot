@@ -25,14 +25,18 @@ export class Bot {
                 return;
             }
 
+            // Get the message sent.
             const args = contents.substr(1).split(" ");
             const cmd = args[0].toLowerCase();
+
+            // Remove command from args.
+            args.splice(0,1);
 
             console.log("Message received! Contents: ", message.content);
 
             switch (cmd) {
                 case "bank":
-                    this.messageResponder.getBankFunds(message).then(() => {
+                    this.messageResponder.bankCommand(message, args).then(() => {
                         console.log("Response sent!");
                     }).catch(() => {
                         console.log("Response not sent.")
