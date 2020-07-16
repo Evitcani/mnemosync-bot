@@ -59,6 +59,7 @@ let PartyService = class PartyService {
                 query += "copper = " + copper;
             }
             query += " WHERE id = " + id;
+            console.log("Updating party funds with query: " + query);
             return this.databaseService.query(query).then((res) => {
                 return this.getFundById(id);
             }).catch((err) => {
