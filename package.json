@@ -4,7 +4,7 @@
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "node src/index.js",
     "build": "tsc",
     "postinstall": "npm run build",
     "watch": "tsc -p tsconfig.json -w",
