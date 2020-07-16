@@ -32,11 +32,15 @@ let Bot = class Bot {
             const args = contents.substr(1).split(" ");
             const cmd = args[0].toLowerCase();
             console.log("Message received! Contents: ", message.content);
-            this.messageResponder.handle(message).then(() => {
-                console.log("Response sent!");
-            }).catch(() => {
-                console.log("Response not sent.");
-            });
+            switch (cmd) {
+                case "bank":
+                    this.messageResponder.getBankFunds(message).then(() => {
+                        console.log("Response sent!");
+                    }).catch(() => {
+                        console.log("Response not sent.");
+                    });
+                    break;
+            }
         });
         return this.client.login(this.token);
     }

@@ -1,6 +1,6 @@
 export interface PartyFund {
     id: number,
-    user_id: number,
+    party_id: number,
     type: string,
     platinum: number,
     gold: number,
