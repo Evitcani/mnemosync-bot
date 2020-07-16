@@ -31,7 +31,12 @@ let DatabaseService = class DatabaseService {
     }
     query(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const client = new pg_1.Client();
+            const client = new pg_1.Client({
+                connectionString: this.databaseUrl,
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            });
             client.connect();
             return client.query(query).then(() => {
                 // Close connection.
