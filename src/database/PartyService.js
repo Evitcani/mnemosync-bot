@@ -31,15 +31,14 @@ let PartyService = class PartyService {
     }
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                this.databaseService.query("SELECT * FROM parties").then((res) => {
-                    console.log(JSON.stringify(res));
-                    // @ts-ignore
-                    const result = res.rows[0];
-                    return result;
-                }).catch((err) => {
-                    console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
-                });
+            return this.databaseService.query("SELECT * FROM parties").then((res) => {
+                console.log(JSON.stringify(res));
+                // @ts-ignore
+                const result = res.rows[0];
+                return result;
+            }).catch((err) => {
+                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                return null;
             });
         });
     }
