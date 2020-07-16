@@ -80,7 +80,9 @@ export class MessageResponder {
             return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver,
                 finalFund.copper).then((updatedFund) => {
                 return message.channel.send(MoneyUtility.formatFundStatement(updatedFund, updatedFund.type));
-            }).catch(() => {
+            }).catch((err: Error) => {
+                console.log("ERROR: COULD NOT UPDATE FUNDS ::: " + err.message);
+                console.log(err.stack);
                 return null;
             });
         });

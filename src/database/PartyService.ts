@@ -50,10 +50,10 @@ export class PartyService {
         query += " WHERE id = " + id;
 
         return this.databaseService.query(query).then((res) => {
-            console.log(JSON.stringify(res));
             return this.getFundById(id);
         }).catch((err: Error) => {
-            console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+            console.log("ERROR: Could not update the party funds! ::: " + err.message);
+            console.log(err.stack);
             return null;
         });
     }
@@ -70,28 +70,26 @@ export class PartyService {
 
     private async doGetFund (query: string) : Promise<PartyFund> {
         return this.databaseService.query(query).then((res) => {
-            console.log(JSON.stringify(res));
-
             // @ts-ignore
             const result: PartyFund = res.rows[0];
 
             return result;
         }).catch((err: Error) => {
-            console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+            console.log("ERROR: Could not get party funds! ::: " + err.message + " ::: QUERY: " + query);
+            console.log(err.stack);
             return null;
         });
     }
 
     async getParty (name: string): Promise<Party>{
         return this.databaseService.query("SELECT * FROM parties").then((res) => {
-                console.log(JSON.stringify(res));
-
                 // @ts-ignore
                 const result: Party = res.rows[0];
 
                 return result;
             }).catch((err: Error) => {
                 console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                console.log(err.stack);
                 return null;
             });
     }

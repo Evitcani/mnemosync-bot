@@ -60,10 +60,10 @@ let PartyService = class PartyService {
             }
             query += " WHERE id = " + id;
             return this.databaseService.query(query).then((res) => {
-                console.log(JSON.stringify(res));
                 return this.getFundById(id);
             }).catch((err) => {
-                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                console.log("ERROR: Could not update the party funds! ::: " + err.message);
+                console.log(err.stack);
                 return null;
             });
         });
@@ -83,12 +83,12 @@ let PartyService = class PartyService {
     doGetFund(query) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
-                console.log(JSON.stringify(res));
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;
             }).catch((err) => {
-                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                console.log("ERROR: Could not get party funds! ::: " + err.message + " ::: QUERY: " + query);
+                console.log(err.stack);
                 return null;
             });
         });
@@ -96,12 +96,12 @@ let PartyService = class PartyService {
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query("SELECT * FROM parties").then((res) => {
-                console.log(JSON.stringify(res));
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;
             }).catch((err) => {
                 console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                console.log(err.stack);
                 return null;
             });
         });
