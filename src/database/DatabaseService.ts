@@ -22,9 +22,11 @@ export class DatabaseService {
 
         client.connect();
 
-        return client.query(query).then(() => {
+        return client.query(query).then((res) => {
             // Close connection.
             client.end();
+
+            return res;
         });
     }
 }

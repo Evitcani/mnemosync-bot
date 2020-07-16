@@ -15,6 +15,8 @@ export class PartyService {
             this.databaseService.query("SELECT * FROM parties").then((res) => {
                 const result = res[0];
                 console.log(JSON.stringify(result));
+            }).catch((err: Error) => {
+                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
             });
         });
     }
