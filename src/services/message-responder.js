@@ -22,7 +22,7 @@ let MessageResponder = class MessageResponder {
     }
     handle(message) {
         if (this.pingFinder.isPing(message.content)) {
-            return message.reply('pong!');
+            return message.channel.send('pong!');
         }
         return Promise.reject();
     }
