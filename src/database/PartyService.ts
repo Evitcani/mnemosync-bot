@@ -1,9 +1,8 @@
 import {inject, injectable} from "inversify";
 import {DatabaseService} from "./DatabaseService";
 import {TYPES} from "../types";
-import {Party} from "./models/Party";
-import {PartyFund} from "./models/PartyFund";
-import {DatabaseReturn} from "./models/DatabaseReturn";
+import {Party} from "../models/database/Party";
+import {PartyFund} from "../models/database/PartyFund";
 
 @injectable()
 export class PartyService {

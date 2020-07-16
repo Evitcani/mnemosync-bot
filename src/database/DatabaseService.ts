@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {Client} from 'pg';
 import {TYPES} from "../types";
-import {DatabaseReturn} from "./models/DatabaseReturn";
+import {DatabaseReturn} from "../models/database/DatabaseReturn";
 
 @injectable()
 export class DatabaseService {

@@ -2,6 +2,7 @@ import {Client, Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "./types";
 import {MessageResponder} from "./services/message-responder";
+import {CommandUtility} from "./utilities/CommandUtility";
 
 @injectable()
 export class Bot {
@@ -26,22 +27,13 @@ export class Bot {
             }
 
             // Get the message sent.
-            const args = contents.substr(1).split(" ");
-            const cmd = args[0].toLowerCase();
-
-            // Remove command from args.
-            args.splice(0,1);
+            const command = CommandUtility.processCommands(contents);
 
             console.log("Message received! Contents: ", message.content);
 
-            switch (cmd) {
-                case "bank":
-                    this.messageResponder.bankCommand(message, args);
-                    break;
-                case "fund":
-                    this.messageResponder.fundCommand(message, args);
-                    break;
-            }
+            this.messageResponder.handle(command, message).catch((err: Error) => {
+                return message.channel.send("ERR ::: Unable to process command at this time.");
+            });
         });
 
         return this.client.login(this.token);

@@ -10,5 +10,6 @@ exports.TYPES = {
     PingFinder: Symbol("PingFinder"),
     DatabaseService: Symbol("DatabaseService"),
     PartyService: Symbol("PartyService"),
+    PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
 };
 //# sourceMappingURL=types.js.map

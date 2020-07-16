@@ -22,153 +22,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageResponder = void 0;
-const ping_finder_1 = require("./ping-finder");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const PartyService_1 = require("../database/PartyService");
-const MoneyUtility_1 = require("../utilities/MoneyUtility");
+const PartyFundCommandHandler_1 = require("../command-handlers/PartyFundCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(pingFinder, partyService) {
-        this.pingFinder = pingFinder;
-        this.partyService = partyService;
-    }
-    getRegularFunds(message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.findFunds("FUND", message).then((fund) => {
-                return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
-            });
-        });
+    constructor(partyFundCommandHandler) {
+        this.partyFundCommandHandler = partyFundCommandHandler;
     }
     /**
-     * Updates the amount of money in the shared bank account.
+     * Handles all incoming commands.
      *
-     * @param message The message sent.
-     * @param args The other arguments.
+     * @param command The processed commands to look at.
+     * @param message The message object doing the command.
      */
-    updateRegularFunds(message, args) {
+    handle(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.updateFunds(message, "FUND", args);
-        });
-    }
-    /**
-     * Figures out which subcommand to send the message to.
-     *
-     * @param message
-     * @param args
-     */
-    fundCommand(message, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // If there are no args, assume the user just wants a bank statement.
-            if (args.length < 1) {
-                return this.getRegularFunds(message);
+            // Get the base command.
+            const cmd = command.getName();
+            // Determine which handler to call.
+            switch (cmd) {
+                case "bank" || "fund":
+                    return this.partyFundCommandHandler.handleCommand(command, message);
+                default:
+                    return message.channel.send("Unknown command. Try typing `$help` to see all commands.");
             }
-            const firstArg = args[0].toLowerCase();
-            // Wants a bank statement.
-            if (firstArg === "get") {
-                return this.getRegularFunds(message);
-            }
-            // Now we send the amount off to be processed.
-            return this.updateRegularFunds(message, args);
-        });
-    }
-    /**
-     * Figures out which subcommand to send the message to.
-     *
-     * @param message
-     * @param args
-     */
-    bankCommand(message, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // If there are no args, assume the user just wants a bank statement.
-            if (args.length < 1) {
-                return this.getBankFunds(message);
-            }
-            const firstArg = args[0].toLowerCase();
-            // Wants a bank statement.
-            if (firstArg === "get") {
-                return this.getBankFunds(message);
-            }
-            // Now we send the amount off to be processed.
-            return this.updateBankFunds(message, args);
-        });
-    }
-    getBankFunds(message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.findFunds("BANK", message).then((fund) => {
-                return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
-            });
-        });
-    }
-    /**
-     * Updates the amount of money in the shared bank account.
-     *
-     * @param message The message sent.
-     * @param args The other arguments.
-     */
-    updateBankFunds(message, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.updateFunds(message, "BANK", args);
-        });
-    }
-    updateFunds(message, fundType, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Process the arguments.
-            const newFund = MoneyUtility_1.MoneyUtility.processMoneyArguments(args);
-            if (newFund === null) {
-                return message.channel.send("Command appears to be formatted incorrectly. Please try again!");
-            }
-            // Find and then update these funds.
-            return this.findFunds(fundType, message).then((fund) => {
-                // Pile everything into copper.
-                let newAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
-                let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
-                newAmt += oldAmt;
-                if (newAmt < 0) {
-                    let newAmtInGold = newAmt / 100;
-                    return message.channel.send("You don't have enough money to do that! You are short " +
-                        newAmtInGold + " gp!");
-                }
-                const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
-                return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
-                    return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(updatedFund, updatedFund.type));
-                }).catch((err) => {
-                    console.log("ERROR: COULD NOT UPDATE FUNDS ::: " + err.message);
-                    console.log(err.stack);
-                    return message.channel.send("Something went wrong ): HELP");
-                });
-            });
-        });
-    }
-    handle(message) {
-        if (this.pingFinder.isPing(message.content)) {
-            return this.partyService.getParty("The Seven Wonders").then((res) => {
-                return message.channel.send('Pong right back at ya, ' + res.name + "!");
-            });
-        }
-        return Promise.reject();
-    }
-    findFunds(type, message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.partyService.getParty("The Seven Wonders").then((res) => {
-                return this.partyService.getFund(res.id, type).catch((err) => {
-                    console.log("Failed to find party fund with given information ::: " + err.message);
-                    message.channel.send("Something went wrong ): HELP");
-                    return null;
-                });
-            }).catch((err) => {
-                console.log("Failed to find party with given name ::: " + err.message);
-                message.channel.send("Something went wrong ): HELP");
-                return null;
-            });
         });
     }
 };
 MessageResponder = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.PingFinder)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
-    __metadata("design:paramtypes", [ping_finder_1.PingFinder,
-        PartyService_1.PartyService])
+    __param(0, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
+    __metadata("design:paramtypes", [PartyFundCommandHandler_1.PartyFundCommandHandler])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;
 //# sourceMappingURL=message-responder.js.map
