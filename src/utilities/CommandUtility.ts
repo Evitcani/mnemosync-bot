@@ -15,7 +15,7 @@ export class CommandUtility {
      */
     static processCommands (message: string): Command {
         // Split the args.
-        const args = message.substr(1).split("-");
+        const args = message.substr(1).split("--");
 
         // Get the base command.
         const baseCommand = args.shift();
