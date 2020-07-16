@@ -16,17 +16,22 @@ class MoneyUtility {
         if (fund.copper !== null) {
             amt += fund.copper;
         }
+        console.log("PILE INTO COPPER ::: Total amount is: " + amt);
         return amt;
     }
     static copperToFund(amt) {
         let fund = { id: null, party_id: null, type: null, platinum: 0, gold: null, silver: null,
             copper: null };
+        console.log("COPPER TO FUND ::: Amount is: " + amt);
         // Gold is easy to get.
         fund.gold = Math.floor(amt / 100);
         amt = amt - (fund.gold * 100);
+        console.log("COPPER TO FUND ::: Gold amount is: " + fund.gold);
         fund.silver = Math.floor(amt / 10);
         amt = amt - (fund.silver * 10);
+        console.log("COPPER TO FUND ::: Silver amount is: " + fund.silver);
         fund.copper = amt;
+        console.log("COPPER TO FUND ::: Copper amount is: " + fund.copper);
         return fund;
     }
     static processMoneyArguments(args) {
