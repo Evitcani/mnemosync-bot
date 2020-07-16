@@ -104,7 +104,9 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
 
             return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver,
                 finalFund.copper).then((updatedFund) => {
-                return message.channel.send(MoneyUtility.formatFundStatement(updatedFund, updatedFund.type));
+                    const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
+                    return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
+                        oldAmt / 100, newAmtTotal /100, newAmtTotal < 0));
             });
         });
     }
