@@ -37,11 +37,10 @@ let Bot = class Bot {
             console.log("Message received! Contents: ", message.content);
             switch (cmd) {
                 case "bank":
-                    this.messageResponder.bankCommand(message, args).then(() => {
-                        console.log("Response sent!");
-                    }).catch(() => {
-                        console.log("Response not sent.");
-                    });
+                    this.messageResponder.bankCommand(message, args);
+                    break;
+                case "fund":
+                    this.messageResponder.fundCommand(message, args);
                     break;
             }
         });

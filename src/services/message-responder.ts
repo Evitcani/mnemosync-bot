@@ -18,6 +18,45 @@ export class MessageResponder {
         this.partyService = partyService;
     }
 
+    private async getRegularFunds(message: Message): Promise<Message | Message[]> {
+        return this.findFunds("FUND", message).then((fund) => {
+            return message.channel.send(MoneyUtility.formatFundStatement(fund, fund.type));
+        });
+    }
+
+    /**
+     * Updates the amount of money in the shared bank account.
+     *
+     * @param message The message sent.
+     * @param args The other arguments.
+     */
+    private async updateRegularFunds(message: Message, args: string[]): Promise<Message | Message[]> {
+        return this.updateFunds(message, "FUND", args);
+    }
+
+    /**
+     * Figures out which subcommand to send the message to.
+     *
+     * @param message
+     * @param args
+     */
+    async fundCommand(message: Message, args: string[]): Promise<Message | Message[]> {
+        // If there are no args, assume the user just wants a bank statement.
+        if (args.length < 1) {
+            return this.getRegularFunds(message);
+        }
+
+        const firstArg = args[0].toLowerCase();
+
+        // Wants a bank statement.
+        if (firstArg === "get") {
+            return this.getRegularFunds(message);
+        }
+
+        // Now we send the amount off to be processed.
+        return this.updateRegularFunds(message, args);
+    }
+
     /**
      * Figures out which subcommand to send the message to.
      *
@@ -42,7 +81,7 @@ export class MessageResponder {
     }
 
     private async getBankFunds(message: Message): Promise<Message | Message[]> {
-        return this.findFunds("BANK").then((fund) => {
+        return this.findFunds("BANK", message).then((fund) => {
             return message.channel.send(MoneyUtility.formatFundStatement(fund, fund.type));
         });
     }
@@ -54,6 +93,10 @@ export class MessageResponder {
      * @param args The other arguments.
      */
     private async updateBankFunds(message: Message, args: string[]): Promise<Message | Message[]> {
+        return this.updateFunds(message, "BANK", args);
+    }
+
+    private async updateFunds(message: Message, fundType: string, args: string[]): Promise<Message | Message[]> {
         // Process the arguments.
         const newFund = MoneyUtility.processMoneyArguments(args);
 
@@ -62,7 +105,7 @@ export class MessageResponder {
         }
 
         // Find and then update these funds.
-        return this.findFunds("BANK").then((fund) => {
+        return this.findFunds(fundType, message).then((fund) => {
             // Pile everything into copper.
             let newAmt = MoneyUtility.pileIntoCopper(newFund);
             let oldAmt = MoneyUtility.pileIntoCopper(fund);
@@ -83,7 +126,7 @@ export class MessageResponder {
             }).catch((err: Error) => {
                 console.log("ERROR: COULD NOT UPDATE FUNDS ::: " + err.message);
                 console.log(err.stack);
-                return null;
+                return message.channel.send("Something went wrong ): HELP");
             });
         });
     }
@@ -98,14 +141,16 @@ export class MessageResponder {
         return Promise.reject();
     }
 
-    private async findFunds (type: string): Promise<PartyFund> {
+    private async findFunds (type: string, message: Message): Promise<PartyFund> {
         return this.partyService.getParty("The Seven Wonders").then((res) => {
             return this.partyService.getFund(res.id, type).catch((err: Error) => {
                 console.log("Failed to find party fund with given information ::: " + err.message);
+                message.channel.send("Something went wrong ): HELP");
                 return null;
             });
         }).catch((err: Error) => {
             console.log("Failed to find party with given name ::: " + err.message);
+            message.channel.send("Something went wrong ): HELP");
             return null;
         });
     }

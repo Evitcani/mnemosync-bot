@@ -36,11 +36,10 @@ export class Bot {
 
             switch (cmd) {
                 case "bank":
-                    this.messageResponder.bankCommand(message, args).then(() => {
-                        console.log("Response sent!");
-                    }).catch(() => {
-                        console.log("Response not sent.")
-                    });
+                    this.messageResponder.bankCommand(message, args);
+                    break;
+                case "fund":
+                    this.messageResponder.fundCommand(message, args);
                     break;
             }
         });
