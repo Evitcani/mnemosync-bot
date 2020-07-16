@@ -164,10 +164,6 @@ class MoneyUtility {
         return { "amount": Number(args[0]), "type": args[1] };
     }
     static formatFundStatement(fund, type) {
-        if (type !== null) {
-            type = type.toLowerCase();
-            type += " ";
-        }
         let foundMoney = false;
         let amt = 0;
         if (fund.platinum !== null && fund.platinum > 0) {
