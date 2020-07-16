@@ -29,6 +29,59 @@ let PartyService = class PartyService {
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
+    updateFunds(id, platinum, gold, silver, copper) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = "UPDATE party_funds SET ";
+            let prev = false;
+            // Check all the gold amounts, only update what changed.
+            if (platinum !== null) {
+                query += "platinum = " + platinum;
+                prev = true;
+            }
+            if (gold !== null) {
+                if (prev) {
+                    query += ", ";
+                }
+                query += "gold = " + gold;
+                prev = true;
+            }
+            if (silver !== null) {
+                if (prev) {
+                    query += ", ";
+                }
+                query += "silver = " + silver;
+                prev = true;
+            }
+            if (copper !== null) {
+                if (prev) {
+                    query += ", ";
+                }
+                query += "copper = " + copper;
+            }
+            query += " WHERE id = " + id;
+            return this.databaseService.query(query).then((res) => {
+                console.log(JSON.stringify(res));
+                return res;
+            }).catch((err) => {
+                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                return null;
+            });
+        });
+    }
+    getFund(partyID, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
+            return this.databaseService.query(query).then((res) => {
+                console.log(JSON.stringify(res));
+                // @ts-ignore
+                const result = res.rows[0];
+                return result;
+            }).catch((err) => {
+                console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
+                return null;
+            });
+        });
+    }
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query("SELECT * FROM parties").then((res) => {
