@@ -39,6 +39,7 @@ let MessageResponder = class MessageResponder {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the base command.
             const cmd = command.getName();
+            console.log("Command: " + cmd);
             // Determine which handler to call.
             switch (cmd) {
                 case "bank" || "fund":
