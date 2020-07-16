@@ -205,11 +205,6 @@ export class MoneyUtility {
     }
 
      static formatFundStatement (fund: PartyFund, type: string | null): string {
-        if (type !== null) {
-            type = type.toLowerCase();
-            type += " ";
-        }
-
         let foundMoney = false;
         let amt = 0;
 
