@@ -14,7 +14,7 @@ export class PartyService {
     }
 
     async updateFunds (id: number, platinum: number | null, gold: number | null, silver: number | null,
-                           copper: number | null): Promise<DatabaseReturn>{
+                           copper: number | null): Promise<PartyFund>{
         let query = "UPDATE party_funds SET ";
         let prev = false;
 
@@ -51,15 +51,24 @@ export class PartyService {
 
         return this.databaseService.query(query).then((res) => {
             console.log(JSON.stringify(res));
-            return res;
+            return this.getFundById(id);
         }).catch((err: Error) => {
             console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
             return null;
         });
     }
 
+    async getFundById (id: number): Promise<PartyFund>{
+        const query = "SELECT * FROM party_funds WHERE id = " + id;
+        return this.doGetFund(query);
+    }
+
     async getFund (partyID: number, type: string): Promise<PartyFund>{
         const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
+        return this.doGetFund(query);
+    }
+
+    private async doGetFund (query: string) : Promise<PartyFund> {
         return this.databaseService.query(query).then((res) => {
             console.log(JSON.stringify(res));
 

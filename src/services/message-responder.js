@@ -20,14 +20,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var MessageResponder_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageResponder = void 0;
 const ping_finder_1 = require("./ping-finder");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const PartyService_1 = require("../database/PartyService");
-let MessageResponder = MessageResponder_1 = class MessageResponder {
+const MoneyUtility_1 = require("../utilities/MoneyUtility");
+let MessageResponder = class MessageResponder {
     constructor(pingFinder, partyService) {
         this.pingFinder = pingFinder;
         this.partyService = partyService;
@@ -56,7 +56,7 @@ let MessageResponder = MessageResponder_1 = class MessageResponder {
     getBankFunds(message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.findFunds("BANK").then((fund) => {
-                return message.channel.send(this.formatFundStatement(fund, fund.type));
+                return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
             });
         });
     }
@@ -69,8 +69,27 @@ let MessageResponder = MessageResponder_1 = class MessageResponder {
     updateBankFunds(message, args) {
         return __awaiter(this, void 0, void 0, function* () {
             // Process the arguments.
+            const newFund = MoneyUtility_1.MoneyUtility.processMoneyArguments(args);
+            if (newFund === null) {
+                return message.channel.send("Command appears to be formatted incorrectly. Please try again!");
+            }
+            // Find and then update these funds.
             return this.findFunds("BANK").then((fund) => {
-                return message.channel.send(this.formatFundStatement(fund, fund.type));
+                // Pile everything into copper.
+                let newAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
+                let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
+                newAmt += oldAmt;
+                if (newAmt < 0) {
+                    let newAmtInGold = newAmt / 100;
+                    return message.channel.send("You don't have enough money to do that! You are short " +
+                        newAmtInGold + " gp!");
+                }
+                const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
+                return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
+                    return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(updatedFund, updatedFund.type));
+                }).catch(() => {
+                    return null;
+                });
             });
         });
     }
@@ -95,155 +114,8 @@ let MessageResponder = MessageResponder_1 = class MessageResponder {
             });
         });
     }
-    processMoneyArguments(args) {
-        let fund = { id: null, party_id: null, type: null, platinum: null, gold: null, silver: null, copper: null };
-        let amt = -1;
-        let negative = false;
-        let i, arg, search;
-        for (i = 0; i < args.length; i++) {
-            arg = args[i];
-            // If amount is non-negative, then must be waiting on a value.
-            if (amt >= 0) {
-                let type = MessageResponder_1.giveAmountBack(arg);
-                // Breaks if not formatted correctly.
-                if (type === null) {
-                    return null;
-                }
-                // Make the amount part of this moneyed item.
-                type.amount = amt;
-                amt = -1;
-                // Add to the fund.
-                fund = MessageResponder_1.addToFund(type, fund);
-                if (fund === null) {
-                    return null;
-                }
-                continue;
-            }
-            // Check for negatives.
-            if (arg.substr(0, 1) === "-") {
-                negative = true;
-                arg = arg.substr(1);
-            }
-            // Check for positives.
-            if (arg.substr(0, 1) === "+") {
-                arg = arg.substr(1);
-            }
-            let money = MessageResponder_1.giveAmountBack(arg);
-            // Something strange happened.
-            if (money === null) {
-                return null;
-            }
-            if (money.type === null) {
-                amt = money.amount;
-                continue;
-            }
-            // Add to the fund.
-            fund = MessageResponder_1.addToFund(money, fund);
-            if (fund === null) {
-                return null;
-            }
-        }
-    }
-    /**
-     * Adds the given "Money" amount to the given fund.
-     *
-     * @param money
-     * @param fund
-     */
-    static addToFund(money, fund) {
-        switch (money.type) {
-            case "platinum":
-                fund.platinum = money.amount;
-                break;
-            case "gold":
-                fund.gold = money.amount;
-                break;
-            case "silver":
-                fund.silver = money.amount;
-                break;
-            case "copper":
-                fund.copper = money.amount;
-                break;
-            default:
-                return null;
-        }
-        return fund;
-    }
-    static searchForMoneyType(arg) {
-        let place = arg.search("g");
-        if (place >= 0) {
-            const num = arg.substr(0, place + 1);
-            return num + " gold";
-        }
-        place = arg.search("c");
-        if (place >= 0) {
-            const num = arg.substr(0, place + 1);
-            return num + " copper";
-        }
-        place = arg.search("s");
-        if (place >= 0) {
-            const num = arg.substr(0, place + 1);
-            return num + " silver";
-        }
-        place = arg.search("p");
-        if (place >= 0) {
-            const num = arg.substr(0, place + 1);
-            return num + " platinum";
-        }
-        return arg;
-    }
-    /**
-     *
-     * @param arg
-     */
-    static giveAmountBack(arg) {
-        const num = Number(arg);
-        if (!isNaN(num)) {
-            return { "amount": num, "type": null };
-        }
-        const type = MessageResponder_1.searchForMoneyType(arg);
-        const args = type.split(" ");
-        if (args.length < 2) {
-            const maybeType = args[0];
-            // See if it's a type.
-            if (maybeType === "gold" || maybeType === "platinum" || maybeType === "silver" || maybeType === "copper") {
-                return { "amount": null, "type": maybeType };
-            }
-            // Something weird.
-            return null;
-        }
-        return { "amount": Number(args[0]), "type": args[1] };
-    }
-    formatFundStatement(fund, type) {
-        if (type !== null) {
-            type = type.toLowerCase();
-            type += " ";
-        }
-        let foundMoney = false;
-        let amt = 0;
-        if (fund.platinum !== null && fund.platinum > 0) {
-            amt += (fund.platinum * 10);
-            foundMoney = true;
-        }
-        if (fund.gold !== null && fund.gold > 0) {
-            amt += fund.gold;
-            foundMoney = true;
-        }
-        if (fund.silver !== null && fund.silver > 0) {
-            amt += (fund.silver / 10);
-            foundMoney = true;
-        }
-        if (fund.copper !== null && fund.copper > 0) {
-            amt += (fund.copper / 100);
-            foundMoney = true;
-        }
-        if (!foundMoney) {
-            return "There is no money in this " + type + "fund!";
-        }
-        return "The following amount is currently in the bank fund: " + amt + " gp";
-    }
 };
-MessageResponder = MessageResponder_1 = __decorate([
+MessageResponder = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.PingFinder)),
     __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
