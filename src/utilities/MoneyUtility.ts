@@ -57,6 +57,7 @@ export class MoneyUtility {
         let i: number, arg: string, search: number;
         for (i = 0; i < args.length; i++) {
             arg = args[i];
+            console.log("PROCESS MONEY ARGUMENTS ::: Arg (INDEX: " + i + " ): " + arg);
 
             // If amount is non-negative, then must be waiting on a value.
             if (amt >= 0) {
@@ -90,7 +91,7 @@ export class MoneyUtility {
                 arg = arg.substr(1);
             }
 
-            let money: Money = MoneyUtility.giveAmountBack(arg);
+            let money = MoneyUtility.giveAmountBack(arg);
 
             // Something strange happened.
             if (money === null) {
@@ -186,6 +187,7 @@ export class MoneyUtility {
         }
 
         const type = MoneyUtility.searchForMoneyType(arg);
+        console.log("GIVE AMOUNT BACK ::: Type: " + type);
         const args = type.split(" ");
         if (args.length < 2) {
             const maybeType = args[0];
