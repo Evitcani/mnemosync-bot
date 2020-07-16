@@ -13,8 +13,11 @@ export class PartyService {
     async getParty (name: string): Promise<Party>{
         return new Promise<Party>((resolve, reject) => {
             this.databaseService.query("SELECT * FROM parties").then((res) => {
-                const result = res[0];
-                console.log(JSON.stringify(result));
+                console.log(JSON.stringify(res));
+
+                const result: Party = res[0];
+
+                return result;
             }).catch((err: Error) => {
                 console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);
             });
