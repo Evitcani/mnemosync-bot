@@ -16,13 +16,17 @@ exports.MessageResponder = void 0;
 const ping_finder_1 = require("./ping-finder");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
+const PartyService_1 = require("../database/PartyService");
 let MessageResponder = class MessageResponder {
-    constructor(pingFinder) {
+    constructor(pingFinder, partyService) {
         this.pingFinder = pingFinder;
+        this.partyService = partyService;
     }
     handle(message) {
         if (this.pingFinder.isPing(message.content)) {
-            return message.channel.send('pong!');
+            this.partyService.getParty("The Seven Wonders").then(() => {
+                return message.channel.send('pong!');
+            });
         }
         return Promise.reject();
     }
@@ -30,7 +34,9 @@ let MessageResponder = class MessageResponder {
 MessageResponder = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.PingFinder)),
-    __metadata("design:paramtypes", [ping_finder_1.PingFinder])
+    __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
+    __metadata("design:paramtypes", [ping_finder_1.PingFinder,
+        PartyService_1.PartyService])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;
 //# sourceMappingURL=message-responder.js.map
