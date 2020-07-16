@@ -1,4 +1,4 @@
-interface Party {
+export interface Party {
     id: number,
     name: string
 }

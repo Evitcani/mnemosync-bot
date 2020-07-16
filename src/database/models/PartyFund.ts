@@ -1,4 +1,4 @@
-interface PartyFund {
+export interface PartyFund {
     id: number,
     user_id: number,
     type: string,

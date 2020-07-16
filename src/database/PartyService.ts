@@ -1,6 +1,7 @@
 import {inject, injectable} from "inversify";
 import {DatabaseService} from "./DatabaseService";
 import {TYPES} from "../types";
+import {Party} from "./models/Party";
 
 @injectable()
 export class PartyService {
@@ -15,7 +16,8 @@ export class PartyService {
             this.databaseService.query("SELECT * FROM parties").then((res) => {
                 console.log(JSON.stringify(res));
 
-                const result: Party = res[0];
+                // @ts-ignore
+                const result: Party = res.rows[0];
 
                 return result;
             }).catch((err: Error) => {

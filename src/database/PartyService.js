@@ -34,7 +34,8 @@ let PartyService = class PartyService {
             return new Promise((resolve, reject) => {
                 this.databaseService.query("SELECT * FROM parties").then((res) => {
                     console.log(JSON.stringify(res));
-                    const result = res[0];
+                    // @ts-ignore
+                    const result = res.rows[0];
                     return result;
                 }).catch((err) => {
                     console.log("ERROR: COULD NOT GET PARTY ::: " + err.message);

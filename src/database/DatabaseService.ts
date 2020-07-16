@@ -1,18 +1,18 @@
 import {inject, injectable} from "inversify";
 import {Client} from 'pg';
 import {TYPES} from "../types";
-import {PingFinder} from "../services/ping-finder";
+import {DatabaseReturn} from "./models/DatabaseReturn";
 
 @injectable()
 export class DatabaseService {
     /** The URL of the database. */
-    private databaseUrl: string;
+    private readonly databaseUrl: string;
 
     constructor(@inject(TYPES.DatabaseUrl) databaseUrl: string) {
         this.databaseUrl = databaseUrl;
     }
 
-    async query (query: string): Promise<JSON> {
+    async query (query: string): Promise<DatabaseReturn> {
         const client = new Client({
             connectionString: this.databaseUrl,
             ssl: {
@@ -22,7 +22,7 @@ export class DatabaseService {
 
         client.connect();
 
-        return client.query(query).then((res) => {
+        return client.query(query).then((res: DatabaseReturn) => {
             // Close connection.
             client.end();
 
