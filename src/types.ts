@@ -7,4 +7,5 @@ export const TYPES = {
     PingFinder: Symbol("PingFinder"),
     DatabaseService: Symbol("DatabaseService"),
     PartyService: Symbol("PartyService"),
+    PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
 };

@@ -17,6 +17,7 @@ const discord_js_1 = require("discord.js");
 const inversify_1 = require("inversify");
 const types_1 = require("./types");
 const message_responder_1 = require("./services/message-responder");
+const CommandUtility_1 = require("./utilities/CommandUtility");
 let Bot = class Bot {
     constructor(client, token, messageResponder) {
         this.client = client;
@@ -30,19 +31,11 @@ let Bot = class Bot {
                 return;
             }
             // Get the message sent.
-            const args = contents.substr(1).split(" ");
-            const cmd = args[0].toLowerCase();
-            // Remove command from args.
-            args.splice(0, 1);
+            const command = CommandUtility_1.CommandUtility.processCommands(contents);
             console.log("Message received! Contents: ", message.content);
-            switch (cmd) {
-                case "bank":
-                    this.messageResponder.bankCommand(message, args);
-                    break;
-                case "fund":
-                    this.messageResponder.fundCommand(message, args);
-                    break;
-            }
+            this.messageResponder.handle(command, message).catch((err) => {
+                return message.channel.send("ERR ::: Unable to process command at this time.");
+            });
         });
         return this.client.login(this.token);
     }
