@@ -13,7 +13,12 @@ export class DatabaseService {
     }
 
     async query (query: string): Promise<JSON> {
-        const client = new Client();
+        const client = new Client({
+            connectionString: this.databaseUrl,
+            ssl: {
+                rejectUnauthorized: false
+            }
+        });
 
         client.connect();
 
