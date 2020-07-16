@@ -21,7 +21,7 @@ export class MoneyUtility {
             amt += fund.copper;
         }
 
-        console.log("PILE INTO COPPER ::: Total amount is: " + amt);
+        console.debug("PILE INTO COPPER ::: Total amount is: " + amt);
 
         return amt;
     }
@@ -30,22 +30,22 @@ export class MoneyUtility {
         let fund: PartyFund = {id: null, party_id: null, type: null, platinum: 0, gold: null, silver: null,
             copper: null};
 
-        console.log("COPPER TO FUND ::: Amount is: " + amt);
+        console.debug("COPPER TO FUND ::: Amount is: " + amt);
 
         // Gold is easy to get.
         fund.gold = Math.floor(amt / 100);
         amt = amt - (fund.gold * 100);
 
-        console.log("COPPER TO FUND ::: Gold amount is: " + fund.gold);
+        console.debug("COPPER TO FUND ::: Gold amount is: " + fund.gold);
 
         fund.silver = Math.floor(amt / 10);
         amt = amt - (fund.silver * 10);
 
-        console.log("COPPER TO FUND ::: Silver amount is: " + fund.silver);
+        console.debug("COPPER TO FUND ::: Silver amount is: " + fund.silver);
 
         fund.copper = amt;
 
-        console.log("COPPER TO FUND ::: Copper amount is: " + fund.copper);
+        console.debug("COPPER TO FUND ::: Copper amount is: " + fund.copper);
 
         return fund;
     }
@@ -57,7 +57,7 @@ export class MoneyUtility {
         let i: number, arg: string, search: number;
         for (i = 0; i < args.length; i++) {
             arg = args[i];
-            console.log("PROCESS MONEY ARGUMENTS ::: Arg (INDEX: " + i + " ): " + arg);
+            console.debug("PROCESS MONEY ARGUMENTS ::: Arg (INDEX: " + i + " ): " + arg);
 
             // If amount is non-negative, then must be waiting on a value.
             if (amt >= 0) {
@@ -187,7 +187,7 @@ export class MoneyUtility {
         }
 
         const type = MoneyUtility.searchForMoneyType(arg);
-        console.log("GIVE AMOUNT BACK ::: Type: " + type);
+        console.debug("GIVE AMOUNT BACK ::: Type: " + type);
         const args = type.split(" ");
         if (args.length < 2) {
             const maybeType = args[0];
@@ -234,9 +234,9 @@ export class MoneyUtility {
         }
 
         if (!foundMoney) {
-            return "There is no money in this " + type + "fund!";
+            return "There is no money in the " + type + "!";
         }
 
-        return "The following amount is currently in the bank fund: " + amt + " gp";
+        return "The following amount is currently in the " + type + ": " + amt + " gp";
     }
 }

@@ -32,6 +32,45 @@ let MessageResponder = class MessageResponder {
         this.pingFinder = pingFinder;
         this.partyService = partyService;
     }
+    getRegularFunds(message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.findFunds("FUND", message).then((fund) => {
+                return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
+            });
+        });
+    }
+    /**
+     * Updates the amount of money in the shared bank account.
+     *
+     * @param message The message sent.
+     * @param args The other arguments.
+     */
+    updateRegularFunds(message, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.updateFunds(message, "FUND", args);
+        });
+    }
+    /**
+     * Figures out which subcommand to send the message to.
+     *
+     * @param message
+     * @param args
+     */
+    fundCommand(message, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // If there are no args, assume the user just wants a bank statement.
+            if (args.length < 1) {
+                return this.getRegularFunds(message);
+            }
+            const firstArg = args[0].toLowerCase();
+            // Wants a bank statement.
+            if (firstArg === "get") {
+                return this.getRegularFunds(message);
+            }
+            // Now we send the amount off to be processed.
+            return this.updateRegularFunds(message, args);
+        });
+    }
     /**
      * Figures out which subcommand to send the message to.
      *
@@ -55,7 +94,7 @@ let MessageResponder = class MessageResponder {
     }
     getBankFunds(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.findFunds("BANK").then((fund) => {
+            return this.findFunds("BANK", message).then((fund) => {
                 return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
             });
         });
@@ -68,13 +107,18 @@ let MessageResponder = class MessageResponder {
      */
     updateBankFunds(message, args) {
         return __awaiter(this, void 0, void 0, function* () {
+            return this.updateFunds(message, "BANK", args);
+        });
+    }
+    updateFunds(message, fundType, args) {
+        return __awaiter(this, void 0, void 0, function* () {
             // Process the arguments.
             const newFund = MoneyUtility_1.MoneyUtility.processMoneyArguments(args);
             if (newFund === null) {
                 return message.channel.send("Command appears to be formatted incorrectly. Please try again!");
             }
             // Find and then update these funds.
-            return this.findFunds("BANK").then((fund) => {
+            return this.findFunds(fundType, message).then((fund) => {
                 // Pile everything into copper.
                 let newAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
                 let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
@@ -90,7 +134,7 @@ let MessageResponder = class MessageResponder {
                 }).catch((err) => {
                     console.log("ERROR: COULD NOT UPDATE FUNDS ::: " + err.message);
                     console.log(err.stack);
-                    return null;
+                    return message.channel.send("Something went wrong ): HELP");
                 });
             });
         });
@@ -103,15 +147,17 @@ let MessageResponder = class MessageResponder {
         }
         return Promise.reject();
     }
-    findFunds(type) {
+    findFunds(type, message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.partyService.getParty("The Seven Wonders").then((res) => {
                 return this.partyService.getFund(res.id, type).catch((err) => {
                     console.log("Failed to find party fund with given information ::: " + err.message);
+                    message.channel.send("Something went wrong ): HELP");
                     return null;
                 });
             }).catch((err) => {
                 console.log("Failed to find party with given name ::: " + err.message);
+                message.channel.send("Something went wrong ): HELP");
                 return null;
             });
         });
