@@ -49,6 +49,8 @@ export class PartyService {
 
         query += " WHERE id = " + id;
 
+        console.log("Updating party funds with query: " + query);
+
         return this.databaseService.query(query).then((res) => {
             return this.getFundById(id);
         }).catch((err: Error) => {
