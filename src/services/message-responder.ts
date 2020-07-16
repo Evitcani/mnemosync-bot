@@ -17,8 +17,9 @@ export class MessageResponder {
 
     handle(message: Message): Promise<Message | Message[]> {
         if (this.pingFinder.isPing(message.content)) {
-            this.partyService.getParty("The Seven Wonders").then(() => {
-                return message.channel.send('pong!');
+            this.partyService.getParty("The Seven Wonders").then((res) => {
+
+                return message.channel.send('Pong right back at ya, ' + res.name + "!");
             });
         }
 
