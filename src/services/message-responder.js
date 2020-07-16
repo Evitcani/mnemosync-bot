@@ -24,7 +24,7 @@ let MessageResponder = class MessageResponder {
     }
     handle(message) {
         if (this.pingFinder.isPing(message.content)) {
-            this.partyService.getParty("The Seven Wonders").then((res) => {
+            return this.partyService.getParty("The Seven Wonders").then((res) => {
                 return message.channel.send('Pong right back at ya, ' + res.name + "!");
             });
         }
