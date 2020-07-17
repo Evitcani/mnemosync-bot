@@ -7,6 +7,7 @@ import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {PartyFund} from "../models/database/PartyFund";
 import {Command} from "../models/generic/Command";
 import {FundRelatedClientResponses} from "../documentation/client-responses/FundRelatedClientResponses";
+import {PartyFundService} from "../database/PartyFundService";
 
 /**
  * Manages the fund related commands.
@@ -15,11 +16,15 @@ import {FundRelatedClientResponses} from "../documentation/client-responses/Fund
 export class PartyFundCommandHandler extends AbstractCommandHandler {
     /** The party service to connect to the database. */
     private partyService: PartyService;
+    /** Connection the fund database. */
+    private partyFundService: PartyFundService;
     private readonly partyName: string = "The Seven Wonders";
 
-    constructor(@inject(TYPES.PartyService) partyService: PartyService) {
+    constructor(@inject(TYPES.PartyService) partyService: PartyService,
+                @inject(TYPES.PartyFundService) partyFundService: PartyFundService) {
         super();
         this.partyService = partyService;
+        this.partyFundService = partyFundService;
     }
 
     /**
@@ -64,7 +69,7 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
         }
 
         return this.partyService.getParty(name).then((res) => {
-            return this.partyService.getFund(res.id, type).catch((err: Error) => {
+            return this.partyFundService.getFund(res.id, type).catch((err: Error) => {
                 console.log("Failed to find party fund with given information ::: " + err.message);
                 return err;
             });
@@ -102,7 +107,7 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
 
             const finalFund = MoneyUtility.copperToFund(newAmt);
 
-            return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver,
+            return this.partyFundService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver,
                 finalFund.copper).then((updatedFund) => {
                     const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
                     return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,

@@ -29,74 +29,9 @@ let PartyService = class PartyService {
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
-    updateFunds(id, platinum, gold, silver, copper) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let query = "UPDATE party_funds SET ";
-            let prev = false;
-            // Check all the gold amounts, only update what changed.
-            if (platinum !== null) {
-                query += "platinum = " + platinum;
-                prev = true;
-            }
-            if (gold !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "gold = " + gold;
-                prev = true;
-            }
-            if (silver !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "silver = " + silver;
-                prev = true;
-            }
-            if (copper !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "copper = " + copper;
-            }
-            query += " WHERE id = " + id;
-            console.log("Updating party funds with query: " + query);
-            return this.databaseService.query(query).then((res) => {
-                return this.getFundById(id);
-            }).catch((err) => {
-                console.log("ERROR: Could not update the party funds! ::: " + err.message);
-                console.log(err.stack);
-                return null;
-            });
-        });
-    }
-    getFundById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE id = " + id;
-            return this.doGetFund(query);
-        });
-    }
-    getFund(partyID, type) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
-            return this.doGetFund(query);
-        });
-    }
-    doGetFund(query) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.databaseService.query(query).then((res) => {
-                // @ts-ignore
-                const result = res.rows[0];
-                return result;
-            }).catch((err) => {
-                console.log("ERROR: Could not get party funds! ::: " + err.message + " ::: QUERY: " + query);
-                console.log(err.stack);
-                return null;
-            });
-        });
-    }
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.databaseService.query("SELECT * FROM parties").then((res) => {
+            return this.databaseService.query("SELECT * FROM parties WHERE name = '" + name + "'").then((res) => {
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;

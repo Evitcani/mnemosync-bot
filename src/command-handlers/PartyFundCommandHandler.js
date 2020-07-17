@@ -28,14 +28,16 @@ const types_1 = require("../types");
 const MoneyUtility_1 = require("../utilities/MoneyUtility");
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const FundRelatedClientResponses_1 = require("../documentation/client-responses/FundRelatedClientResponses");
+const PartyFundService_1 = require("../database/PartyFundService");
 /**
  * Manages the fund related commands.
  */
 let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(partyService) {
+    constructor(partyService, partyFundService) {
         super();
         this.partyName = "The Seven Wonders";
         this.partyService = partyService;
+        this.partyFundService = partyFundService;
     }
     /**
      * Handles the commands related to funds.
@@ -78,7 +80,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
                 type = "FUND";
             }
             return this.partyService.getParty(name).then((res) => {
-                return this.partyService.getFund(res.id, type).catch((err) => {
+                return this.partyFundService.getFund(res.id, type).catch((err) => {
                     console.log("Failed to find party fund with given information ::: " + err.message);
                     return err;
                 });
@@ -109,7 +111,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
                     return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100, newAmtTotal / 100, newAmtInGold));
                 }
                 const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
-                return this.partyService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
+                return this.partyFundService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
                     const currentMoney = MoneyUtility_1.MoneyUtility.pileIntoCopper(updatedFund) / 100;
                     return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.UPDATED_MONEY(currentMoney, oldAmt / 100, newAmtTotal / 100, newAmtTotal < 0));
                 });
@@ -120,7 +122,9 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
 PartyFundCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.PartyService)),
-    __metadata("design:paramtypes", [PartyService_1.PartyService])
+    __param(1, inversify_1.inject(types_1.TYPES.PartyFundService)),
+    __metadata("design:paramtypes", [PartyService_1.PartyService,
+        PartyFundService_1.PartyFundService])
 ], PartyFundCommandHandler);
 exports.PartyFundCommandHandler = PartyFundCommandHandler;
 //# sourceMappingURL=PartyFundCommandHandler.js.map

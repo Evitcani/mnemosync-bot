@@ -4,10 +4,17 @@ exports.FundRelatedClientResponses = void 0;
 const StringUtility_1 = require("../../utilities/StringUtility");
 const discord_js_1 = require("discord.js");
 /**
- * A class for formatting responses.
- *
+ * A class for formatting responses related to the `$FUND` and `$BANK` commands.
  */
 class FundRelatedClientResponses {
+    /**
+     * The response for if there is not enough money to perform a certain action.
+     *
+     * @param currentMoney The current amount of money in the account.
+     * @param amtToWithdraw The amount of money attempted to be withdrawn.
+     * @param difference The amount needed to complete the transaction.
+     * @return An embed to send back to  the client.
+     */
     static NOT_ENOUGH_MONEY(currentMoney, amtToWithdraw, difference) {
         let input3 = StringUtility_1.StringUtility.numberWithCommas(Math.abs(difference));
         return this.getTwoInputEmbed('Too little, too late!', 'Remaining funds', currentMoney, 'Attempted to withdraw', amtToWithdraw, `You don't have enough money to do that. You are short ${input3} gp!`);
@@ -26,7 +33,7 @@ class FundRelatedClientResponses {
             .addField("Description", description, false);
     }
     /**
-     * Gets the
+     * Gets the basic embed with some fields.
      */
     static getBasicEmbed() {
         return new discord_js_1.MessageEmbed()

@@ -2,10 +2,17 @@ import {StringUtility} from "../../utilities/StringUtility";
 import {MessageEmbed} from "discord.js";
 
 /**
- * A class for formatting responses.
- *
+ * A class for formatting responses related to the `$FUND` and `$BANK` commands.
  */
 export class FundRelatedClientResponses {
+    /**
+     * The response for if there is not enough money to perform a certain action.
+     *
+     * @param currentMoney The current amount of money in the account.
+     * @param amtToWithdraw The amount of money attempted to be withdrawn.
+     * @param difference The amount needed to complete the transaction.
+     * @return An embed to send back to  the client.
+     */
     static NOT_ENOUGH_MONEY(currentMoney: number, amtToWithdraw: number, difference: number): MessageEmbed {
         let input3 = StringUtility.numberWithCommas(Math.abs(difference));
 
@@ -41,7 +48,7 @@ export class FundRelatedClientResponses {
     }
 
     /**
-     * Gets the
+     * Gets the basic embed with some fields.
      */
     private static getBasicEmbed() : MessageEmbed {
         return new MessageEmbed()

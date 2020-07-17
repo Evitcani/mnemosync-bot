@@ -20,87 +20,67 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var PartyToGuildService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PartyFundService = void 0;
+exports.PartyToGuildService = void 0;
 const DatabaseService_1 = require("./DatabaseService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-/**
- * Service for managing calls to the database related to party funds.
- */
-let PartyFundService = class PartyFundService {
+const StringUtility_1 = require("../utilities/StringUtility");
+let PartyToGuildService = PartyToGuildService_1 = class PartyToGuildService {
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
-    updateFunds(id, platinum, gold, silver, copper) {
+    /**
+     * Gets all the parties related to the given guild.
+     *
+     * @param guildId The ID of the guild to get all the parties for.
+     */
+    getParties(guildId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "UPDATE party_funds SET ";
-            let prev = false;
-            // Check all the gold amounts, only update what changed.
-            if (platinum !== null) {
-                query += "platinum = " + platinum;
-                prev = true;
-            }
-            if (gold !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "gold = " + gold;
-                prev = true;
-            }
-            if (silver !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "silver = " + silver;
-                prev = true;
-            }
-            if (copper !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "copper = " + copper;
-            }
-            query += " WHERE id = " + id;
-            console.log("Updating party funds with query: " + query);
+            // Sanitize inputs.
+            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            // Construct query.
+            let query = "SELECT party_id FROM " + PartyToGuildService_1.TABLE_NAME + " WHERE guild_id = '" + guildId + "'";
             return this.databaseService.query(query).then((res) => {
-                return this.getFundById(id);
+                console.log(res);
+                // @ts-ignore
+                const result = res.rows;
+                return result;
             }).catch((err) => {
-                console.log("ERROR: Could not update the party funds! ::: " + err.message);
+                console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;
             });
         });
     }
-    getFundById(id) {
+    /**
+     * Registers a party to a given guild.
+     *
+     * @param partyId The ID of the party to register.
+     * @param guildId The ID of the guild to register the party to.
+     */
+    addParty(partyId, guildId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE id = " + id;
-            return this.doGetFund(query);
-        });
-    }
-    getFund(partyID, type) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
-            return this.doGetFund(query);
-        });
-    }
-    doGetFund(query) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.databaseService.query(query).then((res) => {
-                // @ts-ignore
-                const result = res.rows[0];
-                return result;
+            // Sanitize inputs.
+            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            // Construct query.
+            let query = `INSERT INTO ${PartyToGuildService_1.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, '${guildId}')`;
+            return this.databaseService.query(query).then(() => {
+                return this.getParties(guildId);
             }).catch((err) => {
-                console.log("ERROR: Could not get party funds! ::: " + err.message + " ::: QUERY: " + query);
+                console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;
             });
         });
     }
 };
-PartyFundService = __decorate([
+PartyToGuildService.TABLE_NAME = "party_to_guild";
+PartyToGuildService = PartyToGuildService_1 = __decorate([
+    inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])
-], PartyFundService);
-exports.PartyFundService = PartyFundService;
-//# sourceMappingURL=PartyFundService.js.map
+], PartyToGuildService);
+exports.PartyToGuildService = PartyToGuildService;
+//# sourceMappingURL=PartyToGuildService.js.map

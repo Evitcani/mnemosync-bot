@@ -9,7 +9,13 @@ exports.TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
     DatabaseService: Symbol("DatabaseService"),
+    PartyFundService: Symbol("PartyFundService"),
     PartyService: Symbol("PartyService"),
+    PartyToGuildService: Symbol("PartyToGuildService"),
+    UserDefaultPartyService: Symbol("UserDefaultPartyService"),
+    UserService: Symbol("UserService"),
+    UserToGuildService: Symbol("UserToGuildService"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
+    RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
 };
 //# sourceMappingURL=types.js.map
