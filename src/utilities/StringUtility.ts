@@ -1,4 +1,4 @@
-import {SqlString} from 'sqlstring';
+const SqlString = require('sqlstring');
 
 export class StringUtility {
     private static pattern = /(-?\d+)(\d{3})/;
