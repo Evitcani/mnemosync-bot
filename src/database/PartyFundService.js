@@ -99,6 +99,7 @@ let PartyFundService = class PartyFundService {
     }
 };
 PartyFundService = __decorate([
+    inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])
 ], PartyFundService);

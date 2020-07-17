@@ -11,7 +11,7 @@ export class MessageResponder {
     private registerUserCommandHandler: RegisterUserCommandHandler;
 
     constructor(@inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
-        @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
+                @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
         this.registerUserCommandHandler = registerUserCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
     }
