@@ -26,6 +26,7 @@ const inversify_1 = require("inversify");
 const PartyService_1 = require("../database/PartyService");
 const types_1 = require("../types");
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
+const WhichRelatedClientResponses_1 = require("../documentation/client-responses/WhichRelatedClientResponses");
 /**
  * Handles questions about the state of the world.
  */
@@ -37,10 +38,7 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractCommandHandl
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.partyService.getPartiesInGuild(message.guild.id).then((res) => {
-                if (res == null) {
-                    return message.channel.send("No parties are registered to this server.");
-                }
-                return message.channel.send("There are " + res.length + " parties registered to this server.");
+                return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
             });
         });
     }
