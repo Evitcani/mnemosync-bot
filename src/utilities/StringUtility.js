@@ -20,7 +20,6 @@ class StringUtility {
      * @param input The input to escape.
      */
     static escapeMySQLInput(input) {
-        console.log("Escaping characters...");
         return SqlString.escape(input);
     }
 }
