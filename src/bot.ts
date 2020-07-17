@@ -29,9 +29,9 @@ export class Bot {
             // Get the message sent.
             const command = CommandUtility.processCommands(contents);
 
-            console.log("Message received! Contents: ", message.content);
-
             this.messageResponder.handle(command, message).catch((err: Error) => {
+                console.log("ERR ::: " + err.message);
+                console.log(err.stack);
                 return message.channel.send("ERR ::: Unable to process command at this time.");
             });
         });

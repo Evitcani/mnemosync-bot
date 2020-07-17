@@ -3,8 +3,6 @@ import {Command} from "../models/generic/Command";
 import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
-import {PartyService} from "../database/PartyService";
-import {PartyFundService} from "../database/PartyFundService";
 import {UserDefaultPartyService} from "../database/UserDefaultPartyService";
 
 /**
