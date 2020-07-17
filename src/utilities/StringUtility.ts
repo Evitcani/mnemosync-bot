@@ -21,6 +21,7 @@ export class StringUtility {
      * @param input The input to escape.
      */
     static escapeMySQLInput(input: string): string {
+        console.log("Escaping characters...");
         return SqlString.escape(input);
     }
 }
