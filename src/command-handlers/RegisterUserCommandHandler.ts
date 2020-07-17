@@ -25,7 +25,11 @@ export class RegisterUserCommandHandler extends AbstractCommandHandler {
         return this.userDefaultPartyService.getDefaultParty(guild, user.id).then((res) => {
             console.log("Number is: " + res);
 
-            return message.channel.send("Found result for user!");
+            if (res != null) {
+                return message.channel.send("Found result for user!");
+            }
+
+
         });
     }
 
