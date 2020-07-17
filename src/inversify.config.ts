@@ -15,6 +15,9 @@ import {UserDefaultPartyService} from "./database/UserDefaultPartyService";
 import {UserService} from "./database/UserService";
 import {UserToGuildService} from "./database/UserToGuildService";
 import {WhichCommandHandler} from "./command-handlers/WhichCommandHandler";
+import {SpecialChannelService} from "./database/SpecialChannelService";
+import {HelpCommandHandler} from "./command-handlers/HelpCommandHandler";
+import {QuoteCommandHandler} from "./command-handlers/QuoteCommandHandler";
 
 let container = new Container();
 
@@ -29,12 +32,14 @@ container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSin
 container.bind<PartyFundService>(TYPES.PartyFundService).to(PartyFundService).inSingletonScope();
 container.bind<PartyService>(TYPES.PartyService).to(PartyService).inSingletonScope();
 container.bind<PartyToGuildService>(TYPES.PartyToGuildService).to(PartyToGuildService).inSingletonScope();
+container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialChannelService).inSingletonScope();
 container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService).inSingletonScope();
 container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
 
-
+container.bind<HelpCommandHandler>(TYPES.HelpCommandHandler).to(HelpCommandHandler).inSingletonScope();
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
+container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHandler).inSingletonScope();
 container.bind<RegisterUserCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterUserCommandHandler).inSingletonScope();
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 

@@ -27,10 +27,14 @@ const types_1 = require("../types");
 const PartyFundCommandHandler_1 = require("../command-handlers/PartyFundCommandHandler");
 const RegisterUserCommandHandler_1 = require("../command-handlers/RegisterUserCommandHandler");
 const WhichCommandHandler_1 = require("../command-handlers/WhichCommandHandler");
+const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
+const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(partyFundCommandHandler, registerUserCommandHandler, whichCommandHandler) {
-        this.registerUserCommandHandler = registerUserCommandHandler;
+    constructor(helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler) {
+        this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
+        this.quoteCommandHandler = quoteCommandHandler;
+        this.registerUserCommandHandler = registerUserCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
     }
     /**
@@ -50,6 +54,10 @@ let MessageResponder = class MessageResponder {
                     return this.partyFundCommandHandler.handleCommand(command, message);
                 case "fund":
                     return this.partyFundCommandHandler.handleCommand(command, message);
+                case "help":
+                    return this.helpCommandHandler.handleCommand(command, message);
+                case "quote":
+                    return this.quoteCommandHandler.handleCommand(command, message);
                 case "register":
                     return this.registerUserCommandHandler.handleCommand(command, message);
                 case "which":
@@ -60,10 +68,14 @@ let MessageResponder = class MessageResponder {
 };
 MessageResponder = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
-    __param(1, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __param(2, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __metadata("design:paramtypes", [PartyFundCommandHandler_1.PartyFundCommandHandler,
+    __param(0, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
+    __param(1, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
+    __param(2, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
+    __param(3, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
+    __param(4, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __metadata("design:paramtypes", [HelpCommandHandler_1.HelpCommandHandler,
+        PartyFundCommandHandler_1.PartyFundCommandHandler,
+        QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterUserCommandHandler_1.RegisterUserCommandHandler,
         WhichCommandHandler_1.WhichCommandHandler])
 ], MessageResponder);
