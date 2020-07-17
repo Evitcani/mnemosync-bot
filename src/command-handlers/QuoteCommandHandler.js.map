@@ -1,0 +1,1 @@
+{"version":3,"file":"QuoteCommandHandler.js","sourceRoot":"","sources":["QuoteCommandHandler.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;AAAA,yCAAqC;AACrC,0EAAqE;AAIrE;;;GAGG;AAEH,IAAa,mBAAmB,GAAhC,MAAa,mBAAoB,SAAQ,+CAAsB;IACrD,aAAa,CAAC,OAAgB,EAAE,OAAgB;;YAClD,OAAO,SAAS,CAAC;QACrB,CAAC;KAAA;CAEJ,CAAA;AALY,mBAAmB;IAD/B,sBAAU,EAAE;GACA,mBAAmB,CAK/B;AALY,kDAAmB"}

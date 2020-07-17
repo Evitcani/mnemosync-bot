@@ -5,18 +5,26 @@ import {Command} from "../models/generic/Command";
 import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
 import {RegisterUserCommandHandler} from "../command-handlers/RegisterUserCommandHandler";
 import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
+import {HelpCommandHandler} from "../command-handlers/HelpCommandHandler";
+import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
 
 @injectable()
 export class MessageResponder {
+    private helpCommandHandler: HelpCommandHandler;
     private partyFundCommandHandler: PartyFundCommandHandler;
+    private quoteCommandHandler: QuoteCommandHandler;
     private registerUserCommandHandler: RegisterUserCommandHandler;
     private whichCommandHandler: WhichCommandHandler;
 
-    constructor(@inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
+    constructor(@inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
+                @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
+                @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
                 @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler,
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler) {
-        this.registerUserCommandHandler = registerUserCommandHandler;
+        this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
+        this.quoteCommandHandler = quoteCommandHandler;
+        this.registerUserCommandHandler = registerUserCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
     }
 
@@ -38,6 +46,10 @@ export class MessageResponder {
                 return this.partyFundCommandHandler.handleCommand(command, message);
             case "fund":
                 return this.partyFundCommandHandler.handleCommand(command, message);
+            case "help":
+                return this.helpCommandHandler.handleCommand(command, message);
+            case "quote":
+                return this.quoteCommandHandler.handleCommand(command, message);
             case "register":
                 return this.registerUserCommandHandler.handleCommand(command, message);
             case "which":
