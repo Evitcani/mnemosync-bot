@@ -54,7 +54,7 @@ export class PartyFundService {
 
         console.log("Updating party funds with query: " + query);
 
-        return this.databaseService.query(query).then((res) => {
+        return this.databaseService.query(query).then(() => {
             return this.getFundById(id);
         }).catch((err: Error) => {
             console.log("ERROR: Could not update the party funds! ::: " + err.message);
@@ -70,10 +70,10 @@ export class PartyFundService {
 
     async getFund (partyID: number, type: string): Promise<PartyFund>{
         // Sanitize inputs.
-        type = StringUtility.escapeMySQLInput(type);
+        const sanitizedType = StringUtility.escapeMySQLInput(type);
 
         // Construct query.
-        const query = "SELECT * FROM party_funds WHERE type = " + type + " AND party_id = " + partyID;
+        const query = "SELECT * FROM party_funds WHERE type = " + sanitizedType + " AND party_id = " + partyID;
         return this.doGetFund(query);
     }
 

@@ -21,10 +21,10 @@ export class PartyToGuildService {
      */
     public async getParties(guildId: string): Promise<number[]> {
         // Sanitize inputs.
-        guildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
 
         // Construct query.
-        let query = "SELECT party_id FROM " + PartyToGuildService.TABLE_NAME + " WHERE guild_id = " + guildId;
+        let query = "SELECT party_id FROM " + PartyToGuildService.TABLE_NAME + " WHERE guild_id = " + sanitizedGuildId;
 
         return this.databaseService.query(query).then((res) => {
             if (res.rowCount <= 0) {
@@ -51,10 +51,10 @@ export class PartyToGuildService {
      */
     public async addParty(partyId: number, guildId: string): Promise<number[]> {
         // Sanitize inputs.
-        guildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
 
         // Construct query.
-        let query = `INSERT INTO ${PartyToGuildService.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, ${guildId})`;
+        let query = `INSERT INTO ${PartyToGuildService.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, ${sanitizedGuildId})`;
 
         return this.databaseService.query(query).then(() => {
             return this.getParties(guildId);

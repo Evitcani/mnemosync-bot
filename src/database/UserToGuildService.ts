@@ -16,11 +16,11 @@ export class UserToGuildService {
 
     public async registerUserOnGuild (guildId: string, discordId: string): Promise<boolean> {
         // Sanitize inputs.
-        guildId = StringUtility.escapeMySQLInput(guildId);
-        discordId = StringUtility.escapeMySQLInput(discordId);
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
 
         // Construct query.
-        let query = `SELECT * FROM ${UserToGuildService.TABLE_NAME} WHERE discord_id = ${discordId} AND guild_id = ${guildId}`;
+        let query = `SELECT * FROM ${UserToGuildService.TABLE_NAME} WHERE discord_id = ${sanitizedDiscordId} AND guild_id = ${sanitizedGuildId}`;
 
         // Do the query.
         return this.databaseService.query(query).then((res) => {
@@ -40,8 +40,12 @@ export class UserToGuildService {
     }
 
     private async createUserOnGuild (guildId: string, discordId: string): Promise<boolean> {
+        // Sanitize inputs.
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
+
         // Construct query.
-        let query = `INSERT INTO ${UserToGuildService.TABLE_NAME} (discord_id, guild_id) VALUES (${discordId}, ${guildId})`;
+        let query = `INSERT INTO ${UserToGuildService.TABLE_NAME} (discord_id, guild_id) VALUES (${sanitizedDiscordId}, ${sanitizedGuildId})`;
 
         return this.databaseService.query(query).then(() => {
             return true;

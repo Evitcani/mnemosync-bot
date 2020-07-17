@@ -39,9 +39,9 @@ let PartyToGuildService = PartyToGuildService_1 = class PartyToGuildService {
     getParties(guildId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
             // Construct query.
-            let query = "SELECT party_id FROM " + PartyToGuildService_1.TABLE_NAME + " WHERE guild_id = " + guildId;
+            let query = "SELECT party_id FROM " + PartyToGuildService_1.TABLE_NAME + " WHERE guild_id = " + sanitizedGuildId;
             return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
@@ -66,9 +66,9 @@ let PartyToGuildService = PartyToGuildService_1 = class PartyToGuildService {
     addParty(partyId, guildId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
             // Construct query.
-            let query = `INSERT INTO ${PartyToGuildService_1.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, ${guildId})`;
+            let query = `INSERT INTO ${PartyToGuildService_1.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, ${sanitizedGuildId})`;
             return this.databaseService.query(query).then(() => {
                 return this.getParties(guildId);
             }).catch((err) => {

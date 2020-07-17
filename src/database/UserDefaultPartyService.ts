@@ -22,13 +22,13 @@ export class UserDefaultPartyService {
      */
     public async getDefaultParty(guildId: string, discordId: string): Promise<number> {
         // Sanitize inputs.
-        guildId = StringUtility.escapeMySQLInput(guildId);
-        discordId = StringUtility.escapeMySQLInput(discordId);
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
 
         console.debug(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
 
         // Construct query.
-        let query = `SELECT party_id FROM ${UserDefaultPartyService.TABLE_NAME} WHERE guild_id = ${guildId} AND discord_id = ${discordId}`;
+        let query = `SELECT party_id FROM ${UserDefaultPartyService.TABLE_NAME} WHERE guild_id = ${sanitizedGuildId} AND discord_id = ${sanitizedDiscordId}`;
 
         return this.databaseService.query(query).then((res) => {
             if (res.rowCount <= 0) {
@@ -56,11 +56,11 @@ export class UserDefaultPartyService {
      */
     private async addDefaultParty(partyId: number, guildId: string, discordId: string): Promise<number> {
         // Sanitize inputs.
-        guildId = StringUtility.escapeMySQLInput(guildId);
-        discordId = StringUtility.escapeMySQLInput(discordId);
+        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
+        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
 
         // Construct query.
-        let query = `INSERT INTO ${UserDefaultPartyService.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${guildId}, ${discordId})`;
+        let query = `INSERT INTO ${UserDefaultPartyService.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${sanitizedGuildId}, ${sanitizedDiscordId})`;
 
         return this.databaseService.query(query).then(() => {
             return this.getDefaultParty(guildId, discordId);

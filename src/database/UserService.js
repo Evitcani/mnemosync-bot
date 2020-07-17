@@ -61,10 +61,10 @@ let UserService = UserService_1 = class UserService {
     addUser(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
-            discordName = StringUtility_1.StringUtility.escapeMySQLInput(discordName);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
+            const sanitizedDiscordName = StringUtility_1.StringUtility.escapeMySQLInput(discordName);
             // Construct query.
-            let query = `INSERT INTO ${UserService_1.TABLE_NAME} (discord_id, discord_name) VALUES (${discordId}, ${discordName})`;
+            let query = `INSERT INTO ${UserService_1.TABLE_NAME} (discord_id, discord_name) VALUES (${sanitizedDiscordId}, ${sanitizedDiscordName})`;
             return this.databaseService.query(query).then(() => {
                 return this.getUser(discordId, discordName);
             }).catch((err) => {

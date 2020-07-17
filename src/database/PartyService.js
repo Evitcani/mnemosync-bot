@@ -33,9 +33,9 @@ let PartyService = class PartyService {
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            name = StringUtility_1.StringUtility.escapeMySQLInput(name);
+            const sanitizedName = StringUtility_1.StringUtility.escapeMySQLInput(name);
             // Construct query.
-            return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
+            return this.databaseService.query("SELECT * FROM parties WHERE name = " + sanitizedName).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
                 }
