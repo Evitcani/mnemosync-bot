@@ -17,5 +17,6 @@ exports.TYPES = {
     UserToGuildService: Symbol("UserToGuildService"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
+    WhichCommandHandler: Symbol("WhichCommandHandler"),
 };
 //# sourceMappingURL=types.js.map

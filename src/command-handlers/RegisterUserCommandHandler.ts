@@ -26,17 +26,27 @@ export class RegisterUserCommandHandler extends AbstractCommandHandler {
     }
 
     async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
+        return this.registerUserToGuild(command, message).then((res) => {
+            if (!res) {
+                return message.channel.send("Could not register user.");
+            }
+            return message.channel.send("You now have access to all funds registered to this server!")
+        });
+    }
+
+    /**
+     * Registers a user to a guild.
+     *
+     * @param command The processed command.
+     * @param message The message used for this message.
+     */
+    async registerUserToGuild (command: Command, message: Message): Promise<boolean> {
         const user = message.author;
         const guild = message.guild.id;
 
         // First get the user.
         return this.userService.getUser(user.id, user.username).then(() => {
-            return this.userToGuildService.registerUserOnGuild(guild, user.id).then((res) => {
-                if (!res) {
-                    return message.channel.send("Could not register user.");
-                }
-                return message.channel.send("You now have access to all funds registered to this server!")
-            });
+            return this.userToGuildService.registerUserOnGuild(guild, user.id);
         })
     }
 

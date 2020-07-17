@@ -14,6 +14,7 @@ import {PartyToGuildService} from "./database/PartyToGuildService";
 import {UserDefaultPartyService} from "./database/UserDefaultPartyService";
 import {UserService} from "./database/UserService";
 import {UserToGuildService} from "./database/UserToGuildService";
+import {WhichCommandHandler} from "./command-handlers/WhichCommandHandler";
 
 let container = new Container();
 
@@ -35,6 +36,7 @@ container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildServi
 
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
 container.bind<RegisterUserCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterUserCommandHandler).inSingletonScope();
+container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 
 
 export default container;

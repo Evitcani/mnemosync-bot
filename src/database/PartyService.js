@@ -20,15 +20,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var PartyService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyService = void 0;
 const inversify_1 = require("inversify");
 const DatabaseService_1 = require("./DatabaseService");
 const types_1 = require("../types");
 const StringUtility_1 = require("../utilities/StringUtility");
-let PartyService = class PartyService {
+const PartyToGuildService_1 = require("./PartyToGuildService");
+let PartyService = PartyService_1 = class PartyService {
     constructor(databaseService) {
         this.databaseService = databaseService;
+    }
+    getPartiesInGuild(guildId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Sanitize inputs.
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const query = `SELECT t1.id, t2.name FROM ${PartyToGuildService_1.PartyToGuildService.TABLE_NAME} t1 INNER JOIN ${PartyService_1.TABLE_NAME} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
+            // Construct query.
+            return this.databaseService.query(query).then((res) => {
+                if (res.rowCount <= 0) {
+                    return null;
+                }
+                // @ts-ignore
+                const result = res.rows;
+                return result;
+            }).catch((err) => {
+                console.log("QUERY USED: " + query);
+                console.log("ERROR: Could not get parties for the given guild. ::: " + err.message);
+                console.log(err.stack);
+                return null;
+            });
+        });
     }
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,7 +73,8 @@ let PartyService = class PartyService {
         });
     }
 };
-PartyService = __decorate([
+PartyService.TABLE_NAME = "parties";
+PartyService = PartyService_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])

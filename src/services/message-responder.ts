@@ -4,16 +4,20 @@ import {TYPES} from "../types";
 import {Command} from "../models/generic/Command";
 import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
 import {RegisterUserCommandHandler} from "../command-handlers/RegisterUserCommandHandler";
+import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
 
 @injectable()
 export class MessageResponder {
     private partyFundCommandHandler: PartyFundCommandHandler;
     private registerUserCommandHandler: RegisterUserCommandHandler;
+    private whichCommandHandler: WhichCommandHandler;
 
     constructor(@inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
-                @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
+                @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler,
+                @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler) {
         this.registerUserCommandHandler = registerUserCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
+        this.whichCommandHandler = whichCommandHandler;
     }
 
     /**
@@ -36,6 +40,8 @@ export class MessageResponder {
                 return this.partyFundCommandHandler.handleCommand(command, message);
             case "register":
                 return this.registerUserCommandHandler.handleCommand(command, message);
+            case "which":
+                return this.whichCommandHandler.handleCommand(command, message);
         }
     }
 }
