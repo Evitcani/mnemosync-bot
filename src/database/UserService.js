@@ -35,9 +35,8 @@ let UserService = UserService_1 = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
             discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
-            discordName = StringUtility_1.StringUtility.escapeMySQLInput(discordName);
             // Construct query.
-            let query = `SELECT * FROM ${UserService_1.TABLE_NAME} WHERE discord_id = '${discordId}')`;
+            let query = `SELECT * FROM ${UserService_1.TABLE_NAME} WHERE discord_id = ${discordId}`;
             return this.databaseService.query(query).then(() => {
                 // @ts-ignore
                 const result = res.rows[0];
@@ -61,7 +60,7 @@ let UserService = UserService_1 = class UserService {
             discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             discordName = StringUtility_1.StringUtility.escapeMySQLInput(discordName);
             // Construct query.
-            let query = `INSERT INTO ${UserService_1.TABLE_NAME} (discord_id, discord_name) VALUES ('${discordId}', '${discordName}')`;
+            let query = `INSERT INTO ${UserService_1.TABLE_NAME} (discord_id, discord_name) VALUES (${discordId}, ${discordName})`;
             return this.databaseService.query(query).then(() => {
                 return this.getUser(discordId, discordName);
             }).catch((err) => {

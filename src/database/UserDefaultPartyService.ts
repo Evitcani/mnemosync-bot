@@ -28,7 +28,7 @@ export class UserDefaultPartyService {
         console.log(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
 
         // Construct query.
-        let query = `SELECT party_id FROM ${UserDefaultPartyService.TABLE_NAME} WHERE guild_id = '${guildId}' AND discord_id = '${discordId}'`;
+        let query = `SELECT party_id FROM ${UserDefaultPartyService.TABLE_NAME} WHERE guild_id = ${guildId} AND discord_id = ${discordId}`;
 
         return this.databaseService.query(query).then((res) => {
             console.log(res);
@@ -57,10 +57,8 @@ export class UserDefaultPartyService {
         guildId = StringUtility.escapeMySQLInput(guildId);
         discordId = StringUtility.escapeMySQLInput(discordId);
 
-
-
         // Construct query.
-        let query = `INSERT INTO ${UserDefaultPartyService.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, '${guildId}', '${discordId}')`;
+        let query = `INSERT INTO ${UserDefaultPartyService.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${guildId}, ${discordId})`;
 
         return this.databaseService.query(query).then(() => {
             return this.getDefaultParty(guildId, discordId);

@@ -44,7 +44,7 @@ let UserDefaultPartyService = UserDefaultPartyService_1 = class UserDefaultParty
             discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             console.log(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
             // Construct query.
-            let query = `SELECT party_id FROM ${UserDefaultPartyService_1.TABLE_NAME} WHERE guild_id = '${guildId}' AND discord_id = '${discordId}'`;
+            let query = `SELECT party_id FROM ${UserDefaultPartyService_1.TABLE_NAME} WHERE guild_id = ${guildId} AND discord_id = ${discordId}`;
             return this.databaseService.query(query).then((res) => {
                 console.log(res);
                 // @ts-ignore
@@ -71,7 +71,7 @@ let UserDefaultPartyService = UserDefaultPartyService_1 = class UserDefaultParty
             guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
             discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             // Construct query.
-            let query = `INSERT INTO ${UserDefaultPartyService_1.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, '${guildId}', '${discordId}')`;
+            let query = `INSERT INTO ${UserDefaultPartyService_1.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${guildId}, ${discordId})`;
             return this.databaseService.query(query).then(() => {
                 return this.getDefaultParty(guildId, discordId);
             }).catch((err) => {

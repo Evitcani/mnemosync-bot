@@ -41,7 +41,7 @@ let PartyToGuildService = PartyToGuildService_1 = class PartyToGuildService {
             // Sanitize inputs.
             guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
             // Construct query.
-            let query = "SELECT party_id FROM " + PartyToGuildService_1.TABLE_NAME + " WHERE guild_id = '" + guildId + "'";
+            let query = "SELECT party_id FROM " + PartyToGuildService_1.TABLE_NAME + " WHERE guild_id = " + guildId;
             return this.databaseService.query(query).then((res) => {
                 console.log(res);
                 // @ts-ignore
@@ -65,7 +65,7 @@ let PartyToGuildService = PartyToGuildService_1 = class PartyToGuildService {
             // Sanitize inputs.
             guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
             // Construct query.
-            let query = `INSERT INTO ${PartyToGuildService_1.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, '${guildId}')`;
+            let query = `INSERT INTO ${PartyToGuildService_1.TABLE_NAME} (party_id, guild_id) VALUES (${partyId}, ${guildId})`;
             return this.databaseService.query(query).then(() => {
                 return this.getParties(guildId);
             }).catch((err) => {

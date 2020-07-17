@@ -25,13 +25,17 @@ exports.PartyService = void 0;
 const inversify_1 = require("inversify");
 const DatabaseService_1 = require("./DatabaseService");
 const types_1 = require("../types");
+const StringUtility_1 = require("../utilities/StringUtility");
 let PartyService = class PartyService {
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.databaseService.query("SELECT * FROM parties WHERE name = '" + name + "'").then((res) => {
+            // Sanitize inputs.
+            name = StringUtility_1.StringUtility.escapeMySQLInput(name);
+            // Construct query.
+            return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;
