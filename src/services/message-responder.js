@@ -24,10 +24,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageResponder = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
+const PartyFundCommandHandler_1 = require("../command-handlers/PartyFundCommandHandler");
 const RegisterUserCommandHandler_1 = require("../command-handlers/RegisterUserCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(registerUserCommandHandler) {
+    constructor(partyFundCommandHandler, registerUserCommandHandler) {
         this.registerUserCommandHandler = registerUserCommandHandler;
+        this.partyFundCommandHandler = partyFundCommandHandler;
     }
     /**
      * Handles all incoming commands.
@@ -54,8 +56,10 @@ let MessageResponder = class MessageResponder {
 };
 MessageResponder = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __metadata("design:paramtypes", [RegisterUserCommandHandler_1.RegisterUserCommandHandler])
+    __param(0, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
+    __param(1, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
+    __metadata("design:paramtypes", [PartyFundCommandHandler_1.PartyFundCommandHandler,
+        RegisterUserCommandHandler_1.RegisterUserCommandHandler])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;
 //# sourceMappingURL=message-responder.js.map

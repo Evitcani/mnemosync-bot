@@ -1,7 +1,6 @@
 import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
-import {PartyService} from "../database/PartyService";
 import {Command} from "../models/generic/Command";
 import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
 import {RegisterUserCommandHandler} from "../command-handlers/RegisterUserCommandHandler";
@@ -11,8 +10,10 @@ export class MessageResponder {
     private partyFundCommandHandler: PartyFundCommandHandler;
     private registerUserCommandHandler: RegisterUserCommandHandler;
 
-    constructor(@inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
+    constructor(@inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
+        @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
         this.registerUserCommandHandler = registerUserCommandHandler;
+        this.partyFundCommandHandler = partyFundCommandHandler;
     }
 
     /**
