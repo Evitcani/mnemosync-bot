@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var Bot_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bot = void 0;
 const discord_js_1 = require("discord.js");
@@ -18,7 +19,7 @@ const inversify_1 = require("inversify");
 const types_1 = require("./types");
 const message_responder_1 = require("./services/message-responder");
 const CommandUtility_1 = require("./utilities/CommandUtility");
-let Bot = class Bot {
+let Bot = Bot_1 = class Bot {
     constructor(client, token, messageResponder) {
         this.client = client;
         this.token = token;
@@ -27,7 +28,7 @@ let Bot = class Bot {
     listen() {
         this.client.on('message', (message) => {
             const contents = message.content;
-            if (message.author.bot || contents.substr(0, 1) !== "$") {
+            if (message.author.bot || contents.substr(0, Bot_1.PREFIX.length) !== Bot_1.PREFIX) {
                 return;
             }
             // Get the message sent.
@@ -41,7 +42,8 @@ let Bot = class Bot {
         return this.client.login(this.token);
     }
 };
-Bot = __decorate([
+Bot.PREFIX = "$";
+Bot = Bot_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.Client)),
     __param(1, inversify_1.inject(types_1.TYPES.Token)),
