@@ -41,7 +41,9 @@ let RegisterUserCommandHandler = class RegisterUserCommandHandler extends Abstra
             // First check that the user already exists.
             return this.userDefaultPartyService.getDefaultParty(guild, user.id).then((res) => {
                 console.log("Number is: " + res);
-                return message.channel.send("Found result for user!");
+                if (res != null) {
+                    return message.channel.send("Found result for user!");
+                }
             });
         });
     }

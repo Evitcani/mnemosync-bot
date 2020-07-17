@@ -38,6 +38,7 @@ export class UserDefaultPartyService {
 
             return result;
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;

@@ -51,6 +51,7 @@ let UserDefaultPartyService = UserDefaultPartyService_1 = class UserDefaultParty
                 const result = res.rows[0];
                 return result;
             }).catch((err) => {
+                console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;
