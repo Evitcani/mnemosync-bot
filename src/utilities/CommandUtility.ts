@@ -1,5 +1,6 @@
 import {Command} from "../models/generic/Command";
 import {Subcommand} from "../models/generic/Subcommand";
+import {Bot} from "../bot";
 
 /**
  * A utility for processing and understanding commands.
@@ -15,7 +16,7 @@ export class CommandUtility {
      */
     static processCommands (message: string): Command {
         // Split the args.
-        const args = message.substr(1).split("--");
+        const args = message.substr(Bot.PREFIX.length).split("--");
 
         // Get the base command.
         const baseCommand = args.shift();

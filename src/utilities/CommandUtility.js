@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandUtility = void 0;
 const Command_1 = require("../models/generic/Command");
 const Subcommand_1 = require("../models/generic/Subcommand");
+const bot_1 = require("../bot");
 /**
  * A utility for processing and understanding commands.
  */
@@ -14,7 +15,7 @@ class CommandUtility {
      */
     static processCommands(message) {
         // Split the args.
-        const args = message.substr(1).split("--");
+        const args = message.substr(bot_1.Bot.PREFIX.length).split("--");
         // Get the base command.
         const baseCommand = args.shift();
         const command = this.getSubcommand(baseCommand);

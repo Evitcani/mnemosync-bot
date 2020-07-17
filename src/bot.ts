@@ -6,6 +6,7 @@ import {CommandUtility} from "./utilities/CommandUtility";
 
 @injectable()
 export class Bot {
+    public static PREFIX: string = "$";
     private client: Client;
     private readonly token: string;
     private messageResponder: MessageResponder;
@@ -22,7 +23,7 @@ export class Bot {
     public listen(): Promise<string> {
         this.client.on('message', (message: Message) => {
             const contents = message.content;
-            if (message.author.bot || contents.substr(0,1) !== "$") {
+            if (message.author.bot || contents.substr(0, Bot.PREFIX.length) !== Bot.PREFIX) {
                 return;
             }
 
