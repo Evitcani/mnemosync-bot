@@ -27,13 +27,16 @@ export class PartyToGuildService {
         let query = "SELECT party_id FROM " + PartyToGuildService.TABLE_NAME + " WHERE guild_id = " + guildId;
 
         return this.databaseService.query(query).then((res) => {
-            console.log(res);
+            if (res.rowCount <= 0) {
+                return null;
+            }
 
             // @ts-ignore
             const result: number[] = res.rows;
 
             return result;
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;
@@ -56,6 +59,7 @@ export class PartyToGuildService {
         return this.databaseService.query(query).then(() => {
             return this.getParties(guildId);
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;

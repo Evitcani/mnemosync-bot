@@ -4,6 +4,8 @@ import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {UserDefaultPartyService} from "../database/UserDefaultPartyService";
+import {UserService} from "../database/UserService";
+import {UserToGuildService} from "../database/UserToGuildService";
 
 /**
  * Command to register a user as having access to the funds created on a specific server.
@@ -11,26 +13,31 @@ import {UserDefaultPartyService} from "../database/UserDefaultPartyService";
 @injectable()
 export class RegisterUserCommandHandler extends AbstractCommandHandler {
     private userDefaultPartyService: UserDefaultPartyService;
+    private userService: UserService;
+    private userToGuildService: UserToGuildService;
 
-    constructor(@inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService) {
+    constructor(@inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
+                @inject(TYPES.UserService) userService: UserService,
+                @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService) {
         super();
         this.userDefaultPartyService = userDefaultPartyService;
+        this.userService = userService;
+        this.userToGuildService = userToGuildService;
     }
 
     async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
         const user = message.author;
         const guild = message.guild.id;
 
-        // First check that the user already exists.
-        return this.userDefaultPartyService.getDefaultParty(guild, user.id).then((res) => {
-            console.log("Number is: " + res);
-
-            if (res != null) {
-                return message.channel.send("Found result for user!");
-            }
-
-
-        });
+        // First get the user.
+        return this.userService.getUser(user.id, user.username).then(() => {
+            return this.userToGuildService.registerUserOnGuild(guild, user.id).then((res) => {
+                if (!res) {
+                    return message.channel.send("Could not register user.");
+                }
+                return message.channel.send("You now have access to all funds registered to this server!")
+            });
+        })
     }
 
 }

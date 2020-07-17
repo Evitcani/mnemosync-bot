@@ -15,19 +15,24 @@ export class UserService {
         this.databaseService = databaseService;
     }
 
-    private async getUser(discordId: string, discordName: string): Promise<User> {
+    public async getUser(discordId: string, discordName: string): Promise<User> {
         // Sanitize inputs.
-        discordId = StringUtility.escapeMySQLInput(discordId);
+        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
 
         // Construct query.
-        let query = `SELECT * FROM ${UserService.TABLE_NAME} WHERE discord_id = ${discordId}`;
+        let query = `SELECT * FROM ${UserService.TABLE_NAME} WHERE discord_id = ${sanitizedDiscordId}`;
 
-        return this.databaseService.query(query).then(() => {
+        return this.databaseService.query(query).then((res) => {
+            if (res.rowCount <= 0) {
+                return this.addUser(discordId, discordName);
+            }
+
             // @ts-ignore
             const result: User = res.rows[0];
 
             return result;
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;
@@ -51,6 +56,7 @@ export class UserService {
         return this.databaseService.query(query).then(() => {
             return this.getUser(discordId, discordName);
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;
