@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FundRelatedClientResponses = void 0;
 const StringUtility_1 = require("../../utilities/StringUtility");
-const discord_js_1 = require("discord.js");
+const BasicEmbed_1 = require("../BasicEmbed");
 /**
  * A class for formatting responses related to the `$FUND` and `$BANK` commands.
  */
@@ -26,20 +26,11 @@ class FundRelatedClientResponses {
     static getTwoInputEmbed(title, inputTitle1, currentMoney, inputTitle2, amtToWithdraw, description) {
         let input1 = StringUtility_1.StringUtility.numberWithCommas(Math.abs(currentMoney));
         let input2 = StringUtility_1.StringUtility.numberWithCommas(Math.abs(amtToWithdraw));
-        return this.getBasicEmbed()
+        return BasicEmbed_1.BasicEmbed.get()
             .setTitle(title)
             .addField(inputTitle1, `${input1} gp`, true)
             .addField(inputTitle2, `${input2} gp`, true)
             .addField("Description", description, false);
-    }
-    /**
-     * Gets the basic embed with some fields.
-     */
-    static getBasicEmbed() {
-        return new discord_js_1.MessageEmbed()
-            .setColor('#0099ff')
-            .setFooter('Created by @Evit_cani on Twitter.')
-            .setTimestamp();
     }
 }
 exports.FundRelatedClientResponses = FundRelatedClientResponses;

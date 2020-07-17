@@ -4,6 +4,7 @@ import {TYPES} from "../types";
 import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {Command} from "../models/generic/Command";
 import {Message} from "discord.js";
+import {WhichRelatedClientResponses} from "../documentation/client-responses/WhichRelatedClientResponses";
 
 /**
  * Handles questions about the state of the world.
@@ -21,11 +22,7 @@ export class WhichCommandHandler extends AbstractCommandHandler {
 
 
         return this.partyService.getPartiesInGuild(message.guild.id).then((res) => {
-            if (res == null) {
-                return message.channel.send("No parties are registered to this server.");
-            }
-
-            return message.channel.send("There are " + res.length + " parties registered to this server.");
+            return message.channel.send(WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
         });
     }
 }

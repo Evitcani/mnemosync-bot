@@ -1,5 +1,6 @@
 import {StringUtility} from "../../utilities/StringUtility";
 import {MessageEmbed} from "discord.js";
+import {BasicEmbed} from "../BasicEmbed";
 
 /**
  * A class for formatting responses related to the `$FUND` and `$BANK` commands.
@@ -40,20 +41,10 @@ export class FundRelatedClientResponses {
         let input1 = StringUtility.numberWithCommas(Math.abs(currentMoney));
         let input2 = StringUtility.numberWithCommas(Math.abs(amtToWithdraw));
 
-        return this.getBasicEmbed()
+        return BasicEmbed.get()
             .setTitle(title)
             .addField(inputTitle1, `${input1} gp`, true)
             .addField(inputTitle2, `${input2} gp`, true)
             .addField("Description", description, false);
-    }
-
-    /**
-     * Gets the basic embed with some fields.
-     */
-    private static getBasicEmbed() : MessageEmbed {
-        return new MessageEmbed()
-            .setColor('#0099ff')
-            .setFooter('Created by @Evit_cani on Twitter.')
-            .setTimestamp();
     }
 }
