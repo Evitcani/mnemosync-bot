@@ -1,11 +1,12 @@
 import {DatabaseService} from "./DatabaseService";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {PartyFund} from "../models/database/PartyFund";
 
 /**
  * Service for managing calls to the database related to party funds.
  */
+@injectable()
 export class PartyFundService {
     /** Connection to the database object. */
     private databaseService: DatabaseService;
