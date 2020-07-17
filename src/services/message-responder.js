@@ -48,8 +48,6 @@ let MessageResponder = class MessageResponder {
                     return this.partyFundCommandHandler.handleCommand(command, message);
                 case "register":
                     return this.registerUserCommandHandler.handleCommand(command, message);
-                default:
-                    return message.channel.send("Unknown command. Try typing `$help` to see all commands.");
             }
         });
     }
