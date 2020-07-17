@@ -16,6 +16,7 @@ const PartyToGuildService_1 = require("./database/PartyToGuildService");
 const UserDefaultPartyService_1 = require("./database/UserDefaultPartyService");
 const UserService_1 = require("./database/UserService");
 const UserToGuildService_1 = require("./database/UserToGuildService");
+const WhichCommandHandler_1 = require("./command-handlers/WhichCommandHandler");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -32,5 +33,6 @@ container.bind(types_1.TYPES.UserService).to(UserService_1.UserService).inSingle
 container.bind(types_1.TYPES.UserToGuildService).to(UserToGuildService_1.UserToGuildService).inSingletonScope();
 container.bind(types_1.TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler_1.PartyFundCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterUserCommandHandler_1.RegisterUserCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
 exports.default = container;
 //# sourceMappingURL=inversify.config.js.map

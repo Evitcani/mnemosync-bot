@@ -6,7 +6,7 @@ import {StringUtility} from "../utilities/StringUtility";
 
 @injectable()
 export class PartyToGuildService {
-    private static TABLE_NAME = "party_to_guild";
+    public static TABLE_NAME = "party_to_guild";
     /** Connection to the database object. */
     private databaseService: DatabaseService;
 

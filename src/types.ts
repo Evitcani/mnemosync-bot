@@ -16,4 +16,5 @@ export const TYPES = {
 
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
+    WhichCommandHandler: Symbol("WhichCommandHandler"),
 };
