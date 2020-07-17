@@ -17,10 +17,10 @@ export class PartyService {
 
     async getParty (name: string): Promise<Party>{
         // Sanitize inputs.
-        name = StringUtility.escapeMySQLInput(name);
+        const sanitizedName = StringUtility.escapeMySQLInput(name);
 
         // Construct query.
-        return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
+        return this.databaseService.query("SELECT * FROM parties WHERE name = " + sanitizedName).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
                 }

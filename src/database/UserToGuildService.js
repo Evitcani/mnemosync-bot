@@ -34,10 +34,10 @@ let UserToGuildService = UserToGuildService_1 = class UserToGuildService {
     registerUserOnGuild(guildId, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
-            discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             // Construct query.
-            let query = `SELECT * FROM ${UserToGuildService_1.TABLE_NAME} WHERE discord_id = ${discordId} AND guild_id = ${guildId}`;
+            let query = `SELECT * FROM ${UserToGuildService_1.TABLE_NAME} WHERE discord_id = ${sanitizedDiscordId} AND guild_id = ${sanitizedGuildId}`;
             // Do the query.
             return this.databaseService.query(query).then((res) => {
                 // Exists! We're done here.
@@ -56,8 +56,11 @@ let UserToGuildService = UserToGuildService_1 = class UserToGuildService {
     }
     createUserOnGuild(guildId, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Sanitize inputs.
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             // Construct query.
-            let query = `INSERT INTO ${UserToGuildService_1.TABLE_NAME} (discord_id, guild_id) VALUES (${discordId}, ${guildId})`;
+            let query = `INSERT INTO ${UserToGuildService_1.TABLE_NAME} (discord_id, guild_id) VALUES (${sanitizedDiscordId}, ${sanitizedGuildId})`;
             return this.databaseService.query(query).then(() => {
                 return true;
             }).catch((err) => {

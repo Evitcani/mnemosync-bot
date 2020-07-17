@@ -40,11 +40,11 @@ let UserDefaultPartyService = UserDefaultPartyService_1 = class UserDefaultParty
     getDefaultParty(guildId, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
-            discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             console.debug(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
             // Construct query.
-            let query = `SELECT party_id FROM ${UserDefaultPartyService_1.TABLE_NAME} WHERE guild_id = ${guildId} AND discord_id = ${discordId}`;
+            let query = `SELECT party_id FROM ${UserDefaultPartyService_1.TABLE_NAME} WHERE guild_id = ${sanitizedGuildId} AND discord_id = ${sanitizedDiscordId}`;
             return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
@@ -70,10 +70,10 @@ let UserDefaultPartyService = UserDefaultPartyService_1 = class UserDefaultParty
     addDefaultParty(partyId, guildId, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            guildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
-            discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
+            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             // Construct query.
-            let query = `INSERT INTO ${UserDefaultPartyService_1.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${guildId}, ${discordId})`;
+            let query = `INSERT INTO ${UserDefaultPartyService_1.TABLE_NAME} (party_id, guild_id, discord_id) VALUES (${partyId}, ${sanitizedGuildId}, ${sanitizedDiscordId})`;
             return this.databaseService.query(query).then(() => {
                 return this.getDefaultParty(guildId, discordId);
             }).catch((err) => {

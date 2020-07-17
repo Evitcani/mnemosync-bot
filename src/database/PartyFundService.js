@@ -64,7 +64,7 @@ let PartyFundService = class PartyFundService {
             }
             query += " WHERE id = " + id;
             console.log("Updating party funds with query: " + query);
-            return this.databaseService.query(query).then((res) => {
+            return this.databaseService.query(query).then(() => {
                 return this.getFundById(id);
             }).catch((err) => {
                 console.log("ERROR: Could not update the party funds! ::: " + err.message);
@@ -82,9 +82,9 @@ let PartyFundService = class PartyFundService {
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            type = StringUtility_1.StringUtility.escapeMySQLInput(type);
+            const sanitizedType = StringUtility_1.StringUtility.escapeMySQLInput(type);
             // Construct query.
-            const query = "SELECT * FROM party_funds WHERE type = " + type + " AND party_id = " + partyID;
+            const query = "SELECT * FROM party_funds WHERE type = " + sanitizedType + " AND party_id = " + partyID;
             return this.doGetFund(query);
         });
     }
