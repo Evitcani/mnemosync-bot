@@ -4,13 +4,15 @@ import {TYPES} from "../types";
 import {PartyService} from "../database/PartyService";
 import {Command} from "../models/generic/Command";
 import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
+import {RegisterUserCommandHandler} from "../command-handlers/RegisterUserCommandHandler";
 
 @injectable()
 export class MessageResponder {
     private partyFundCommandHandler: PartyFundCommandHandler;
+    private registerUserCommandHandler: RegisterUserCommandHandler;
 
-    constructor(@inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler) {
-        this.partyFundCommandHandler = partyFundCommandHandler;
+    constructor(@inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler) {
+        this.registerUserCommandHandler = registerUserCommandHandler;
     }
 
     /**
@@ -31,6 +33,8 @@ export class MessageResponder {
                 return this.partyFundCommandHandler.handleCommand(command, message);
             case "fund":
                 return this.partyFundCommandHandler.handleCommand(command, message);
+            case "register":
+                return this.registerUserCommandHandler.handleCommand(command, message);
             default:
                 return message.channel.send("Unknown command. Try typing `$help` to see all commands.");
         }

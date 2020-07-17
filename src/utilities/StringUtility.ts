@@ -1,3 +1,5 @@
+import {SqlString} from 'sqlstring';
+
 export class StringUtility {
     private static pattern = /(-?\d+)(\d{3})/;
 
@@ -11,5 +13,14 @@ export class StringUtility {
         while (this.pattern.test(str))
             str = str.replace(this.pattern, "$1,$2");
         return str;
+    }
+
+    /**
+     * Escapes the given input to be placed in a database.
+     *
+     * @param input The input to escape.
+     */
+    static escapeMySQLInput(input: string): string {
+        return SqlString.escape(input);
     }
 }

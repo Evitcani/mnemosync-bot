@@ -21,43 +21,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessageResponder = void 0;
+exports.RegisterUserCommandHandler = void 0;
+const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const RegisterUserCommandHandler_1 = require("../command-handlers/RegisterUserCommandHandler");
-let MessageResponder = class MessageResponder {
-    constructor(registerUserCommandHandler) {
-        this.registerUserCommandHandler = registerUserCommandHandler;
+const UserDefaultPartyService_1 = require("../database/UserDefaultPartyService");
+/**
+ * Command to register a user as having access to the funds created on a specific server.
+ */
+let RegisterUserCommandHandler = class RegisterUserCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+    constructor(userDefaultPartyService) {
+        super();
+        this.userDefaultPartyService = userDefaultPartyService;
     }
-    /**
-     * Handles all incoming commands.
-     *
-     * @param command The processed commands to look at.
-     * @param message The message object doing the command.
-     */
-    handle(command, message) {
+    handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Get the base command.
-            const cmd = command.getName();
-            console.log("Command: " + cmd);
-            // Determine which handler to call.
-            switch (cmd) {
-                case "bank":
-                    return this.partyFundCommandHandler.handleCommand(command, message);
-                case "fund":
-                    return this.partyFundCommandHandler.handleCommand(command, message);
-                case "register":
-                    return this.registerUserCommandHandler.handleCommand(command, message);
-                default:
-                    return message.channel.send("Unknown command. Try typing `$help` to see all commands.");
-            }
+            const user = message.author;
+            const guild = message.guild.id;
+            // First check that the user already exists.
+            return this.userDefaultPartyService.getDefaultParty(guild, user.id).then((res) => {
+                console.log("Number is: " + res);
+                return message.channel.send("Found result for user!");
+            });
         });
     }
 };
-MessageResponder = __decorate([
+RegisterUserCommandHandler = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __metadata("design:paramtypes", [RegisterUserCommandHandler_1.RegisterUserCommandHandler])
-], MessageResponder);
-exports.MessageResponder = MessageResponder;
-//# sourceMappingURL=message-responder.js.map
+    __param(0, inversify_1.inject(types_1.TYPES.UserDefaultPartyService)),
+    __metadata("design:paramtypes", [UserDefaultPartyService_1.UserDefaultPartyService])
+], RegisterUserCommandHandler);
+exports.RegisterUserCommandHandler = RegisterUserCommandHandler;
+//# sourceMappingURL=RegisterUserCommandHandler.js.map
