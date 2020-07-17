@@ -25,6 +25,7 @@ exports.PartyFundService = void 0;
 const DatabaseService_1 = require("./DatabaseService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
+const StringUtility_1 = require("../utilities/StringUtility");
 /**
  * Service for managing calls to the database related to party funds.
  */
@@ -80,7 +81,10 @@ let PartyFundService = class PartyFundService {
     }
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
+            // Sanitize inputs.
+            type = StringUtility_1.StringUtility.escapeMySQLInput(type);
+            // Construct query.
+            const query = "SELECT * FROM party_funds WHERE type = " + type + " AND party_id = " + partyID;
             return this.doGetFund(query);
         });
     }

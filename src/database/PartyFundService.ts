@@ -2,6 +2,7 @@ import {DatabaseService} from "./DatabaseService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {PartyFund} from "../models/database/PartyFund";
+import {StringUtility} from "../utilities/StringUtility";
 
 /**
  * Service for managing calls to the database related to party funds.
@@ -68,7 +69,11 @@ export class PartyFundService {
     }
 
     async getFund (partyID: number, type: string): Promise<PartyFund>{
-        const query = "SELECT * FROM party_funds WHERE type = '" + type + "' AND party_id = " + partyID;
+        // Sanitize inputs.
+        type = StringUtility.escapeMySQLInput(type);
+
+        // Construct query.
+        const query = "SELECT * FROM party_funds WHERE type = " + type + " AND party_id = " + partyID;
         return this.doGetFund(query);
     }
 

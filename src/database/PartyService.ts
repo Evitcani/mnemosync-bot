@@ -3,6 +3,7 @@ import {DatabaseService} from "./DatabaseService";
 import {TYPES} from "../types";
 import {Party} from "../models/database/Party";
 import {PartyFund} from "../models/database/PartyFund";
+import {StringUtility} from "../utilities/StringUtility";
 
 @injectable()
 export class PartyService {
@@ -15,7 +16,11 @@ export class PartyService {
 
 
     async getParty (name: string): Promise<Party>{
-        return this.databaseService.query("SELECT * FROM parties WHERE name = '" + name + "'").then((res) => {
+        // Sanitize inputs.
+        name = StringUtility.escapeMySQLInput(name);
+
+        // Construct query.
+        return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
                 // @ts-ignore
                 const result: Party = res.rows[0];
 

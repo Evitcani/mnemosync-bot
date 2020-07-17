@@ -18,10 +18,9 @@ export class UserService {
     private async getUser(discordId: string, discordName: string): Promise<User> {
         // Sanitize inputs.
         discordId = StringUtility.escapeMySQLInput(discordId);
-        discordName = StringUtility.escapeMySQLInput(discordName);
 
         // Construct query.
-        let query = `SELECT * FROM ${UserService.TABLE_NAME} WHERE discord_id = '${discordId}')`;
+        let query = `SELECT * FROM ${UserService.TABLE_NAME} WHERE discord_id = ${discordId}`;
 
         return this.databaseService.query(query).then(() => {
             // @ts-ignore
@@ -47,7 +46,7 @@ export class UserService {
         discordName = StringUtility.escapeMySQLInput(discordName);
 
         // Construct query.
-        let query = `INSERT INTO ${UserService.TABLE_NAME} (discord_id, discord_name) VALUES ('${discordId}', '${discordName}')`;
+        let query = `INSERT INTO ${UserService.TABLE_NAME} (discord_id, discord_name) VALUES (${discordId}, ${discordName})`;
 
         return this.databaseService.query(query).then(() => {
             return this.getUser(discordId, discordName);
