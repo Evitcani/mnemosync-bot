@@ -26,24 +26,30 @@ const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const UserDefaultPartyService_1 = require("../database/UserDefaultPartyService");
+const UserService_1 = require("../database/UserService");
+const UserToGuildService_1 = require("../database/UserToGuildService");
 /**
  * Command to register a user as having access to the funds created on a specific server.
  */
 let RegisterUserCommandHandler = class RegisterUserCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(userDefaultPartyService) {
+    constructor(userDefaultPartyService, userService, userToGuildService) {
         super();
         this.userDefaultPartyService = userDefaultPartyService;
+        this.userService = userService;
+        this.userToGuildService = userToGuildService;
     }
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = message.author;
             const guild = message.guild.id;
-            // First check that the user already exists.
-            return this.userDefaultPartyService.getDefaultParty(guild, user.id).then((res) => {
-                console.log("Number is: " + res);
-                if (res != null) {
-                    return message.channel.send("Found result for user!");
-                }
+            // First get the user.
+            return this.userService.getUser(user.id, user.username).then(() => {
+                return this.userToGuildService.registerUserOnGuild(guild, user.id).then((res) => {
+                    if (!res) {
+                        return message.channel.send("Could not register user.");
+                    }
+                    return message.channel.send("You now have access to all funds registered to this server!");
+                });
             });
         });
     }
@@ -51,7 +57,11 @@ let RegisterUserCommandHandler = class RegisterUserCommandHandler extends Abstra
 RegisterUserCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.UserDefaultPartyService)),
-    __metadata("design:paramtypes", [UserDefaultPartyService_1.UserDefaultPartyService])
+    __param(1, inversify_1.inject(types_1.TYPES.UserService)),
+    __param(2, inversify_1.inject(types_1.TYPES.UserToGuildService)),
+    __metadata("design:paramtypes", [UserDefaultPartyService_1.UserDefaultPartyService,
+        UserService_1.UserService,
+        UserToGuildService_1.UserToGuildService])
 ], RegisterUserCommandHandler);
 exports.RegisterUserCommandHandler = RegisterUserCommandHandler;
 //# sourceMappingURL=RegisterUserCommandHandler.js.map

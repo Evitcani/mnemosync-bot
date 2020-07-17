@@ -21,6 +21,10 @@ export class PartyService {
 
         // Construct query.
         return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
+                if (res.rowCount <= 0) {
+                    return null;
+                }
+
                 // @ts-ignore
                 const result: Party = res.rows[0];
 

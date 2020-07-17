@@ -1,6 +1,7 @@
 import {DatabaseService} from "./DatabaseService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
+import {StringUtility} from "../utilities/StringUtility";
 
 @injectable()
 export class UserToGuildService {
@@ -11,5 +12,44 @@ export class UserToGuildService {
 
     constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService) {
         this.databaseService = databaseService;
+    }
+
+    public async registerUserOnGuild (guildId: string, discordId: string): Promise<boolean> {
+        // Sanitize inputs.
+        guildId = StringUtility.escapeMySQLInput(guildId);
+        discordId = StringUtility.escapeMySQLInput(discordId);
+
+        // Construct query.
+        let query = `SELECT * FROM ${UserToGuildService.TABLE_NAME} WHERE discord_id = ${discordId} AND guild_id = ${guildId}`;
+
+        // Do the query.
+        return this.databaseService.query(query).then((res) => {
+            // Exists! We're done here.
+            if (res.rowCount > 0) {
+                return true;
+            }
+
+            // If does not exist, create the row.
+            return this.createUserOnGuild(guildId, discordId);
+        }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
+            console.log("ERROR: Could not check if user already exists in guild. ::: " + err.message);
+            console.log(err.stack);
+            return false;
+        });
+    }
+
+    private async createUserOnGuild (guildId: string, discordId: string): Promise<boolean> {
+        // Construct query.
+        let query = `INSERT INTO ${UserToGuildService.TABLE_NAME} (discord_id, guild_id) VALUES (${discordId}, ${guildId})`;
+
+        return this.databaseService.query(query).then(() => {
+            return true;
+        }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
+            console.log("ERROR: Could not register new user for the guild. ::: " + err.message);
+            console.log(err.stack);
+            return null;
+        });
     }
 }

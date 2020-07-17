@@ -34,14 +34,18 @@ let UserService = UserService_1 = class UserService {
     getUser(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
-            discordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
+            const sanitizedDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(discordId);
             // Construct query.
-            let query = `SELECT * FROM ${UserService_1.TABLE_NAME} WHERE discord_id = ${discordId}`;
-            return this.databaseService.query(query).then(() => {
+            let query = `SELECT * FROM ${UserService_1.TABLE_NAME} WHERE discord_id = ${sanitizedDiscordId}`;
+            return this.databaseService.query(query).then((res) => {
+                if (res.rowCount <= 0) {
+                    return this.addUser(discordId, discordName);
+                }
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;
             }).catch((err) => {
+                console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;
@@ -64,6 +68,7 @@ let UserService = UserService_1 = class UserService {
             return this.databaseService.query(query).then(() => {
                 return this.getUser(discordId, discordName);
             }).catch((err) => {
+                console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;

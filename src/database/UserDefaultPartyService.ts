@@ -25,13 +25,15 @@ export class UserDefaultPartyService {
         guildId = StringUtility.escapeMySQLInput(guildId);
         discordId = StringUtility.escapeMySQLInput(discordId);
 
-        console.log(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
+        console.debug(`Searching for guild (ID: ${guildId}) for user (ID: ${discordId})...`);
 
         // Construct query.
         let query = `SELECT party_id FROM ${UserDefaultPartyService.TABLE_NAME} WHERE guild_id = ${guildId} AND discord_id = ${discordId}`;
 
         return this.databaseService.query(query).then((res) => {
-            console.log(res);
+            if (res.rowCount <= 0) {
+                return null;
+            }
 
             // @ts-ignore
             const result: number = res.rows[0];
@@ -63,6 +65,7 @@ export class UserDefaultPartyService {
         return this.databaseService.query(query).then(() => {
             return this.getDefaultParty(guildId, discordId);
         }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;

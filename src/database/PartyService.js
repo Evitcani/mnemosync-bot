@@ -36,6 +36,9 @@ let PartyService = class PartyService {
             name = StringUtility_1.StringUtility.escapeMySQLInput(name);
             // Construct query.
             return this.databaseService.query("SELECT * FROM parties WHERE name = " + name).then((res) => {
+                if (res.rowCount <= 0) {
+                    return null;
+                }
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;

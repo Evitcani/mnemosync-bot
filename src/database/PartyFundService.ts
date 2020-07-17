@@ -79,6 +79,10 @@ export class PartyFundService {
 
     private async doGetFund (query: string) : Promise<PartyFund> {
         return this.databaseService.query(query).then((res) => {
+            if (res.rowCount <= 0) {
+                return null;
+            }
+
             // @ts-ignore
             const result: PartyFund = res.rows[0];
 

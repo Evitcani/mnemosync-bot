@@ -91,6 +91,9 @@ let PartyFundService = class PartyFundService {
     doGetFund(query) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
+                if (res.rowCount <= 0) {
+                    return null;
+                }
                 // @ts-ignore
                 const result = res.rows[0];
                 return result;
