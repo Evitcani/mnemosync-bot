@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StringUtility = void 0;
-const sqlstring_1 = require("sqlstring");
+const SqlString = require('sqlstring');
 class StringUtility {
     /**
      * A utility to format numbers with commas. Works extra quickly.
@@ -21,7 +21,7 @@ class StringUtility {
      */
     static escapeMySQLInput(input) {
         console.log("Escaping characters...");
-        return sqlstring_1.SqlString.escape(input);
+        return SqlString.escape(input);
     }
 }
 exports.StringUtility = StringUtility;
