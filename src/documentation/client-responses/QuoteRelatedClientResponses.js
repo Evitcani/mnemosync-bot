@@ -12,19 +12,20 @@ class QuoteRelatedClientResponses {
      * @constructor
      */
     static QUOTED_MESSAGE(message) {
-        const presence = message.author.presence.member;
-        const msg = BasicEmbed_1.BasicEmbed.get()
-            .setAuthor(presence.displayName, message.author.avatarURL(), message.url)
-            .setDescription(message.content)
-            .setTimestamp(message.createdAt)
-            .setFooter("A quote from the past...")
-            .setColor(presence.displayHexColor);
-        // Set the image if there is one.
-        const attachments = message.attachments;
-        if (attachments != null && attachments.size > 0) {
-            msg.setImage(attachments.first().url);
-        }
-        return msg;
+        return message.guild.member(message.author).fetch().then((member) => {
+            const msg = BasicEmbed_1.BasicEmbed.get()
+                .setAuthor(member.displayName, message.author.avatarURL(), message.url)
+                .setDescription(message.content)
+                .setTimestamp(message.createdAt)
+                .setFooter("A quote from the past...")
+                .setColor(member.displayHexColor);
+            // Set the image if there is one.
+            const attachments = message.attachments;
+            if (attachments != null && attachments.size > 0) {
+                msg.setImage(attachments.first().url);
+            }
+            return msg;
+        });
     }
 }
 exports.QuoteRelatedClientResponses = QuoteRelatedClientResponses;

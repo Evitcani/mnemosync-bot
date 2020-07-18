@@ -10,22 +10,22 @@ export class QuoteRelatedClientResponses {
      * @param message
      * @constructor
      */
-    static QUOTED_MESSAGE (message: Message): MessageEmbed {
-        const presence = message.author.presence.member;
+    static QUOTED_MESSAGE (message: Message): Promise<MessageEmbed> {
+        return message.guild.member(message.author).fetch().then((member) => {
+            const msg = BasicEmbed.get()
+                .setAuthor(member.displayName, message.author.avatarURL(), message.url)
+                .setDescription(message.content)
+                .setTimestamp(message.createdAt)
+                .setFooter("A quote from the past...")
+                .setColor(member.displayHexColor);
 
-        const msg = BasicEmbed.get()
-            .setAuthor(presence.displayName, message.author.avatarURL(), message.url)
-            .setDescription(message.content)
-            .setTimestamp(message.createdAt)
-            .setFooter("A quote from the past...")
-            .setColor(presence.displayHexColor);
+            // Set the image if there is one.
+            const attachments = message.attachments;
+            if (attachments != null && attachments.size > 0) {
+                msg.setImage(attachments.first().url);
+            }
 
-        // Set the image if there is one.
-        const attachments = message.attachments;
-        if (attachments != null && attachments.size > 0) {
-            msg.setImage(attachments.first().url);
-        }
-
-        return msg;
+            return msg;
+        });
     }
 }

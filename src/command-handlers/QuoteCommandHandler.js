@@ -64,7 +64,9 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
                     return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
                         "`" + bot_1.Bot.PREFIX + "quote here`.");
                 }
-                return message.channel.send(QuoteRelatedClientResponses_1.QuoteRelatedClientResponses.QUOTED_MESSAGE(msg));
+                return QuoteRelatedClientResponses_1.QuoteRelatedClientResponses.QUOTED_MESSAGE(msg).then((msg) => {
+                    return message.channel.send(msg);
+                });
             });
         });
     }
