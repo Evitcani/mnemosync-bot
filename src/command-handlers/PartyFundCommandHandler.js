@@ -29,6 +29,7 @@ const MoneyUtility_1 = require("../utilities/MoneyUtility");
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const FundRelatedClientResponses_1 = require("../documentation/client-responses/FundRelatedClientResponses");
 const PartyFundService_1 = require("../database/PartyFundService");
+const Commands_1 = require("../documentation/commands/Commands");
 /**
  * Manages the fund related commands.
  */
@@ -48,7 +49,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Figure out which command to use.
-            let type = command.getName() == "bank" ? "BANK" : "FUND";
+            let type = command.getName() == Commands_1.Commands.BANK ? "BANK" : "FUND";
             // If there are no args, assume the user just wants a bank statement.
             if (command.getInput() == null) {
                 return this.getFunds(message, type, this.partyName);

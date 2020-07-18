@@ -8,6 +8,7 @@ import {PartyFund} from "../models/database/PartyFund";
 import {Command} from "../models/generic/Command";
 import {FundRelatedClientResponses} from "../documentation/client-responses/FundRelatedClientResponses";
 import {PartyFundService} from "../database/PartyFundService";
+import {Commands} from "../documentation/commands/Commands";
 
 /**
  * Manages the fund related commands.
@@ -35,7 +36,7 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
      */
     public async handleCommand (command: Command, message: Message): Promise<Message | Message[]> {
         // Figure out which command to use.
-        let type = command.getName() == "bank" ? "BANK" : "FUND";
+        let type = command.getName() == Commands.BANK ? "BANK" : "FUND";
 
         // If there are no args, assume the user just wants a bank statement.
         if (command.getInput() == null) {

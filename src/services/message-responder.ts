@@ -7,6 +7,7 @@ import {RegisterCommandHandler} from "../command-handlers/RegisterCommandHandler
 import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
 import {HelpCommandHandler} from "../command-handlers/HelpCommandHandler";
 import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
+import {Commands} from "../documentation/commands/Commands";
 
 @injectable()
 export class MessageResponder {
@@ -42,17 +43,17 @@ export class MessageResponder {
 
         // Determine which handler to call.
         switch (cmd) {
-            case "bank":
+            case Commands.BANK:
                 return this.partyFundCommandHandler.handleCommand(command, message);
-            case "fund":
+            case Commands.FUND:
                 return this.partyFundCommandHandler.handleCommand(command, message);
-            case "help":
+            case Commands.HELP:
                 return this.helpCommandHandler.handleCommand(command, message);
-            case "quote":
+            case Commands.QUOTE:
                 return this.quoteCommandHandler.handleCommand(command, message);
-            case "register":
+            case Commands.REGISTER:
                 return this.registerUserCommandHandler.handleCommand(command, message);
-            case "which":
+            case Commands.WHICH:
                 return this.whichCommandHandler.handleCommand(command, message);
         }
     }
