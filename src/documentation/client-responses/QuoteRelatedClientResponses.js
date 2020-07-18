@@ -8,8 +8,8 @@ const BasicEmbed_1 = require("../BasicEmbed");
 class QuoteRelatedClientResponses {
     /**
      * Constructs a quoted message reply.
-     * @param message
-     * @constructor
+     *
+     * @param message The message to quote.
      */
     static QUOTED_MESSAGE(message) {
         return message.guild.member(message.author).fetch().then((member) => {
