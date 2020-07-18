@@ -130,15 +130,21 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
         // Fetch the channels.
         return channel.messages.fetch({limit: 100, before: beforeMessageId}).then(async (messages) => {
             if (messages.size < 100) {
+                console.debug("Finished fetching messages.");
                 return messages;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 250));
+            console.debug("Fetched more messages, pausing....");
 
-            const oldestMsg = messages.first().id;
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            console.log("Finished fetching messages.");
+
+            const oldestMsg = messages.first();
+            console.debug();
 
             // Go until we get all the messages.
-            return this.fetchAllMessages(channel, oldestMsg).then((returnedMessages) => {
+            return this.fetchAllMessages(channel, oldestMsg.id).then((returnedMessages) => {
                 const concatMessages = messages.concat(returnedMessages);
                 channel.messages.cache = concatMessages;
                 return concatMessages;
