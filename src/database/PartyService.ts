@@ -2,15 +2,26 @@ import {inject, injectable} from "inversify";
 import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
 import {Party} from "../models/database/Party";
-import {PartyFund} from "../models/database/PartyFund";
 import {StringUtility} from "../utilities/StringUtility";
-import {PartyToGuildService} from "./PartyToGuildService";
+import {DatabaseHelperService} from "./base/DatabaseHelperService";
+import {Table} from "../documentation/databases/Table";
+import {DbColumn} from "../models/database/schema/columns/DbColumn";
+import {Column} from "../documentation/databases/Column";
+import {DatabaseDivider} from "../enums/DatabaseDivider";
 
+/**
+ * The party service manager.
+ */
 @injectable()
 export class PartyService {
-    private static TABLE_NAME = "parties";
+    /** Underlying database service. */
     private databaseService: DatabaseService;
 
+    /**
+     * Constructs a new party service.
+     *
+     * @param databaseService The service to connect to the database.
+     */
     constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService) {
         this.databaseService = databaseService;
     }
@@ -19,7 +30,7 @@ export class PartyService {
         // Sanitize inputs.
         const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
 
-        const query = `SELECT t1.id, t2.name FROM ${PartyToGuildService.TABLE_NAME} t1 INNER JOIN ${PartyService.TABLE_NAME} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
+        const query = `SELECT t1.id, t2.name FROM ${Table.PARTY_TO_GUILD} t1 INNER JOIN ${Table.PARTY} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
 
         // Construct query.
         return this.databaseService.query(query).then((res) => {
@@ -39,12 +50,17 @@ export class PartyService {
         });
     }
 
+    /**
+     * Gets the party with the given name.
+     *
+     * @param name
+     */
     async getParty (name: string): Promise<Party>{
-        // Sanitize inputs.
-        const sanitizedName = StringUtility.escapeMySQLInput(name);
+        const whereColumns = [new DbColumn(Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider.LIKE)];
+        const query = DatabaseHelperService.doSelectQuery(Table.PARTY, whereColumns);
 
         // Construct query.
-        return this.databaseService.query("SELECT * FROM parties WHERE name = " + sanitizedName).then((res) => {
+        return this.databaseService.query(query).then((res) => {
             if (res.rowCount <= 0) {
                 return null;
             }

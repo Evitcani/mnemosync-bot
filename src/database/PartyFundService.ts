@@ -2,7 +2,6 @@ import {DatabaseService} from "./base/DatabaseService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {PartyFund} from "../models/database/PartyFund";
-import {StringUtility} from "../utilities/StringUtility";
 import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {Column} from "../documentation/databases/Column";
@@ -26,22 +25,22 @@ export class PartyFundService {
 
         // Check all the gold amounts, only update what changed.
         if (platinum !== null) {
-            setColumns.push(new DbColumn(Column.PLATINUM, platinum, false));
+            setColumns.push(new DbColumn(Column.PLATINUM, platinum));
         }
 
         if (gold !== null) {
-            setColumns.push(new DbColumn(Column.GOLD, gold, false));
+            setColumns.push(new DbColumn(Column.GOLD, gold));
         }
 
         if (silver !== null) {
-            setColumns.push(new DbColumn(Column.SILVER, silver, false));
+            setColumns.push(new DbColumn(Column.SILVER, silver));
         }
 
         if (copper !== null) {
-            setColumns.push(new DbColumn(Column.COPPER, copper, false));
+            setColumns.push(new DbColumn(Column.COPPER, copper));
         }
 
-        const query = DatabaseHelperService.doUpdateQuery(Table.PARTY_FUND, setColumns, [new DbColumn(Column.ID, id, false)])
+        const query = DatabaseHelperService.doUpdateQuery(Table.PARTY_FUND, setColumns, [new DbColumn(Column.ID, id)]);
 
         console.log("Updating party funds with query: " + query);
 
@@ -55,13 +54,13 @@ export class PartyFundService {
     }
 
     async getFundById (id: number): Promise<PartyFund>{
-        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, [new DbColumn(Column.ID, id, false)]);
+        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, [new DbColumn(Column.ID, id)]);
         return this.doGetFund(query);
     }
 
     async getFund (partyID: number, type: string): Promise<PartyFund>{
         // columns
-        const columns = [new DbColumn(Column.TYPE, type, true), new DbColumn(Column.PARTY_ID, partyID, false)]
+        const columns = [new DbColumn(Column.TYPE, type).setSanitized(true), new DbColumn(Column.PARTY_ID, partyID)];
 
         // Construct query.
         const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, columns);

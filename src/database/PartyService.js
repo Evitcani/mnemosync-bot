@@ -20,15 +20,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var PartyService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyService = void 0;
 const inversify_1 = require("inversify");
 const DatabaseService_1 = require("./base/DatabaseService");
 const types_1 = require("../types");
 const StringUtility_1 = require("../utilities/StringUtility");
-const PartyToGuildService_1 = require("./PartyToGuildService");
-let PartyService = PartyService_1 = class PartyService {
+const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
+const Table_1 = require("../documentation/databases/Table");
+const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
+const Column_1 = require("../documentation/databases/Column");
+const DatabaseDivider_1 = require("../enums/DatabaseDivider");
+/**
+ * The party service manager.
+ */
+let PartyService = class PartyService {
+    /**
+     * Constructs a new party service.
+     *
+     * @param databaseService The service to connect to the database.
+     */
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
@@ -36,7 +47,7 @@ let PartyService = PartyService_1 = class PartyService {
         return __awaiter(this, void 0, void 0, function* () {
             // Sanitize inputs.
             const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
-            const query = `SELECT t1.id, t2.name FROM ${PartyToGuildService_1.PartyToGuildService.TABLE_NAME} t1 INNER JOIN ${PartyService_1.TABLE_NAME} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
+            const query = `SELECT t1.id, t2.name FROM ${Table_1.Table.PARTY_TO_GUILD} t1 INNER JOIN ${Table_1.Table.PARTY} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
             // Construct query.
             return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {
@@ -53,12 +64,17 @@ let PartyService = PartyService_1 = class PartyService {
             });
         });
     }
+    /**
+     * Gets the party with the given name.
+     *
+     * @param name
+     */
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Sanitize inputs.
-            const sanitizedName = StringUtility_1.StringUtility.escapeMySQLInput(name);
+            const whereColumns = [new DbColumn_1.DbColumn(Column_1.Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE)];
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY, whereColumns);
             // Construct query.
-            return this.databaseService.query("SELECT * FROM parties WHERE name = " + sanitizedName).then((res) => {
+            return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
                 }
@@ -73,8 +89,7 @@ let PartyService = PartyService_1 = class PartyService {
         });
     }
 };
-PartyService.TABLE_NAME = "parties";
-PartyService = PartyService_1 = __decorate([
+PartyService = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])

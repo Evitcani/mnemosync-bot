@@ -41,18 +41,18 @@ let PartyFundService = class PartyFundService {
             const setColumns = [];
             // Check all the gold amounts, only update what changed.
             if (platinum !== null) {
-                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.PLATINUM, platinum, false));
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.PLATINUM, platinum));
             }
             if (gold !== null) {
-                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.GOLD, gold, false));
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.GOLD, gold));
             }
             if (silver !== null) {
-                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.SILVER, silver, false));
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.SILVER, silver));
             }
             if (copper !== null) {
-                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.COPPER, copper, false));
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.COPPER, copper));
             }
-            const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(Table_1.Table.PARTY_FUND, setColumns, [new DbColumn_1.DbColumn(Column_1.Column.ID, id, false)]);
+            const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(Table_1.Table.PARTY_FUND, setColumns, [new DbColumn_1.DbColumn(Column_1.Column.ID, id)]);
             console.log("Updating party funds with query: " + query);
             return this.databaseService.query(query).then(() => {
                 return this.getFundById(id);
@@ -65,14 +65,14 @@ let PartyFundService = class PartyFundService {
     }
     getFundById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, [new DbColumn_1.DbColumn(Column_1.Column.ID, id, false)]);
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, [new DbColumn_1.DbColumn(Column_1.Column.ID, id)]);
             return this.doGetFund(query);
         });
     }
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
             // columns
-            const columns = [new DbColumn_1.DbColumn(Column_1.Column.TYPE, type, true), new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, partyID, false)];
+            const columns = [new DbColumn_1.DbColumn(Column_1.Column.TYPE, type).setSanitized(true), new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, partyID)];
             // Construct query.
             const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, columns);
             return this.doGetFund(query);
