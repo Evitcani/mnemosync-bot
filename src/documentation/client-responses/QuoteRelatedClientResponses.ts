@@ -7,8 +7,8 @@ import {BasicEmbed} from "../BasicEmbed";
 export class QuoteRelatedClientResponses {
     /**
      * Constructs a quoted message reply.
-     * @param message
-     * @constructor
+     *
+     * @param message The message to quote.
      */
     static QUOTED_MESSAGE (message: Message): Promise<MessageEmbed> {
         return message.guild.member(message.author).fetch().then((member) => {
