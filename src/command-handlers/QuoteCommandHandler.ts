@@ -51,7 +51,9 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
                     "`" + Bot.PREFIX + "quote here`.");
             }
 
-            return message.channel.send(QuoteRelatedClientResponses.QUOTED_MESSAGE(msg));
+            return QuoteRelatedClientResponses.QUOTED_MESSAGE(msg).then((msg) => {
+                return message.channel.send(msg);
+            });
         });
     }
 
