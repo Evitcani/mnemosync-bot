@@ -29,8 +29,9 @@ class DatabaseHelperService {
         return tables;
     }
     static turnToStr(columns, separator) {
-        let str = null, column, item;
-        for (column in columns) {
+        let str = null, column, item, i;
+        for (i = 0; i < columns.length; i++) {
+            column = columns[i];
             if (str == null) {
                 str = "";
             }

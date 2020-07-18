@@ -39,8 +39,9 @@ export class DatabaseHelperService {
     }
 
     private static turnToStr(columns: DbColumn[], separator: string): string {
-        let str = null, column: any, item: any;
-        for (column in columns) {
+        let str = null, column: DbColumn, item: any, i: number;
+        for (i = 0; i < columns.length; i++) {
+            column = columns[i];
             if (str == null) {
                 str = "";
             } else {
