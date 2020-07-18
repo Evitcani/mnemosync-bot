@@ -9,8 +9,7 @@ class BasicEmbed {
     static get() {
         return new discord_js_1.MessageEmbed()
             .setColor('#0099ff')
-            .setFooter('Created by @Evit_cani on Twitter.')
-            .setTimestamp();
+            .setFooter('Created by @Evit_cani on Twitter.');
     }
 }
 exports.BasicEmbed = BasicEmbed;

@@ -7,7 +7,6 @@ export class BasicEmbed {
     public static get() : MessageEmbed {
         return new MessageEmbed()
             .setColor('#0099ff')
-            .setFooter('Created by @Evit_cani on Twitter.')
-            .setTimestamp();
+            .setFooter('Created by @Evit_cani on Twitter.');
     }
 }

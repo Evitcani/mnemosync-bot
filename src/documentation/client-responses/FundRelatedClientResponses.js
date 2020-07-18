@@ -67,7 +67,7 @@ class FundRelatedClientResponses {
         col = new discord_js_1.Collection();
         col.set(0, "Just got started, huh? We've all been level 3.");
         col.set(1, "Hmm... The party is running low. Might be time to ask your local knife collector for a side quest.");
-        col.set(2, "That's almost two whole horses! But only draft horses. Isn't it weird the cool, big horses cost less?");
+        col.set(2, "That's almost two whole horses! But only draft horses. Isn't it weird the big horses cost less?");
         collection.set(100, col);
         return collection;
     }
