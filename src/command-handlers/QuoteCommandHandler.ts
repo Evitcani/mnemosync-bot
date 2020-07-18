@@ -7,7 +7,6 @@ import {SpecialChannelService} from "../database/SpecialChannelService";
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
 import {QuoteRelatedClientResponses} from "../documentation/client-responses/QuoteRelatedClientResponses";
 import {Bot} from "../bot";
-const delay = require('delay');
 
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
@@ -134,7 +133,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
                 return messages;
             }
 
-            await delay(250);
+            await new Promise(resolve => setTimeout(resolve, 250));
 
             const oldestMsg = messages.first().id;
 
