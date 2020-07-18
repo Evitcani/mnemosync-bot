@@ -61,7 +61,8 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
     getFunds(message, type, name) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.findFunds(name, type, message).then((fund) => {
-                return message.channel.send(MoneyUtility_1.MoneyUtility.formatFundStatement(fund, fund.type));
+                let total = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund) / 100;
+                return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.GET_MONEY(total, type, name));
             });
         });
     }
