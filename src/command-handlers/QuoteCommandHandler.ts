@@ -138,13 +138,12 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
 
             console.debug("Fetched more messages, pausing....");
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 250));
 
-            console.log("Finished pausing.");
+            console.debug("Finished pausing.");
 
             const oldestMsg = messages.first();
-            console.log("Oldest message timestamp: " + oldestMsg.createdTimestamp);
-            console.log("Oldest message contents: " + oldestMsg.content);
+            console.debug("Oldest message timestamp: " + oldestMsg.createdTimestamp);
 
             // Go until we get all the messages.
             return this.fetchAllMessages(channel, oldestMsg.id).then((returnedMessages) => {
@@ -155,6 +154,14 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
         })
     }
 
+    /**
+     * Sorts the messages from oldest to newest.
+     *
+     * @param firstValue
+     * @param secondValue
+     * @param firstKey
+     * @param secondKey
+     */
     private sortMessages (firstValue: Message, secondValue: Message, firstKey: string, secondKey: string): number {
         return firstValue.createdTimestamp - secondValue.createdTimestamp;
     }
