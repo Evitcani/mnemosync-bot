@@ -52,17 +52,29 @@ let MessageResponder = class MessageResponder {
             // Determine which handler to call.
             switch (cmd) {
                 case Commands_1.Commands.BANK:
-                    return this.partyFundCommandHandler.handleCommand(command, message);
+                    return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
+                        message.delete({ reason: "Bank command deletion." });
+                        return msg;
+                    });
                 case Commands_1.Commands.FUND:
-                    return this.partyFundCommandHandler.handleCommand(command, message);
+                    return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
+                        message.delete({ reason: "Fund command deletion." });
+                        return msg;
+                    });
                 case Commands_1.Commands.HELP:
                     return this.helpCommandHandler.handleCommand(command, message);
                 case Commands_1.Commands.QUOTE:
-                    return this.quoteCommandHandler.handleCommand(command, message);
+                    return this.quoteCommandHandler.handleCommand(command, message).then((msg) => {
+                        message.delete({ reason: "Quote command deletion." });
+                        return msg;
+                    });
                 case Commands_1.Commands.REGISTER:
                     return this.registerUserCommandHandler.handleCommand(command, message);
                 case Commands_1.Commands.WHICH:
-                    return this.whichCommandHandler.handleCommand(command, message);
+                    return this.whichCommandHandler.handleCommand(command, message).then((msg) => {
+                        message.delete({ reason: "Which command deletion." });
+                        return msg;
+                    });
             }
         });
     }
