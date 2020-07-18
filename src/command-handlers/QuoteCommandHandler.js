@@ -30,7 +30,6 @@ const SpecialChannelService_1 = require("../database/SpecialChannelService");
 const SpecialChannelDesignation_1 = require("../enums/SpecialChannelDesignation");
 const QuoteRelatedClientResponses_1 = require("../documentation/client-responses/QuoteRelatedClientResponses");
 const bot_1 = require("../bot");
-const delay = require('delay');
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
  * then fetch random quotes from it.
@@ -147,7 +146,7 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
                 if (messages.size < 100) {
                     return messages;
                 }
-                yield delay(250);
+                yield new Promise(resolve => setTimeout(resolve, 250));
                 const oldestMsg = messages.first().id;
                 // Go until we get all the messages.
                 return this.fetchAllMessages(channel, oldestMsg).then((returnedMessages) => {
