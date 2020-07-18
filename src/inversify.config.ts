@@ -5,7 +5,7 @@ import {Bot} from "./bot";
 import {Client} from "discord.js";
 import {MessageResponder} from "./services/message-responder";
 import {PingFinder} from "./services/ping-finder";
-import {DatabaseService} from "./database/DatabaseService";
+import {DatabaseService} from "./database/base/DatabaseService";
 import {PartyService} from "./database/PartyService";
 import {PartyFundCommandHandler} from "./command-handlers/PartyFundCommandHandler";
 import {PartyFundService} from "./database/PartyFundService";

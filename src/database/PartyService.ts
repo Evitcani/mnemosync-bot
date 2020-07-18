@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {DatabaseService} from "./DatabaseService";
+import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
 import {Party} from "../models/database/Party";
 import {PartyFund} from "../models/database/PartyFund";
