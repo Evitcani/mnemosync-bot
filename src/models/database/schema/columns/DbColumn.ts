@@ -1,12 +1,15 @@
+import {DatabaseDivider} from "../../../../enums/DatabaseDivider";
+import {StringUtility} from "../../../../utilities/StringUtility";
+
 export class DbColumn {
     private readonly name: string;
     private readonly value: any;
-    private readonly sanitize: boolean;
+    private sanitize: boolean = false;
+    private divider: DatabaseDivider = DatabaseDivider.DEFAULT;
 
-    constructor(name: string, value: any, sanitize: boolean) {
+    constructor(name: string, value: any) {
         this.name = name;
         this.value = value;
-        this.sanitize = sanitize;
     }
 
     public getName(): string {
@@ -14,10 +17,36 @@ export class DbColumn {
     }
 
     public getValue(): any {
-        return this.value;
+        let value;
+
+        if (this.divider == DatabaseDivider.LIKE) {
+            value = `%${this.value}%`;
+        } else {
+            value = this.value;
+        }
+
+        if (this.needsSanitized()) {
+            value = StringUtility.escapeMySQLInput(value);
+        }
+
+        return value;
     }
 
-    public needsSanitized(): boolean {
+    private needsSanitized(): boolean {
         return this.sanitize;
+    }
+
+    public setSanitized(sanitize: boolean): DbColumn {
+        this.sanitize = sanitize;
+        return this;
+    }
+
+    public setDivider(divider: DatabaseDivider): DbColumn {
+        this.divider = divider;
+        return this;
+    }
+
+    public getDivider(): string {
+        return this.divider;
     }
 }

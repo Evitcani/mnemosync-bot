@@ -1,7 +1,6 @@
 import {AbstractTable} from "../../models/database/schema/AbstractTable";
 import {PartiesTable} from "../../models/database/schema/PartiesTable";
 import {DbColumn} from "../../models/database/schema/columns/DbColumn";
-import {StringUtility} from "../../utilities/StringUtility";
 
 export class DatabaseHelperService {
     private tables: Map<string, AbstractTable>;
@@ -39,7 +38,7 @@ export class DatabaseHelperService {
     }
 
     private static turnToStr(columns: DbColumn[], separator: string): string {
-        let str = null, column: DbColumn, item: any, i: number;
+        let str = null, column: DbColumn, i: number;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
             if (str == null) {
@@ -48,12 +47,7 @@ export class DatabaseHelperService {
                 str += separator;
             }
 
-            item = column.getValue();
-            if (column.needsSanitized()) {
-                item = StringUtility.escapeMySQLInput(item);
-            }
-
-            str += `${column.getName()} = ${item}`;
+            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
         }
 
         return str;

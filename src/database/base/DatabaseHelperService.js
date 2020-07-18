@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseHelperService = void 0;
 const PartiesTable_1 = require("../../models/database/schema/PartiesTable");
-const StringUtility_1 = require("../../utilities/StringUtility");
 class DatabaseHelperService {
     constructor() {
         this.tables = DatabaseHelperService.createTables();
@@ -29,7 +28,7 @@ class DatabaseHelperService {
         return tables;
     }
     static turnToStr(columns, separator) {
-        let str = null, column, item, i;
+        let str = null, column, i;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
             if (str == null) {
@@ -38,11 +37,7 @@ class DatabaseHelperService {
             else {
                 str += separator;
             }
-            item = column.getValue();
-            if (column.needsSanitized()) {
-                item = StringUtility_1.StringUtility.escapeMySQLInput(item);
-            }
-            str += `${column.getName()} = ${item}`;
+            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
         }
         return str;
     }
