@@ -3,7 +3,7 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {Command} from "../models/generic/Command";
 import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
-import {RegisterUserCommandHandler} from "../command-handlers/RegisterUserCommandHandler";
+import {RegisterCommandHandler} from "../command-handlers/RegisterCommandHandler";
 import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
 import {HelpCommandHandler} from "../command-handlers/HelpCommandHandler";
 import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
@@ -13,13 +13,13 @@ export class MessageResponder {
     private helpCommandHandler: HelpCommandHandler;
     private partyFundCommandHandler: PartyFundCommandHandler;
     private quoteCommandHandler: QuoteCommandHandler;
-    private registerUserCommandHandler: RegisterUserCommandHandler;
+    private registerUserCommandHandler: RegisterCommandHandler;
     private whichCommandHandler: WhichCommandHandler;
 
     constructor(@inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
                 @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
-                @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterUserCommandHandler,
+                @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterCommandHandler,
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler) {
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;

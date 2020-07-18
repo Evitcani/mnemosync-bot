@@ -11,7 +11,7 @@ const DatabaseService_1 = require("./database/DatabaseService");
 const PartyService_1 = require("./database/PartyService");
 const PartyFundCommandHandler_1 = require("./command-handlers/PartyFundCommandHandler");
 const PartyFundService_1 = require("./database/PartyFundService");
-const RegisterUserCommandHandler_1 = require("./command-handlers/RegisterUserCommandHandler");
+const RegisterCommandHandler_1 = require("./command-handlers/RegisterCommandHandler");
 const PartyToGuildService_1 = require("./database/PartyToGuildService");
 const UserDefaultPartyService_1 = require("./database/UserDefaultPartyService");
 const UserService_1 = require("./database/UserService");
@@ -38,7 +38,7 @@ container.bind(types_1.TYPES.UserToGuildService).to(UserToGuildService_1.UserToG
 container.bind(types_1.TYPES.HelpCommandHandler).to(HelpCommandHandler_1.HelpCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler_1.PartyFundCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.QuoteCommandHandler).to(QuoteCommandHandler_1.QuoteCommandHandler).inSingletonScope();
-container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterUserCommandHandler_1.RegisterUserCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler_1.RegisterCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
 exports.default = container;
 //# sourceMappingURL=inversify.config.js.map

@@ -11,7 +11,7 @@ import {UserToGuildService} from "../database/UserToGuildService";
  * Command to register a user as having access to the funds created on a specific server.
  */
 @injectable()
-export class RegisterUserCommandHandler extends AbstractCommandHandler {
+export class RegisterCommandHandler extends AbstractCommandHandler {
     private userDefaultPartyService: UserDefaultPartyService;
     private userService: UserService;
     private userToGuildService: UserToGuildService;

@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RegisterUserCommandHandler = void 0;
+exports.RegisterCommandHandler = void 0;
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
@@ -31,7 +31,7 @@ const UserToGuildService_1 = require("../database/UserToGuildService");
 /**
  * Command to register a user as having access to the funds created on a specific server.
  */
-let RegisterUserCommandHandler = class RegisterUserCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+let RegisterCommandHandler = class RegisterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
     constructor(userDefaultPartyService, userService, userToGuildService) {
         super();
         this.userDefaultPartyService = userDefaultPartyService;
@@ -65,7 +65,7 @@ let RegisterUserCommandHandler = class RegisterUserCommandHandler extends Abstra
         });
     }
 };
-RegisterUserCommandHandler = __decorate([
+RegisterCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.UserDefaultPartyService)),
     __param(1, inversify_1.inject(types_1.TYPES.UserService)),
@@ -73,6 +73,6 @@ RegisterUserCommandHandler = __decorate([
     __metadata("design:paramtypes", [UserDefaultPartyService_1.UserDefaultPartyService,
         UserService_1.UserService,
         UserToGuildService_1.UserToGuildService])
-], RegisterUserCommandHandler);
-exports.RegisterUserCommandHandler = RegisterUserCommandHandler;
-//# sourceMappingURL=RegisterUserCommandHandler.js.map
+], RegisterCommandHandler);
+exports.RegisterCommandHandler = RegisterCommandHandler;
+//# sourceMappingURL=RegisterCommandHandler.js.map
