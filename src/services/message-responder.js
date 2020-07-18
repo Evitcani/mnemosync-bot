@@ -29,6 +29,7 @@ const RegisterCommandHandler_1 = require("../command-handlers/RegisterCommandHan
 const WhichCommandHandler_1 = require("../command-handlers/WhichCommandHandler");
 const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
 const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
+const Commands_1 = require("../documentation/commands/Commands");
 let MessageResponder = class MessageResponder {
     constructor(helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler) {
         this.helpCommandHandler = helpCommandHandler;
@@ -50,17 +51,17 @@ let MessageResponder = class MessageResponder {
             console.log("Command: " + cmd);
             // Determine which handler to call.
             switch (cmd) {
-                case "bank":
+                case Commands_1.Commands.BANK:
                     return this.partyFundCommandHandler.handleCommand(command, message);
-                case "fund":
+                case Commands_1.Commands.FUND:
                     return this.partyFundCommandHandler.handleCommand(command, message);
-                case "help":
+                case Commands_1.Commands.HELP:
                     return this.helpCommandHandler.handleCommand(command, message);
-                case "quote":
+                case Commands_1.Commands.QUOTE:
                     return this.quoteCommandHandler.handleCommand(command, message);
-                case "register":
+                case Commands_1.Commands.REGISTER:
                     return this.registerUserCommandHandler.handleCommand(command, message);
-                case "which":
+                case Commands_1.Commands.WHICH:
                     return this.whichCommandHandler.handleCommand(command, message);
             }
         });
