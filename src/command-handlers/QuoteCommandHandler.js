@@ -29,17 +29,30 @@ const types_1 = require("../types");
 const SpecialChannelService_1 = require("../database/SpecialChannelService");
 const SpecialChannelDesignation_1 = require("../enums/SpecialChannelDesignation");
 const QuoteRelatedClientResponses_1 = require("../documentation/client-responses/QuoteRelatedClientResponses");
+const bot_1 = require("../bot");
 const delay = require('delay');
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
  * then fetch random quotes from it.
  */
 let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+    /**
+     * Constructs this command handler.
+     *
+     * @param client The bot's client.
+     * @param specialChannelService The special channel service.
+     */
     constructor(client, specialChannelService) {
         super();
         this.client = client;
         this.specialChannelService = specialChannelService;
     }
+    /**
+     * Handles the quote command.
+     *
+     * @param command The processed command.
+     * @param message The message the command originated from.
+     */
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Registering the channel.
@@ -48,10 +61,19 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
             }
             // Otherwise gets a random quote from the quote channel.
             return this.getRandomQuote(message).then((msg) => {
+                if (msg == null) {
+                    return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
+                        "`" + bot_1.Bot.PREFIX + "quote here`.");
+                }
                 return message.channel.send(QuoteRelatedClientResponses_1.QuoteRelatedClientResponses.QUOTED_MESSAGE(msg));
             });
         });
     }
+    /**
+     * Registers the current channel as the quote channel.
+     *
+     * @param message The message the command originated from.
+     */
     registerQuoteChannel(message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.specialChannelService.addSpecialChannel(message.guild.id, SpecialChannelDesignation_1.SpecialChannelDesignation.QUOTE_CHANNEL, message.channel.id)
@@ -60,23 +82,48 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
             });
         });
     }
+    /**
+     * Get a random quote.
+     *
+     * @param message The message the command originated from.
+     */
     getRandomQuote(message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.getQuoteChannel(message).then((channelId) => {
+                if (channelId == null) {
+                    return null;
+                }
                 return this.getAllMessages(message, channelId).then((messages) => {
+                    if (messages == null) {
+                        return null;
+                    }
                     return messages.random();
                 });
             });
         });
     }
+    /**
+     * Gets the channel registered for quotes.
+     *
+     * @param message The message the command originated from.
+     */
     getQuoteChannel(message) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.specialChannelService.getSpecialChannel(message.guild.id, SpecialChannelDesignation_1.SpecialChannelDesignation.QUOTE_CHANNEL)
                 .then((channel) => {
+                if (channel == null) {
+                    return null;
+                }
                 return channel.channel_id;
             });
         });
     }
+    /**
+     * Gets all the messages in the given channel.
+     *
+     * @param message The message the command originated from.
+     * @param channelId The ID of the channel to get all the messages from.
+     */
     getAllMessages(message, channelId) {
         return __awaiter(this, void 0, void 0, function* () {
             // @ts-ignore
@@ -87,6 +134,12 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
             return this.fetchAllMessages(channel, null);
         });
     }
+    /**
+     * Fetches all the messages.
+     *
+     * @param channel The channel to fetch all the messages from.
+     * @param beforeMessageId The last message ID.
+     */
     fetchAllMessages(channel, beforeMessageId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Fetch the channels.
