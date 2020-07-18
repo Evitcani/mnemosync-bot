@@ -25,7 +25,10 @@ exports.PartyFundService = void 0;
 const DatabaseService_1 = require("./base/DatabaseService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const StringUtility_1 = require("../utilities/StringUtility");
+const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
+const Table_1 = require("../documentation/databases/Table");
+const Column_1 = require("../documentation/databases/Column");
+const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
 /**
  * Service for managing calls to the database related to party funds.
  */
@@ -35,34 +38,21 @@ let PartyFundService = class PartyFundService {
     }
     updateFunds(id, platinum, gold, silver, copper) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = "UPDATE party_funds SET ";
-            let prev = false;
+            const setColumns = [];
             // Check all the gold amounts, only update what changed.
             if (platinum !== null) {
-                query += "platinum = " + platinum;
-                prev = true;
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.PLATINUM, platinum, false));
             }
             if (gold !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "gold = " + gold;
-                prev = true;
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.GOLD, gold, false));
             }
             if (silver !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "silver = " + silver;
-                prev = true;
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.SILVER, silver, false));
             }
             if (copper !== null) {
-                if (prev) {
-                    query += ", ";
-                }
-                query += "copper = " + copper;
+                setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.COPPER, copper, false));
             }
-            query += " WHERE id = " + id;
+            const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(Table_1.Table.PARTY_FUND, setColumns, [new DbColumn_1.DbColumn(Column_1.Column.ID, id, false)]);
             console.log("Updating party funds with query: " + query);
             return this.databaseService.query(query).then(() => {
                 return this.getFundById(id);
@@ -75,16 +65,16 @@ let PartyFundService = class PartyFundService {
     }
     getFundById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = "SELECT * FROM party_funds WHERE id = " + id;
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, [new DbColumn_1.DbColumn(Column_1.Column.ID, id, false)]);
             return this.doGetFund(query);
         });
     }
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Sanitize inputs.
-            const sanitizedType = StringUtility_1.StringUtility.escapeMySQLInput(type);
+            // columns
+            const columns = [new DbColumn_1.DbColumn(Column_1.Column.TYPE, type, true), new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, partyID, false)];
             // Construct query.
-            const query = "SELECT * FROM party_funds WHERE type = " + sanitizedType + " AND party_id = " + partyID;
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, columns);
             return this.doGetFund(query);
         });
     }

@@ -12,6 +12,12 @@ class AbstractTable {
     getColumns() {
         return this.columns;
     }
+    getValue() {
+        return this.value;
+    }
+    setValue(value) {
+        this.value = value;
+    }
 }
 exports.AbstractTable = AbstractTable;
 //# sourceMappingURL=AbstractTable.js.map
