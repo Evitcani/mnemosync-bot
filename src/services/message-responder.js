@@ -25,7 +25,7 @@ exports.MessageResponder = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const PartyFundCommandHandler_1 = require("../command-handlers/PartyFundCommandHandler");
-const RegisterUserCommandHandler_1 = require("../command-handlers/RegisterUserCommandHandler");
+const RegisterCommandHandler_1 = require("../command-handlers/RegisterCommandHandler");
 const WhichCommandHandler_1 = require("../command-handlers/WhichCommandHandler");
 const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
 const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
@@ -76,7 +76,7 @@ MessageResponder = __decorate([
     __metadata("design:paramtypes", [HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
-        RegisterUserCommandHandler_1.RegisterUserCommandHandler,
+        RegisterCommandHandler_1.RegisterCommandHandler,
         WhichCommandHandler_1.WhichCommandHandler])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;

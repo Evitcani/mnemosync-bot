@@ -9,7 +9,7 @@ import {DatabaseService} from "./database/DatabaseService";
 import {PartyService} from "./database/PartyService";
 import {PartyFundCommandHandler} from "./command-handlers/PartyFundCommandHandler";
 import {PartyFundService} from "./database/PartyFundService";
-import {RegisterUserCommandHandler} from "./command-handlers/RegisterUserCommandHandler";
+import {RegisterCommandHandler} from "./command-handlers/RegisterCommandHandler";
 import {PartyToGuildService} from "./database/PartyToGuildService";
 import {UserDefaultPartyService} from "./database/UserDefaultPartyService";
 import {UserService} from "./database/UserService";
@@ -40,7 +40,7 @@ container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildServi
 container.bind<HelpCommandHandler>(TYPES.HelpCommandHandler).to(HelpCommandHandler).inSingletonScope();
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
 container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHandler).inSingletonScope();
-container.bind<RegisterUserCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterUserCommandHandler).inSingletonScope();
+container.bind<RegisterCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler).inSingletonScope();
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 
 
