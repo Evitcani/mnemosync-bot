@@ -23,7 +23,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var UserDefaultPartyService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDefaultPartyService = void 0;
-const DatabaseService_1 = require("./DatabaseService");
+const DatabaseService_1 = require("./base/DatabaseService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const StringUtility_1 = require("../utilities/StringUtility");

@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseService = void 0;
 const inversify_1 = require("inversify");
 const pg_1 = require("pg");
-const types_1 = require("../types");
+const types_1 = require("../../types");
 let DatabaseService = class DatabaseService {
     constructor(databaseUrl) {
         this.databaseUrl = databaseUrl;

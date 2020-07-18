@@ -1,4 +1,4 @@
-import {DatabaseService} from "./DatabaseService";
+import {DatabaseService} from "./base/DatabaseService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {PartyFund} from "../models/database/PartyFund";

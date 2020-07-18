@@ -24,7 +24,7 @@ var PartyService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyService = void 0;
 const inversify_1 = require("inversify");
-const DatabaseService_1 = require("./DatabaseService");
+const DatabaseService_1 = require("./base/DatabaseService");
 const types_1 = require("../types");
 const StringUtility_1 = require("../utilities/StringUtility");
 const PartyToGuildService_1 = require("./PartyToGuildService");
