@@ -3,6 +3,10 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {PartyFund} from "../models/database/PartyFund";
 import {StringUtility} from "../utilities/StringUtility";
+import {DatabaseHelperService} from "./base/DatabaseHelperService";
+import {Table} from "../documentation/databases/Table";
+import {Column} from "../documentation/databases/Column";
+import {DbColumn} from "../models/database/schema/columns/DbColumn";
 
 /**
  * Service for managing calls to the database related to party funds.
@@ -18,39 +22,26 @@ export class PartyFundService {
 
     async updateFunds (id: number, platinum: number | null, gold: number | null, silver: number | null,
                        copper: number | null): Promise<PartyFund>{
-        let query = "UPDATE party_funds SET ";
-        let prev = false;
+        const setColumns: DbColumn[] = [];
 
         // Check all the gold amounts, only update what changed.
         if (platinum !== null) {
-            query += "platinum = " + platinum;
-            prev = true;
+            setColumns.push(new DbColumn(Column.PLATINUM, platinum, false));
         }
 
         if (gold !== null) {
-            if (prev) {
-                query += ", ";
-            }
-            query += "gold = " + gold;
-            prev = true;
+            setColumns.push(new DbColumn(Column.GOLD, gold, false));
         }
 
         if (silver !== null) {
-            if (prev) {
-                query += ", ";
-            }
-            query += "silver = " + silver;
-            prev = true;
+            setColumns.push(new DbColumn(Column.SILVER, silver, false));
         }
 
         if (copper !== null) {
-            if (prev) {
-                query += ", ";
-            }
-            query += "copper = " + copper;
+            setColumns.push(new DbColumn(Column.COPPER, copper, false));
         }
 
-        query += " WHERE id = " + id;
+        const query = DatabaseHelperService.doUpdateQuery(Table.PARTY_FUND, setColumns, [new DbColumn(Column.ID, id, false)])
 
         console.log("Updating party funds with query: " + query);
 
@@ -64,16 +55,16 @@ export class PartyFundService {
     }
 
     async getFundById (id: number): Promise<PartyFund>{
-        const query = "SELECT * FROM party_funds WHERE id = " + id;
+        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, [new DbColumn(Column.ID, id, false)]);
         return this.doGetFund(query);
     }
 
     async getFund (partyID: number, type: string): Promise<PartyFund>{
-        // Sanitize inputs.
-        const sanitizedType = StringUtility.escapeMySQLInput(type);
+        // columns
+        const columns = [new DbColumn(Column.TYPE, type, true), new DbColumn(Column.PARTY_ID, partyID, false)]
 
         // Construct query.
-        const query = "SELECT * FROM party_funds WHERE type = " + sanitizedType + " AND party_id = " + partyID;
+        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, columns);
         return this.doGetFund(query);
     }
 

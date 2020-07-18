@@ -1,7 +1,8 @@
 import {AbstractColumn} from "./AbstractColumn";
+import {Column} from "../../../../documentation/databases/Column";
 
 export class IdColumn extends AbstractColumn {
     constructor() {
-        super("id", "number")
+        super(Column.ID, "number")
     }
 }
