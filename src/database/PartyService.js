@@ -82,6 +82,7 @@ let PartyService = class PartyService {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
                 console.debug("QUERY USED: " + query);
+                console.debug(res);
                 if (res.rowCount <= 0) {
                     return null;
                 }
