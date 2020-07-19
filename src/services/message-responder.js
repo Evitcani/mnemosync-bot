@@ -30,8 +30,10 @@ const WhichCommandHandler_1 = require("../command-handlers/WhichCommandHandler")
 const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
 const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
 const Commands_1 = require("../documentation/commands/Commands");
+const CharacterCommandHandler_1 = require("../command-handlers/CharacterCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler) {
+    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler) {
+        this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
@@ -56,6 +58,8 @@ let MessageResponder = class MessageResponder {
                         message.delete({ reason: "Bank command deletion." });
                         return msg;
                     });
+                case Commands_1.Commands.CHARACTER:
+                    return this.characterCommandHandler.handleCommand(command, message);
                 case Commands_1.Commands.FUND:
                     return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
                         message.delete({ reason: "Fund command deletion." });
@@ -81,12 +85,14 @@ let MessageResponder = class MessageResponder {
 };
 MessageResponder = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
-    __param(2, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
-    __param(3, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __param(4, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __metadata("design:paramtypes", [HelpCommandHandler_1.HelpCommandHandler,
+    __param(0, inversify_1.inject(types_1.TYPES.CharacterCommandHandler)),
+    __param(1, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
+    __param(2, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
+    __param(3, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
+    __param(4, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
+    __param(5, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __metadata("design:paramtypes", [CharacterCommandHandler_1.CharacterCommandHandler,
+        HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterCommandHandler_1.RegisterCommandHandler,
