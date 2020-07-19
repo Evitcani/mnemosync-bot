@@ -78,7 +78,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             if (ptCmd != null) {
                 return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
                     .then((parties) => {
-                    if (parties.length > 1) {
+                    if (parties.length > 1 || parties.length < 1) {
                         return null;
                     }
                     const party = parties[0];
