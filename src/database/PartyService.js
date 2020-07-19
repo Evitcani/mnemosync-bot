@@ -81,6 +81,7 @@ let PartyService = class PartyService {
     getParties(query) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
+                console.debug("QUERY USED: " + query);
                 if (res.rowCount <= 0) {
                     return null;
                 }
@@ -88,9 +89,9 @@ let PartyService = class PartyService {
                 const result = res.rows;
                 return result;
             }).catch((err) => {
-                console.log("QUERY USED: " + query);
-                console.log("ERROR: Could not get parties for the given guild. ::: " + err.message);
-                console.log(err.stack);
+                console.error("QUERY USED: " + query);
+                console.error("ERROR: Could not get parties for the given guild. ::: " + err.message);
+                console.error(err.stack);
                 return null;
             });
         });
