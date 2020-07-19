@@ -28,11 +28,11 @@ export class PartyService {
 
     public async getPartiesInGuild (guildId: string): Promise<Party[]> {
         // Get the first table.
-        const t1 = new DbTable(Table.PARTY_TO_GUILD)
+        const t1 = new DbTable(Table.PARTY_TO_GUILD).setDesignation(1)
             .addWhereColumns(new DbColumn(Column.GUILD_ID, guildId).setSanitized(true));
 
         // Get the second table.
-        const t2 = new DbTable(Table.PARTY)
+        const t2 = new DbTable(Table.PARTY).setDesignation(2)
             .addSelectColumns(new DbColumn(Column.ID, null))
             .addSelectColumns(new DbColumn(Column.NAME, null));
 
@@ -45,11 +45,11 @@ export class PartyService {
 
     public async getPartiesInGuildWithName(guildId: string, partyName: string): Promise<Party[]> {
         // Get the first table.
-        const t1 = new DbTable(Table.PARTY_TO_GUILD)
+        const t1 = new DbTable(Table.PARTY_TO_GUILD).setDesignation(1)
             .addWhereColumns(new DbColumn(Column.GUILD_ID, guildId).setSanitized(true));
 
         // Get the second table.
-        const t2 = new DbTable(Table.PARTY)
+        const t2 = new DbTable(Table.PARTY).setDesignation(2)
             .addWhereColumns(new DbColumn(Column.NAME, partyName).setSanitized(true).setDivider(DatabaseDivider.LIKE))
             .addSelectColumns(new DbColumn(Column.ID, null))
             .addSelectColumns(new DbColumn(Column.NAME, null));

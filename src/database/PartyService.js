@@ -46,10 +46,10 @@ let PartyService = class PartyService {
     getPartiesInGuild(guildId) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the first table.
-            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD)
+            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD).setDesignation(1)
                 .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.GUILD_ID, guildId).setSanitized(true));
             // Get the second table.
-            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY)
+            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY).setDesignation(2)
                 .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null))
                 .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, null));
             // Query.
@@ -61,10 +61,10 @@ let PartyService = class PartyService {
     getPartiesInGuildWithName(guildId, partyName) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the first table.
-            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD)
+            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD).setDesignation(1)
                 .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.GUILD_ID, guildId).setSanitized(true));
             // Get the second table.
-            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY)
+            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY).setDesignation(2)
                 .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, partyName).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE))
                 .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null))
                 .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, null));
