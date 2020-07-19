@@ -4,6 +4,7 @@ exports.Table = void 0;
 class Table {
 }
 exports.Table = Table;
+Table.CHARACTER = "characters";
 Table.PARTY = "parties";
 Table.PARTY_FUND = "party_funds";
 Table.PARTY_TO_GUILD = "party_to_guild";
