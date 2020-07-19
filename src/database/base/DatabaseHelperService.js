@@ -47,7 +47,7 @@ class DatabaseHelperService {
      * @param table The table to use. Only uses the "set" columns.
      */
     static doInsertQuery(table) {
-        return `INSERT INTO ${table.getTableName()} ${table.getSetColumns()}`;
+        return `INSERT INTO ${table.getTableName()} ${table.getInsertColumns()}`;
     }
 }
 exports.DatabaseHelperService = DatabaseHelperService;
