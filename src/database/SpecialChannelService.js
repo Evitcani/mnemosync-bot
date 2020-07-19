@@ -66,7 +66,7 @@ let SpecialChannelService = SpecialChannelService_1 = class SpecialChannelServic
                 // Construct query.
                 let query = `INSERT INTO ${SpecialChannelService_1.TABLE_NAME} (guild_id, designation, channel_id) VALUES (${sanitizedGuildId}, ${channelDesignation}, ${sanitizedChannelId})`;
                 // Construct query.
-                return this.databaseService.query(query).then((res) => {
+                return this.databaseService.query(query).then(() => {
                     return this.getSpecialChannel(guildId, channelDesignation);
                 }).catch((err) => {
                     console.log("QUERY USED: " + query);
@@ -92,7 +92,7 @@ let SpecialChannelService = SpecialChannelService_1 = class SpecialChannelServic
             // Construct query.
             let query = `UPDATE ${SpecialChannelService_1.TABLE_NAME} SET channel_id = ${sanitizedChannelId} WHERE guild_id = ${sanitizedGuildId} AND designation = ${channelDesignation}`;
             // Construct query.
-            return this.databaseService.query(query).then((res) => {
+            return this.databaseService.query(query).then(() => {
                 return this.getSpecialChannel(guildId, channelDesignation);
             }).catch((err) => {
                 console.log("QUERY USED: " + query);

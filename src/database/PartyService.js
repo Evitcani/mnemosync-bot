@@ -25,12 +25,12 @@ exports.PartyService = void 0;
 const inversify_1 = require("inversify");
 const DatabaseService_1 = require("./base/DatabaseService");
 const types_1 = require("../types");
-const StringUtility_1 = require("../utilities/StringUtility");
 const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
 const Table_1 = require("../documentation/databases/Table");
 const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
 const Column_1 = require("../documentation/databases/Column");
 const DatabaseDivider_1 = require("../enums/DatabaseDivider");
+const DbTable_1 = require("../models/database/schema/DbTable");
 /**
  * The party service manager.
  */
@@ -45,10 +45,41 @@ let PartyService = class PartyService {
     }
     getPartiesInGuild(guildId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Sanitize inputs.
-            const sanitizedGuildId = StringUtility_1.StringUtility.escapeMySQLInput(guildId);
-            const query = `SELECT t1.id, t2.name FROM ${Table_1.Table.PARTY_TO_GUILD} t1 INNER JOIN ${Table_1.Table.PARTY} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
+            // Get the first table.
+            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD)
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.GUILD_ID, guildId).setSanitized(true));
+            // Get the second table.
+            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY)
+                .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null))
+                .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, null));
+            // Query.
+            const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, Column_1.Column.ID));
             // Construct query.
+            return this.getParties(query);
+        });
+    }
+    getPartiesInGuildWithName(guildId, partyName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Get the first table.
+            const t1 = new DbTable_1.DbTable(Table_1.Table.PARTY_TO_GUILD)
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.GUILD_ID, guildId).setSanitized(true));
+            // Get the second table.
+            const t2 = new DbTable_1.DbTable(Table_1.Table.PARTY)
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, partyName).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE))
+                .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null))
+                .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, null));
+            // Query.
+            const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, Column_1.Column.ID));
+            // Do the query.
+            return this.getParties(query);
+        });
+    }
+    /**
+     * Gets the parties with the given query.
+     * @param query
+     */
+    getParties(query) {
+        return __awaiter(this, void 0, void 0, function* () {
             return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {
                     return null;
@@ -71,8 +102,9 @@ let PartyService = class PartyService {
      */
     getParty(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const whereColumns = [new DbColumn_1.DbColumn(Column_1.Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE)];
-            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY, whereColumns);
+            const table = new DbTable_1.DbTable(Table_1.Table.PARTY)
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE));
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(table);
             // Construct query.
             return this.databaseService.query(query).then((res) => {
                 if (res.rowCount <= 0) {

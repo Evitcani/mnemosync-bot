@@ -29,6 +29,7 @@ const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
 const Table_1 = require("../documentation/databases/Table");
 const Column_1 = require("../documentation/databases/Column");
 const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
+const DbTable_1 = require("../models/database/schema/DbTable");
 /**
  * Service for managing calls to the database related to party funds.
  */
@@ -52,7 +53,9 @@ let PartyFundService = class PartyFundService {
             if (copper !== null) {
                 setColumns.push(new DbColumn_1.DbColumn(Column_1.Column.COPPER, copper));
             }
-            const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(Table_1.Table.PARTY_FUND, setColumns, [new DbColumn_1.DbColumn(Column_1.Column.ID, id)]);
+            // Creates the query.
+            const table = new DbTable_1.DbTable(Table_1.Table.PARTY_FUND).setSetColumns(setColumns).addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, id));
+            const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(table);
             console.log("Updating party funds with query: " + query);
             return this.databaseService.query(query).then(() => {
                 return this.getFundById(id);
@@ -65,16 +68,16 @@ let PartyFundService = class PartyFundService {
     }
     getFundById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, [new DbColumn_1.DbColumn(Column_1.Column.ID, id)]);
+            const table = new DbTable_1.DbTable(Table_1.Table.PARTY_FUND).addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, id));
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(table);
             return this.doGetFund(query);
         });
     }
     getFund(partyID, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            // columns
             const columns = [new DbColumn_1.DbColumn(Column_1.Column.TYPE, type).setSanitized(true), new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, partyID)];
-            // Construct query.
-            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(Table_1.Table.PARTY_FUND, columns);
+            const table = new DbTable_1.DbTable(Table_1.Table.PARTY_FUND).setWhereColumns(columns);
+            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(table);
             return this.doGetFund(query);
         });
     }

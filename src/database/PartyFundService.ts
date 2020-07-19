@@ -6,6 +6,7 @@ import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {Column} from "../documentation/databases/Column";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
+import {DbTable} from "../models/database/schema/DbTable";
 
 /**
  * Service for managing calls to the database related to party funds.
@@ -40,7 +41,9 @@ export class PartyFundService {
             setColumns.push(new DbColumn(Column.COPPER, copper));
         }
 
-        const query = DatabaseHelperService.doUpdateQuery(Table.PARTY_FUND, setColumns, [new DbColumn(Column.ID, id)]);
+        // Creates the query.
+        const table = new DbTable(Table.PARTY_FUND).setSetColumns(setColumns).addWhereColumns(new DbColumn(Column.ID, id));
+        const query = DatabaseHelperService.doUpdateQuery(table);
 
         console.log("Updating party funds with query: " + query);
 
@@ -54,16 +57,15 @@ export class PartyFundService {
     }
 
     async getFundById (id: number): Promise<PartyFund>{
-        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, [new DbColumn(Column.ID, id)]);
+        const table = new DbTable(Table.PARTY_FUND).addWhereColumns(new DbColumn(Column.ID, id));
+        const query = DatabaseHelperService.doSelectQuery(table);
         return this.doGetFund(query);
     }
 
     async getFund (partyID: number, type: string): Promise<PartyFund>{
-        // columns
         const columns = [new DbColumn(Column.TYPE, type).setSanitized(true), new DbColumn(Column.PARTY_ID, partyID)];
-
-        // Construct query.
-        const query = DatabaseHelperService.doSelectQuery(Table.PARTY_FUND, columns);
+        const table = new DbTable(Table.PARTY_FUND).setWhereColumns(columns);
+        const query = DatabaseHelperService.doSelectQuery(table);
         return this.doGetFund(query);
     }
 

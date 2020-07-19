@@ -1,45 +1,53 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseHelperService = void 0;
-const PartiesTable_1 = require("../../models/database/schema/PartiesTable");
 class DatabaseHelperService {
-    constructor() {
-        this.tables = DatabaseHelperService.createTables();
-    }
-    static doSelectQuery(tableName, whereColumns) {
-        return DatabaseHelperService.doBasicSelectQuery(tableName, "*", whereColumns);
-    }
-    static doSelectQueryWithColumns(tableName, selectColumns, whereColumns) {
-        return DatabaseHelperService.doBasicSelectQuery(tableName, DatabaseHelperService.turnToStr(selectColumns, ", "), whereColumns);
-    }
-    static doBasicSelectQuery(tableName, selectStr, whereColumns) {
-        let whereStr = DatabaseHelperService.turnToStr(whereColumns, " AND ");
-        return `SELECT ${selectStr} FROM ${tableName} WHERE ${whereStr}`;
-    }
-    static doUpdateQuery(tableName, setColumns, whereColumns) {
-        let setStr = DatabaseHelperService.turnToStr(setColumns, ", ");
-        let whereStr = DatabaseHelperService.turnToStr(whereColumns, " AND ");
-        return `UPDATE ${tableName} SET ${setStr} WHERE ${whereStr}`;
-    }
-    static createTables() {
-        const tables = new Map();
-        let table = new PartiesTable_1.PartiesTable();
-        tables.set(table.getTableName(), table);
-        return tables;
-    }
-    static turnToStr(columns, separator) {
-        let str = null, column, i;
-        for (i = 0; i < columns.length; i++) {
-            column = columns[i];
-            if (str == null) {
-                str = "";
-            }
-            else {
-                str += separator;
-            }
-            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
+    /**
+     * Creates a new select query.
+     *
+     * @param table
+     */
+    static doSelectQuery(table) {
+        let selectStr = table.getSelectColumns();
+        if (selectStr == null) {
+            selectStr = "*";
         }
-        return str;
+        return `SELECT ${selectStr} FROM ${table.getTableName()} WHERE ${table.getWhereColumns()}`;
+    }
+    static doUpdateQuery(table) {
+        return `UPDATE ${table.getTableName()} SET ${table.getSetColumns()} WHERE ${table.getWhereColumns()}`;
+    }
+    static do2JoinSelectQuery(t1Table, t2Table, onColumn) {
+        // Do select string.
+        let selectStr = t1Table.getSelectColumns();
+        if (selectStr == null) {
+            selectStr += "";
+        }
+        else {
+            selectStr += ", ";
+        }
+        selectStr += t2Table.getSelectColumns();
+        // Do where string.
+        let whereStr = t1Table.getWhereColumns();
+        if (whereStr == null) {
+            whereStr += "";
+        }
+        else {
+            whereStr += " AND ";
+        }
+        whereStr += t2Table.getWhereColumns();
+        // Do on string.
+        const onStr = `t1.${onColumn.getName()} = t2.${onColumn.getValue()}`;
+        return `SELECT ${selectStr} FROM ${t1Table.getTableName()} t1 INNER JOIN ${t2Table.getTableName()} t2 ON ` +
+            `${onStr} WHERE ${whereStr}`;
+    }
+    /**
+     * Creates the insert query.
+     *
+     * @param table The table to use. Only uses the "set" columns.
+     */
+    static doInsertQuery(table) {
+        return `INSERT INTO ${table.getTableName()} ${table.getSetColumns()}`;
     }
 }
 exports.DatabaseHelperService = DatabaseHelperService;

@@ -20,12 +20,13 @@ class CommandUtility {
         const baseCommand = args.shift();
         const command = this.getSubcommand(baseCommand);
         // Get the subcommands.
-        let subcommands = null;
+        let subcommands = null, subcommand;
         if (args.length > 0) {
-            subcommands = [];
+            subcommands = new Map();
             let i;
             for (i = 0; i < args.length; i++) {
-                subcommands.push(this.getSubcommand(args[i]));
+                subcommand = this.getSubcommand(args[i]);
+                subcommands.set(subcommand.getName(), subcommand);
             }
         }
         // Return the new command.

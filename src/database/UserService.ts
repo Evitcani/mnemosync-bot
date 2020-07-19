@@ -3,16 +3,25 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {StringUtility} from "../utilities/StringUtility";
 import {User} from "../models/database/User";
-import {Party} from "../models/database/Party";
+import {CharacterService} from "./CharacterService";
+import {DatabaseHelperService} from "./base/DatabaseHelperService";
+import {Table} from "../documentation/databases/Table";
+import {DbColumn} from "../models/database/schema/columns/DbColumn";
+import {Column} from "../documentation/databases/Column";
+import {DbTable} from "../models/database/schema/DbTable";
 
 @injectable()
 export class UserService {
     private static TABLE_NAME = "users";
     /** Connection to the database object. */
     private databaseService: DatabaseService;
+    /** Connection to the character service. */
+    private characterService: CharacterService;
 
-    constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService) {
+    constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService,
+                @inject(TYPES.CharacterService) characterService: CharacterService) {
         this.databaseService = databaseService;
+        this.characterService = characterService;
     }
 
     public async getUser(discordId: string, discordName: string): Promise<User> {
@@ -30,12 +39,36 @@ export class UserService {
             // @ts-ignore
             const result: User = res.rows[0];
 
+            // Do a small update of the user nickname if different, but don't wait on it.
+            if (discordName != result.discord_name) {
+                this.updateUserName(discordId, discordName);
+            }
+
             return result;
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
             console.log(err.stack);
             return null;
+        });
+    }
+
+    /**
+     * Gets the given user and their default character.
+     *
+     * @param discordId Discord ID of the user.
+     * @param discordName
+     */
+    public async getUserWithCharacter(discordId: string, discordName: string): Promise<User> {
+        return this.getUser(discordId, discordName).then((user) => {
+            if (user.character_id == null) {
+                return user;
+            }
+
+            return this.characterService.getCharacter(user.character_id).then((character) => {
+                user.character = character;
+                return user;
+            });
         });
     }
 
@@ -58,6 +91,53 @@ export class UserService {
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);
             console.log("ERROR: Could not get guilds. ::: " + err.message);
+            console.log(err.stack);
+            return null;
+        });
+    }
+
+    /**
+     * Updates the default character and gets the updated user.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     * @param characterId The ID of the character to set as the default.
+     */
+    public updateDefaultCharacter(discordId: string, discordName: string, characterId: number): Promise<User> {
+        const setColumns: DbColumn[] = [new DbColumn(Column.DEFAULT_CHARACTER_ID, characterId)];
+        return this.updateUser(discordId, discordName, setColumns);
+    }
+
+    /**
+     * Updates the user name for the given user.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     */
+    private updateUserName(discordId: string, discordName: string): Promise<User> {
+        const setColumns: DbColumn[] = [new DbColumn(Column.DISCORD_NAME, discordName).setSanitized(true)];
+        return this.updateUser(discordId, discordName, setColumns);
+    }
+
+    /**
+     * Update the user with the given information.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     * @param setColumns The things to update.
+     */
+    private updateUser(discordId: string, discordName: string, setColumns: DbColumn[]): Promise<User> {
+        // Create query.
+        const table = new DbTable(Table.USER)
+            .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true));
+        const query = DatabaseHelperService.doUpdateQuery(table);
+
+        // Do the query.
+        return this.databaseService.query(query).then(() => {
+            return this.getUserWithCharacter(discordId, discordName);
+        }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
+            console.log("ERROR: Could not update user's name. ::: " + err.message);
             console.log(err.stack);
             return null;
         });

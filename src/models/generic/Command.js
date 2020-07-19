@@ -10,6 +10,9 @@ class Command extends Subcommand_1.Subcommand {
         super(name, input);
         this.subcommands = subcommands;
     }
+    getSubcommands() {
+        return this.subcommands;
+    }
 }
 exports.Command = Command;
 //# sourceMappingURL=Command.js.map

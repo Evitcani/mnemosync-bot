@@ -5,10 +5,14 @@ import {Subcommand} from "./Subcommand";
  */
 export class Command extends Subcommand {
     /** A list of the subcommands in this command. */
-    protected subcommands: Subcommand[] | null;
+    protected readonly subcommands: Map<string, Subcommand> | null;
 
-    constructor(name: string, input: string | null, subcommands: Subcommand[] | null) {
+    constructor(name: string, input: string | null, subcommands: Map<string, Subcommand> | null) {
         super(name, input);
         this.subcommands = subcommands;
+    }
+
+    public getSubcommands(): Map<string, Subcommand> {
+        return this.subcommands;
     }
 }

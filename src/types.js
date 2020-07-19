@@ -16,6 +16,7 @@ exports.TYPES = {
     SpecialChannelService: Symbol("SpecialChannelService"),
     UserDefaultPartyService: Symbol("UserDefaultPartyService"),
     UserService: Symbol("UserService"),
+    UserToCharacterService: Symbol("UserToCharacterService"),
     UserToGuildService: Symbol("UserToGuildService"),
     BagCommandHandler: Symbol("BagCommandHandler"),
     CharacterCommandHandler: Symbol("CharacterCommandHandler"),

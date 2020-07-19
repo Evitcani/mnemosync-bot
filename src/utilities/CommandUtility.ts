@@ -23,12 +23,13 @@ export class CommandUtility {
         const command = this.getSubcommand(baseCommand);
 
         // Get the subcommands.
-        let subcommands: Subcommand[] = null;
+        let subcommands: Map<string, Subcommand> = null, subcommand: Subcommand;
         if (args.length > 0) {
-            subcommands = [];
+            subcommands = new Map<string, Subcommand>();
             let i: number;
             for (i = 0; i < args.length; i++) {
-                subcommands.push(this.getSubcommand(args[i]));
+                subcommand = this.getSubcommand(args[i]);
+                subcommands.set(subcommand.getName(), subcommand);
             }
         }
 
