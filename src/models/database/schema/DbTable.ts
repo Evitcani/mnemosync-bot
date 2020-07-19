@@ -168,7 +168,7 @@ export class DbTable {
                 colValue = `LOWER(${colValue})`;
             }
 
-            str += `${colName}}${column.getDivider()}${colValue}`;
+            str += `${colName}${column.getDivider()}${colValue}`;
         }
 
         return str;

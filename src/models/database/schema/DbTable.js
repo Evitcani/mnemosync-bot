@@ -137,7 +137,7 @@ class DbTable {
                 colName = `LOWER(${colName})`;
                 colValue = `LOWER(${colValue})`;
             }
-            str += `${colName}}${column.getDivider()}${colValue}`;
+            str += `${colName}${column.getDivider()}${colValue}`;
         }
         return str;
     }
