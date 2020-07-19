@@ -68,7 +68,6 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             if (nameCmd == null) {
                 return null;
             }
-            console.debug("Found name for character!");
             // Construct the character and add the name.
             const character = new class {
             };
@@ -78,7 +77,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             if (ptCmd != null) {
                 return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
                     .then((parties) => {
-                    if (parties.length > 1 || parties.length < 1) {
+                    if (parties == null || parties.length > 1 || parties.length < 1) {
                         return null;
                     }
                     const party = parties[0];

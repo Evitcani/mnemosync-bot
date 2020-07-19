@@ -67,6 +67,7 @@ export class PartyService {
      */
     private async getParties(query: string): Promise<Party[]> {
         return this.databaseService.query(query).then((res) => {
+            console.debug("QUERY USED: " + query);
             if (res.rowCount <= 0) {
                 return null;
             }
@@ -76,9 +77,9 @@ export class PartyService {
 
             return result;
         }).catch((err: Error) => {
-            console.log("QUERY USED: " + query);
-            console.log("ERROR: Could not get parties for the given guild. ::: " + err.message);
-            console.log(err.stack);
+            console.error("QUERY USED: " + query);
+            console.error("ERROR: Could not get parties for the given guild. ::: " + err.message);
+            console.error(err.stack);
             return null;
         });
     }

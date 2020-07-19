@@ -55,8 +55,6 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             return null;
         }
 
-        console.debug("Found name for character!");
-
         // Construct the character and add the name.
         const character: Character = new class implements Character {
             id: number;
@@ -72,7 +70,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         if (ptCmd != null) {
             return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
                 .then((parties) => {
-                    if (parties.length > 1 || parties.length < 1) {
+                    if (parties == null || parties.length > 1 || parties.length < 1) {
                         return null;
                     }
 
