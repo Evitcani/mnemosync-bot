@@ -70,7 +70,8 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         if (ptCmd != null) {
             return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
                 .then((parties) => {
-                    if (parties == null || parties.length > 1 || parties.length < 1) {
+                    if (parties == null || parties.length != 0) {
+                        console.debug("Found either no parties or too many parties!");
                         return null;
                     }
 
