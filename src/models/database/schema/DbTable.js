@@ -69,6 +69,9 @@ class DbTable {
         return this.turnToStr(this.whereColumns, " AND ");
     }
     static turnToStrInsert(columns) {
+        if (columns == null) {
+            return null;
+        }
         let names = null, values = null, i, column;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
@@ -90,6 +93,9 @@ class DbTable {
         return `(${names}) VALUES (${values})`;
     }
     turnSelectColumnsToStr() {
+        if (this.selectColumns == null) {
+            return null;
+        }
         let str = null, column, i;
         for (i = 0; i < this.selectColumns.length; i++) {
             column = this.selectColumns[i];
@@ -107,6 +113,9 @@ class DbTable {
         return str;
     }
     turnToStr(columns, separator) {
+        if (columns == null) {
+            return null;
+        }
         let str = null, column, i;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];

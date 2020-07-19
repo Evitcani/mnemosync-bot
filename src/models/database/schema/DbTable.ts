@@ -90,6 +90,10 @@ export class DbTable {
     }
 
     private static turnToStrInsert(columns: DbColumn[]): string {
+        if (columns == null) {
+            return null;
+        }
+
         let names = null, values = null, i: number, column: DbColumn;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
@@ -113,6 +117,10 @@ export class DbTable {
     }
 
     private turnSelectColumnsToStr(): string {
+        if (this.selectColumns == null) {
+            return null;
+        }
+
         let str = null, column: DbColumn, i: number;
         for (i = 0; i < this.selectColumns.length; i++) {
             column = this.selectColumns[i];
@@ -133,6 +141,9 @@ export class DbTable {
     }
 
     private turnToStr(columns: DbColumn[], separator: string): string {
+        if (columns == null) {
+            return null;
+        }
         let str = null, column: DbColumn, i: number;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
