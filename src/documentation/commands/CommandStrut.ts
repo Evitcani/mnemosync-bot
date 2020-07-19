@@ -24,6 +24,6 @@ export class CommandStrut {
             return cmd;
         }
 
-        return command.getSubcommands().get(this.shortenedName);
+        return this.shortenedName == null ? null : command.getSubcommands().get(this.shortenedName);
     }
 }

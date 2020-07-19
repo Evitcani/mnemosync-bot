@@ -5,6 +5,7 @@ class Table {
 }
 exports.Table = Table;
 Table.CHARACTER = "characters";
+Table.CHARACTER_TO_NICKNAME = "character_to_nickname";
 Table.PARTY = "parties";
 Table.PARTY_FUND = "party_funds";
 Table.PARTY_TO_GUILD = "party_to_guild";
