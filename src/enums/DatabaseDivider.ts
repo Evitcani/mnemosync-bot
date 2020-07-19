@@ -1,4 +1,4 @@
 export enum DatabaseDivider {
     DEFAULT = " = ",
-    LIKE = " LIKE "
+    LIKE = " COLLATE UTF8_GENERAL_CI LIKE "
 }
