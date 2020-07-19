@@ -122,6 +122,25 @@ let CharacterService = CharacterService_1 = class CharacterService {
             });
         });
     }
+    /**
+     * Gets the given user and their default character.
+     *
+     * @param discordId Discord ID of the user.
+     * @param discordName
+     */
+    getUserWithCharacter(discordId, discordName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userService.getUser(discordId, discordName).then((user) => {
+                if (user.character_id == null) {
+                    return user;
+                }
+                return this.getCharacter(user.character_id).then((character) => {
+                    user.character = character;
+                    return user;
+                });
+            });
+        });
+    }
     static convertTravelConfig(travelConfig) {
         const json = {};
         json[JSONField_1.JSONField.CAN_DRINK_WATER] = travelConfig.can_drink_water;
