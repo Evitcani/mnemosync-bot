@@ -21,11 +21,13 @@ export class UserToCharacterService {
      *
      * @param characterId
      * @param discordId
+     * @param name
      */
-    public async createNewMap(characterId: number, discordId: string): Promise<boolean> {
+    public async createNewMap(characterId: number, discordId: string, name: string): Promise<boolean> {
         const table = new DbTable(Table.USER_TO_CHARACTER)
             .addInsertColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true))
-            .addInsertColumns(new DbColumn(Column.CHARACTER_ID, characterId));
+            .addInsertColumns(new DbColumn(Column.CHARACTER_ID, characterId))
+            .addInsertColumns(new DbColumn(Column.NAME, name).setSanitized(true));
         const query = DatabaseHelperService.doInsertQuery(table);
 
         // Do the query.

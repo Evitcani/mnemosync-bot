@@ -64,14 +64,20 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     }
     constructCharacter(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            const nameCmd = CharacterCommandHandler.getNameCmd(command);
-            if (nameCmd == null) {
-                return null;
-            }
             // Construct the character and add the name.
             const character = new class {
             };
-            character.name = nameCmd.getInput();
+            // Set the character name
+            const nameCmd = CharacterCommandHandler.getNameCmd(command);
+            if (nameCmd != null) {
+                character.name = nameCmd.getInput();
+            }
+            // Set the image URL.
+            const imgCmd = Subcommands_1.Subcommands.IMG_URL.isCommand(command);
+            if (imgCmd != null) {
+                character.img_url = imgCmd.getInput();
+            }
+            // Start on the travel config.
             // See if we were given a party...
             const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
             if (ptCmd != null) {

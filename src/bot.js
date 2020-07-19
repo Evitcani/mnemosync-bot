@@ -28,7 +28,12 @@ let Bot = Bot_1 = class Bot {
     listen() {
         this.client.on('message', (message) => {
             const contents = message.content;
-            if (message.author.bot || contents.substr(0, Bot_1.PREFIX.length) !== Bot_1.PREFIX) {
+            //
+            if (message.author.bot) {
+                console.debug("Bot ID: " + message.author.id);
+                return;
+            }
+            if (contents.substr(0, Bot_1.PREFIX.length) !== Bot_1.PREFIX) {
                 return;
             }
             // Get the message sent.

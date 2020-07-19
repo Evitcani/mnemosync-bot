@@ -50,11 +50,6 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
     }
 
     private async constructCharacter(command: Command, message: Message): Promise<Character> {
-        const nameCmd = CharacterCommandHandler.getNameCmd(command);
-        if (nameCmd == null) {
-            return null;
-        }
-
         // Construct the character and add the name.
         const character: Character = new class implements Character {
             id: number;
@@ -63,7 +58,21 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             party_id: number;
             travel_config: TravelConfig;
         };
-        character.name = nameCmd.getInput();
+
+        // Set the character name
+        const nameCmd = CharacterCommandHandler.getNameCmd(command);
+        if (nameCmd != null) {
+            character.name = nameCmd.getInput();
+        }
+
+        // Set the image URL.
+        const imgCmd = Subcommands.IMG_URL.isCommand(command);
+        if (imgCmd != null) {
+            character.img_url = imgCmd.getInput();
+        }
+
+        // Start on the travel config.
+
 
         // See if we were given a party...
         const ptCmd = Subcommands.PARTY.isCommand(command);

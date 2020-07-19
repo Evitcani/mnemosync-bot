@@ -12,6 +12,7 @@ import {UserToCharacterService} from "./UserToCharacterService";
 import {UserService} from "./UserService";
 import {JSONField} from "../documentation/databases/JSONField";
 import {User} from "../models/database/User";
+import {DatabaseDivider} from "../enums/DatabaseDivider";
 
 @injectable()
 export class CharacterService {
@@ -64,6 +65,33 @@ export class CharacterService {
         });
     }
 
+    public async getCharacterByName(discordId: string, characterName: string): Promise<Character> {
+        // Create the column.
+        const t1 = new DbTable(Table.CHARACTER)
+            .addSelectColumns(new DbColumn(Column.ID, null));
+        const t2 = new DbTable(Table.CHARACTER)
+            .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true))
+            .addWhereColumns(new DbColumn(Column.NAME, characterName).setSanitized(true).setDivider(DatabaseDivider.LIKE));
+        const query = DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn(Column.ID, Column.CHARACTER_ID));
+
+        // Go out and do the query.
+        return this.databaseService.query(query).then((res) => {
+            // No results.
+            if (res.rowCount <= 0) {
+                return null;
+            }
+
+            // @ts-ignore Get the character from the results.
+            const id: number = res.rows[0];
+            return this.getCharacter(id);
+        }).catch((err: Error) => {
+            console.log("QUERY USED: " + query);
+            console.log("ERROR: Could not get guilds. ::: " + err.message);
+            console.log(err.stack);
+            return null;
+        });
+    }
+
     /**
      *
      * @param character The character
@@ -100,7 +128,7 @@ export class CharacterService {
             const character: Character = res.rows[0];
 
             // Now, we have to add the character to the mapping database.
-            return this.userToCharacterService.createNewMap(character.id, discordId).then((res) => {
+            return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
                 if (!res) {
                     // Something went wrong.
                     return null;

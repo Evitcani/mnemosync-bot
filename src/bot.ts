@@ -24,7 +24,13 @@ export class Bot {
     public listen(): Promise<string> {
         this.client.on('message', (message: Message) => {
             const contents = message.content;
-            if (message.author.bot || contents.substr(0, Bot.PREFIX.length) !== Bot.PREFIX) {
+            //
+            if (message.author.bot) {
+                console.debug("Bot ID: " + message.author.id);
+                return;
+            }
+
+            if (contents.substr(0, Bot.PREFIX.length) !== Bot.PREFIX) {
                 return;
             }
 

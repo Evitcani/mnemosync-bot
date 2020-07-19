@@ -17,7 +17,7 @@ class CommandStrut {
         if (cmd != null) {
             return cmd;
         }
-        return command.getSubcommands().get(this.shortenedName);
+        return this.shortenedName == null ? null : command.getSubcommands().get(this.shortenedName);
     }
 }
 exports.CommandStrut = CommandStrut;

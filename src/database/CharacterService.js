@@ -34,6 +34,7 @@ const DbTable_1 = require("../models/database/schema/DbTable");
 const UserToCharacterService_1 = require("./UserToCharacterService");
 const UserService_1 = require("./UserService");
 const JSONField_1 = require("../documentation/databases/JSONField");
+const DatabaseDivider_1 = require("../enums/DatabaseDivider");
 let CharacterService = CharacterService_1 = class CharacterService {
     constructor(databaseService, userService, userToCharacterService) {
         this.databaseService = databaseService;
@@ -72,6 +73,32 @@ let CharacterService = CharacterService_1 = class CharacterService {
             });
         });
     }
+    getCharacterByName(discordId, characterName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Create the column.
+            const t1 = new DbTable_1.DbTable(Table_1.Table.CHARACTER)
+                .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null));
+            const t2 = new DbTable_1.DbTable(Table_1.Table.CHARACTER)
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.DISCORD_ID, discordId).setSanitized(true))
+                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, characterName).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE));
+            const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.ID, Column_1.Column.CHARACTER_ID));
+            // Go out and do the query.
+            return this.databaseService.query(query).then((res) => {
+                // No results.
+                if (res.rowCount <= 0) {
+                    return null;
+                }
+                // @ts-ignore Get the character from the results.
+                const id = res.rows[0];
+                return this.getCharacter(id);
+            }).catch((err) => {
+                console.log("QUERY USED: " + query);
+                console.log("ERROR: Could not get guilds. ::: " + err.message);
+                console.log(err.stack);
+                return null;
+            });
+        });
+    }
     /**
      *
      * @param character The character
@@ -101,7 +128,7 @@ let CharacterService = CharacterService_1 = class CharacterService {
                 // @ts-ignore Get the character from the results.
                 const character = res.rows[0];
                 // Now, we have to add the character to the mapping database.
-                return this.userToCharacterService.createNewMap(character.id, discordId).then((res) => {
+                return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
                     if (!res) {
                         // Something went wrong.
                         return null;

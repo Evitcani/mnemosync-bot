@@ -39,12 +39,14 @@ let UserToCharacterService = class UserToCharacterService {
      *
      * @param characterId
      * @param discordId
+     * @param name
      */
-    createNewMap(characterId, discordId) {
+    createNewMap(characterId, discordId, name) {
         return __awaiter(this, void 0, void 0, function* () {
             const table = new DbTable_1.DbTable(Table_1.Table.USER_TO_CHARACTER)
                 .addInsertColumns(new DbColumn_1.DbColumn(Column_1.Column.DISCORD_ID, discordId).setSanitized(true))
-                .addInsertColumns(new DbColumn_1.DbColumn(Column_1.Column.CHARACTER_ID, characterId));
+                .addInsertColumns(new DbColumn_1.DbColumn(Column_1.Column.CHARACTER_ID, characterId))
+                .addInsertColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, name).setSanitized(true));
             const query = DatabaseHelperService_1.DatabaseHelperService.doInsertQuery(table);
             // Do the query.
             return this.databaseService.query(query).then(() => {
