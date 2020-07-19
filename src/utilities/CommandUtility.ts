@@ -30,6 +30,7 @@ export class CommandUtility {
             for (i = 0; i < args.length; i++) {
                 subcommand = this.getSubcommand(args[i]);
                 subcommands.set(subcommand.getName(), subcommand);
+
             }
         }
 
@@ -54,6 +55,8 @@ export class CommandUtility {
             input = input.replace(new RegExp("[" + this.charlist + "]+$"), "");
             input = input.replace(new RegExp("^[" + this.charlist + "]+"), "");
         }
+
+        console.debug(`COMMAND UTILITY ::: New subcommand '${cmd}': ${input}`);
 
         // Return the subcommand.
         return new Subcommand(cmd, input);

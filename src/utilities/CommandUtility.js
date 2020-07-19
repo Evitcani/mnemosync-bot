@@ -47,6 +47,7 @@ class CommandUtility {
             input = input.replace(new RegExp("[" + this.charlist + "]+$"), "");
             input = input.replace(new RegExp("^[" + this.charlist + "]+"), "");
         }
+        console.debug(`COMMAND UTILITY ::: New subcommand '${cmd}': ${input}`);
         // Return the subcommand.
         return new Subcommand_1.Subcommand(cmd, input);
     }
