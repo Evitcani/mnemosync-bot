@@ -34,6 +34,10 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
      * @param character The character to create.
      */
     private async createCharacter(message: Message, character: Character): Promise<Message | Message[]> {
+        if (character == null || character.name == null) {
+            return message.channel.send("You must provide a name for the character!");
+        }
+
         return this.characterService.createCharacter(character, message.author.id, message.author.username)
             .then((character) => {
                 return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
@@ -61,11 +65,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         if (ptCmd != null) {
             return
         }
-
-
     }
-
-
 
     private static getNameCmd(command: Command): Subcommand {
         let nameCmd: Subcommand = Subcommands.CREATE.isCommand(command);
