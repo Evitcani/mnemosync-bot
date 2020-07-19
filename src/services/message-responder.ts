@@ -8,20 +8,24 @@ import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
 import {HelpCommandHandler} from "../command-handlers/HelpCommandHandler";
 import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
 import {Commands} from "../documentation/commands/Commands";
+import {CharacterCommandHandler} from "../command-handlers/CharacterCommandHandler";
 
 @injectable()
 export class MessageResponder {
+    private characterCommandHandler: CharacterCommandHandler;
     private helpCommandHandler: HelpCommandHandler;
     private partyFundCommandHandler: PartyFundCommandHandler;
     private quoteCommandHandler: QuoteCommandHandler;
     private registerUserCommandHandler: RegisterCommandHandler;
     private whichCommandHandler: WhichCommandHandler;
 
-    constructor(@inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
+    constructor(@inject(TYPES.CharacterCommandHandler) characterCommandHandler: CharacterCommandHandler,
+                @inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
                 @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
                 @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterCommandHandler,
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler) {
+        this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
@@ -48,6 +52,8 @@ export class MessageResponder {
                     message.delete({reason: "Bank command deletion."});
                     return msg;
                 });
+            case Commands.CHARACTER:
+                return this.characterCommandHandler.handleCommand(command, message);
             case Commands.FUND:
                 return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
                     message.delete({reason: "Fund command deletion."});
