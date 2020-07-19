@@ -28,9 +28,18 @@ let Bot = Bot_1 = class Bot {
     listen() {
         this.client.on('message', (message) => {
             const contents = message.content;
-            //
+            // We connect with Avrae.
             if (message.author.bot) {
-                console.debug("Bot ID: " + message.author.id);
+                if (message.author.id == Bot_1.AVRAE_BOT_ID) {
+                    console.debug("Saw command from Avrae...");
+                    const fields = message.embeds[0].fields;
+                    let field, i;
+                    for (i = 0; i < fields.length; i++) {
+                        field = fields[i];
+                        console.debug("NAME: " + field.name + "\nVALUE: " + field.value);
+                    }
+                    return;
+                }
                 return;
             }
             if (contents.substr(0, Bot_1.PREFIX.length) !== Bot_1.PREFIX) {
@@ -47,6 +56,7 @@ let Bot = Bot_1 = class Bot {
         return this.client.login(this.token);
     }
 };
+Bot.AVRAE_BOT_ID = "261302296103747584";
 Bot.PREFIX = "$";
 Bot.PREFIX_SUBCOMMAND = "~";
 Bot = Bot_1 = __decorate([
