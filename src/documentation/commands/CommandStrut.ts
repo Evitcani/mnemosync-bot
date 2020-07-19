@@ -19,6 +19,7 @@ export class CommandStrut {
     }
 
     public isCommand(command: Command): Subcommand {
+        console.debug("SUBCOMMAND STRUT ::: Checking if command is '" + this.name + "'");
         let cmd = command.getSubcommands().get(this.name);
         if (cmd != null) {
             return cmd;

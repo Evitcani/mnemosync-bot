@@ -51,6 +51,9 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
      */
     createCharacter(message, character) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (character == null || character.name == null) {
+                return message.channel.send("You must provide a name for the character!");
+            }
             return this.characterService.createCharacter(character, message.author.id, message.author.username)
                 .then((character) => {
                 return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
