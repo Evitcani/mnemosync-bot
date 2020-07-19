@@ -77,6 +77,8 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
 
                     const party: Party = parties[0];
                     character.party_id = party.id;
+
+                    return character;
                 });
         }
 

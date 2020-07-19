@@ -83,6 +83,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                     }
                     const party = parties[0];
                     character.party_id = party.id;
+                    return character;
                 });
             }
             return character;
