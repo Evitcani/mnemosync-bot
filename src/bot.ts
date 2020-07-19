@@ -7,6 +7,7 @@ import {CommandUtility} from "./utilities/CommandUtility";
 @injectable()
 export class Bot {
     public static PREFIX: string = "$";
+    public static PREFIX_SUBCOMMAND: string = "~";
     private client: Client;
     private readonly token: string;
     private messageResponder: MessageResponder;

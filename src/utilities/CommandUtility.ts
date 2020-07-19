@@ -16,7 +16,8 @@ export class CommandUtility {
      */
     static processCommands (message: string): Command {
         // Split the args.
-        const args = message.substr(Bot.PREFIX.length).split("--");
+        const args = message.substr(Bot.PREFIX.length).split(Bot.PREFIX_SUBCOMMAND);
+
 
         // Get the base command.
         const baseCommand = args.shift();

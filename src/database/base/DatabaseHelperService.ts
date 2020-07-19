@@ -24,7 +24,7 @@ export class DatabaseHelperService {
         // Do select string.
         let selectStr = t1Table.getSelectColumns();
         if (selectStr == null) {
-            selectStr += "";
+            selectStr = "";
         } else {
             selectStr += ", "
         }
@@ -33,7 +33,7 @@ export class DatabaseHelperService {
         // Do where string.
         let whereStr = t1Table.getWhereColumns();
         if (whereStr == null) {
-            whereStr += "";
+            whereStr = "";
         } else {
             whereStr += " AND "
         }

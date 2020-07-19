@@ -43,6 +43,7 @@ let Bot = Bot_1 = class Bot {
     }
 };
 Bot.PREFIX = "$";
+Bot.PREFIX_SUBCOMMAND = "~";
 Bot = Bot_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.Client)),
