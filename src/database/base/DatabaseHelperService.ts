@@ -1,55 +1,57 @@
-import {AbstractTable} from "../../models/database/schema/AbstractTable";
-import {PartiesTable} from "../../models/database/schema/PartiesTable";
 import {DbColumn} from "../../models/database/schema/columns/DbColumn";
+import {DbTable} from "../../models/database/schema/DbTable";
 
 export class DatabaseHelperService {
-    private tables: Map<string, AbstractTable>;
 
-    constructor() {
-        this.tables = DatabaseHelperService.createTables();
-    }
-
-    public static doSelectQuery(tableName: string, whereColumns: DbColumn[]) {
-        return DatabaseHelperService.doBasicSelectQuery(tableName, "*", whereColumns);
-    }
-
-    public static doSelectQueryWithColumns(tableName: string, selectColumns: DbColumn[], whereColumns: DbColumn[]): string {
-        return DatabaseHelperService.doBasicSelectQuery(tableName, DatabaseHelperService.turnToStr(selectColumns, ", "), whereColumns);
-    }
-
-    private static doBasicSelectQuery (tableName: string, selectStr: string, whereColumns: DbColumn[]): string {
-        let whereStr = DatabaseHelperService.turnToStr(whereColumns, " AND ");
-        return `SELECT ${selectStr} FROM ${tableName} WHERE ${whereStr}`;
-    }
-
-    public static doUpdateQuery (tableName: string, setColumns: DbColumn[], whereColumns: DbColumn[]): string {
-        let setStr = DatabaseHelperService.turnToStr(setColumns, ", ");
-        let whereStr = DatabaseHelperService.turnToStr(whereColumns, " AND ");
-        return `UPDATE ${tableName} SET ${setStr} WHERE ${whereStr}`;
-    }
-
-    private static createTables(): Map<string, AbstractTable> {
-        const tables: Map<string, AbstractTable> = new Map<string, AbstractTable>();
-
-        let table = new PartiesTable();
-        tables.set(table.getTableName(), table);
-
-        return tables;
-    }
-
-    private static turnToStr(columns: DbColumn[], separator: string): string {
-        let str = null, column: DbColumn, i: number;
-        for (i = 0; i < columns.length; i++) {
-            column = columns[i];
-            if (str == null) {
-                str = "";
-            } else {
-                str += separator;
-            }
-
-            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
+    /**
+     * Creates a new select query.
+     *
+     * @param table
+     */
+    public static doSelectQuery (table: DbTable): string {
+        let selectStr = table.getSelectColumns();
+        if (selectStr == null) {
+            selectStr = "*";
         }
+        return `SELECT ${selectStr} FROM ${table.getTableName()} WHERE ${table.getWhereColumns()}`;
+    }
 
-        return str;
+    public static doUpdateQuery (table: DbTable): string {
+        return `UPDATE ${table.getTableName()} SET ${table.getSetColumns()} WHERE ${table.getWhereColumns()}`;
+    }
+
+    public static do2JoinSelectQuery(t1Table: DbTable, t2Table: DbTable, onColumn: DbColumn): string {
+        // Do select string.
+        let selectStr = t1Table.getSelectColumns();
+        if (selectStr == null) {
+            selectStr += "";
+        } else {
+            selectStr += ", "
+        }
+        selectStr += t2Table.getSelectColumns();
+
+        // Do where string.
+        let whereStr = t1Table.getWhereColumns();
+        if (whereStr == null) {
+            whereStr += "";
+        } else {
+            whereStr += " AND "
+        }
+        whereStr += t2Table.getWhereColumns();
+
+        // Do on string.
+        const onStr = `t1.${onColumn.getName()} = t2.${onColumn.getValue()}`;
+
+        return `SELECT ${selectStr} FROM ${t1Table.getTableName()} t1 INNER JOIN ${t2Table.getTableName()} t2 ON ` +
+                `${onStr} WHERE ${whereStr}`;
+    }
+
+    /**
+     * Creates the insert query.
+     *
+     * @param table The table to use. Only uses the "set" columns.
+     */
+    public static doInsertQuery(table: DbTable): string {
+        return `INSERT INTO ${table.getTableName()} ${table.getSetColumns()}`;
     }
 }

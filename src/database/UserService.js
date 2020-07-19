@@ -27,9 +27,16 @@ const DatabaseService_1 = require("./base/DatabaseService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const StringUtility_1 = require("../utilities/StringUtility");
+const CharacterService_1 = require("./CharacterService");
+const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
+const Table_1 = require("../documentation/databases/Table");
+const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
+const Column_1 = require("../documentation/databases/Column");
+const DbTable_1 = require("../models/database/schema/DbTable");
 let UserService = UserService_1 = class UserService {
-    constructor(databaseService) {
+    constructor(databaseService, characterService) {
         this.databaseService = databaseService;
+        this.characterService = characterService;
     }
     getUser(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -43,12 +50,35 @@ let UserService = UserService_1 = class UserService {
                 }
                 // @ts-ignore
                 const result = res.rows[0];
+                // Do a small update of the user nickname if different, but don't wait on it.
+                if (discordName != result.discord_name) {
+                    this.updateUserName(discordId, discordName);
+                }
                 return result;
             }).catch((err) => {
                 console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not get guilds. ::: " + err.message);
                 console.log(err.stack);
                 return null;
+            });
+        });
+    }
+    /**
+     * Gets the given user and their default character.
+     *
+     * @param discordId Discord ID of the user.
+     * @param discordName
+     */
+    getUserWithCharacter(discordId, discordName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getUser(discordId, discordName).then((user) => {
+                if (user.character_id == null) {
+                    return user;
+                }
+                return this.characterService.getCharacter(user.character_id).then((character) => {
+                    user.character = character;
+                    return user;
+                });
             });
         });
     }
@@ -75,12 +105,57 @@ let UserService = UserService_1 = class UserService {
             });
         });
     }
+    /**
+     * Updates the default character and gets the updated user.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     * @param characterId The ID of the character to set as the default.
+     */
+    updateDefaultCharacter(discordId, discordName, characterId) {
+        const setColumns = [new DbColumn_1.DbColumn(Column_1.Column.DEFAULT_CHARACTER_ID, characterId)];
+        return this.updateUser(discordId, discordName, setColumns);
+    }
+    /**
+     * Updates the user name for the given user.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     */
+    updateUserName(discordId, discordName) {
+        const setColumns = [new DbColumn_1.DbColumn(Column_1.Column.DISCORD_NAME, discordName).setSanitized(true)];
+        return this.updateUser(discordId, discordName, setColumns);
+    }
+    /**
+     * Update the user with the given information.
+     *
+     * @param discordId The discord ID of the user.
+     * @param discordName The discord name of the user.
+     * @param setColumns The things to update.
+     */
+    updateUser(discordId, discordName, setColumns) {
+        // Create query.
+        const table = new DbTable_1.DbTable(Table_1.Table.USER)
+            .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.DISCORD_ID, discordId).setSanitized(true));
+        const query = DatabaseHelperService_1.DatabaseHelperService.doUpdateQuery(table);
+        // Do the query.
+        return this.databaseService.query(query).then(() => {
+            return this.getUserWithCharacter(discordId, discordName);
+        }).catch((err) => {
+            console.log("QUERY USED: " + query);
+            console.log("ERROR: Could not update user's name. ::: " + err.message);
+            console.log(err.stack);
+            return null;
+        });
+    }
 };
 UserService.TABLE_NAME = "users";
 UserService = UserService_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
-    __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])
+    __param(1, inversify_1.inject(types_1.TYPES.CharacterService)),
+    __metadata("design:paramtypes", [DatabaseService_1.DatabaseService,
+        CharacterService_1.CharacterService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=UserService.js.map

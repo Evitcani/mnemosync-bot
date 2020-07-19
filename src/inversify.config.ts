@@ -22,6 +22,7 @@ import {CharacterService} from "./database/CharacterService";
 import {BagCommandHandler} from "./command-handlers/BagCommandHandler";
 import {CharacterCommandHandler} from "./command-handlers/CharacterCommandHandler";
 import {TravelCommandHandler} from "./command-handlers/TravelCommandHandler";
+import {UserToCharacterService} from "./database/UserToCharacterService";
 
 let container = new Container();
 
@@ -41,6 +42,7 @@ container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialCha
 container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService).inSingletonScope();
 container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
+container.bind<UserToCharacterService>(TYPES.UserToCharacterService).to(UserToCharacterService).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();
 container.bind<CharacterCommandHandler>(TYPES.CharacterCommandHandler).to(CharacterCommandHandler).inSingletonScope();

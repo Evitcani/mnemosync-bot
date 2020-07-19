@@ -4,7 +4,6 @@ import {TYPES} from "../types";
 import {StringUtility} from "../utilities/StringUtility";
 import {SpecialChannel} from "../models/database/SpecialChannel";
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
-import {Party} from "../models/database/Party";
 
 @injectable()
 export class SpecialChannelService {
@@ -56,7 +55,7 @@ export class SpecialChannelService {
             let query = `INSERT INTO ${SpecialChannelService.TABLE_NAME} (guild_id, designation, channel_id) VALUES (${sanitizedGuildId}, ${channelDesignation}, ${sanitizedChannelId})`;
 
             // Construct query.
-            return this.databaseService.query(query).then((res) => {
+            return this.databaseService.query(query).then(() => {
                 return this.getSpecialChannel(guildId, channelDesignation);
             }).catch((err: Error) => {
                 console.log("QUERY USED: " + query);
@@ -83,7 +82,7 @@ export class SpecialChannelService {
         let query = `UPDATE ${SpecialChannelService.TABLE_NAME} SET channel_id = ${sanitizedChannelId} WHERE guild_id = ${sanitizedGuildId} AND designation = ${channelDesignation}`;
 
         // Construct query.
-        return this.databaseService.query(query).then((res) => {
+        return this.databaseService.query(query).then(() => {
             return this.getSpecialChannel(guildId, channelDesignation);
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);

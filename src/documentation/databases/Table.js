@@ -10,6 +10,7 @@ Table.PARTY_FUND = "party_funds";
 Table.PARTY_TO_GUILD = "party_to_guild";
 Table.SPECIAL_CHANNEL = "special_channels";
 Table.USER = "users";
+Table.USER_TO_CHARACTER = "user_to_character";
 Table.USER_DEFAULT_PARTY = "user_default_parties";
 Table.USER_TO_GUILD = "user_to_guild";
 //# sourceMappingURL=Table.js.map

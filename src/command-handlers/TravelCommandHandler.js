@@ -20,6 +20,16 @@ class TravelCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandl
             return undefined;
         });
     }
+    /**
+     * Gets all party members in the given party.
+     *
+     * @param partyId The party ID to fetch all the members of.
+     */
+    getPartyMembers(partyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return undefined;
+        });
+    }
 }
 exports.TravelCommandHandler = TravelCommandHandler;
 //# sourceMappingURL=TravelCommandHandler.js.map

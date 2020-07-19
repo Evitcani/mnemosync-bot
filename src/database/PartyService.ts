@@ -2,12 +2,12 @@ import {inject, injectable} from "inversify";
 import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
 import {Party} from "../models/database/Party";
-import {StringUtility} from "../utilities/StringUtility";
 import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
 import {Column} from "../documentation/databases/Column";
 import {DatabaseDivider} from "../enums/DatabaseDivider";
+import {DbTable} from "../models/database/schema/DbTable";
 
 /**
  * The party service manager.
@@ -27,12 +27,45 @@ export class PartyService {
     }
 
     public async getPartiesInGuild (guildId: string): Promise<Party[]> {
-        // Sanitize inputs.
-        const sanitizedGuildId = StringUtility.escapeMySQLInput(guildId);
+        // Get the first table.
+        const t1 = new DbTable(Table.PARTY_TO_GUILD)
+            .addWhereColumns(new DbColumn(Column.GUILD_ID, guildId).setSanitized(true));
 
-        const query = `SELECT t1.id, t2.name FROM ${Table.PARTY_TO_GUILD} t1 INNER JOIN ${Table.PARTY} t2 ON t1.party_id = t2.id WHERE t1.guild_id = ${sanitizedGuildId}`;
+        // Get the second table.
+        const t2 = new DbTable(Table.PARTY)
+            .addSelectColumns(new DbColumn(Column.ID, null))
+            .addSelectColumns(new DbColumn(Column.NAME, null));
+
+        // Query.
+        const query = DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn(Column.PARTY_ID, Column.ID));
 
         // Construct query.
+        return this.getParties(query);
+    }
+
+    public async getPartiesInGuildWithName(guildId: string, partyName: string): Promise<Party[]> {
+        // Get the first table.
+        const t1 = new DbTable(Table.PARTY_TO_GUILD)
+            .addWhereColumns(new DbColumn(Column.GUILD_ID, guildId).setSanitized(true));
+
+        // Get the second table.
+        const t2 = new DbTable(Table.PARTY)
+            .addWhereColumns(new DbColumn(Column.NAME, partyName).setSanitized(true).setDivider(DatabaseDivider.LIKE))
+            .addSelectColumns(new DbColumn(Column.ID, null))
+            .addSelectColumns(new DbColumn(Column.NAME, null));
+
+        // Query.
+        const query = DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn(Column.PARTY_ID, Column.ID));
+
+        // Do the query.
+        return this.getParties(query);
+    }
+
+    /**
+     * Gets the parties with the given query.
+     * @param query
+     */
+    private async getParties(query: string): Promise<Party[]> {
         return this.databaseService.query(query).then((res) => {
             if (res.rowCount <= 0) {
                 return null;
@@ -56,8 +89,9 @@ export class PartyService {
      * @param name
      */
     async getParty (name: string): Promise<Party>{
-        const whereColumns = [new DbColumn(Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider.LIKE)];
-        const query = DatabaseHelperService.doSelectQuery(Table.PARTY, whereColumns);
+        const table = new DbTable(Table.PARTY)
+            .addWhereColumns(new DbColumn(Column.NAME, name).setSanitized(true).setDivider(DatabaseDivider.LIKE));
+        const query = DatabaseHelperService.doSelectQuery(table);
 
         // Construct query.
         return this.databaseService.query(query).then((res) => {
