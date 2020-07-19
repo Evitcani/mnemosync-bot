@@ -1,4 +1,5 @@
 import {DbColumn} from "./columns/DbColumn";
+import {DatabaseDivider} from "../../../enums/DatabaseDivider";
 
 export class DbTable {
     private designation: number;
@@ -145,6 +146,7 @@ export class DbTable {
             return null;
         }
         let str = null, column: DbColumn, i: number;
+        let colName: string, colValue:string;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
             if (str == null) {
@@ -153,11 +155,20 @@ export class DbTable {
                 str += separator;
             }
 
+            colName = column.getName();
+            colValue = column.getValue();
+
             if (this.designation != null) {
-                str += `t${this.designation}.`;
+                colName = `t${this.designation}.${colName}`;
             }
 
-            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
+            // Must add the lower designation.
+            if (column.getDivider() == DatabaseDivider.LIKE) {
+                colName = `LOWER(${colName})`;
+                colValue = `LOWER(${colValue})`;
+            }
+
+            str += `${colName}}${column.getDivider()}${colValue}`;
         }
 
         return str;

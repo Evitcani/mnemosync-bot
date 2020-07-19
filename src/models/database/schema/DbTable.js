@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DbTable = void 0;
+const DatabaseDivider_1 = require("../../../enums/DatabaseDivider");
 class DbTable {
     constructor(tableName) {
         this.tableName = tableName;
@@ -117,6 +118,7 @@ class DbTable {
             return null;
         }
         let str = null, column, i;
+        let colName, colValue;
         for (i = 0; i < columns.length; i++) {
             column = columns[i];
             if (str == null) {
@@ -125,10 +127,17 @@ class DbTable {
             else {
                 str += separator;
             }
+            colName = column.getName();
+            colValue = column.getValue();
             if (this.designation != null) {
-                str += `t${this.designation}.`;
+                colName = `t${this.designation}.${colName}`;
             }
-            str += `${column.getName()}${column.getDivider()}${column.getValue()}`;
+            // Must add the lower designation.
+            if (column.getDivider() == DatabaseDivider_1.DatabaseDivider.LIKE) {
+                colName = `LOWER(${colName})`;
+                colValue = `LOWER(${colValue})`;
+            }
+            str += `${colName}}${column.getDivider()}${colValue}`;
         }
         return str;
     }
