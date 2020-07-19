@@ -13,7 +13,6 @@ class CommandStrut {
         return this._shortenedName;
     }
     isCommand(command) {
-        console.debug("SUBCOMMAND STRUT ::: Checking if command is '" + this.name + "'");
         let cmd = command.getSubcommands().get(this.name);
         if (cmd != null) {
             return cmd;

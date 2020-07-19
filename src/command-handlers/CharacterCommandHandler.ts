@@ -9,17 +9,22 @@ import {inject} from "inversify";
 import {TYPES} from "../types";
 import {CharacterService} from "../database/CharacterService";
 import {CharacterRelatedClientResponses} from "../documentation/client-responses/CharacterRelatedClientResponses";
+import {PartyService} from "../database/PartyService";
+import {Party} from "../models/database/Party";
 
 export class CharacterCommandHandler extends AbstractCommandHandler {
     private characterService: CharacterService;
+    private partyService: PartyService;
 
-    constructor(@inject(TYPES.CharacterService) characterService: CharacterService) {
+    constructor(@inject(TYPES.CharacterService) characterService: CharacterService,
+                @inject(TYPES.PartyService) partyService: PartyService) {
         super();
         this.characterService = characterService;
+        this.partyService = partyService;
     }
 
     async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
-        return CharacterCommandHandler.constructCharacter(command).then((character) => {
+        return this.constructCharacter(command, message).then((character) => {
             if (Subcommands.CREATE.isCommand(command) != null) {
                 return this.createCharacter(message, character);
             }
@@ -44,11 +49,13 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             });
     }
 
-    private static async constructCharacter(command: Command): Promise<Character> {
+    private async constructCharacter(command: Command, message: Message): Promise<Character> {
         const nameCmd = CharacterCommandHandler.getNameCmd(command);
         if (nameCmd == null) {
             return null;
         }
+
+        console.debug("Found name for character!");
 
         // Construct the character and add the name.
         const character: Character = new class implements Character {
@@ -63,8 +70,19 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         // See if we were given a party...
         const ptCmd = Subcommands.PARTY.isCommand(command);
         if (ptCmd != null) {
-            return
+            return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
+                .then((parties) => {
+                    if (parties.length > 1) {
+
+                        return null;
+                    }
+
+                    const party: Party = parties[0];
+                    character.party_id = party.id;
+                });
         }
+
+        return character;
     }
 
     private static getNameCmd(command: Command): Subcommand {

@@ -28,14 +28,16 @@ const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const CharacterService_1 = require("../database/CharacterService");
 const CharacterRelatedClientResponses_1 = require("../documentation/client-responses/CharacterRelatedClientResponses");
+const PartyService_1 = require("../database/PartyService");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(characterService) {
+    constructor(characterService, partyService) {
         super();
         this.characterService = characterService;
+        this.partyService = partyService;
     }
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return CharacterCommandHandler.constructCharacter(command).then((character) => {
+            return this.constructCharacter(command, message).then((character) => {
                 if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
                     return this.createCharacter(message, character);
                 }
@@ -60,12 +62,13 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             });
         });
     }
-    static constructCharacter(command) {
+    constructCharacter(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             const nameCmd = CharacterCommandHandler.getNameCmd(command);
             if (nameCmd == null) {
                 return null;
             }
+            console.debug("Found name for character!");
             // Construct the character and add the name.
             const character = new class {
             };
@@ -73,8 +76,16 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             // See if we were given a party...
             const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
             if (ptCmd != null) {
-                return;
+                return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
+                    .then((parties) => {
+                    if (parties.length > 1) {
+                        return null;
+                    }
+                    const party = parties[0];
+                    character.party_id = party.id;
+                });
             }
+            return character;
         });
     }
     static getNameCmd(command) {
@@ -95,7 +106,9 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
 };
 CharacterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.CharacterService)),
-    __metadata("design:paramtypes", [CharacterService_1.CharacterService])
+    __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
+    __metadata("design:paramtypes", [CharacterService_1.CharacterService,
+        PartyService_1.PartyService])
 ], CharacterCommandHandler);
 exports.CharacterCommandHandler = CharacterCommandHandler;
 //# sourceMappingURL=CharacterCommandHandler.js.map
