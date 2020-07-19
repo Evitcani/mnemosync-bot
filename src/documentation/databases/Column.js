@@ -11,5 +11,6 @@ Column.PARTY_ID = "party_id";
 Column.PLATINUM = "platinum";
 Column.NAME = "name";
 Column.SILVER = "silver";
+Column.TRAVEL_CONFIG = "travel_config";
 Column.TYPE = "type";
 //# sourceMappingURL=Column.js.map

@@ -6,6 +6,7 @@ export const TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
 
+    CharacterService: Symbol("CharacterService"),
     DatabaseService: Symbol("DatabaseService"),
     PartyFundService: Symbol("PartyFundService"),
     PartyService: Symbol("PartyService"),
@@ -15,9 +16,12 @@ export const TYPES = {
     UserService: Symbol("UserService"),
     UserToGuildService: Symbol("UserToGuildService"),
 
+    BagCommandHandler: Symbol("BagCommandHandler"),
+    CharacterCommandHandler: Symbol("CharacterCommandHandler"),
     HelpCommandHandler: Symbol("HelpCommandHandler"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     QuoteCommandHandler: Symbol("QuoteCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
+    TravelCommandHandler: Symbol("TravelCommandHandler"),
     WhichCommandHandler: Symbol("WhichCommandHandler"),
 };

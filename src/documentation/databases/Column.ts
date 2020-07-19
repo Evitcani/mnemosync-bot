@@ -6,5 +6,6 @@ export class Column {
     public static PLATINUM = "platinum";
     public static NAME = "name";
     public static SILVER = "silver";
+    public static TRAVEL_CONFIG = "travel_config";
     public static TYPE = "type";
 }

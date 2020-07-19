@@ -1,4 +1,5 @@
 export class Table {
+    public static CHARACTER = "characters";
     public static PARTY = "parties";
     public static PARTY_FUND = "party_funds";
     public static PARTY_TO_GUILD = "party_to_guild";
