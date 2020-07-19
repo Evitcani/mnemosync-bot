@@ -11,6 +11,7 @@ import {DbTable} from "../models/database/schema/DbTable";
 import {UserToCharacterService} from "./UserToCharacterService";
 import {UserService} from "./UserService";
 import {JSONField} from "../documentation/databases/JSONField";
+import {User} from "../models/database/User";
 
 @injectable()
 export class CharacterService {
@@ -119,6 +120,25 @@ export class CharacterService {
             console.log("ERROR: Could not create the character. ::: " + err.message);
             console.log(err.stack);
             return null;
+        });
+    }
+
+    /**
+     * Gets the given user and their default character.
+     *
+     * @param discordId Discord ID of the user.
+     * @param discordName
+     */
+    public async getUserWithCharacter(discordId: string, discordName: string): Promise<User> {
+        return this.userService.getUser(discordId, discordName).then((user) => {
+            if (user.character_id == null) {
+                return user;
+            }
+
+            return this.getCharacter(user.character_id).then((character) => {
+                user.character = character;
+                return user;
+            });
         });
     }
 

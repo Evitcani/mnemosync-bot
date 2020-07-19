@@ -3,7 +3,6 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {StringUtility} from "../utilities/StringUtility";
 import {User} from "../models/database/User";
-import {CharacterService} from "./CharacterService";
 import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
@@ -15,13 +14,9 @@ export class UserService {
     private static TABLE_NAME = "users";
     /** Connection to the database object. */
     private databaseService: DatabaseService;
-    /** Connection to the character service. */
-    private characterService: CharacterService;
 
-    constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService,
-                @inject(TYPES.CharacterService) characterService: CharacterService) {
+    constructor(@inject(TYPES.DatabaseService) databaseService: DatabaseService) {
         this.databaseService = databaseService;
-        this.characterService = characterService;
     }
 
     public async getUser(discordId: string, discordName: string): Promise<User> {
@@ -53,24 +48,7 @@ export class UserService {
         });
     }
 
-    /**
-     * Gets the given user and their default character.
-     *
-     * @param discordId Discord ID of the user.
-     * @param discordName
-     */
-    public async getUserWithCharacter(discordId: string, discordName: string): Promise<User> {
-        return this.getUser(discordId, discordName).then((user) => {
-            if (user.character_id == null) {
-                return user;
-            }
 
-            return this.characterService.getCharacter(user.character_id).then((character) => {
-                user.character = character;
-                return user;
-            });
-        });
-    }
 
     /**
      * Registers a party to a given guild.
@@ -134,7 +112,7 @@ export class UserService {
 
         // Do the query.
         return this.databaseService.query(query).then(() => {
-            return this.getUserWithCharacter(discordId, discordName);
+            return this.getUser(discordId, discordName);
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);
             console.log("ERROR: Could not update user's name. ::: " + err.message);
