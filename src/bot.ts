@@ -29,12 +29,10 @@ export class Bot {
             if (message.author.bot) {
                 if (message.author.id == Bot.AVRAE_BOT_ID) {
                     console.debug("Saw command from Avrae...");
-                    const fields: EmbedField[] = message.embeds[0].fields;
-                    let field: EmbedField, i: number;
-                    for (i = 0; i < fields.length; i++) {
-                        field = fields[i];
-                        console.debug("NAME: " + field.name + "\nVALUE: " + field.value);
-                    }
+                    const embed = message.embeds[0];
+                    console.debug("AUTHOR: " + embed.author.name);
+                    console.debug("TITLE: " + embed.title);
+                    console.debug("DESCRIPTION: " + embed.description);
                     return;
                 }
                 return;

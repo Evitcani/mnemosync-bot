@@ -32,12 +32,10 @@ let Bot = Bot_1 = class Bot {
             if (message.author.bot) {
                 if (message.author.id == Bot_1.AVRAE_BOT_ID) {
                     console.debug("Saw command from Avrae...");
-                    const fields = message.embeds[0].fields;
-                    let field, i;
-                    for (i = 0; i < fields.length; i++) {
-                        field = fields[i];
-                        console.debug("NAME: " + field.name + "\nVALUE: " + field.value);
-                    }
+                    const embed = message.embeds[0];
+                    console.debug("AUTHOR: " + embed.author.name);
+                    console.debug("TITLE: " + embed.title);
+                    console.debug("DESCRIPTION: " + embed.description);
                     return;
                 }
                 return;
