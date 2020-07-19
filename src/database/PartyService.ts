@@ -67,8 +67,6 @@ export class PartyService {
      */
     private async getParties(query: string): Promise<Party[]> {
         return this.databaseService.query(query).then((res) => {
-            console.debug("QUERY USED: " + query);
-            console.debug(res);
             if (res.rowCount <= 0) {
                 return null;
             }
