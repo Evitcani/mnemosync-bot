@@ -20,22 +20,28 @@ class DatabaseHelperService {
     static do2JoinSelectQuery(t1Table, t2Table, onColumn) {
         // Do select string.
         let selectStr = t1Table.getSelectColumns();
+        let t2SelectStr = t2Table.getSelectColumns();
         if (selectStr == null) {
             selectStr = "";
         }
         else {
             selectStr += ", ";
         }
-        selectStr += t2Table.getSelectColumns();
+        if (t2SelectStr != null) {
+            selectStr += t2SelectStr;
+        }
         // Do where string.
         let whereStr = t1Table.getWhereColumns();
+        let t2WhereStr = t2Table.getWhereColumns();
         if (whereStr == null) {
             whereStr = "";
         }
         else {
             whereStr += " AND ";
         }
-        whereStr += t2Table.getWhereColumns();
+        if (t2WhereStr != null) {
+            whereStr += t2WhereStr;
+        }
         // Do on string.
         const onStr = `t1.${onColumn.getName()} = t2.${onColumn.getValue()}`;
         return `SELECT ${selectStr} FROM ${t1Table.getTableName()} t1 INNER JOIN ${t2Table.getTableName()} t2 ON ` +
