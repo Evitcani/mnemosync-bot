@@ -1,5 +1,5 @@
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
-import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity({name: "special_channels"})
 export class SpecialChannel {
