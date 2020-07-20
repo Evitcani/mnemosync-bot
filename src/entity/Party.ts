@@ -10,6 +10,9 @@ export class Party {
     @Column("text")
     name: string;
 
+    @Column("text", {name: "guild_id"})
+    guildId: string;
+
     @OneToMany(type => Character, member => member.party, { nullable: true })
     members?: Character[];
 
