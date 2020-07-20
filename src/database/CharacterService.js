@@ -84,15 +84,12 @@ let CharacterService = CharacterService_1 = class CharacterService {
             const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.ID, Column_1.Column.CHARACTER_ID));
             // Go out and do the query.
             return this.databaseService.query(query).then((res) => {
-                console.log("QUERY USED: " + query);
-                console.log(res);
                 // No results.
                 if (res.rowCount <= 0) {
                     return null;
                 }
                 // @ts-ignore Get the character from the results.
                 const id = res.rows[0].id;
-                console.debug("Got ID of a character by name: " + id);
                 return this.getCharacter(id);
             }).catch((err) => {
                 console.log("QUERY USED: " + query);
@@ -124,7 +121,6 @@ let CharacterService = CharacterService_1 = class CharacterService {
             const query = DatabaseHelperService_1.DatabaseHelperService.doInsertQuery(table);
             // Go out and do the query.
             return this.databaseService.query(query).then((res) => {
-                console.log("Result from insert: " + res);
                 // @ts-ignore Get the character from the results.
                 const char = res.rows[0];
                 // Now, we have to add the character to the mapping database.

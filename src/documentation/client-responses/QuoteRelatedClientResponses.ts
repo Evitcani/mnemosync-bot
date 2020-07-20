@@ -1,5 +1,8 @@
 import {Message, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../BasicEmbed";
+import {StringUtility} from "../../utilities/StringUtility";
+import {Bot} from "../../bot";
+import {Commands} from "../commands/Commands";
 
 /**
  * The responses related to the quotes command.
@@ -9,8 +12,9 @@ export class QuoteRelatedClientResponses {
      * Constructs a quoted message reply.
      *
      * @param message The message to quote.
+     * @param numberOfQuotes
      */
-    static QUOTED_MESSAGE (message: Message): Promise<MessageEmbed> {
+    static QUOTED_MESSAGE (message: Message, numberOfQuotes: number): Promise<MessageEmbed> {
         return message.guild.member(message.author).fetch().then((member) => {
             const msg = BasicEmbed.get();
 
@@ -26,7 +30,8 @@ export class QuoteRelatedClientResponses {
             msg
                 .setDescription(message.content)
                 .setTimestamp(message.createdAt)
-                .setFooter("A quote from the past...");
+                .setFooter(`1 of ${StringUtility.numberWithCommas(Math.abs(numberOfQuotes))} quotes. Type ` +
+                    `\`${Bot.PREFIX}${Commands.QUOTE}\` to get one yourself!`);
 
 
             // Set the image if there is one.

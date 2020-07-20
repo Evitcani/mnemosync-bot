@@ -47,7 +47,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             }
 
             return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
-                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, true));
+                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
             });
         });
     }

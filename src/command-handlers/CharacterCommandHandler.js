@@ -57,7 +57,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                     return message.channel.send(`No character exists with a name like '${character.name}'`);
                 }
                 return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
-                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, true));
+                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
                 });
             });
         });

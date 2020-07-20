@@ -45,16 +45,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
         }
 
         // Otherwise gets a random quote from the quote channel.
-        return this.getRandomQuote(message).then((msg) => {
-            if (msg == null) {
-                return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
-                    "`" + Bot.PREFIX + "quote here`.");
-            }
-
-            return QuoteRelatedClientResponses.QUOTED_MESSAGE(msg).then((msg) => {
-                return message.channel.send(msg);
-            });
-        });
+        return this.getRandomQuote(message);
     }
 
     /**
@@ -77,14 +68,19 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
     private async getRandomQuote (message: Message): Promise<Message> {
         return this.getQuoteChannel(message).then((channelId) => {
             if (channelId == null) {
-                return null;
+                return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
+                    "`" + Bot.PREFIX + "quote here`.");
             }
 
             return this.getAllMessages(message, channelId).then((messages) => {
                 if (messages == null) {
                     return null;
                 }
-                return messages.random();
+                const msg = messages.random();
+
+                return QuoteRelatedClientResponses.QUOTED_MESSAGE(msg, messages.size).then((msg) => {
+                    return message.channel.send(msg);
+                });
             });
         });
     }
@@ -136,7 +132,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
                 return messages;
             }
 
-            messages.sort(this.sortMessages);
+            messages.sort(QuoteCommandHandler.sortMessages);
 
             console.debug("Fetched more messages, pausing....");
 
@@ -164,7 +160,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
      * @param firstKey
      * @param secondKey
      */
-    private sortMessages (firstValue: Message, secondValue: Message, firstKey: string, secondKey: string): number {
+    private static sortMessages (firstValue: Message, secondValue: Message, firstKey: string, secondKey: string): number {
         return firstValue.createdTimestamp - secondValue.createdTimestamp;
     }
 }
