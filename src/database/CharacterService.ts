@@ -85,7 +85,7 @@ export class CharacterService {
             }
 
             // @ts-ignore Get the character from the results.
-            const id: number = res.rows[0];
+            const id: number = res.rows[0].id;
             console.debug("Got ID of a character by name: " + id);
             return this.getCharacter(id);
         }).catch((err: Error) => {
