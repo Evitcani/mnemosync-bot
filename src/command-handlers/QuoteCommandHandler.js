@@ -20,6 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var QuoteCommandHandler_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuoteCommandHandler = void 0;
 const inversify_1 = require("inversify");
@@ -34,7 +35,7 @@ const bot_1 = require("../bot");
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
  * then fetch random quotes from it.
  */
-let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+let QuoteCommandHandler = QuoteCommandHandler_1 = class QuoteCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
     /**
      * Constructs this command handler.
      *
@@ -59,15 +60,7 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
                 return this.registerQuoteChannel(message);
             }
             // Otherwise gets a random quote from the quote channel.
-            return this.getRandomQuote(message).then((msg) => {
-                if (msg == null) {
-                    return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
-                        "`" + bot_1.Bot.PREFIX + "quote here`.");
-                }
-                return QuoteRelatedClientResponses_1.QuoteRelatedClientResponses.QUOTED_MESSAGE(msg).then((msg) => {
-                    return message.channel.send(msg);
-                });
-            });
+            return this.getRandomQuote(message);
         });
     }
     /**
@@ -92,13 +85,17 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
         return __awaiter(this, void 0, void 0, function* () {
             return this.getQuoteChannel(message).then((channelId) => {
                 if (channelId == null) {
-                    return null;
+                    return message.channel.send("No quotes channel! Please go into your quotes channel and use the command " +
+                        "`" + bot_1.Bot.PREFIX + "quote here`.");
                 }
                 return this.getAllMessages(message, channelId).then((messages) => {
                     if (messages == null) {
                         return null;
                     }
-                    return messages.random();
+                    const msg = messages.random();
+                    return QuoteRelatedClientResponses_1.QuoteRelatedClientResponses.QUOTED_MESSAGE(msg, messages.size).then((msg) => {
+                        return message.channel.send(msg);
+                    });
                 });
             });
         });
@@ -149,7 +146,7 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
                     console.debug("Finished fetching messages.");
                     return messages;
                 }
-                messages.sort(this.sortMessages);
+                messages.sort(QuoteCommandHandler_1.sortMessages);
                 console.debug("Fetched more messages, pausing....");
                 yield new Promise(resolve => setTimeout(resolve, 250));
                 console.debug("Finished pausing.");
@@ -172,11 +169,11 @@ let QuoteCommandHandler = class QuoteCommandHandler extends AbstractCommandHandl
      * @param firstKey
      * @param secondKey
      */
-    sortMessages(firstValue, secondValue, firstKey, secondKey) {
+    static sortMessages(firstValue, secondValue, firstKey, secondKey) {
         return firstValue.createdTimestamp - secondValue.createdTimestamp;
     }
 };
-QuoteCommandHandler = __decorate([
+QuoteCommandHandler = QuoteCommandHandler_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.Client)),
     __param(1, inversify_1.inject(types_1.TYPES.SpecialChannelService)),

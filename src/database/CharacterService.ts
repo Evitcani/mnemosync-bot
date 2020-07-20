@@ -76,9 +76,6 @@ export class CharacterService {
 
         // Go out and do the query.
         return this.databaseService.query(query).then((res) => {
-            console.log("QUERY USED: " + query);
-            console.log(res);
-
             // No results.
             if (res.rowCount <= 0) {
                 return null;
@@ -86,7 +83,6 @@ export class CharacterService {
 
             // @ts-ignore Get the character from the results.
             const id: number = res.rows[0].id;
-            console.debug("Got ID of a character by name: " + id);
             return this.getCharacter(id);
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);
@@ -123,7 +119,6 @@ export class CharacterService {
 
         // Go out and do the query.
         return this.databaseService.query(query).then((res) => {
-            console.log("Result from insert: " + res);
             // @ts-ignore Get the character from the results.
             const char: Character = res.rows[0];
 

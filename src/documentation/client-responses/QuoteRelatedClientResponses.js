@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuoteRelatedClientResponses = void 0;
 const BasicEmbed_1 = require("../BasicEmbed");
+const StringUtility_1 = require("../../utilities/StringUtility");
+const bot_1 = require("../../bot");
+const Commands_1 = require("../commands/Commands");
 /**
  * The responses related to the quotes command.
  */
@@ -10,8 +13,9 @@ class QuoteRelatedClientResponses {
      * Constructs a quoted message reply.
      *
      * @param message The message to quote.
+     * @param numberOfQuotes
      */
-    static QUOTED_MESSAGE(message) {
+    static QUOTED_MESSAGE(message, numberOfQuotes) {
         return message.guild.member(message.author).fetch().then((member) => {
             const msg = BasicEmbed_1.BasicEmbed.get();
             if (member == null) {
@@ -26,7 +30,8 @@ class QuoteRelatedClientResponses {
             msg
                 .setDescription(message.content)
                 .setTimestamp(message.createdAt)
-                .setFooter("A quote from the past...");
+                .setFooter(`1 of ${StringUtility_1.StringUtility.numberWithCommas(Math.abs(numberOfQuotes))} quotes. Type ` +
+                `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.QUOTE}\` to get one yourself!`);
             // Set the image if there is one.
             const attachments = message.attachments;
             if (attachments != null && attachments.size > 0) {
