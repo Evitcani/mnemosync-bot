@@ -63,7 +63,7 @@ export class PartyController {
         return PartyController.getRepo()
             .createQueryBuilder(Table.PARTY)
             .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')",
-                { id: guildId, name: sanitizedPartyName })
+                [ guildId, sanitizedPartyName ])
             .getMany()
             .then((parties) => {
                 if (parties == null || parties.length < 1) {
