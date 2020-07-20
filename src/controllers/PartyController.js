@@ -63,7 +63,7 @@ let PartyController = PartyController_1 = class PartyController {
     getByNameAndGuild(partyName, guildId) {
         return PartyController_1.getRepo()
             .createQueryBuilder(Table_1.Table.PARTY)
-            .where("guild_id = :id AND LOWER(name) LIKE LOWER('%:name%')", { id: guildId, name: partyName })
+            .where("parties_guild_id = :id AND LOWER(parties_name) LIKE LOWER('%:name%')", { id: guildId, name: partyName })
             .getMany()
             .then((parties) => {
             if (parties == null || parties.length < 1) {
