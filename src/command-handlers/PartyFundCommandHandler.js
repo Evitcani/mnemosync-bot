@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyFundCommandHandler = void 0;
-const PartyService_1 = require("../database/PartyService");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const MoneyUtility_1 = require("../utilities/MoneyUtility");
@@ -30,15 +29,19 @@ const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const FundRelatedClientResponses_1 = require("../documentation/client-responses/FundRelatedClientResponses");
 const PartyFundService_1 = require("../database/PartyFundService");
 const Commands_1 = require("../documentation/commands/Commands");
+const PartyController_1 = require("../controllers/PartyController");
+const Subcommands_1 = require("../documentation/commands/Subcommands");
+const PartyFundController_1 = require("../controllers/PartyFundController");
 /**
  * Manages the fund related commands.
  */
 let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(partyService, partyFundService) {
+    constructor(partyController, partyFundController, partyFundService) {
         super();
         this.partyName = "The Seven Wonders";
-        this.partyService = partyService;
+        this.partyController = partyController;
         this.partyFundService = partyFundService;
+        this.partyFundController = partyFundController;
     }
     /**
      * Handles the commands related to funds.
@@ -53,6 +56,18 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
             // If there are no args, assume the user just wants a bank statement.
             if (command.getInput() == null) {
                 return this.getFunds(message, type, this.partyName);
+            }
+            const createCommand = Subcommands_1.Subcommands.CREATE.isCommand(command);
+            if (createCommand != null) {
+                return this.partyController.getByNameAndGuild(this.partyName, message.guild.id).then((parties) => {
+                    if (parties == null) {
+                        return message.channel.send("No parties in this guild.");
+                    }
+                    const party = parties[0];
+                    return this.partyFundController.create(party, type).then(() => {
+                        return message.channel.send("Created new party fund!");
+                    });
+                });
             }
             // Now we send the amount off to be processed.
             return this.updateFunds(command, message, type, this.partyName);
@@ -81,11 +96,22 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
             if (type == null) {
                 type = "FUND";
             }
-            return this.partyService.getParty(name).then((res) => {
-                return this.partyFundService.getFund(res.id, type).catch((err) => {
-                    console.log("Failed to find party fund with given information ::: " + err.message);
-                    return err;
-                });
+            return this.partyController.getByNameAndGuild(name, message.guild.id).then((parties) => {
+                if (parties == null || parties.length < 1) {
+                    return null;
+                }
+                let party = parties[0];
+                // Get the funds. Not the most efficient.
+                if (party.funds != null) {
+                    let i, fund;
+                    for (i = 0; i < party.funds.length; i++) {
+                        fund = party.funds[i];
+                        if (fund.type == type) {
+                            return fund;
+                        }
+                    }
+                }
+                return null;
             }).catch((err) => {
                 console.log("Failed to find party with given name ::: " + err.message);
                 return null;
@@ -123,9 +149,11 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
 };
 PartyFundCommandHandler = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.PartyService)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyFundService)),
-    __metadata("design:paramtypes", [PartyService_1.PartyService,
+    __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(1, inversify_1.inject(types_1.TYPES.PartyFundController)),
+    __param(2, inversify_1.inject(types_1.TYPES.PartyFundService)),
+    __metadata("design:paramtypes", [PartyController_1.PartyController,
+        PartyFundController_1.PartyFundController,
         PartyFundService_1.PartyFundService])
 ], PartyFundCommandHandler);
 exports.PartyFundCommandHandler = PartyFundCommandHandler;

@@ -4,26 +4,24 @@ import {Message} from "discord.js";
 import {Character} from "../entity/Character";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {Subcommand} from "../models/generic/Subcommand";
-import {TravelConfig} from "../entity/TravelConfig";
 import {inject} from "inversify";
 import {TYPES} from "../types";
 import {CharacterService} from "../database/CharacterService";
 import {CharacterRelatedClientResponses} from "../documentation/client-responses/CharacterRelatedClientResponses";
-import {PartyService} from "../database/PartyService";
-import {Party} from "../entity/Party";
 import {UserService} from "../database/UserService";
+import {PartyController} from "../controllers/PartyController";
 
 export class CharacterCommandHandler extends AbstractCommandHandler {
     private characterService: CharacterService;
-    private partyService: PartyService;
+    private partyController: PartyController;
     private userService: UserService;
 
     constructor(@inject(TYPES.CharacterService) characterService: CharacterService,
-                @inject(TYPES.PartyService) partyService: PartyService,
+                @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.UserService) userService: UserService) {
         super();
         this.characterService = characterService;
-        this.partyService = partyService;
+        this.partyController = partyController;
         this.userService = userService;
     }
 
@@ -100,15 +98,14 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         // See if we were given a party...
         const ptCmd = Subcommands.PARTY.isCommand(command);
         if (ptCmd != null) {
-            return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
+            return this.partyController.getByNameAndGuild(ptCmd.getInput(), message.guild.id)
                 .then((parties) => {
                     if (parties == null || parties.length != 1) {
                         console.debug("Found either no parties or too many parties!");
                         return null;
                     }
 
-                    const party: Party = parties[0];
-                    character.party = party;
+                    character.party = parties[0];
 
                     return character;
                 });

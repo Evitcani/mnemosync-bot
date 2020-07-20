@@ -23,21 +23,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WhichCommandHandler = void 0;
 const inversify_1 = require("inversify");
-const PartyService_1 = require("../database/PartyService");
 const types_1 = require("../types");
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const WhichRelatedClientResponses_1 = require("../documentation/client-responses/WhichRelatedClientResponses");
+const PartyController_1 = require("../controllers/PartyController");
 /**
  * Handles questions about the state of the world.
  */
 let WhichCommandHandler = class WhichCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(partyService) {
+    constructor(partyController) {
         super();
-        this.partyService = partyService;
+        this.partyController = partyController;
     }
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.partyService.getPartiesInGuild(message.guild.id).then((res) => {
+            return this.partyController.getByGuild(message.guild.id).then((res) => {
                 return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
             });
         });
@@ -45,8 +45,8 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractCommandHandl
 };
 WhichCommandHandler = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.PartyService)),
-    __metadata("design:paramtypes", [PartyService_1.PartyService])
+    __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
+    __metadata("design:paramtypes", [PartyController_1.PartyController])
 ], WhichCommandHandler);
 exports.WhichCommandHandler = WhichCommandHandler;
 //# sourceMappingURL=WhichCommandHandler.js.map

@@ -38,7 +38,16 @@ export class PartyController {
                 return null;
             }
             return party;
-        })
+        });
+    }
+
+    public getByGuild (guildId: string): Promise<Party[]> {
+        return PartyController.getRepo().find({where: {guild_id: guildId}}).then((parties) => {
+            if (parties == undefined) {
+                return null;
+            }
+            return parties;
+        });
     }
 
     /**
@@ -47,7 +56,7 @@ export class PartyController {
      * @param partyName The name of the party to get.
      * @param guildId The ID of the guild the party lives in.
      */
-    public getByNameAndGuild(partyName: string, guildId: string): Promise<Party | Party[]> {
+    public getByNameAndGuild(partyName: string, guildId: string): Promise<Party[]> {
         return PartyController.getRepo()
             .createQueryBuilder(Table.PARTY)
             .where("guild_id = :id AND LOWER(name) LIKE LOWER('%:name%')",
@@ -56,10 +65,6 @@ export class PartyController {
             .then((parties) => {
                 if (parties == null || parties.length < 1) {
                     return null;
-                }
-
-                if (parties.length < 2) {
-                    return parties[0];
                 }
 
                 return parties;
