@@ -52,9 +52,12 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     }
     switchCharacter(message, character) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.characterService.getCharacterByName(message.author.id, character.name).then((character) => {
-                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, character.id).then(() => {
-                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+            return this.characterService.getCharacterByName(message.author.id, character.name).then((char) => {
+                if (char == null) {
+                    return message.channel.send(`No character exists with a name like '${character.name}'`);
+                }
+                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
+                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, true));
                 });
             });
         });
