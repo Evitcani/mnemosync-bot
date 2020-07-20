@@ -37,7 +37,7 @@ export class Nickname {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.name = StringUtility.escapeMySQLInput(this.name);
-        this.discord_id = StringUtility.escapeMySQLInput(this.discord_id);
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.discord_id = StringUtility.escapeSQLInput(this.discord_id);
     }
 }

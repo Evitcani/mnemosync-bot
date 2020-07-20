@@ -33,7 +33,7 @@ export class SpecialChannel {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.guild_id = StringUtility.escapeMySQLInput(this.guild_id);
-        this.channel_id = StringUtility.escapeMySQLInput(this.channel_id);
+        this.guild_id = StringUtility.escapeSQLInput(this.guild_id);
+        this.channel_id = StringUtility.escapeSQLInput(this.channel_id);
     }
 }

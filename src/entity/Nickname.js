@@ -16,8 +16,8 @@ const Table_1 = require("../documentation/databases/Table");
 const StringUtility_1 = require("../utilities/StringUtility");
 let Nickname = class Nickname {
     purifyInsertUpdate() {
-        this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
-        this.discord_id = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_id);
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+        this.discord_id = StringUtility_1.StringUtility.escapeSQLInput(this.discord_id);
     }
 };
 __decorate([

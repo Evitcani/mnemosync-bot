@@ -29,7 +29,7 @@ export class Guild {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.discord_id = StringUtility.escapeMySQLInput(this.discord_id);
-        this.guild_id = StringUtility.escapeMySQLInput(this.guild_id);
+        this.discord_id = StringUtility.escapeSQLInput(this.discord_id);
+        this.guild_id = StringUtility.escapeSQLInput(this.guild_id);
     }
 }

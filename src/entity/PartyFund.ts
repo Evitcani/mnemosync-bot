@@ -45,6 +45,6 @@ export class PartyFund {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.type = StringUtility.escapeMySQLInput(this.type);
+        this.type = StringUtility.escapeSQLInput(this.type);
     }
 }

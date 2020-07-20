@@ -46,8 +46,8 @@ export class Party {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.name = StringUtility.escapeMySQLInput(this.name);
-        this.guildId = StringUtility.escapeMySQLInput(this.guildId);
-        this.creatorDiscordId = StringUtility.escapeMySQLInput(this.creatorDiscordId);
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.guildId = StringUtility.escapeSQLInput(this.guildId);
+        this.creatorDiscordId = StringUtility.escapeSQLInput(this.creatorDiscordId);
     }
 }
