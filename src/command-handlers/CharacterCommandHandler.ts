@@ -1,16 +1,16 @@
 import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {Command} from "../models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../models/database/Character";
+import {Character} from "../entity/Character";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {Subcommand} from "../models/generic/Subcommand";
-import {TravelConfig} from "../models/database/TravelConfig";
+import {TravelConfig} from "../entity/TravelConfig";
 import {inject} from "inversify";
 import {TYPES} from "../types";
 import {CharacterService} from "../database/CharacterService";
 import {CharacterRelatedClientResponses} from "../documentation/client-responses/CharacterRelatedClientResponses";
 import {PartyService} from "../database/PartyService";
-import {Party} from "../models/database/Party";
+import {Party} from "../entity/Party";
 import {UserService} from "../database/UserService";
 
 export class CharacterCommandHandler extends AbstractCommandHandler {

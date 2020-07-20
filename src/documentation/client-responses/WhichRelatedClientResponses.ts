@@ -1,5 +1,5 @@
 import {MessageEmbed} from "discord.js";
-import {Party} from "../../models/database/Party";
+import {Party} from "../../entity/Party";
 import {BasicEmbed} from "../BasicEmbed";
 
 export class WhichRelatedClientResponses {

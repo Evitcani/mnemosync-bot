@@ -1,4 +1,4 @@
-import {SpecialChannelDesignation} from "../../enums/SpecialChannelDesignation";
+import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
 
 export interface SpecialChannel {
     id: number;
