@@ -78,7 +78,7 @@ let CharacterService = CharacterService_1 = class CharacterService {
             // Create the column.
             const t1 = new DbTable_1.DbTable(Table_1.Table.CHARACTER)
                 .addSelectColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, null));
-            const t2 = new DbTable_1.DbTable(Table_1.Table.CHARACTER)
+            const t2 = new DbTable_1.DbTable(Table_1.Table.USER_TO_CHARACTER)
                 .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.DISCORD_ID, discordId).setSanitized(true))
                 .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.NAME, characterName).setSanitized(true).setDivider(DatabaseDivider_1.DatabaseDivider.LIKE));
             const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.ID, Column_1.Column.CHARACTER_ID));

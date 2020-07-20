@@ -69,7 +69,7 @@ export class CharacterService {
         // Create the column.
         const t1 = new DbTable(Table.CHARACTER)
             .addSelectColumns(new DbColumn(Column.ID, null));
-        const t2 = new DbTable(Table.CHARACTER)
+        const t2 = new DbTable(Table.USER_TO_CHARACTER)
             .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true))
             .addWhereColumns(new DbColumn(Column.NAME, characterName).setSanitized(true).setDivider(DatabaseDivider.LIKE));
         const query = DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn(Column.ID, Column.CHARACTER_ID));
