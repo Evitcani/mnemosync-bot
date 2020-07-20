@@ -9,7 +9,7 @@ let bot = container.get<Bot>(TYPES.Bot);
 
 createConnection({
     type: "postgres",
-    url: this.databaseUrl,
+    url: process.env.DATABASE_URL,
     entities: [
         __dirname + "/entity/*.js"
     ],
@@ -20,5 +20,7 @@ createConnection({
     }).catch((error) => {
         console.log('Oh no! ', error)
     });
+}).catch(() => {
+
 });
 
