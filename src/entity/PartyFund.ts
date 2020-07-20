@@ -12,15 +12,15 @@ export class PartyFund {
     @Column("text")
     type: string;
 
-    @Column()
-    platinum: number;
+    @Column({ nullable: true })
+    platinum?: number;
 
-    @Column()
-    gold: number;
+    @Column({ nullable: true })
+    gold?: number;
 
-    @Column()
-    silver: number;
+    @Column({ nullable: true })
+    silver?: number;
 
-    @Column()
-    copper: number;
+    @Column({ nullable: true })
+    copper?: number;
 }

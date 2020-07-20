@@ -10,8 +10,8 @@ export class Party {
     @Column("text")
     name: string;
 
-    @OneToMany(type => Character, member => member.party)
-    members: Character[];
+    @OneToMany(type => Character, member => member.party, { nullable: true })
+    members?: Character[];
 
     @OneToMany(type => PartyFund, fund => fund.party)
     funds: PartyFund[];

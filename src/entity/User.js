@@ -27,12 +27,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "discord_id", void 0);
 __decorate([
-    typeorm_1.Column("int", { name: "default_character_id" }),
+    typeorm_1.Column("int", { name: "default_character_id", nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "defaultCharacterId", void 0);
 __decorate([
     typeorm_1.OneToOne(type => Character_1.Character, {
-        eager: true
+        eager: true,
+        nullable: true
     }),
     typeorm_1.JoinColumn(),
     __metadata("design:type", Character_1.Character)

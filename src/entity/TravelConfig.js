@@ -31,11 +31,11 @@ __decorate([
     __metadata("design:type", Boolean)
 ], TravelConfig.prototype, "can_drink_water", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], TravelConfig.prototype, "inventory_weight", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], TravelConfig.prototype, "weight", void 0);
 TravelConfig = __decorate([

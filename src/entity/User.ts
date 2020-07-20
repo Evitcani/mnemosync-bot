@@ -12,12 +12,13 @@ export class User {
     @Column("text")
     discord_id: string;
 
-    @Column("int", {name: "default_character_id"})
-    defaultCharacterId: number;
+    @Column("int", {name: "default_character_id", nullable: true})
+    defaultCharacterId?: number;
 
     @OneToOne(type => Character, {
-        eager: true
+        eager: true,
+        nullable: true
     })
     @JoinColumn()
-    defaultCharacter: Character;
+    defaultCharacter?: Character;
 }

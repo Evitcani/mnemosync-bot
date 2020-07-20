@@ -15,9 +15,9 @@ export class TravelConfig {
     @Column()
     can_drink_water: boolean;
 
-    @Column()
-    inventory_weight: number;
+    @Column({ nullable: true })
+    inventory_weight?: number;
 
-    @Column()
-    weight: number;
+    @Column({ nullable: true })
+    weight?: number;
 }
