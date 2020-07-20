@@ -20,12 +20,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var CharacterService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CharacterService = void 0;
 const inversify_1 = require("inversify");
 const DatabaseService_1 = require("./base/DatabaseService");
 const types_1 = require("../types");
+const Character_1 = require("../entity/Character");
 const DatabaseHelperService_1 = require("./base/DatabaseHelperService");
 const Table_1 = require("../documentation/databases/Table");
 const DbColumn_1 = require("../models/database/schema/columns/DbColumn");
@@ -35,7 +35,9 @@ const UserToCharacterService_1 = require("./UserToCharacterService");
 const UserService_1 = require("./UserService");
 const JSONField_1 = require("../documentation/databases/JSONField");
 const DatabaseDivider_1 = require("../enums/DatabaseDivider");
-let CharacterService = CharacterService_1 = class CharacterService {
+const typeorm_1 = require("typeorm");
+const Nickname_1 = require("../entity/Nickname");
+let CharacterService = class CharacterService {
     constructor(databaseService, userService, userToCharacterService) {
         this.databaseService = databaseService;
         this.userService = userService;
@@ -52,22 +54,10 @@ let CharacterService = CharacterService_1 = class CharacterService {
             if (id == null || id < 1) {
                 return null;
             }
-            // Create the column.
-            const table = new DbTable_1.DbTable(Table_1.Table.CHARACTER)
-                .addWhereColumns(new DbColumn_1.DbColumn(Column_1.Column.ID, id));
-            const query = DatabaseHelperService_1.DatabaseHelperService.doSelectQuery(table);
-            // Go out and do the query.
-            return this.databaseService.query(query).then((res) => {
-                // No results.
-                if (res.rowCount <= 0) {
-                    return null;
-                }
-                // @ts-ignore Get the character from the results.
-                const result = res.rows[0];
-                return result;
+            return typeorm_1.getManager().findOne(Character_1.Character, { where: { id: id } }).then((character) => {
+                return character;
             }).catch((err) => {
-                console.log("QUERY USED: " + query);
-                console.log("ERROR: Could not get guilds. ::: " + err.message);
+                console.log(`ERROR: Could not get character (ID: ${id}). ::: ${err.message}`);
                 console.log(err.stack);
                 return null;
             });
@@ -107,38 +97,29 @@ let CharacterService = CharacterService_1 = class CharacterService {
      */
     createCharacter(character, discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const setColumn = [];
-            // Push on the name
-            setColumn.push(new DbColumn_1.DbColumn(Column_1.Column.NAME, character.name).setSanitized(true));
-            // Push on the party id.
-            if (character.party_id != null) {
-                setColumn.push(new DbColumn_1.DbColumn(Column_1.Column.PARTY_ID, character.party_id).setSanitized(true));
-            }
-            if (character.travel_config != null) {
-                setColumn.push(new DbColumn_1.DbColumn(Column_1.Column.TRAVEL_CONFIG, CharacterService_1.convertTravelConfig(character.travel_config)));
-            }
-            const table = new DbTable_1.DbTable(Table_1.Table.CHARACTER).setInsertColumns(setColumn);
-            const query = DatabaseHelperService_1.DatabaseHelperService.doInsertQuery(table);
-            // Go out and do the query.
-            return this.databaseService.query(query).then((res) => {
-                // @ts-ignore Get the character from the results.
-                const char = res.rows[0];
+            // Create nickname for the mapping.
+            const nickname = new Nickname_1.Nickname();
+            nickname.discord_id = discordId;
+            nickname.character = character;
+            nickname.name = character.name;
+            // Add the nickname to the character.
+            character.nicknames = [];
+            character.nicknames.push(nickname);
+            return typeorm_1.getManager().getRepository(Character_1.Character).save(character).then((char) => {
                 // Now, we have to add the character to the mapping database.
                 return this.userToCharacterService.createNewMap(char.id, discordId, char.name).then((res) => {
                     if (!res) {
                         // Something went wrong.
                         return null;
                     }
-                    // Now switch the default character.
-                    return this.userService.updateDefaultCharacter(discordId, discordName, char.id).then((res) => {
-                        if (res == null) {
-                            return null;
-                        }
-                        return char;
+                    return this.userService.getUser(discordId, discordName).then((user) => {
+                        user.defaultCharacter = char;
+                        return this.userService.updateUser(user).then(() => {
+                            return char;
+                        });
                     });
                 });
             }).catch((err) => {
-                console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not create the character. ::: " + err.message);
                 console.log(err.stack);
                 return null;
@@ -154,13 +135,7 @@ let CharacterService = CharacterService_1 = class CharacterService {
     getUserWithCharacter(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.userService.getUser(discordId, discordName).then((user) => {
-                if (user.character_id == null) {
-                    return user;
-                }
-                return this.getCharacter(user.character_id).then((character) => {
-                    user.character = character;
-                    return user;
-                });
+                return user;
             });
         });
     }
@@ -171,7 +146,7 @@ let CharacterService = CharacterService_1 = class CharacterService {
         return json;
     }
 };
-CharacterService = CharacterService_1 = __decorate([
+CharacterService = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __param(1, inversify_1.inject(types_1.TYPES.UserService)),

@@ -4,7 +4,7 @@ import {Message} from "discord.js";
 import {Character} from "../entity/Character";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {Subcommand} from "../models/generic/Subcommand";
-import {TravelConfig} from "../entity/TravelConfig";
+import {TravelConfig} from "../models/TravelConfig";
 import {inject} from "inversify";
 import {TYPES} from "../types";
 import {CharacterService} from "../database/CharacterService";
@@ -46,7 +46,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
                 return message.channel.send(`No character exists with a name like '${character.name}'`);
             }
 
-            return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
+            return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
                 return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
             });
         });
@@ -71,13 +71,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
 
     private async constructCharacter(command: Command, message: Message): Promise<Character> {
         // Construct the character and add the name.
-        const character: Character = new class implements Character {
-            id: number;
-            img_url: string;
-            name: string;
-            party_id: number;
-            travel_config: TravelConfig;
-        };
+        const character: Character = new Character();
 
         // Set the image URL.
         const imgCmd = Subcommands.IMG_URL.isCommand(command);
@@ -92,10 +86,10 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
         } else {
             // Get this user's default character.
             return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
-                if (user == null || user.character) {
+                if (user == null || user.defaultCharacter) {
                     return null;
                 }
-                character.id = user.character.id;
+                character.id = user.defaultCharacter.id;
                 return this.getOtherValues(command, message, character);
             })
         }
@@ -114,7 +108,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
                     }
 
                     const party: Party = parties[0];
-                    character.party_id = party.id;
+                    character.party = party;
 
                     return character;
                 });
