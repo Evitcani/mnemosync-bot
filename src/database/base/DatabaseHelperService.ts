@@ -24,26 +24,24 @@ export class DatabaseHelperService {
         // Do select string.
         let selectStr = t1Table.getSelectColumns();
         let t2SelectStr = t2Table.getSelectColumns();
-        if (selectStr == null) {
-            selectStr = "";
-        } else {
-            selectStr += ", ";
-        }
-
         if (t2SelectStr != null) {
+            if (selectStr == null) {
+                selectStr = "";
+            } else {
+                selectStr += ", ";
+            }
             selectStr += t2SelectStr;
         }
 
         // Do where string.
         let whereStr = t1Table.getWhereColumns();
         let t2WhereStr = t2Table.getWhereColumns();
-        if (whereStr == null) {
-            whereStr = "";
-        } else {
-            whereStr += " AND "
-        }
-
         if (t2WhereStr != null) {
+            if (whereStr == null) {
+                whereStr = "";
+            } else {
+                whereStr += " AND "
+            }
             whereStr += t2WhereStr;
         }
 
