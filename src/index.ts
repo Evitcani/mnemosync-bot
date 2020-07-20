@@ -20,7 +20,8 @@ createConnection({
     }).catch((error) => {
         console.log('Oh no! ', error)
     });
-}).catch(() => {
-
+}).catch((err: Error) => {
+    console.log('Unable to create connection! ', err.message);
+    console.error(err);
 });
 
