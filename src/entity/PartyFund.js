@@ -15,7 +15,7 @@ const Party_1 = require("./Party");
 let PartyFund = class PartyFund {
 };
 __decorate([
-    typeorm_1.PrimaryColumn("serial"),
+    typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "id", void 0);
 __decorate([

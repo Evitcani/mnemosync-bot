@@ -15,7 +15,7 @@ const typeorm_1 = require("typeorm");
 let User = class User {
 };
 __decorate([
-    typeorm_1.PrimaryColumn("serial"),
+    typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([

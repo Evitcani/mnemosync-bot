@@ -1,9 +1,9 @@
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
-import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity({name: "special_channels"})
 export class SpecialChannel {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column("text")

@@ -1,9 +1,9 @@
 import {Character} from "./Character";
-import {Column, Entity, JoinColumn, OneToOne, PrimaryColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity({name: "users"})
 export class User {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column("text")

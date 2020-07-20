@@ -1,9 +1,9 @@
-import {Column, Entity, ManyToOne, PrimaryColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 import {Party} from "./Party";
 
 @Entity({name: "party_funds"})
 export class PartyFund {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @ManyToOne(type => Party, party => party.funds)

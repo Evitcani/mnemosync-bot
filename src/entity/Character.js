@@ -16,7 +16,7 @@ const Nickname_1 = require("./Nickname");
 let Character = class Character {
 };
 __decorate([
-    typeorm_1.PrimaryColumn("serial"),
+    typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], Character.prototype, "id", void 0);
 __decorate([
