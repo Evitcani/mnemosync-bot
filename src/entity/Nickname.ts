@@ -13,6 +13,8 @@ export class Nickname {
     @Column("text")
     name: string;
 
-    @ManyToOne(type => Character)
+    @ManyToOne(type => Character, {
+        cascade: true
+    })
     character: Character;
 }

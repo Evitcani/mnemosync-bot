@@ -28,7 +28,9 @@ __decorate([
     __metadata("design:type", String)
 ], Nickname.prototype, "name", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Character_1.Character),
+    typeorm_1.ManyToOne(type => Character_1.Character, {
+        cascade: true
+    }),
     __metadata("design:type", Character_1.Character)
 ], Nickname.prototype, "character", void 0);
 Nickname = __decorate([

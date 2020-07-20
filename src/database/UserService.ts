@@ -40,13 +40,11 @@ export class UserService {
 
             return user;
         }).catch((err: Error) => {
-            console.log(`ERROR: Could not get user (ID: ${discordId}). ::: ${err.message}`);
+            console.log(`ERROR: Could not get user (Discord ID: ${discordId}). ::: ${err.message}`);
             console.log(err.stack);
             return null;
         });
     }
-
-
 
     /**
      * Registers a party to a given guild.
@@ -64,7 +62,7 @@ export class UserService {
         return this.getRepo().save(user).then((user) => {
             return user;
         }).catch((err: Error) => {
-            console.log(`ERROR: Could add new user (Discord ID: ${discordId}). ::: ${err.message}`);
+            console.log(`ERROR: Could not add new user (Discord ID: ${discordId}). ::: ${err.message}`);
             console.log(err.stack);
             return null;
         });

@@ -6,7 +6,9 @@ export class PartyFund {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @ManyToOne(type => Party, party => party.funds)
+    @ManyToOne(type => Party, party => party.funds, {
+        cascade: true
+    })
     party: Party;
 
     @Column("text")

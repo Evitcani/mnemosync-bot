@@ -19,7 +19,9 @@ __decorate([
     __metadata("design:type", Number)
 ], TravelConfig.prototype, "id", void 0);
 __decorate([
-    typeorm_1.OneToOne(type => Character_1.Character, character => character.travel_config),
+    typeorm_1.OneToOne(type => Character_1.Character, character => character.travel_config, {
+        cascade: true
+    }),
     __metadata("design:type", Character_1.Character)
 ], TravelConfig.prototype, "character", void 0);
 __decorate([

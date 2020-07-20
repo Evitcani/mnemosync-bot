@@ -9,39 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Party = void 0;
+exports.Guild = void 0;
 const typeorm_1 = require("typeorm");
-const Character_1 = require("./Character");
-const PartyFund_1 = require("./PartyFund");
-let Party = class Party {
+let Guild = class Guild {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
-], Party.prototype, "id", void 0);
+], Guild.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
-], Party.prototype, "name", void 0);
+], Guild.prototype, "discord_id", void 0);
 __decorate([
-    typeorm_1.Column("text", { name: "guild_id" }),
+    typeorm_1.Column("text"),
     __metadata("design:type", String)
-], Party.prototype, "guildId", void 0);
-__decorate([
-    typeorm_1.OneToMany(type => Character_1.Character, member => member.party, {
-        nullable: true,
-        onDelete: "SET NULL"
-    }),
-    __metadata("design:type", Array)
-], Party.prototype, "members", void 0);
-__decorate([
-    typeorm_1.OneToMany(type => PartyFund_1.PartyFund, fund => fund.party, {
-        onDelete: "SET NULL"
-    }),
-    __metadata("design:type", Array)
-], Party.prototype, "funds", void 0);
-Party = __decorate([
-    typeorm_1.Entity({ name: "parties" })
-], Party);
-exports.Party = Party;
-//# sourceMappingURL=Party.js.map
+], Guild.prototype, "guild_id", void 0);
+Guild = __decorate([
+    typeorm_1.Entity({ name: "user_to_guild" })
+], Guild);
+exports.Guild = Guild;
+//# sourceMappingURL=Guild.js.map

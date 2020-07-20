@@ -6,7 +6,9 @@ export class TravelConfig {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @OneToOne(type => Character, character => character.travel_config)
+    @OneToOne(type => Character, character => character.travel_config, {
+        cascade: true
+    })
     character: Character;
 
     @Column()

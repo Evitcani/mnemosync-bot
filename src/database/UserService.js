@@ -48,7 +48,7 @@ let UserService = class UserService {
                 }
                 return user;
             }).catch((err) => {
-                console.log(`ERROR: Could not get user (ID: ${discordId}). ::: ${err.message}`);
+                console.log(`ERROR: Could not get user (Discord ID: ${discordId}). ::: ${err.message}`);
                 console.log(err.stack);
                 return null;
             });
@@ -70,7 +70,7 @@ let UserService = class UserService {
             return this.getRepo().save(user).then((user) => {
                 return user;
             }).catch((err) => {
-                console.log(`ERROR: Could add new user (Discord ID: ${discordId}). ::: ${err.message}`);
+                console.log(`ERROR: Could not add new user (Discord ID: ${discordId}). ::: ${err.message}`);
                 console.log(err.stack);
                 return null;
             });

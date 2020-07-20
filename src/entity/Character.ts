@@ -22,18 +22,21 @@ export class Character {
 
     @OneToOne(type => TravelConfig, travelConfig => travelConfig.character, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     })
     travel_config?: TravelConfig;
 
     @ManyToOne(type => Party, party => party.members, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     })
     party?: Party;
 
     @OneToMany(type => Nickname, nickname => nickname.character, {
-        eager: true
+        eager: true,
+        onDelete: "SET NULL"
     })
     nicknames: Nickname[];
 }

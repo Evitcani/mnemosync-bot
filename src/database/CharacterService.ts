@@ -130,13 +130,4 @@ export class CharacterService {
             return user;
         });
     }
-
-    private static convertTravelConfig(travelConfig: TravelConfig): any {
-        const json = {};
-
-        json[JSONField.CAN_DRINK_WATER] = travelConfig.can_drink_water;
-        json[JSONField.CAN_EAT] = travelConfig.can_eat;
-
-        return json;
-    }
 }
