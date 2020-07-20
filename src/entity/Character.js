@@ -31,20 +31,23 @@ __decorate([
 __decorate([
     typeorm_1.OneToOne(type => TravelConfig_1.TravelConfig, travelConfig => travelConfig.character, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     }),
     __metadata("design:type", TravelConfig_1.TravelConfig)
 ], Character.prototype, "travel_config", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Party_1.Party, party => party.members, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     }),
     __metadata("design:type", Party_1.Party)
 ], Character.prototype, "party", void 0);
 __decorate([
     typeorm_1.OneToMany(type => Nickname_1.Nickname, nickname => nickname.character, {
-        eager: true
+        eager: true,
+        onDelete: "SET NULL"
     }),
     __metadata("design:type", Array)
 ], Character.prototype, "nicknames", void 0);

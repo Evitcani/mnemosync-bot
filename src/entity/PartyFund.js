@@ -19,7 +19,9 @@ __decorate([
     __metadata("design:type", Number)
 ], PartyFund.prototype, "id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Party_1.Party, party => party.funds),
+    typeorm_1.ManyToOne(type => Party_1.Party, party => party.funds, {
+        cascade: true
+    }),
     __metadata("design:type", Party_1.Party)
 ], PartyFund.prototype, "party", void 0);
 __decorate([

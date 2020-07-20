@@ -13,9 +13,14 @@ export class Party {
     @Column("text", {name: "guild_id"})
     guildId: string;
 
-    @OneToMany(type => Character, member => member.party, { nullable: true })
+    @OneToMany(type => Character, member => member.party, {
+        nullable: true,
+        onDelete: "SET NULL"
+    })
     members?: Character[];
 
-    @OneToMany(type => PartyFund, fund => fund.party)
+    @OneToMany(type => PartyFund, fund => fund.party, {
+        onDelete: "SET NULL"
+    })
     funds: PartyFund[];
 }

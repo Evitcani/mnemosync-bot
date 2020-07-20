@@ -59,8 +59,13 @@ let RegisterCommandHandler = class RegisterCommandHandler extends AbstractComman
             const user = message.author;
             const guild = message.guild.id;
             // First get the user.
-            return this.userService.getUser(user.id, user.username).then(() => {
-                return this.userToGuildService.registerUserOnGuild(guild, user.id);
+            return this.userService.getUser(user.id, user.username).then((res) => {
+                if (res == null) {
+                    return false;
+                }
+                return this.userToGuildService.registerUserOnGuild(guild, user.id).then((map) => {
+                    return map != null;
+                });
             });
         });
     }

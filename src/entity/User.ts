@@ -17,7 +17,8 @@ export class User {
 
     @OneToOne(type => Character, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     })
     @JoinColumn()
     defaultCharacter?: Character;

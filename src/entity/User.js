@@ -33,7 +33,8 @@ __decorate([
 __decorate([
     typeorm_1.OneToOne(type => Character_1.Character, {
         eager: true,
-        nullable: true
+        nullable: true,
+        onDelete: "SET NULL"
     }),
     typeorm_1.JoinColumn(),
     __metadata("design:type", Character_1.Character)

@@ -33,7 +33,6 @@ const Column_1 = require("../documentation/databases/Column");
 const DbTable_1 = require("../models/database/schema/DbTable");
 const UserToCharacterService_1 = require("./UserToCharacterService");
 const UserService_1 = require("./UserService");
-const JSONField_1 = require("../documentation/databases/JSONField");
 const DatabaseDivider_1 = require("../enums/DatabaseDivider");
 const typeorm_1 = require("typeorm");
 const Nickname_1 = require("../entity/Nickname");
@@ -138,12 +137,6 @@ let CharacterService = class CharacterService {
                 return user;
             });
         });
-    }
-    static convertTravelConfig(travelConfig) {
-        const json = {};
-        json[JSONField_1.JSONField.CAN_DRINK_WATER] = travelConfig.can_drink_water;
-        json[JSONField_1.JSONField.CAN_EAT] = travelConfig.can_eat;
-        return json;
     }
 };
 CharacterService = __decorate([
