@@ -43,7 +43,7 @@ export class PartyController {
     }
 
     public getByGuild (guildId: string): Promise<Party[]> {
-        return PartyController.getRepo().find({where: {guild_id: guildId}}).then((parties) => {
+        return PartyController.getRepo().find({where: {guildId: guildId}}).then((parties) => {
             if (parties == undefined) {
                 return null;
             }

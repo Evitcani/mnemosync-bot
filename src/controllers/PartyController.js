@@ -48,7 +48,7 @@ let PartyController = PartyController_1 = class PartyController {
         });
     }
     getByGuild(guildId) {
-        return PartyController_1.getRepo().find({ where: { guild_id: guildId } }).then((parties) => {
+        return PartyController_1.getRepo().find({ where: { guildId: guildId } }).then((parties) => {
             if (parties == undefined) {
                 return null;
             }
