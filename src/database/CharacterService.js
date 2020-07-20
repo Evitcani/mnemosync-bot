@@ -93,9 +93,7 @@ let CharacterService = CharacterService_1 = class CharacterService {
                 // @ts-ignore Get the character from the results.
                 const id = res.rows[0];
                 console.debug("Got ID of a character by name: " + id);
-                return this.getCharacter(id).then((character) => {
-                    return character;
-                });
+                return this.getCharacter(id);
             }).catch((err) => {
                 console.log("QUERY USED: " + query);
                 console.log("ERROR: Could not get guilds. ::: " + err.message);
