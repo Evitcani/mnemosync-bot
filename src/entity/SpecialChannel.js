@@ -12,7 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpecialChannel = void 0;
 const SpecialChannelDesignation_1 = require("../enums/SpecialChannelDesignation");
 const typeorm_1 = require("typeorm");
+const StringUtility_1 = require("../utilities/StringUtility");
 let SpecialChannel = class SpecialChannel {
+    purifyInsertUpdate() {
+        this.guild_id = StringUtility_1.StringUtility.escapeMySQLInput(this.guild_id);
+        this.channel_id = StringUtility_1.StringUtility.escapeMySQLInput(this.channel_id);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -30,6 +35,13 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], SpecialChannel.prototype, "designation", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SpecialChannel.prototype, "purifyInsertUpdate", null);
 SpecialChannel = __decorate([
     typeorm_1.Entity({ name: "special_channels" })
 ], SpecialChannel);

@@ -22,7 +22,19 @@ class StringUtility {
     static escapeMySQLInput(input) {
         return SqlString.escape(input);
     }
+    static escapeSQLInput(input) {
+        if (input == null) {
+            return null;
+        }
+        let sanitizedInput = StringUtility.escapeMySQLInput(input);
+        // Trim off trailing
+        sanitizedInput = sanitizedInput.replace(new RegExp("[" + this.charlist + "]+$"), "");
+        sanitizedInput = sanitizedInput.replace(new RegExp("^[" + this.charlist + "]+"), "");
+        return sanitizedInput;
+    }
 }
 exports.StringUtility = StringUtility;
+/** List of characters to trim from commands. */
+StringUtility.charlist = [" ", "\"", "'"];
 StringUtility.pattern = /(-?\d+)(\d{3})/;
 //# sourceMappingURL=StringUtility.js.map

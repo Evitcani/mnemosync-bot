@@ -1,6 +1,7 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "parties"})
 export class Party {
@@ -23,4 +24,11 @@ export class Party {
         onDelete: "SET NULL"
     })
     funds: PartyFund[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeMySQLInput(this.name);
+        this.guildId = StringUtility.escapeMySQLInput(this.guildId);
+    }
 }

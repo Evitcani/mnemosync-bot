@@ -1,5 +1,6 @@
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "special_channels"})
 export class SpecialChannel {
@@ -14,4 +15,11 @@ export class SpecialChannel {
 
     @Column()
     designation: SpecialChannelDesignation;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.guild_id = StringUtility.escapeMySQLInput(this.guild_id);
+        this.channel_id = StringUtility.escapeMySQLInput(this.channel_id);
+    }
 }

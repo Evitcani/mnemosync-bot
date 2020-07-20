@@ -1,6 +1,8 @@
 const SqlString = require('sqlstring');
 
 export class StringUtility {
+    /** List of characters to trim from commands. */
+    private static readonly charlist = [" ", "\"", "'"];
     private static pattern = /(-?\d+)(\d{3})/;
 
     /**
@@ -22,5 +24,18 @@ export class StringUtility {
      */
     static escapeMySQLInput(input: string): string {
         return SqlString.escape(input);
+    }
+
+    static escapeSQLInput(input: string): string {
+        if (input == null) {
+            return null;
+        }
+        let sanitizedInput = StringUtility.escapeMySQLInput(input);
+
+        // Trim off trailing
+        sanitizedInput = sanitizedInput.replace(new RegExp("[" + this.charlist + "]+$"), "");
+        sanitizedInput = sanitizedInput.replace(new RegExp("^[" + this.charlist + "]+"), "");
+
+        return sanitizedInput;
     }
 }

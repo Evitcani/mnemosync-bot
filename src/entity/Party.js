@@ -13,7 +13,12 @@ exports.Party = void 0;
 const typeorm_1 = require("typeorm");
 const Character_1 = require("./Character");
 const PartyFund_1 = require("./PartyFund");
+const StringUtility_1 = require("../utilities/StringUtility");
 let Party = class Party {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
+        this.guildId = StringUtility_1.StringUtility.escapeMySQLInput(this.guildId);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -40,6 +45,13 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Party.prototype, "funds", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Party.prototype, "purifyInsertUpdate", null);
 Party = __decorate([
     typeorm_1.Entity({ name: "parties" })
 ], Party);

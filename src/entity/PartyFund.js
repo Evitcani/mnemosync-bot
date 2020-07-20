@@ -12,7 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyFund = void 0;
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
+const StringUtility_1 = require("../utilities/StringUtility");
 let PartyFund = class PartyFund {
+    purifyInsertUpdate() {
+        this.type = StringUtility_1.StringUtility.escapeMySQLInput(this.type);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -44,6 +48,13 @@ __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "copper", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PartyFund.prototype, "purifyInsertUpdate", null);
 PartyFund = __decorate([
     typeorm_1.Entity({ name: "party_funds" })
 ], PartyFund);

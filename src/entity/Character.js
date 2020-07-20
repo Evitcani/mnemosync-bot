@@ -14,7 +14,12 @@ const TravelConfig_1 = require("./TravelConfig");
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
 const Nickname_1 = require("./Nickname");
+const StringUtility_1 = require("../utilities/StringUtility");
 let Character = class Character {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
+        this.img_url = StringUtility_1.StringUtility.escapeMySQLInput(this.img_url);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -51,6 +56,13 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Character.prototype, "nicknames", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Character.prototype, "purifyInsertUpdate", null);
 Character = __decorate([
     typeorm_1.Entity({ name: "characters" })
 ], Character);
