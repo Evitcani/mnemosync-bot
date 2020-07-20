@@ -2,6 +2,7 @@ import {getManager, Repository} from "typeorm";
 import {Table} from "../documentation/databases/Table";
 import {Party} from "../entity/Party";
 import {injectable} from "inversify";
+import {StringUtility} from "../utilities/StringUtility";
 
 @injectable()
 export class PartyController {
@@ -57,10 +58,12 @@ export class PartyController {
      * @param guildId The ID of the guild the party lives in.
      */
     public getByNameAndGuild(partyName: string, guildId: string): Promise<Party[]> {
+        const sanitizedPartyName = StringUtility.escapeSQLInput(partyName);
+
         return PartyController.getRepo()
             .createQueryBuilder(Table.PARTY)
             .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')",
-                { id: guildId, name: partyName })
+                { id: guildId, name: sanitizedPartyName })
             .getMany()
             .then((parties) => {
                 if (parties == null || parties.length < 1) {
