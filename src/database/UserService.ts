@@ -107,6 +107,7 @@ export class UserService {
     private updateUser(discordId: string, discordName: string, setColumns: DbColumn[]): Promise<User> {
         // Create query.
         const table = new DbTable(Table.USER)
+            .setSetColumns(setColumns)
             .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true));
         const query = DatabaseHelperService.doUpdateQuery(table);
 
@@ -115,7 +116,7 @@ export class UserService {
             return this.getUser(discordId, discordName);
         }).catch((err: Error) => {
             console.log("QUERY USED: " + query);
-            console.log("ERROR: Could not update user's name. ::: " + err.message);
+            console.log("ERROR: Could not update user. ::: " + err.message);
             console.log(err.stack);
             return null;
         });
