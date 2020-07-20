@@ -1,11 +1,26 @@
 import {Character} from "./Character";
-import {BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn, UpdateDateColumn
+} from "typeorm";
 import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "users"})
 export class User {
     @PrimaryGeneratedColumn('increment')
     id: number;
+
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @Column("text")
     discord_name: string;

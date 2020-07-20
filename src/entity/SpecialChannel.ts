@@ -1,11 +1,25 @@
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
-import {BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "special_channels"})
 export class SpecialChannel {
     @PrimaryGeneratedColumn('increment')
     id: number;
+
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @Column("text")
     guild_id: string;

@@ -6,26 +6,39 @@ import {TYPES} from "../types";
 import {UserDefaultPartyService} from "../database/UserDefaultPartyService";
 import {UserService} from "../database/UserService";
 import {UserToGuildService} from "../database/UserToGuildService";
+import {PartyController} from "../controllers/PartyController";
+import {Subcommands} from "../documentation/commands/Subcommands";
 
 /**
  * Command to register a user as having access to the funds created on a specific server.
  */
 @injectable()
 export class RegisterCommandHandler extends AbstractCommandHandler {
+    private partyController: PartyController;
     private userDefaultPartyService: UserDefaultPartyService;
     private userService: UserService;
     private userToGuildService: UserToGuildService;
 
-    constructor(@inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
+    constructor(@inject(TYPES.PartyController) partyController: PartyController,
+                @inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
                 @inject(TYPES.UserService) userService: UserService,
                 @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService) {
         super();
+        this.partyController = partyController;
         this.userDefaultPartyService = userDefaultPartyService;
         this.userService = userService;
         this.userToGuildService = userToGuildService;
     }
 
     async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
+        const createParty = Subcommands.PARTY.isCommand(command);
+        if (createParty != null) {
+            return this.partyController.create(createParty.getInput(), message.guild.id, message.author.id)
+                .then((party) => {
+                    return message.channel.send("Created new party: " + party.name);
+                });
+        }
+
         return this.registerUserToGuild(command, message).then((res) => {
             if (!res) {
                 return message.channel.send("Could not register user.");

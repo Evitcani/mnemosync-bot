@@ -18,12 +18,21 @@ let Party = class Party {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
         this.guildId = StringUtility_1.StringUtility.escapeMySQLInput(this.guildId);
+        this.creatorDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(this.creatorDiscordId);
     }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], Party.prototype, "id", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], Party.prototype, "createdDate", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], Party.prototype, "updatedDate", void 0);
 __decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
@@ -32,6 +41,10 @@ __decorate([
     typeorm_1.Column("text", { name: "guild_id" }),
     __metadata("design:type", String)
 ], Party.prototype, "guildId", void 0);
+__decorate([
+    typeorm_1.Column("text", { name: "creator_discord_id" }),
+    __metadata("design:type", String)
+], Party.prototype, "creatorDiscordId", void 0);
 __decorate([
     typeorm_1.OneToMany(type => Character_1.Character, member => member.party, {
         nullable: true,

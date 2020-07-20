@@ -25,6 +25,7 @@ const BagCommandHandler_1 = require("./command-handlers/BagCommandHandler");
 const CharacterCommandHandler_1 = require("./command-handlers/CharacterCommandHandler");
 const TravelCommandHandler_1 = require("./command-handlers/TravelCommandHandler");
 const UserToCharacterService_1 = require("./database/UserToCharacterService");
+const PartyController_1 = require("./controllers/PartyController");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -50,5 +51,6 @@ container.bind(types_1.TYPES.QuoteCommandHandler).to(QuoteCommandHandler_1.Quote
 container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler_1.RegisterCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.TravelCommandHandler).to(TravelCommandHandler_1.TravelCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.PartyController).to(PartyController_1.PartyController).inSingletonScope();
 exports.default = container;
 //# sourceMappingURL=inversify.config.js.map

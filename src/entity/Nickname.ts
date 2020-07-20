@@ -1,4 +1,13 @@
-import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {Character} from "./Character";
 import {Table} from "../documentation/databases/Table";
 import {StringUtility} from "../utilities/StringUtility";
@@ -7,6 +16,12 @@ import {StringUtility} from "../utilities/StringUtility";
 export class Nickname {
     @PrimaryGeneratedColumn('increment')
     id: number;
+
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @Column("text")
     discord_id: string;

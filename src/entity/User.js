@@ -23,6 +23,14 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], User.prototype, "createdDate", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], User.prototype, "updatedDate", void 0);
+__decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
 ], User.prototype, "discord_name", void 0);
