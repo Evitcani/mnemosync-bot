@@ -97,10 +97,10 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             else {
                 // Get this user's default character.
                 return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
-                    if (user == null || user.defaultCharacter) {
+                    if (user == null || user.defaultCharacterId) {
                         return null;
                     }
-                    character.id = user.defaultCharacter.id;
+                    character.id = user.defaultCharacterId;
                     return this.getOtherValues(command, message, character);
                 });
             }

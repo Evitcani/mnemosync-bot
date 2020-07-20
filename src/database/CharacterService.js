@@ -111,11 +111,8 @@ let CharacterService = class CharacterService {
                         // Something went wrong.
                         return null;
                     }
-                    return this.userService.getUser(discordId, discordName).then((user) => {
-                        user.defaultCharacter = char;
-                        return this.userService.updateUser(user).then(() => {
-                            return char;
-                        });
+                    return this.userService.updateDefaultCharacter(discordId, discordName, character).then(() => {
+                        return char;
                     });
                 });
             }).catch((err) => {

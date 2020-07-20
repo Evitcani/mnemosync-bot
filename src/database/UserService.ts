@@ -1,19 +1,12 @@
 import {DatabaseService} from "./base/DatabaseService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
-import {StringUtility} from "../utilities/StringUtility";
 import {User} from "../entity/User";
-import {DatabaseHelperService} from "./base/DatabaseHelperService";
-import {Table} from "../documentation/databases/Table";
-import {DbColumn} from "../models/database/schema/columns/DbColumn";
-import {Column} from "../documentation/databases/Column";
-import {DbTable} from "../models/database/schema/DbTable";
 import {getManager, Repository} from "typeorm";
 import {Character} from "../entity/Character";
 
 @injectable()
 export class UserService {
-    private static TABLE_NAME = "users";
     /** Connection to the database object. */
     private databaseService: DatabaseService;
 
@@ -21,12 +14,12 @@ export class UserService {
         this.databaseService = databaseService;
     }
 
-    private getRepo(): Repository<User> {
+    private static getRepo(): Repository<User> {
         return getManager().getRepository(User);
     }
 
     public async getUser(discordId: string, discordName: string): Promise<User> {
-        return this.getRepo().findOne({where: {discord_id: discordId}}).then((user) => {
+        return UserService.getRepo().findOne({where: {discord_id: discordId}}).then((user) => {
             if (!user) {
                 return this.addUser(discordId, discordName);
             }
@@ -59,7 +52,7 @@ export class UserService {
         user.discord_name = discordName;
 
         // Save the user.
-        return this.getRepo().save(user).then((user) => {
+        return UserService.getRepo().save(user).then((user) => {
             return user;
         }).catch((err: Error) => {
             console.log(`ERROR: Could not add new user (Discord ID: ${discordId}). ::: ${err.message}`);
@@ -70,7 +63,7 @@ export class UserService {
 
     public updateDefaultCharacter(discordId: string, discordName: string, character: Character): Promise<User> {
         return this.getUser(discordId, discordName).then((user) => {
-            user.defaultCharacter = character;
+            user.defaultCharacterId = character.id;
             return this.updateUser(user);
         });
     }
@@ -81,7 +74,7 @@ export class UserService {
      * @param user
      */
     public updateUser(user: User): Promise<User> {
-        return this.getRepo().save(user).then((user) => {
+        return UserService.getRepo().save(user).then((user) => {
             return user;
         });
     }
