@@ -59,7 +59,7 @@ export class PartyController {
     public getByNameAndGuild(partyName: string, guildId: string): Promise<Party[]> {
         return PartyController.getRepo()
             .createQueryBuilder(Table.PARTY)
-            .where("parties_guild_id = :id AND LOWER(parties_name) LIKE LOWER('%:name%')",
+            .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')",
                 { id: guildId, name: partyName })
             .getMany()
             .then((parties) => {
