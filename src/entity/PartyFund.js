@@ -15,7 +15,7 @@ const Party_1 = require("./Party");
 const StringUtility_1 = require("../utilities/StringUtility");
 let PartyFund = class PartyFund {
     purifyInsertUpdate() {
-        this.type = StringUtility_1.StringUtility.escapeMySQLInput(this.type);
+        this.type = StringUtility_1.StringUtility.escapeSQLInput(this.type);
     }
 };
 __decorate([

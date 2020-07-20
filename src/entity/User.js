@@ -14,8 +14,8 @@ const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
 let User = class User {
     purifyInsertUpdate() {
-        this.discord_name = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_name);
-        this.discord_id = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_id);
+        this.discord_name = StringUtility_1.StringUtility.escapeSQLInput(this.discord_name);
+        this.discord_id = StringUtility_1.StringUtility.escapeSQLInput(this.discord_id);
     }
 };
 __decorate([

@@ -34,7 +34,7 @@ export class User {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.discord_name = StringUtility.escapeMySQLInput(this.discord_name);
-        this.discord_id = StringUtility.escapeMySQLInput(this.discord_id);
+        this.discord_name = StringUtility.escapeSQLInput(this.discord_name);
+        this.discord_id = StringUtility.escapeSQLInput(this.discord_id);
     }
 }

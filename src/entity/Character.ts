@@ -51,7 +51,7 @@ export class Character {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.name = StringUtility.escapeMySQLInput(this.name);
-        this.img_url = StringUtility.escapeMySQLInput(this.img_url);
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.img_url = StringUtility.escapeSQLInput(this.img_url);
     }
 }

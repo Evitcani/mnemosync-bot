@@ -15,8 +15,8 @@ const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
 let SpecialChannel = class SpecialChannel {
     purifyInsertUpdate() {
-        this.guild_id = StringUtility_1.StringUtility.escapeMySQLInput(this.guild_id);
-        this.channel_id = StringUtility_1.StringUtility.escapeMySQLInput(this.channel_id);
+        this.guild_id = StringUtility_1.StringUtility.escapeSQLInput(this.guild_id);
+        this.channel_id = StringUtility_1.StringUtility.escapeSQLInput(this.channel_id);
     }
 };
 __decorate([

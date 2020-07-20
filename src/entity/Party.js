@@ -16,9 +16,9 @@ const PartyFund_1 = require("./PartyFund");
 const StringUtility_1 = require("../utilities/StringUtility");
 let Party = class Party {
     purifyInsertUpdate() {
-        this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
-        this.guildId = StringUtility_1.StringUtility.escapeMySQLInput(this.guildId);
-        this.creatorDiscordId = StringUtility_1.StringUtility.escapeMySQLInput(this.creatorDiscordId);
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+        this.guildId = StringUtility_1.StringUtility.escapeSQLInput(this.guildId);
+        this.creatorDiscordId = StringUtility_1.StringUtility.escapeSQLInput(this.creatorDiscordId);
     }
 };
 __decorate([
