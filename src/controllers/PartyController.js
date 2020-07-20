@@ -63,9 +63,10 @@ let PartyController = PartyController_1 = class PartyController {
      */
     getByNameAndGuild(partyName, guildId) {
         const sanitizedPartyName = StringUtility_1.StringUtility.escapeSQLInput(partyName);
+        const sanitizedGuildId = StringUtility_1.StringUtility.escapeSQLInput(guildId);
         return PartyController_1.getRepo()
             .createQueryBuilder(Table_1.Table.PARTY)
-            .where("\"parties\".\"guild_id\" = $1 AND LOWER(\"parties\".\"name\") LIKE LOWER('%$2%')", [guildId, sanitizedPartyName])
+            .where(`\"parties\".\"guild_id\" = '${sanitizedGuildId}' AND LOWER(\"parties\".\"name\") LIKE LOWER('%${sanitizedPartyName}%')`)
             .getMany()
             .then((parties) => {
             if (parties == null || parties.length < 1) {
