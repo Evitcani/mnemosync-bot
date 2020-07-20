@@ -1,6 +1,7 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Character} from "./Character";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.USER_TO_CHARACTER})
 export class Nickname {
@@ -17,4 +18,11 @@ export class Nickname {
         cascade: true
     })
     character: Character;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeMySQLInput(this.name);
+        this.discord_id = StringUtility.escapeMySQLInput(this.discord_id);
+    }
 }

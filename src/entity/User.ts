@@ -1,5 +1,6 @@
 import {Character} from "./Character";
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "users"})
 export class User {
@@ -14,4 +15,11 @@ export class User {
 
     @Column("int", {name: "default_character_id", nullable: true})
     defaultCharacterId?: number;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.discord_name = StringUtility.escapeMySQLInput(this.discord_name);
+        this.discord_id = StringUtility.escapeMySQLInput(this.discord_id);
+    }
 }

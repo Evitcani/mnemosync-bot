@@ -13,7 +13,12 @@ exports.Nickname = void 0;
 const typeorm_1 = require("typeorm");
 const Character_1 = require("./Character");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
 let Nickname = class Nickname {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeMySQLInput(this.name);
+        this.discord_id = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_id);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -33,6 +38,13 @@ __decorate([
     }),
     __metadata("design:type", Character_1.Character)
 ], Nickname.prototype, "character", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Nickname.prototype, "purifyInsertUpdate", null);
 Nickname = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.USER_TO_CHARACTER })
 ], Nickname);

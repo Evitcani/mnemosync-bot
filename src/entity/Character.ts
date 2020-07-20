@@ -1,5 +1,6 @@
 import {TravelConfig} from "./TravelConfig";
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     Entity,
     ManyToOne,
@@ -8,6 +9,7 @@ import {
 } from "typeorm";
 import {Party} from "./Party";
 import {Nickname} from "./Nickname";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "characters"})
 export class Character {
@@ -39,4 +41,11 @@ export class Character {
         onDelete: "SET NULL"
     })
     nicknames: Nickname[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeMySQLInput(this.name);
+        this.img_url = StringUtility.escapeMySQLInput(this.img_url);
+    }
 }

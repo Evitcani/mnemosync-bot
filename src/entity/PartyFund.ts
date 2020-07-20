@@ -1,5 +1,6 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Party} from "./Party";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: "party_funds"})
 export class PartyFund {
@@ -25,4 +26,10 @@ export class PartyFund {
 
     @Column({ nullable: true })
     copper?: number;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.type = StringUtility.escapeMySQLInput(this.type);
+    }
 }

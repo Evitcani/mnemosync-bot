@@ -11,7 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const StringUtility_1 = require("../utilities/StringUtility");
 let User = class User {
+    purifyInsertUpdate() {
+        this.discord_name = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_name);
+        this.discord_id = StringUtility_1.StringUtility.escapeMySQLInput(this.discord_id);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('increment'),
@@ -29,6 +34,13 @@ __decorate([
     typeorm_1.Column("int", { name: "default_character_id", nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "defaultCharacterId", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], User.prototype, "purifyInsertUpdate", null);
 User = __decorate([
     typeorm_1.Entity({ name: "users" })
 ], User);
