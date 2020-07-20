@@ -3,6 +3,10 @@ import {PartyFund} from "../entity/PartyFund";
 
 export class MoneyUtility {
     static pileIntoCopper (fund: PartyFund): number {
+        if (fund == null) {
+            return 0;
+        }
+
         let amt  = 0;
 
         if (fund.platinum !== null) {
