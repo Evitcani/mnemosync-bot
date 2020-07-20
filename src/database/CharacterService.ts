@@ -67,9 +67,9 @@ export class CharacterService {
 
     public async getCharacterByName(discordId: string, characterName: string): Promise<Character> {
         // Create the column.
-        const t1 = new DbTable(Table.CHARACTER)
+        const t1 = new DbTable(Table.CHARACTER).setDesignation(1)
             .addSelectColumns(new DbColumn(Column.ID, null));
-        const t2 = new DbTable(Table.USER_TO_CHARACTER)
+        const t2 = new DbTable(Table.USER_TO_CHARACTER).setDesignation(2)
             .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true))
             .addWhereColumns(new DbColumn(Column.NAME, characterName).setSanitized(true).setDivider(DatabaseDivider.LIKE));
         const query = DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn(Column.ID, Column.CHARACTER_ID));
