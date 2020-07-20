@@ -4,6 +4,9 @@ exports.MoneyUtility = void 0;
 const PartyFund_1 = require("../entity/PartyFund");
 class MoneyUtility {
     static pileIntoCopper(fund) {
+        if (fund == null) {
+            return 0;
+        }
         let amt = 0;
         if (fund.platinum !== null) {
             amt += (fund.platinum * 1000);
