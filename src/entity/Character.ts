@@ -1,11 +1,11 @@
-import {TravelConfig} from "../models/TravelConfig";
+import {TravelConfig} from "./TravelConfig";
 import {
     Column,
     Entity,
     JoinTable,
     ManyToMany,
     ManyToOne,
-    OneToMany,
+    OneToMany, OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn
 } from "typeorm";
@@ -24,7 +24,9 @@ export class Character {
     @Column("text")
     name: string;
 
-    @Column("JSON")
+    @OneToOne(type => TravelConfig, travelConfig => travelConfig.character, {
+        eager: true
+    })
     travel_config: TravelConfig;
 
     @ManyToOne(type => Party, party => party.members, {

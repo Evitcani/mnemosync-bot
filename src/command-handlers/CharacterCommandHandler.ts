@@ -4,7 +4,7 @@ import {Message} from "discord.js";
 import {Character} from "../entity/Character";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {Subcommand} from "../models/generic/Subcommand";
-import {TravelConfig} from "../models/TravelConfig";
+import {TravelConfig} from "../entity/TravelConfig";
 import {inject} from "inversify";
 import {TYPES} from "../types";
 import {CharacterService} from "../database/CharacterService";

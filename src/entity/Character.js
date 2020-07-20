@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Character = void 0;
+const TravelConfig_1 = require("./TravelConfig");
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
 const Nickname_1 = require("./Nickname");
@@ -28,8 +29,10 @@ __decorate([
     __metadata("design:type", String)
 ], Character.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column("JSON"),
-    __metadata("design:type", Object)
+    typeorm_1.OneToOne(type => TravelConfig_1.TravelConfig, travelConfig => travelConfig.character, {
+        eager: true
+    }),
+    __metadata("design:type", TravelConfig_1.TravelConfig)
 ], Character.prototype, "travel_config", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Party_1.Party, party => party.members, {
