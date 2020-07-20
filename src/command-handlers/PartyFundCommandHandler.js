@@ -61,7 +61,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
             if (createCommand != null) {
                 return this.partyController.getByNameAndGuild(this.partyName, message.guild.id).then((parties) => {
                     if (parties == null) {
-                        return message.channel.send("No parties in this guild.");
+                        return message.channel.send("No parties in this server.");
                     }
                     const party = parties[0];
                     return this.partyFundController.create(party, type).then(() => {
