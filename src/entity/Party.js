@@ -24,6 +24,10 @@ __decorate([
     __metadata("design:type", String)
 ], Party.prototype, "name", void 0);
 __decorate([
+    typeorm_1.Column("text", { name: "guild_id" }),
+    __metadata("design:type", String)
+], Party.prototype, "guildId", void 0);
+__decorate([
     typeorm_1.OneToMany(type => Character_1.Character, member => member.party, { nullable: true }),
     __metadata("design:type", Array)
 ], Party.prototype, "members", void 0);
