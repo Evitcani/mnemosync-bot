@@ -23,21 +23,29 @@ export class DatabaseHelperService {
     public static do2JoinSelectQuery(t1Table: DbTable, t2Table: DbTable, onColumn: DbColumn): string {
         // Do select string.
         let selectStr = t1Table.getSelectColumns();
+        let t2SelectStr = t2Table.getSelectColumns();
         if (selectStr == null) {
             selectStr = "";
         } else {
-            selectStr += ", "
+            selectStr += ", ";
         }
-        selectStr += t2Table.getSelectColumns();
+
+        if (t2SelectStr != null) {
+            selectStr += t2SelectStr;
+        }
 
         // Do where string.
         let whereStr = t1Table.getWhereColumns();
+        let t2WhereStr = t2Table.getWhereColumns();
         if (whereStr == null) {
             whereStr = "";
         } else {
             whereStr += " AND "
         }
-        whereStr += t2Table.getWhereColumns();
+
+        if (t2WhereStr != null) {
+            whereStr += t2WhereStr;
+        }
 
         // Do on string.
         const onStr = `t1.${onColumn.getName()} = t2.${onColumn.getValue()}`;
