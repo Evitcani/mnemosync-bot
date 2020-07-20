@@ -54,7 +54,8 @@ __decorate([
 ], Party.prototype, "members", void 0);
 __decorate([
     typeorm_1.OneToMany(type => PartyFund_1.PartyFund, fund => fund.party, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     }),
     __metadata("design:type", Array)
 ], Party.prototype, "funds", void 0);

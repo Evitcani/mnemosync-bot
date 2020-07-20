@@ -39,7 +39,8 @@ export class Party {
     members?: Character[];
 
     @OneToMany(type => PartyFund, fund => fund.party, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     })
     funds: PartyFund[];
 

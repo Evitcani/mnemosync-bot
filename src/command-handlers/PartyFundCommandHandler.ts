@@ -1,4 +1,3 @@
-import {PartyService} from "../database/PartyService";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {Message} from "discord.js";
@@ -9,6 +8,10 @@ import {Command} from "../models/generic/Command";
 import {FundRelatedClientResponses} from "../documentation/client-responses/FundRelatedClientResponses";
 import {PartyFundService} from "../database/PartyFundService";
 import {Commands} from "../documentation/commands/Commands";
+import {PartyController} from "../controllers/PartyController";
+import {Subcommands} from "../documentation/commands/Subcommands";
+import {PartyFundController} from "../controllers/PartyFundController";
+import {Party} from "../entity/Party";
 
 /**
  * Manages the fund related commands.
@@ -16,16 +19,19 @@ import {Commands} from "../documentation/commands/Commands";
 @injectable()
 export class PartyFundCommandHandler extends AbstractCommandHandler {
     /** The party service to connect to the database. */
-    private partyService: PartyService;
+    private partyController: PartyController;
     /** Connection the fund database. */
     private partyFundService: PartyFundService;
+    private partyFundController: PartyFundController;
     private readonly partyName: string = "The Seven Wonders";
 
-    constructor(@inject(TYPES.PartyService) partyService: PartyService,
+    constructor(@inject(TYPES.PartyController) partyController: PartyController,
+                @inject(TYPES.PartyFundController) partyFundController: PartyFundController,
                 @inject(TYPES.PartyFundService) partyFundService: PartyFundService) {
         super();
-        this.partyService = partyService;
+        this.partyController = partyController;
         this.partyFundService = partyFundService;
+        this.partyFundController = partyFundController;
     }
 
     /**
@@ -41,6 +47,21 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
         // If there are no args, assume the user just wants a bank statement.
         if (command.getInput() == null) {
             return this.getFunds(message, type, this.partyName);
+        }
+
+        const createCommand = Subcommands.CREATE.isCommand(command);
+        if (createCommand != null) {
+            return this.partyController.getByNameAndGuild(this.partyName, message.guild.id).then((parties) => {
+                if (parties == null) {
+                    return message.channel.send("No parties in this guild.");
+                }
+
+                const party: Party = parties[0];
+
+                return this.partyFundController.create(party, type).then(() => {
+                    return message.channel.send("Created new party fund!");
+                });
+            });
         }
 
         // Now we send the amount off to be processed.
@@ -70,11 +91,24 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
             type = "FUND";
         }
 
-        return this.partyService.getParty(name).then((res) => {
-            return this.partyFundService.getFund(res.id, type).catch((err: Error) => {
-                console.log("Failed to find party fund with given information ::: " + err.message);
-                return err;
-            });
+        return this.partyController.getByNameAndGuild(name, message.guild.id).then((parties) => {
+            if (parties == null || parties.length < 1) {
+                return null;
+            }
+
+            let party = parties[0];
+
+            // Get the funds. Not the most efficient.
+            if (party.funds != null) {
+                let i: number, fund: PartyFund;
+                for (i = 0; i < party.funds.length; i++) {
+                    fund = party.funds[i];
+                    if (fund.type == type) {
+                        return fund;
+                    }
+                }
+            }
+            return null;
         }).catch((err: Error) => {
             console.log("Failed to find party with given name ::: " + err.message);
             return null;

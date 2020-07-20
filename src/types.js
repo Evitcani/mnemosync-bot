@@ -27,5 +27,6 @@ exports.TYPES = {
     TravelCommandHandler: Symbol("TravelCommandHandler"),
     WhichCommandHandler: Symbol("WhichCommandHandler"),
     PartyController: Symbol("PartyController"),
+    PartyFundController: Symbol("PartyFundController"),
 };
 //# sourceMappingURL=types.js.map

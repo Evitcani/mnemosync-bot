@@ -46,6 +46,14 @@ let PartyController = PartyController_1 = class PartyController {
             return party;
         });
     }
+    getByGuild(guildId) {
+        return PartyController_1.getRepo().find({ where: { guild_id: guildId } }).then((parties) => {
+            if (parties == undefined) {
+                return null;
+            }
+            return parties;
+        });
+    }
     /**
      * Gets all parties in the given guild with a name similar.
      *
@@ -60,9 +68,6 @@ let PartyController = PartyController_1 = class PartyController {
             .then((parties) => {
             if (parties == null || parties.length < 1) {
                 return null;
-            }
-            if (parties.length < 2) {
-                return parties[0];
             }
             return parties;
         })

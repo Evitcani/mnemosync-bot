@@ -29,13 +29,13 @@ const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const CharacterService_1 = require("../database/CharacterService");
 const CharacterRelatedClientResponses_1 = require("../documentation/client-responses/CharacterRelatedClientResponses");
-const PartyService_1 = require("../database/PartyService");
 const UserService_1 = require("../database/UserService");
+const PartyController_1 = require("../controllers/PartyController");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(characterService, partyService, userService) {
+    constructor(characterService, partyController, userService) {
         super();
         this.characterService = characterService;
-        this.partyService = partyService;
+        this.partyController = partyController;
         this.userService = userService;
     }
     handleCommand(command, message) {
@@ -111,14 +111,13 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
         // See if we were given a party...
         const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
         if (ptCmd != null) {
-            return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
+            return this.partyController.getByNameAndGuild(ptCmd.getInput(), message.guild.id)
                 .then((parties) => {
                 if (parties == null || parties.length != 1) {
                     console.debug("Found either no parties or too many parties!");
                     return null;
                 }
-                const party = parties[0];
-                character.party = party;
+                character.party = parties[0];
                 return character;
             });
         }
@@ -142,10 +141,10 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
 };
 CharacterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.CharacterService)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
+    __param(1, inversify_1.inject(types_1.TYPES.PartyController)),
     __param(2, inversify_1.inject(types_1.TYPES.UserService)),
     __metadata("design:paramtypes", [CharacterService_1.CharacterService,
-        PartyService_1.PartyService,
+        PartyController_1.PartyController,
         UserService_1.UserService])
 ], CharacterCommandHandler);
 exports.CharacterCommandHandler = CharacterCommandHandler;

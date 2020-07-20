@@ -1,3 +1,5 @@
+import {PartyFundController} from "./controllers/PartyFundController";
+
 export const TYPES = {
     Bot: Symbol("Bot"),
     Client: Symbol("Client"),
@@ -27,4 +29,5 @@ export const TYPES = {
     WhichCommandHandler: Symbol("WhichCommandHandler"),
 
     PartyController: Symbol("PartyController"),
+    PartyFundController: Symbol("PartyFundController"),
 };
