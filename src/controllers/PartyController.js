@@ -12,6 +12,7 @@ const typeorm_1 = require("typeorm");
 const Table_1 = require("../documentation/databases/Table");
 const Party_1 = require("../entity/Party");
 const inversify_1 = require("inversify");
+const StringUtility_1 = require("../utilities/StringUtility");
 let PartyController = PartyController_1 = class PartyController {
     /**
      * Creates a new party in the server with the given name.
@@ -61,9 +62,10 @@ let PartyController = PartyController_1 = class PartyController {
      * @param guildId The ID of the guild the party lives in.
      */
     getByNameAndGuild(partyName, guildId) {
+        const sanitizedPartyName = StringUtility_1.StringUtility.escapeSQLInput(partyName);
         return PartyController_1.getRepo()
             .createQueryBuilder(Table_1.Table.PARTY)
-            .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')", { id: guildId, name: partyName })
+            .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')", { id: guildId, name: sanitizedPartyName })
             .getMany()
             .then((parties) => {
             if (parties == null || parties.length < 1) {
