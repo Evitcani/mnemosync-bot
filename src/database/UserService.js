@@ -20,6 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var UserService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const DatabaseService_1 = require("./base/DatabaseService");
@@ -27,16 +28,16 @@ const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const User_1 = require("../entity/User");
 const typeorm_1 = require("typeorm");
-let UserService = class UserService {
+let UserService = UserService_1 = class UserService {
     constructor(databaseService) {
         this.databaseService = databaseService;
     }
-    getRepo() {
+    static getRepo() {
         return typeorm_1.getManager().getRepository(User_1.User);
     }
     getUser(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().findOne({ where: { discord_id: discordId } }).then((user) => {
+            return UserService_1.getRepo().findOne({ where: { discord_id: discordId } }).then((user) => {
                 if (!user) {
                     return this.addUser(discordId, discordName);
                 }
@@ -67,7 +68,7 @@ let UserService = class UserService {
             user.discord_id = discordId;
             user.discord_name = discordName;
             // Save the user.
-            return this.getRepo().save(user).then((user) => {
+            return UserService_1.getRepo().save(user).then((user) => {
                 return user;
             }).catch((err) => {
                 console.log(`ERROR: Could not add new user (Discord ID: ${discordId}). ::: ${err.message}`);
@@ -78,7 +79,7 @@ let UserService = class UserService {
     }
     updateDefaultCharacter(discordId, discordName, character) {
         return this.getUser(discordId, discordName).then((user) => {
-            user.defaultCharacter = character;
+            user.defaultCharacterId = character.id;
             return this.updateUser(user);
         });
     }
@@ -88,13 +89,12 @@ let UserService = class UserService {
      * @param user
      */
     updateUser(user) {
-        return this.getRepo().save(user).then((user) => {
+        return UserService_1.getRepo().save(user).then((user) => {
             return user;
         });
     }
 };
-UserService.TABLE_NAME = "users";
-UserService = __decorate([
+UserService = UserService_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.DatabaseService)),
     __metadata("design:paramtypes", [DatabaseService_1.DatabaseService])

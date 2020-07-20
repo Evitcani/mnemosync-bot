@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
-const Character_1 = require("./Character");
 const typeorm_1 = require("typeorm");
 let User = class User {
 };
@@ -30,15 +29,6 @@ __decorate([
     typeorm_1.Column("int", { name: "default_character_id", nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "defaultCharacterId", void 0);
-__decorate([
-    typeorm_1.OneToOne(type => Character_1.Character, {
-        eager: true,
-        nullable: true,
-        onDelete: "SET NULL"
-    }),
-    typeorm_1.JoinColumn(),
-    __metadata("design:type", Character_1.Character)
-], User.prototype, "defaultCharacter", void 0);
 User = __decorate([
     typeorm_1.Entity({ name: "users" })
 ], User);

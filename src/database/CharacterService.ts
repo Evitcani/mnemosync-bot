@@ -6,11 +6,9 @@ import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
 import {Column} from "../documentation/databases/Column";
-import {TravelConfig} from "../entity/TravelConfig";
 import {DbTable} from "../models/database/schema/DbTable";
 import {UserToCharacterService} from "./UserToCharacterService";
 import {UserService} from "./UserService";
-import {JSONField} from "../documentation/databases/JSONField";
 import {User} from "../entity/User";
 import {DatabaseDivider} from "../enums/DatabaseDivider";
 import {getManager} from "typeorm";
@@ -105,11 +103,8 @@ export class CharacterService {
                     return null;
                 }
 
-                return this.userService.getUser(discordId, discordName).then((user) => {
-                    user.defaultCharacter = char;
-                    return this.userService.updateUser(user).then(() => {
-                        return char;
-                    });
+                return this.userService.updateDefaultCharacter(discordId, discordName, character).then(() => {
+                    return char;
                 });
             });
         }).catch((err: Error) => {
