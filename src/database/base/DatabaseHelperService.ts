@@ -58,6 +58,6 @@ export class DatabaseHelperService {
      * @param table The table to use. Only uses the "set" columns.
      */
     public static doInsertQuery(table: DbTable): string {
-        return `INSERT INTO ${table.getTableName()} ${table.getInsertColumns()}`;
+        return `INSERT INTO ${table.getTableName()} ${table.getInsertColumns()} RETURNING *`;
     }
 }

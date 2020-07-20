@@ -127,20 +127,20 @@ let CharacterService = CharacterService_1 = class CharacterService {
             // Go out and do the query.
             return this.databaseService.query(query).then((res) => {
                 console.log("Result from insert: " + res);
-                return this.getCharacterByName(discordId, character.name).then((character) => {
-                    // Now, we have to add the character to the mapping database.
-                    return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
-                        if (!res) {
-                            // Something went wrong.
+                // @ts-ignore Get the character from the results.
+                const char = res.rows[0];
+                // Now, we have to add the character to the mapping database.
+                return this.userToCharacterService.createNewMap(char.id, discordId, char.name).then((res) => {
+                    if (!res) {
+                        // Something went wrong.
+                        return null;
+                    }
+                    // Now switch the default character.
+                    return this.userService.updateDefaultCharacter(discordId, discordName, char.id).then((res) => {
+                        if (res == null) {
                             return null;
                         }
-                        // Now switch the default character.
-                        return this.userService.updateDefaultCharacter(discordId, discordName, character.id).then((res) => {
-                            if (res == null) {
-                                return null;
-                            }
-                            return character;
-                        });
+                        return char;
                     });
                 });
             }).catch((err) => {
