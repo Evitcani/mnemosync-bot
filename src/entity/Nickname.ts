@@ -1,10 +1,10 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 import {Character} from "./Character";
 import {Table} from "../documentation/databases/Table";
 
 @Entity({name: Table.USER_TO_CHARACTER})
 export class Nickname {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column("text")

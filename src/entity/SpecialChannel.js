@@ -15,7 +15,7 @@ const typeorm_1 = require("typeorm");
 let SpecialChannel = class SpecialChannel {
 };
 __decorate([
-    typeorm_1.PrimaryColumn("serial"),
+    typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], SpecialChannel.prototype, "id", void 0);
 __decorate([

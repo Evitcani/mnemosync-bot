@@ -1,10 +1,10 @@
-import {Column, Entity, OneToMany, PrimaryColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
 
 @Entity({name: "parties"})
 export class Party {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column("text")

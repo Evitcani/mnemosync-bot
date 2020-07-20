@@ -15,7 +15,7 @@ import {Nickname} from "./Nickname";
 
 @Entity({name: "characters"})
 export class Character {
-    @PrimaryColumn("serial")
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column("text")

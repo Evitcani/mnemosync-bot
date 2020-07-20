@@ -16,7 +16,7 @@ const Table_1 = require("../documentation/databases/Table");
 let Nickname = class Nickname {
 };
 __decorate([
-    typeorm_1.PrimaryColumn("serial"),
+    typeorm_1.PrimaryGeneratedColumn('increment'),
     __metadata("design:type", Number)
 ], Nickname.prototype, "id", void 0);
 __decorate([
