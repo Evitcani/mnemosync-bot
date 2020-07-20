@@ -41,9 +41,13 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
     }
 
     private async switchCharacter(message: Message, character: Character): Promise<Message | Message[]> {
-        return this.characterService.getCharacterByName(message.author.id, character.name).then((character) => {
-            return this.userService.updateDefaultCharacter(message.author.id, message.author.username, character.id).then(() => {
-                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+        return this.characterService.getCharacterByName(message.author.id, character.name).then((char) => {
+            if (char == null) {
+                return message.channel.send(`No character exists with a name like '${character.name}'`);
+            }
+
+            return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
+                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, true));
             });
         });
     }
