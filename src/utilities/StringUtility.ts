@@ -17,6 +17,15 @@ export class StringUtility {
         return str;
     }
 
+    static replaceFancyQuotes(input: string): string {
+        if (input == null) {
+            return null;
+        }
+        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]+"), "'");
+        correctedInput = input.replace(new RegExp("[" + ["“", "”"] + "]+"), "\"");
+        return correctedInput;
+    }
+
     /**
      * Escapes the given input to be placed in a database.
      *

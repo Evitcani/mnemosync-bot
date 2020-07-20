@@ -1,6 +1,7 @@
 import {Command} from "../models/generic/Command";
 import {Subcommand} from "../models/generic/Subcommand";
 import {Bot} from "../bot";
+import {StringUtility} from "./StringUtility";
 
 /**
  * A utility for processing and understanding commands.
@@ -44,6 +45,9 @@ export class CommandUtility {
      * @param arg The simple arg to process.
      */
     private static getSubcommand(arg: string): Subcommand {
+        // Remove all fancy quotes for proper processing.
+        arg = StringUtility.replaceFancyQuotes(arg);
+
         // Get the basic args.
         const args = arg.split(" ");
         const cmd = args.shift().toLowerCase();

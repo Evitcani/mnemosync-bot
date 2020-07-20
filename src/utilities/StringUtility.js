@@ -14,6 +14,14 @@ class StringUtility {
             str = str.replace(this.pattern, "$1,$2");
         return str;
     }
+    static replaceFancyQuotes(input) {
+        if (input == null) {
+            return null;
+        }
+        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]+"), "'");
+        correctedInput = input.replace(new RegExp("[" + ["“", "”"] + "]+"), "\"");
+        return correctedInput;
+    }
     /**
      * Escapes the given input to be placed in a database.
      *
