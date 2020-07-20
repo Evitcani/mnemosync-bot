@@ -23,6 +23,14 @@ __decorate([
     __metadata("design:type", Number)
 ], PartyFund.prototype, "id", void 0);
 __decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], PartyFund.prototype, "createdDate", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], PartyFund.prototype, "updatedDate", void 0);
+__decorate([
     typeorm_1.ManyToOne(type => Party_1.Party, party => party.funds, {
         cascade: true
     }),

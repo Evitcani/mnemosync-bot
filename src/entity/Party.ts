@@ -1,4 +1,13 @@
-import {BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
 import {StringUtility} from "../utilities/StringUtility";
@@ -8,11 +17,20 @@ export class Party {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
+
     @Column("text")
     name: string;
 
     @Column("text", {name: "guild_id"})
     guildId: string;
+
+    @Column("text", {name: "creator_discord_id"})
+    creatorDiscordId: string;
 
     @OneToMany(type => Character, member => member.party, {
         nullable: true,
@@ -30,5 +48,6 @@ export class Party {
     purifyInsertUpdate() {
         this.name = StringUtility.escapeMySQLInput(this.name);
         this.guildId = StringUtility.escapeMySQLInput(this.guildId);
+        this.creatorDiscordId = StringUtility.escapeMySQLInput(this.creatorDiscordId);
     }
 }

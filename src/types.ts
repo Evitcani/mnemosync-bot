@@ -25,4 +25,6 @@ export const TYPES = {
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
     TravelCommandHandler: Symbol("TravelCommandHandler"),
     WhichCommandHandler: Symbol("WhichCommandHandler"),
+
+    PartyController: Symbol("PartyController"),
 };

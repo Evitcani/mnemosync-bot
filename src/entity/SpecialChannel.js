@@ -24,6 +24,14 @@ __decorate([
     __metadata("design:type", Number)
 ], SpecialChannel.prototype, "id", void 0);
 __decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], SpecialChannel.prototype, "createdDate", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], SpecialChannel.prototype, "updatedDate", void 0);
+__decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
 ], SpecialChannel.prototype, "guild_id", void 0);

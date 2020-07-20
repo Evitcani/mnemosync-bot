@@ -26,6 +26,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Character.prototype, "id", void 0);
 __decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], Character.prototype, "createdDate", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], Character.prototype, "updatedDate", void 0);
+__decorate([
     typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", String)
 ], Character.prototype, "img_url", void 0);

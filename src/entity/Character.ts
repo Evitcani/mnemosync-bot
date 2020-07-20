@@ -1,11 +1,11 @@
 import {TravelConfig} from "./TravelConfig";
 import {
     BeforeInsert, BeforeUpdate,
-    Column,
+    Column, CreateDateColumn,
     Entity,
     ManyToOne,
     OneToMany, OneToOne,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
 import {Party} from "./Party";
 import {Nickname} from "./Nickname";
@@ -15,6 +15,12 @@ import {StringUtility} from "../utilities/StringUtility";
 export class Character {
     @PrimaryGeneratedColumn('increment')
     id: number;
+
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @Column("text",{ nullable: true })
     img_url?: string;
