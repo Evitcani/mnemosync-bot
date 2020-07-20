@@ -84,6 +84,8 @@ let CharacterService = CharacterService_1 = class CharacterService {
             const query = DatabaseHelperService_1.DatabaseHelperService.do2JoinSelectQuery(t1, t2, new DbColumn_1.DbColumn(Column_1.Column.ID, Column_1.Column.CHARACTER_ID));
             // Go out and do the query.
             return this.databaseService.query(query).then((res) => {
+                console.log("QUERY USED: " + query);
+                console.log(res);
                 // No results.
                 if (res.rowCount <= 0) {
                     return null;
@@ -123,7 +125,8 @@ let CharacterService = CharacterService_1 = class CharacterService {
             const table = new DbTable_1.DbTable(Table_1.Table.CHARACTER).setInsertColumns(setColumn);
             const query = DatabaseHelperService_1.DatabaseHelperService.doInsertQuery(table);
             // Go out and do the query.
-            return this.databaseService.query(query).then(() => {
+            return this.databaseService.query(query).then((res) => {
+                console.log("Result from insert: " + res);
                 return this.getCharacterByName(discordId, character.name).then((character) => {
                     // Now, we have to add the character to the mapping database.
                     return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
