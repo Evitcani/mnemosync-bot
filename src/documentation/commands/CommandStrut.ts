@@ -19,6 +19,9 @@ export class CommandStrut {
     }
 
     public isCommand(command: Command): Subcommand {
+        if (command == null || command.getSubcommands() == null) {
+            return null;
+        }
         let cmd = command.getSubcommands().get(this.name);
         if (cmd != null) {
             return cmd;

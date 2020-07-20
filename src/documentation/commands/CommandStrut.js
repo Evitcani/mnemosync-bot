@@ -13,6 +13,9 @@ class CommandStrut {
         return this._shortenedName;
     }
     isCommand(command) {
+        if (command == null || command.getSubcommands() == null) {
+            return null;
+        }
         let cmd = command.getSubcommands().get(this.name);
         if (cmd != null) {
             return cmd;
