@@ -118,15 +118,7 @@ export class CharacterService {
         const query = DatabaseHelperService.doInsertQuery(table);
 
         // Go out and do the query.
-        return this.databaseService.query(query).then((res) => {
-            // No results.
-            if (res.rowCount <= 0) {
-                return null;
-            }
-
-            // @ts-ignore Get the character from the results.
-            const character: Character = res.rows[0];
-
+        return this.databaseService.query(query).then(() => {
             // Now, we have to add the character to the mapping database.
             return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
                 if (!res) {

@@ -11,16 +11,20 @@ import {CharacterService} from "../database/CharacterService";
 import {CharacterRelatedClientResponses} from "../documentation/client-responses/CharacterRelatedClientResponses";
 import {PartyService} from "../database/PartyService";
 import {Party} from "../models/database/Party";
+import {UserService} from "../database/UserService";
 
 export class CharacterCommandHandler extends AbstractCommandHandler {
     private characterService: CharacterService;
     private partyService: PartyService;
+    private userService: UserService;
 
     constructor(@inject(TYPES.CharacterService) characterService: CharacterService,
-                @inject(TYPES.PartyService) partyService: PartyService) {
+                @inject(TYPES.PartyService) partyService: PartyService,
+                @inject(TYPES.UserService) userService: UserService) {
         super();
         this.characterService = characterService;
         this.partyService = partyService;
+        this.userService = userService;
     }
 
     async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
@@ -28,7 +32,19 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             if (Subcommands.CREATE.isCommand(command) != null) {
                 return this.createCharacter(message, character);
             }
+
+            if (Subcommands.SWITCH.isCommand(command) != null) {
+                return this.switchCharacter(message, character);
+            }
             return undefined;
+        });
+    }
+
+    private async switchCharacter(message: Message, character: Character): Promise<Message | Message[]> {
+        return this.characterService.getCharacterByName(message.author.id, character.name).then((character) => {
+            return this.userService.updateDefaultCharacter(message.author.id, message.author.username, character.id).then(() => {
+                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+            });
         });
     }
 
@@ -59,21 +75,30 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             travel_config: TravelConfig;
         };
 
-        // Set the character name
-        const nameCmd = CharacterCommandHandler.getNameCmd(command);
-        if (nameCmd != null) {
-            character.name = nameCmd.getInput();
-        }
-
         // Set the image URL.
         const imgCmd = Subcommands.IMG_URL.isCommand(command);
         if (imgCmd != null) {
             character.img_url = imgCmd.getInput();
         }
 
-        // Start on the travel config.
+        // Set the character name
+        const nameCmd = CharacterCommandHandler.getNameCmd(command);
+        if (nameCmd != null) {
+            character.name = nameCmd.getInput();
+        } else {
+            // Get this user's default character.
+            return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
+                if (user == null || user.character) {
+                    return null;
+                }
+                character.id = user.character.id;
+                return this.getOtherValues(command, message, character);
+            })
+        }
+        return this.getOtherValues(command, message, character);
+    }
 
-
+    private getOtherValues (command: Command, message: Message, character: Character): Promise<Character> {
         // See if we were given a party...
         const ptCmd = Subcommands.PARTY.isCommand(command);
         if (ptCmd != null) {
@@ -91,7 +116,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
                 });
         }
 
-        return character;
+        return Promise.resolve(character);
     }
 
     private static getNameCmd(command: Command): Subcommand {

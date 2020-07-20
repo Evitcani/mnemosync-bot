@@ -29,11 +29,13 @@ const types_1 = require("../types");
 const CharacterService_1 = require("../database/CharacterService");
 const CharacterRelatedClientResponses_1 = require("../documentation/client-responses/CharacterRelatedClientResponses");
 const PartyService_1 = require("../database/PartyService");
+const UserService_1 = require("../database/UserService");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(characterService, partyService) {
+    constructor(characterService, partyService, userService) {
         super();
         this.characterService = characterService;
         this.partyService = partyService;
+        this.userService = userService;
     }
     handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,7 +43,19 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                 if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
                     return this.createCharacter(message, character);
                 }
+                if (Subcommands_1.Subcommands.SWITCH.isCommand(command) != null) {
+                    return this.switchCharacter(message, character);
+                }
                 return undefined;
+            });
+        });
+    }
+    switchCharacter(message, character) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.characterService.getCharacterByName(message.author.id, character.name).then((character) => {
+                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, character.id).then(() => {
+                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+                });
             });
         });
     }
@@ -67,33 +81,45 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             // Construct the character and add the name.
             const character = new class {
             };
-            // Set the character name
-            const nameCmd = CharacterCommandHandler.getNameCmd(command);
-            if (nameCmd != null) {
-                character.name = nameCmd.getInput();
-            }
             // Set the image URL.
             const imgCmd = Subcommands_1.Subcommands.IMG_URL.isCommand(command);
             if (imgCmd != null) {
                 character.img_url = imgCmd.getInput();
             }
-            // Start on the travel config.
-            // See if we were given a party...
-            const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
-            if (ptCmd != null) {
-                return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
-                    .then((parties) => {
-                    if (parties == null || parties.length != 1) {
-                        console.debug("Found either no parties or too many parties!");
+            // Set the character name
+            const nameCmd = CharacterCommandHandler.getNameCmd(command);
+            if (nameCmd != null) {
+                character.name = nameCmd.getInput();
+            }
+            else {
+                // Get this user's default character.
+                return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
+                    if (user == null || user.character) {
                         return null;
                     }
-                    const party = parties[0];
-                    character.party_id = party.id;
-                    return character;
+                    character.id = user.character.id;
+                    return this.getOtherValues(command, message, character);
                 });
             }
-            return character;
+            return this.getOtherValues(command, message, character);
         });
+    }
+    getOtherValues(command, message, character) {
+        // See if we were given a party...
+        const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
+        if (ptCmd != null) {
+            return this.partyService.getPartiesInGuildWithName(message.guild.id, ptCmd.getInput())
+                .then((parties) => {
+                if (parties == null || parties.length != 1) {
+                    console.debug("Found either no parties or too many parties!");
+                    return null;
+                }
+                const party = parties[0];
+                character.party_id = party.id;
+                return character;
+            });
+        }
+        return Promise.resolve(character);
     }
     static getNameCmd(command) {
         let nameCmd = Subcommands_1.Subcommands.CREATE.isCommand(command);
@@ -114,8 +140,10 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
 CharacterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.CharacterService)),
     __param(1, inversify_1.inject(types_1.TYPES.PartyService)),
+    __param(2, inversify_1.inject(types_1.TYPES.UserService)),
     __metadata("design:paramtypes", [CharacterService_1.CharacterService,
-        PartyService_1.PartyService])
+        PartyService_1.PartyService,
+        UserService_1.UserService])
 ], CharacterCommandHandler);
 exports.CharacterCommandHandler = CharacterCommandHandler;
 //# sourceMappingURL=CharacterCommandHandler.js.map
