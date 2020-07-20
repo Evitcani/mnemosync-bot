@@ -8,7 +8,7 @@ const typeorm_1 = require("typeorm");
 let bot = inversify_config_1.default.get(types_1.TYPES.Bot);
 typeorm_1.createConnection({
     type: "postgres",
-    url: this.databaseUrl,
+    url: process.env.DATABASE_URL,
     entities: [
         __dirname + "/entity/*.js"
     ],
@@ -19,5 +19,6 @@ typeorm_1.createConnection({
     }).catch((error) => {
         console.log('Oh no! ', error);
     });
+}).catch(() => {
 });
 //# sourceMappingURL=index.js.map
