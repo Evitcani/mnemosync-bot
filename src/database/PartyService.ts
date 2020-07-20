@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
-import {Party} from "../models/database/Party";
+import {Party} from "../entity/Party";
 import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";

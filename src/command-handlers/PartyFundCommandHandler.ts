@@ -4,7 +4,7 @@ import {TYPES} from "../types";
 import {Message} from "discord.js";
 import {MoneyUtility} from "../utilities/MoneyUtility";
 import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
-import {PartyFund} from "../models/database/PartyFund";
+import {PartyFund} from "../entity/PartyFund";
 import {Command} from "../models/generic/Command";
 import {FundRelatedClientResponses} from "../documentation/client-responses/FundRelatedClientResponses";
 import {PartyFundService} from "../database/PartyFundService";

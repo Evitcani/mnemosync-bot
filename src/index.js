@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
 require('dotenv').config(); // Recommended way of loading dotenv
 const inversify_config_1 = require("./inversify.config");
 const types_1 = require("./types");

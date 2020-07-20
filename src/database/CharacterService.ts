@@ -1,17 +1,17 @@
 import {inject, injectable} from "inversify";
 import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
-import {Character} from "../models/database/Character";
+import {Character} from "../entity/Character";
 import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
 import {Column} from "../documentation/databases/Column";
-import {TravelConfig} from "../models/database/TravelConfig";
+import {TravelConfig} from "../entity/TravelConfig";
 import {DbTable} from "../models/database/schema/DbTable";
 import {UserToCharacterService} from "./UserToCharacterService";
 import {UserService} from "./UserService";
 import {JSONField} from "../documentation/databases/JSONField";
-import {User} from "../models/database/User";
+import {User} from "../entity/User";
 import {DatabaseDivider} from "../enums/DatabaseDivider";
 
 @injectable()

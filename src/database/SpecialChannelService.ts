@@ -2,7 +2,7 @@ import {inject, injectable} from "inversify";
 import {DatabaseService} from "./base/DatabaseService";
 import {TYPES} from "../types";
 import {StringUtility} from "../utilities/StringUtility";
-import {SpecialChannel} from "../models/database/SpecialChannel";
+import {SpecialChannel} from "../entity/SpecialChannel";
 import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
 
 @injectable()

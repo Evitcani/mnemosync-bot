@@ -1,5 +1,5 @@
 import {Money} from "../models/database/Money";
-import {PartyFund} from "../models/database/PartyFund";
+import {PartyFund} from "../entity/PartyFund";
 
 export class MoneyUtility {
     static pileIntoCopper (fund: PartyFund): number {

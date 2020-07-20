@@ -1,7 +1,7 @@
 import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {Command} from "../models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../models/database/Character";
+import {Character} from "../entity/Character";
 
 /**
  * The "travel" command is used to calculate the most efficient gear to travel with over a period of days.
