@@ -62,7 +62,7 @@ export class PartyController {
 
         return PartyController.getRepo()
             .createQueryBuilder(Table.PARTY)
-            .where("\"parties\".\"guild_id\" = :id AND LOWER(\"parties\".\"name\") LIKE LOWER('%:name%')",
+            .where("\"parties\".\"guild_id\" = $1 AND LOWER(\"parties\".\"name\") LIKE LOWER('%$2%')",
                 [ guildId, sanitizedPartyName ])
             .getMany()
             .then((parties) => {
