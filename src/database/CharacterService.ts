@@ -119,20 +119,22 @@ export class CharacterService {
 
         // Go out and do the query.
         return this.databaseService.query(query).then(() => {
-            // Now, we have to add the character to the mapping database.
-            return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
-                if (!res) {
-                    // Something went wrong.
-                    return null;
-                }
-
-                // Now switch the default character.
-                return this.userService.updateDefaultCharacter(discordId, discordName, character.id).then((res) => {
-                    if (res == null) {
+            return this.getCharacterByName(discordId, character.name).then((character) => {
+                // Now, we have to add the character to the mapping database.
+                return this.userToCharacterService.createNewMap(character.id, discordId, character.name).then((res) => {
+                    if (!res) {
+                        // Something went wrong.
                         return null;
                     }
 
-                    return character;
+                    // Now switch the default character.
+                    return this.userService.updateDefaultCharacter(discordId, discordName, character.id).then((res) => {
+                        if (res == null) {
+                            return null;
+                        }
+
+                        return character;
+                    });
                 });
             });
         }).catch((err: Error) => {
