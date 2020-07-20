@@ -6,7 +6,7 @@ import {DatabaseHelperService} from "./base/DatabaseHelperService";
 import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
 import {Column} from "../documentation/databases/Column";
-import {TravelConfig} from "../models/TravelConfig";
+import {TravelConfig} from "../entity/TravelConfig";
 import {DbTable} from "../models/database/schema/DbTable";
 import {UserToCharacterService} from "./UserToCharacterService";
 import {UserService} from "./UserService";
