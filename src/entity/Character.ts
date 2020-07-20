@@ -2,15 +2,11 @@ import {TravelConfig} from "./TravelConfig";
 import {
     Column,
     Entity,
-    JoinTable,
-    ManyToMany,
     ManyToOne,
     OneToMany, OneToOne,
-    PrimaryColumn,
     PrimaryGeneratedColumn
 } from "typeorm";
 import {Party} from "./Party";
-import {User} from "./User";
 import {Nickname} from "./Nickname";
 
 @Entity({name: "characters"})
