@@ -4,6 +4,7 @@ exports.CommandUtility = void 0;
 const Command_1 = require("../models/generic/Command");
 const Subcommand_1 = require("../models/generic/Subcommand");
 const bot_1 = require("../bot");
+const StringUtility_1 = require("./StringUtility");
 /**
  * A utility for processing and understanding commands.
  */
@@ -37,6 +38,8 @@ class CommandUtility {
      * @param arg The simple arg to process.
      */
     static getSubcommand(arg) {
+        // Remove all fancy quotes for proper processing.
+        arg = StringUtility_1.StringUtility.replaceFancyQuotes(arg);
         // Get the basic args.
         const args = arg.split(" ");
         const cmd = args.shift().toLowerCase();
