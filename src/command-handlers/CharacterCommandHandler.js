@@ -23,6 +23,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CharacterCommandHandler = void 0;
 const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
+const Character_1 = require("../entity/Character");
 const Subcommands_1 = require("../documentation/commands/Subcommands");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
@@ -56,7 +57,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                 if (char == null) {
                     return message.channel.send(`No character exists with a name like '${character.name}'`);
                 }
-                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char.id).then(() => {
+                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
                     return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
                 });
             });
@@ -82,8 +83,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     constructCharacter(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Construct the character and add the name.
-            const character = new class {
-            };
+            const character = new Character_1.Character();
             // Set the image URL.
             const imgCmd = Subcommands_1.Subcommands.IMG_URL.isCommand(command);
             if (imgCmd != null) {
@@ -97,10 +97,10 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             else {
                 // Get this user's default character.
                 return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
-                    if (user == null || user.character) {
+                    if (user == null || user.defaultCharacter) {
                         return null;
                     }
-                    character.id = user.character.id;
+                    character.id = user.defaultCharacter.id;
                     return this.getOtherValues(command, message, character);
                 });
             }
@@ -118,7 +118,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                     return null;
                 }
                 const party = parties[0];
-                character.party_id = party.id;
+                character.party = party;
                 return character;
             });
         }

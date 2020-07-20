@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MoneyUtility = void 0;
+const PartyFund_1 = require("../entity/PartyFund");
 class MoneyUtility {
     static pileIntoCopper(fund) {
         let amt = 0;
@@ -20,8 +21,7 @@ class MoneyUtility {
         return amt;
     }
     static copperToFund(amt) {
-        let fund = { id: null, party_id: null, type: null, platinum: 0, gold: null, silver: null,
-            copper: null };
+        let fund = new PartyFund_1.PartyFund();
         console.debug("COPPER TO FUND ::: Amount is: " + amt);
         // Gold is easy to get.
         fund.gold = Math.floor(amt / 100);
@@ -35,7 +35,7 @@ class MoneyUtility {
         return fund;
     }
     static processMoneyArguments(args) {
-        let fund = { id: null, party_id: null, type: null, platinum: 0, gold: 0, silver: 0, copper: 0 };
+        let fund = new PartyFund_1.PartyFund();
         let amt = -1;
         let negative = false;
         let i, arg, search;

@@ -9,42 +9,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Character = void 0;
+exports.Nickname = void 0;
 const typeorm_1 = require("typeorm");
-const Party_1 = require("./Party");
-const Nickname_1 = require("./Nickname");
-let Character = class Character {
+const Character_1 = require("./Character");
+const Table_1 = require("../documentation/databases/Table");
+let Nickname = class Nickname {
 };
 __decorate([
     typeorm_1.PrimaryColumn("serial"),
     __metadata("design:type", Number)
-], Character.prototype, "id", void 0);
+], Nickname.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
-], Character.prototype, "img_url", void 0);
+], Nickname.prototype, "discord_id", void 0);
 __decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
-], Character.prototype, "name", void 0);
+], Nickname.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column("JSON"),
-    __metadata("design:type", Object)
-], Character.prototype, "travel_config", void 0);
-__decorate([
-    typeorm_1.ManyToOne(type => Party_1.Party, party => party.members, {
-        eager: true
-    }),
-    __metadata("design:type", Party_1.Party)
-], Character.prototype, "party", void 0);
-__decorate([
-    typeorm_1.OneToMany(type => Nickname_1.Nickname, nickname => nickname.character, {
-        eager: true
-    }),
-    __metadata("design:type", Array)
-], Character.prototype, "nicknames", void 0);
-Character = __decorate([
-    typeorm_1.Entity({ name: "characters" })
-], Character);
-exports.Character = Character;
-//# sourceMappingURL=Character.js.map
+    typeorm_1.ManyToOne(type => Character_1.Character),
+    __metadata("design:type", Character_1.Character)
+], Nickname.prototype, "character", void 0);
+Nickname = __decorate([
+    typeorm_1.Entity({ name: Table_1.Table.USER_TO_CHARACTER })
+], Nickname);
+exports.Nickname = Nickname;
+//# sourceMappingURL=Nickname.js.map

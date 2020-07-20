@@ -27,8 +27,7 @@ export class MoneyUtility {
     }
 
     static copperToFund(amt: number): PartyFund {
-        let fund: PartyFund = {id: null, party_id: null, type: null, platinum: 0, gold: null, silver: null,
-            copper: null};
+        let fund: PartyFund = new PartyFund();
 
         console.debug("COPPER TO FUND ::: Amount is: " + amt);
 
@@ -51,7 +50,7 @@ export class MoneyUtility {
     }
 
      static processMoneyArguments (args: string[]): PartyFund {
-        let fund: PartyFund = {id: null, party_id: null, type: null, platinum: 0, gold: 0, silver: 0, copper: 0};
+        let fund: PartyFund = new PartyFund();
         let amt = -1;
         let negative = false;
         let i: number, arg: string, search: number;

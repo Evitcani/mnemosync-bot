@@ -8,6 +8,8 @@ import {Table} from "../documentation/databases/Table";
 import {DbColumn} from "../models/database/schema/columns/DbColumn";
 import {Column} from "../documentation/databases/Column";
 import {DbTable} from "../models/database/schema/DbTable";
+import {getManager, Repository} from "typeorm";
+import {Character} from "../entity/Character";
 
 @injectable()
 export class UserService {
@@ -19,30 +21,26 @@ export class UserService {
         this.databaseService = databaseService;
     }
 
+    private getRepo(): Repository<User> {
+        return getManager().getRepository(User);
+    }
+
     public async getUser(discordId: string, discordName: string): Promise<User> {
-        // Sanitize inputs.
-        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
-
-        // Construct query.
-        let query = `SELECT * FROM ${UserService.TABLE_NAME} WHERE discord_id = ${sanitizedDiscordId}`;
-
-        return this.databaseService.query(query).then((res) => {
-            if (res.rowCount <= 0) {
+        return this.getRepo().findOne({where: {discord_id: discordId}}).then((user) => {
+            if (!user) {
                 return this.addUser(discordId, discordName);
             }
 
-            // @ts-ignore
-            const result: User = res.rows[0];
-
-            // Do a small update of the user nickname if different, but don't wait on it.
-            if (discordName != result.discord_name) {
-                this.updateUserName(discordId, discordName);
+            if (discordName != user.discord_name) {
+                user.discord_name = discordName;
+                return this.updateUser(user).then(() => {
+                    return user;
+                });
             }
 
-            return result;
+            return user;
         }).catch((err: Error) => {
-            console.log("QUERY USED: " + query);
-            console.log("ERROR: Could not get guilds. ::: " + err.message);
+            console.log(`ERROR: Could not get user (ID: ${discordId}). ::: ${err.message}`);
             console.log(err.stack);
             return null;
         });
@@ -57,68 +55,36 @@ export class UserService {
      * @param discordName The current discord name of the user to register.
      */
     private async addUser(discordId: string, discordName: string): Promise<User> {
-        // Sanitize inputs.
-        const sanitizedDiscordId = StringUtility.escapeMySQLInput(discordId);
-        const sanitizedDiscordName = StringUtility.escapeMySQLInput(discordName);
+        // Create the user.
+        const user: User = new User();
+        user.discord_id = discordId;
+        user.discord_name = discordName;
 
-        // Construct query.
-        let query = `INSERT INTO ${UserService.TABLE_NAME} (discord_id, discord_name) VALUES (${sanitizedDiscordId}, ${sanitizedDiscordName})`;
-
-        return this.databaseService.query(query).then(() => {
-            return this.getUser(discordId, discordName);
+        // Save the user.
+        return this.getRepo().save(user).then((user) => {
+            return user;
         }).catch((err: Error) => {
-            console.log("QUERY USED: " + query);
-            console.log("ERROR: Could not get guilds. ::: " + err.message);
+            console.log(`ERROR: Could add new user (Discord ID: ${discordId}). ::: ${err.message}`);
             console.log(err.stack);
             return null;
+        });
+    }
+
+    public updateDefaultCharacter(discordId: string, discordName: string, character: Character): Promise<User> {
+        return this.getUser(discordId, discordName).then((user) => {
+            user.defaultCharacter = character;
+            return this.updateUser(user);
         });
     }
 
     /**
      * Updates the default character and gets the updated user.
      *
-     * @param discordId The discord ID of the user.
-     * @param discordName The discord name of the user.
-     * @param characterId The ID of the character to set as the default.
+     * @param user
      */
-    public updateDefaultCharacter(discordId: string, discordName: string, characterId: number): Promise<User> {
-        const setColumns: DbColumn[] = [new DbColumn(Column.DEFAULT_CHARACTER_ID, characterId)];
-        return this.updateUser(discordId, discordName, setColumns);
-    }
-
-    /**
-     * Updates the user name for the given user.
-     *
-     * @param discordId The discord ID of the user.
-     * @param discordName The discord name of the user.
-     */
-    private updateUserName(discordId: string, discordName: string): Promise<User> {
-        const setColumns: DbColumn[] = [new DbColumn(Column.DISCORD_NAME, discordName).setSanitized(true)];
-        return this.updateUser(discordId, discordName, setColumns);
-    }
-
-    /**
-     * Update the user with the given information.
-     *
-     * @param discordId The discord ID of the user.
-     * @param discordName The discord name of the user.
-     * @param setColumns The things to update.
-     */
-    private updateUser(discordId: string, discordName: string, setColumns: DbColumn[]): Promise<User> {
-        // Create query.
-        const table = new DbTable(Table.USER)
-            .setSetColumns(setColumns)
-            .addWhereColumns(new DbColumn(Column.DISCORD_ID, discordId).setSanitized(true));
-        const query = DatabaseHelperService.doUpdateQuery(table);
-
-        // Do the query.
-        return this.databaseService.query(query).then(() => {
-            return this.getUser(discordId, discordName);
-        }).catch((err: Error) => {
-            console.log("QUERY USED: " + query);
-            console.log("ERROR: Could not update user. ::: " + err.message);
-            console.log(err.stack);
-            return null;
+    public updateUser(user: User): Promise<User> {
+        return this.getRepo().save(user).then((user) => {
+            return user;
         });
     }
 }

@@ -1,20 +1,39 @@
-import {TravelConfig} from "./TravelConfig";
-import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+import {TravelConfig} from "../models/TravelConfig";
+import {
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryColumn,
+    PrimaryGeneratedColumn
+} from "typeorm";
+import {Party} from "./Party";
+import {User} from "./User";
+import {Nickname} from "./Nickname";
 
 @Entity({name: "characters"})
 export class Character {
-    @PrimaryColumn("Serial")
+    @PrimaryColumn("serial")
     id: number;
 
-    @Column()
+    @Column("text")
     img_url: string;
 
-    @Column()
+    @Column("text")
     name: string;
 
-    @Column()
+    @Column("JSON")
     travel_config: TravelConfig;
 
-    @Column()
-    party_id: number;
+    @ManyToOne(type => Party, party => party.members, {
+        eager: true
+    })
+    party: Party;
+
+    @OneToMany(type => Nickname, nickname => nickname.character, {
+        eager: true
+    })
+    nicknames: Nickname[];
 }
