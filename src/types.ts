@@ -11,7 +11,6 @@ export const TYPES = {
     CharacterService: Symbol("CharacterService"),
     DatabaseService: Symbol("DatabaseService"),
     PartyFundService: Symbol("PartyFundService"),
-    PartyService: Symbol("PartyService"),
     PartyToGuildService: Symbol("PartyToGuildService"),
     SpecialChannelService: Symbol("SpecialChannelService"),
     UserDefaultPartyService: Symbol("UserDefaultPartyService"),

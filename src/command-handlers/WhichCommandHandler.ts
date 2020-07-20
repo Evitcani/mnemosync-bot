@@ -1,5 +1,4 @@
 import {inject, injectable} from "inversify";
-import {PartyService} from "../database/PartyService";
 import {TYPES} from "../types";
 import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {Command} from "../models/generic/Command";
