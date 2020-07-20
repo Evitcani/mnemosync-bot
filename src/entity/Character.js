@@ -21,7 +21,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Character.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column("text"),
+    typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", String)
 ], Character.prototype, "img_url", void 0);
 __decorate([
@@ -30,13 +30,15 @@ __decorate([
 ], Character.prototype, "name", void 0);
 __decorate([
     typeorm_1.OneToOne(type => TravelConfig_1.TravelConfig, travelConfig => travelConfig.character, {
-        eager: true
+        eager: true,
+        nullable: true
     }),
     __metadata("design:type", TravelConfig_1.TravelConfig)
 ], Character.prototype, "travel_config", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Party_1.Party, party => party.members, {
-        eager: true
+        eager: true,
+        nullable: true
     }),
     __metadata("design:type", Party_1.Party)
 ], Character.prototype, "party", void 0);

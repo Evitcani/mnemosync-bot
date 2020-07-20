@@ -27,19 +27,19 @@ __decorate([
     __metadata("design:type", String)
 ], PartyFund.prototype, "type", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "platinum", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "gold", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "silver", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], PartyFund.prototype, "copper", void 0);
 PartyFund = __decorate([

@@ -24,7 +24,7 @@ __decorate([
     __metadata("design:type", String)
 ], Party.prototype, "name", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Character_1.Character, member => member.party),
+    typeorm_1.OneToMany(type => Character_1.Character, member => member.party, { nullable: true }),
     __metadata("design:type", Array)
 ], Party.prototype, "members", void 0);
 __decorate([

@@ -18,21 +18,23 @@ export class Character {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column("text")
-    img_url: string;
+    @Column("text",{ nullable: true })
+    img_url?: string;
 
     @Column("text")
     name: string;
 
     @OneToOne(type => TravelConfig, travelConfig => travelConfig.character, {
-        eager: true
+        eager: true,
+        nullable: true
     })
-    travel_config: TravelConfig;
+    travel_config?: TravelConfig;
 
     @ManyToOne(type => Party, party => party.members, {
-        eager: true
+        eager: true,
+        nullable: true
     })
-    party: Party;
+    party?: Party;
 
     @OneToMany(type => Nickname, nickname => nickname.character, {
         eager: true
