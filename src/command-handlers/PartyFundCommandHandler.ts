@@ -72,7 +72,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     private async getFunds(message: Message, type: string, user: User): Promise<Message | Message[]> {
         return this.findFunds(user.defaultCharacter.party, type, message).then((fund) => {
             let total = MoneyUtility.pileIntoCopper(fund) / 100;
-            return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, name));
+            return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, user.defaultCharacter.party.name));
         });
     }
 
