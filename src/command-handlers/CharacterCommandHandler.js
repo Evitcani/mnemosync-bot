@@ -40,26 +40,45 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.constructCharacter(command, message, user).then((character) => {
-                if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
+            if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
+                return this.constructCharacter(command, message, user, true).then((character) => {
                     return this.createCharacter(message, character, user);
-                }
-                if (Subcommands_1.Subcommands.SWITCH.isCommand(command) != null) {
-                    return this.switchCharacter(message, character, user);
-                }
-                return undefined;
-            });
+                });
+            }
+            const switchCmd = Subcommands_1.Subcommands.SWITCH.isCommand(command);
+            if (switchCmd != null) {
+                return this.switchCharacter(message, switchCmd, user);
+            }
+            const nickCmd = Subcommands_1.Subcommands.NICKNAME.isCommand(command);
+            if (nickCmd != null) {
+                return this.addNickname(nickCmd, message, user);
+            }
+            return undefined;
         });
     }
-    switchCharacter(message, character, user) {
+    switchCharacter(message, cmd, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.characterController.getCharacterByName(character.name, message.author.id).then((char) => {
+            return this.characterController.getCharacterByName(cmd.getInput(), message.author.id).then((char) => {
                 if (char == null) {
-                    return message.channel.send(`No character exists with a name like '${character.name}'`);
+                    return message.channel.send(`No character exists with a name like '${cmd.getInput()}'`);
                 }
                 return this.userController.updateDefaultCharacter(user, char).then(() => {
                     return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
                 });
+            });
+        });
+    }
+    addNickname(command, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (user == null || user.defaultCharacter == null) {
+                return message.channel.send("Unable to add nickname to character. No default character.");
+            }
+            return this.characterController.createNickname(command.getInput(), user.defaultCharacter, message.author.id)
+                .then((nick) => {
+                if (nick == null) {
+                    return message.channel.send("Unable to add nickname to character.");
+                }
+                return message.channel.send("Added nickname to character!");
             });
         });
     }
@@ -86,10 +105,10 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             });
         });
     }
-    constructCharacter(command, message, user) {
+    constructCharacter(command, message, user, isNew) {
         return __awaiter(this, void 0, void 0, function* () {
             // Construct the character and add the name.
-            const character = user.defaultCharacter == null ? new Character_1.Character() : user.defaultCharacter;
+            const character = (isNew || user.defaultCharacter == null) ? new Character_1.Character() : user.defaultCharacter;
             // Set the image URL.
             const imgCmd = Subcommands_1.Subcommands.IMG_URL.isCommand(command);
             if (imgCmd != null) {

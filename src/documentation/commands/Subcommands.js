@@ -9,6 +9,7 @@ Subcommands.CREATE = new CommandStrut_1.CommandStrut("create", "cr");
 Subcommands.DRINKS = new CommandStrut_1.CommandStrut("drinks", null);
 Subcommands.EATS = new CommandStrut_1.CommandStrut("eats", null);
 Subcommands.IMG_URL = new CommandStrut_1.CommandStrut("image-url", "img");
+Subcommands.NICKNAME = new CommandStrut_1.CommandStrut("nickname", "nick");
 Subcommands.PARTY = new CommandStrut_1.CommandStrut("party", "pt");
 Subcommands.SWITCH = new CommandStrut_1.CommandStrut("switch", "sw");
 Subcommands.UPDATE = new CommandStrut_1.CommandStrut("update", "upd");

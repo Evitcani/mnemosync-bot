@@ -5,6 +5,7 @@ export class Subcommands {
     public static DRINKS = new CommandStrut("drinks", null);
     public static EATS = new CommandStrut("eats", null);
     public static IMG_URL = new CommandStrut("image-url", "img");
+    public static NICKNAME = new CommandStrut("nickname", "nick");
     public static PARTY = new CommandStrut("party", "pt");
     public static SWITCH = new CommandStrut("switch", "sw");
     public static UPDATE = new CommandStrut("update", "upd");
