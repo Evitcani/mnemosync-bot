@@ -52,11 +52,16 @@ __decorate([
     __metadata("design:type", TravelConfig_1.TravelConfig)
 ], Character.prototype, "travel_config", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], Character.prototype, "partyId", void 0);
+__decorate([
     typeorm_1.ManyToOne(type => Party_1.Party, party => party.members, {
         eager: true,
         nullable: true,
         onDelete: "SET NULL"
     }),
+    typeorm_1.JoinColumn(),
     __metadata("design:type", Party_1.Party)
 ], Character.prototype, "party", void 0);
 __decorate([

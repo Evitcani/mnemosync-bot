@@ -22,7 +22,13 @@ export class CharacterController extends AbstractSecondaryController<Character, 
             return null;
         }
 
-        return this.getRepo().findOne({where: {id: id}}).catch((err: Error) => {
+        return this.getRepo().findOne({where: {id: id}, relations: ["party", "travel_config"]})
+            .then((character) => {
+                // Check the party is valid.
+
+                return character;
+            })
+            .catch((err: Error) => {
             console.error("ERR ::: Could not get character by ID.");
             console.error(err);
             return null;
