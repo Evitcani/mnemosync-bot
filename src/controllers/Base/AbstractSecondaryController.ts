@@ -1,7 +1,9 @@
 import {AbstractController} from "./AbstractController";
 import {getManager, Repository, SelectQueryBuilder} from "typeorm";
 import {NameValuePair} from "./NameValuePair";
+import {injectable} from "inversify";
 
+@injectable()
 export abstract class AbstractSecondaryController<T, E> extends AbstractController<T> {
     protected secondaryTableName: string;
 
