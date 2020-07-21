@@ -88,7 +88,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
     }
 
     private async getNicknameByNickname(nickname: string, discordId: string): Promise<Nickname[]> {
-        return this.getLikeArgs(
+        return this.getSecondaryLikeArgs(
             [new NameValuePair("discord_id", discordId)],
             [new NameValuePair("name", nickname)])
             .catch((err: Error) => {
