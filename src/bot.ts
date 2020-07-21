@@ -27,14 +27,14 @@ export class Bot {
             const contents = message.content;
             // We connect with Avrae.
             if (message.author.bot) {
-                if (message.author.id == Bot.AVRAE_BOT_ID) {
-                    console.debug("Saw command from Avrae...");
-                    const embed = message.embeds[0];
-                    console.debug("AUTHOR: " + embed.author.name);
-                    console.debug("TITLE: " + embed.title);
-                    console.debug("DESCRIPTION: " + embed.description);
-                    return;
-                }
+                // if (message.author.id == Bot.AVRAE_BOT_ID) {
+                //     console.debug("Saw command from Avrae...");
+                //     const embed = message.embeds[0];
+                //     console.debug("AUTHOR: " + embed.author.name);
+                //     console.debug("TITLE: " + embed.title);
+                //     console.debug("DESCRIPTION: " + embed.description);
+                //     return;
+                // }
                 return;
             }
 

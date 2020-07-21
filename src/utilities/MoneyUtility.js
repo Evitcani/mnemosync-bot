@@ -146,7 +146,7 @@ class MoneyUtility {
     /**
      * Searches for the type of money type and amount.
      *
-     * @param arg
+     * @param arg The argument to find the type for.
      */
     static searchForMoneyType(arg) {
         let place = arg.search(MoneyType_1.MoneyType.GOLD.shortenedName);
