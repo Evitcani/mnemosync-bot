@@ -36,6 +36,11 @@ let PartyFundController = PartyFundController_1 = class PartyFundController {
             });
         });
     }
+    getByPartyAndType(party, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return PartyFundController_1.getRepo().findOne({ where: { partyId: party.id, type: type } });
+        });
+    }
     /**
      * Gets the repo.
      */

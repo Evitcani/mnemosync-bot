@@ -101,21 +101,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
                     return null;
                 }
                 let party = parties[0];
-                console.log("Looking for fund...");
-                // Get the funds. Not the most efficient.
-                if (party.funds != null) {
-                    console.log("Party has funds...");
-                    let i, fund;
-                    for (i = 0; i < party.funds.length; i++) {
-                        fund = party.funds[i];
-                        if (fund.type == type) {
-                            console.log("Found fund!");
-                            return fund;
-                        }
-                    }
-                }
-                console.log("Could not find funds...");
-                return null;
+                return this.partyFundController.getByPartyAndType(party, type);
             }).catch((err) => {
                 console.log("Failed to find party with given name ::: " + err.message);
                 return null;
@@ -134,6 +120,9 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
             }
             // Find and then update these funds.
             return this.findFunds(partyName, fundType, message).then((fund) => {
+                if (fund == null) {
+                    return message.channel.send("Could not find fund!");
+                }
                 // Pile everything into copper.
                 let newAmtTotal = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
                 let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
