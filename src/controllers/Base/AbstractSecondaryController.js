@@ -35,7 +35,7 @@ let AbstractSecondaryController = class AbstractSecondaryController extends Abst
      */
     getSecondaryLikeArgs(whereArgs, likeArgs) {
         let query = this.getSecondaryRepo().createQueryBuilder(this.secondaryTableName);
-        query = this.createLikeQuery(whereArgs, likeArgs, query);
+        query = this.createLikeQuery(whereArgs, likeArgs, query, this.secondaryTableName);
         return query.getMany()
             .then((objs) => {
             if (objs == null || objs.length < 1) {

@@ -34,7 +34,7 @@ let AbstractController = class AbstractController {
      */
     getLikeArgs(whereArgs, likeArgs) {
         let query = this.getRepo().createQueryBuilder(this.tableName);
-        query = this.createLikeQuery(whereArgs, likeArgs, query);
+        query = this.createLikeQuery(whereArgs, likeArgs, query, this.tableName);
         return query.getMany()
             .then((objs) => {
             if (objs == null || objs.length < 1) {
@@ -48,14 +48,15 @@ let AbstractController = class AbstractController {
      * @param whereArgs
      * @param likeArgs
      * @param query
+     * @param tableName
      */
-    createLikeQuery(whereArgs, likeArgs, query) {
+    createLikeQuery(whereArgs, likeArgs, query, tableName) {
         let oneClause = false, i, whereQuery, pair, sanitizedValue;
         if (whereArgs != null && whereArgs.length > 0) {
             for (i = 0; i < whereArgs.length; i++) {
                 pair = whereArgs[i];
                 sanitizedValue = StringUtility_1.StringUtility.escapeMySQLInput(pair.value);
-                whereQuery = `\"${this.tableName}\".\"${pair.name}\" = ${sanitizedValue}`;
+                whereQuery = `\"${tableName}\".\"${pair.name}\" = ${sanitizedValue}`;
                 if (!oneClause) {
                     query = query.where(whereQuery);
                     oneClause = true;
@@ -69,7 +70,7 @@ let AbstractController = class AbstractController {
             for (i = 0; i < likeArgs.length; i++) {
                 pair = likeArgs[i];
                 sanitizedValue = StringUtility_1.StringUtility.escapeSQLInput(pair.value);
-                whereQuery = `LOWER(\"${this.tableName}\".\"${pair.name}\") LIKE LOWER('%${sanitizedValue}%')`;
+                whereQuery = `LOWER(\"${tableName}\".\"${pair.name}\") LIKE LOWER('%${sanitizedValue}%')`;
                 if (!oneClause) {
                     query = query.where(whereQuery);
                     oneClause = true;
