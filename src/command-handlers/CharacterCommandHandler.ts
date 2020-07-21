@@ -27,28 +27,48 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
     }
 
     async handleUserCommand(command, message, user): Promise<Message | Message[]> {
-        return this.constructCharacter(command, message, user).then((character) => {
-            if (Subcommands.CREATE.isCommand(command) != null) {
+        if (Subcommands.CREATE.isCommand(command) != null) {
+            return this.constructCharacter(command, message, user, true).then((character) => {
                 return this.createCharacter(message, character, user);
-            }
+            });
+        }
 
-            if (Subcommands.SWITCH.isCommand(command) != null) {
-                return this.switchCharacter(message, character, user);
-            }
-            return undefined;
-        });
+        const switchCmd = Subcommands.SWITCH.isCommand(command);
+        if (switchCmd != null) {
+            return this.switchCharacter(message, switchCmd, user);
+        }
+
+        const nickCmd = Subcommands.NICKNAME.isCommand(command);
+        if (nickCmd != null) {
+            return this.addNickname(nickCmd, message, user);
+        }
+        return undefined;
     }
 
-    private async switchCharacter(message: Message, character: Character, user: User): Promise<Message | Message[]> {
-        return this.characterController.getCharacterByName(character.name, message.author.id).then((char) => {
+    private async switchCharacter(message: Message, cmd: Subcommand, user: User): Promise<Message | Message[]> {
+        return this.characterController.getCharacterByName(cmd.getInput(), message.author.id).then((char) => {
             if (char == null) {
-                return message.channel.send(`No character exists with a name like '${character.name}'`);
+                return message.channel.send(`No character exists with a name like '${cmd.getInput()}'`);
             }
 
             return this.userController.updateDefaultCharacter(user, char).then(() => {
                 return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
             });
         });
+    }
+
+    private async addNickname(command: Subcommand, message: Message, user: User): Promise<Message | Message[]> {
+        if (user == null || user.defaultCharacter == null) {
+            return message.channel.send("Unable to add nickname to character. No default character.");
+        }
+        return this.characterController.createNickname(command.getInput(), user.defaultCharacter, message.author.id)
+            .then((nick) => {
+                if (nick == null) {
+                    return message.channel.send("Unable to add nickname to character.");
+                }
+
+                return message.channel.send("Added nickname to character!");
+            });
     }
 
     /**
@@ -75,9 +95,9 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
             });
     }
 
-    private async constructCharacter(command: Command, message: Message, user: User): Promise<Character> {
+    private async constructCharacter(command: Command, message: Message, user: User, isNew: boolean): Promise<Character> {
         // Construct the character and add the name.
-        const character: Character = user.defaultCharacter == null ? new Character() : user.defaultCharacter;
+        const character: Character = (isNew || user.defaultCharacter == null) ? new Character() : user.defaultCharacter;
 
         // Set the image URL.
         const imgCmd = Subcommands.IMG_URL.isCommand(command);

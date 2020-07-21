@@ -70,7 +70,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
         });
     }
 
-    private async createNickname (nickname: string, character: Character, discordId: string): Promise<Nickname> {
+    public async createNickname (nickname: string, character: Character, discordId: string): Promise<Nickname> {
         const nn = new Nickname();
         nn.discord_id = discordId;
         nn.name = nickname;
