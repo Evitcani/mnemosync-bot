@@ -14,6 +14,9 @@ const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
 const StringUtility_1 = require("../utilities/StringUtility");
 let PartyFund = class PartyFund {
+    constructor() {
+        this.isNegative = false;
+    }
     purifyInsertUpdate() {
         this.type = StringUtility_1.StringUtility.escapeSQLInput(this.type);
     }

@@ -20,6 +20,9 @@ class MoneyUtility {
         if (fund.copper != null) {
             amt += fund.copper;
         }
+        if (fund.isNegative) {
+            amt *= -1;
+        }
         console.debug("PILE INTO COPPER ::: Total amount is: " + amt);
         return amt;
     }
@@ -84,12 +87,9 @@ class MoneyUtility {
             }
         }
         // Make all values negative if we're subtracting.
-        // if (negative) {
-        //     fund.platinum *= -1;
-        //     fund.gold *= -1;
-        //     fund.silver *= -1;
-        //     fund.copper *= -1;
-        // }
+        if (negative) {
+            fund.isNegative = true;
+        }
         return fund;
     }
     /**

@@ -47,4 +47,6 @@ export class PartyFund {
     purifyInsertUpdate() {
         this.type = StringUtility.escapeSQLInput(this.type);
     }
+
+    isNegative: boolean = false;
 }
