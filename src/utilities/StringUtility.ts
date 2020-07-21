@@ -4,6 +4,8 @@ export class StringUtility {
     /** List of characters to trim from commands. */
     private static readonly charlist = [" ", "\"", "'"];
     private static pattern = /(-?\d+)(\d{3})/;
+    private static fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
+    private static fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
 
     /**
      * A utility to format numbers with commas. Works extra quickly.
@@ -21,8 +23,8 @@ export class StringUtility {
         if (input == null) {
             return null;
         }
-        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]"), "'");
-        correctedInput = correctedInput.replace(new RegExp("[" + ["“", "”"] + "]"), "\"");
+        let correctedInput = input.replace(this.fancyQuote1, "'");
+        correctedInput = correctedInput.replace(this.fancyQuote2, "\"");
         return correctedInput;
     }
 
