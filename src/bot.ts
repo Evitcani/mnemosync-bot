@@ -1,4 +1,4 @@
-import {Client, EmbedField, Message} from "discord.js";
+import {Client, Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "./types";
 import {MessageResponder} from "./services/message-responder";
