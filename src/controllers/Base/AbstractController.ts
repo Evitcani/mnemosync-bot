@@ -26,7 +26,7 @@ export abstract class AbstractController<T> {
      */
     protected getLikeArgs(whereArgs: NameValuePair[], likeArgs: NameValuePair[]): Promise<T[]> {
         let query: SelectQueryBuilder<T> = this.getRepo().createQueryBuilder(this.tableName);
-        query = this.createLikeQuery(whereArgs, likeArgs, query);
+        query = this.createLikeQuery(whereArgs, likeArgs, query, this.tableName);
 
         return query.getMany()
             .then((objs) => {
@@ -43,8 +43,9 @@ export abstract class AbstractController<T> {
      * @param whereArgs
      * @param likeArgs
      * @param query
+     * @param tableName
      */
-    protected createLikeQuery (whereArgs: NameValuePair[], likeArgs: NameValuePair[], query: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+    protected createLikeQuery (whereArgs: NameValuePair[], likeArgs: NameValuePair[], query: SelectQueryBuilder<any>, tableName: string): SelectQueryBuilder<any> {
         let oneClause = false, i: number, whereQuery: string, pair: NameValuePair, sanitizedValue: string;
 
         if (whereArgs != null && whereArgs.length > 0) {
@@ -52,7 +53,7 @@ export abstract class AbstractController<T> {
                 pair = whereArgs[i];
 
                 sanitizedValue = StringUtility.escapeMySQLInput(pair.value);
-                whereQuery = `\"${this.tableName}\".\"${pair.name}\" = ${sanitizedValue}`;
+                whereQuery = `\"${tableName}\".\"${pair.name}\" = ${sanitizedValue}`;
 
                 if (!oneClause) {
                     query = query.where(whereQuery);
@@ -68,7 +69,7 @@ export abstract class AbstractController<T> {
                 pair = likeArgs[i];
 
                 sanitizedValue = StringUtility.escapeSQLInput(pair.value);
-                whereQuery = `LOWER(\"${this.tableName}\".\"${pair.name}\") LIKE LOWER('%${sanitizedValue}%')`;
+                whereQuery = `LOWER(\"${tableName}\".\"${pair.name}\") LIKE LOWER('%${sanitizedValue}%')`;
 
                 if (!oneClause) {
                     query = query.where(whereQuery);
