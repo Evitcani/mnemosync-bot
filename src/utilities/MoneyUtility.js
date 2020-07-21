@@ -25,16 +25,13 @@ class MoneyUtility {
     }
     static copperToFund(amt) {
         let fund = new PartyFund_1.PartyFund();
-        console.debug("COPPER TO FUND ::: Amount is: " + amt);
+        fund.platinum = 0;
         // Gold is easy to get.
         fund.gold = Math.floor(amt / 100);
         amt = amt - (fund.gold * 100);
-        console.debug("COPPER TO FUND ::: Gold amount is: " + fund.gold);
         fund.silver = Math.floor(amt / 10);
         amt = amt - (fund.silver * 10);
-        console.debug("COPPER TO FUND ::: Silver amount is: " + fund.silver);
         fund.copper = amt;
-        console.debug("COPPER TO FUND ::: Copper amount is: " + fund.copper);
         return fund;
     }
     static processMoneyArguments(args) {
