@@ -21,8 +21,8 @@ export class StringUtility {
         if (input == null) {
             return null;
         }
-        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]+"), "'");
-        correctedInput = correctedInput.replace(new RegExp("[" + ["“", "”"] + "]+"), "\"");
+        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]"), "'");
+        correctedInput = correctedInput.replace(new RegExp("[" + ["“", "”"] + "]"), "\"");
         return correctedInput;
     }
 
