@@ -37,11 +37,15 @@ export class Character {
     @JoinColumn()
     travel_config?: TravelConfig;
 
+    @Column({nullable: true})
+    partyId?: number;
+
     @ManyToOne(type => Party, party => party.members, {
         eager: true,
         nullable: true,
         onDelete: "SET NULL"
     })
+    @JoinColumn()
     party?: Party;
 
     @OneToMany(type => Nickname, nickname => nickname.character, {

@@ -38,23 +38,24 @@ export class UserController extends AbstractController<User> {
      * @param discordName The discord name of user.
      */
     public async get(discordId: string, discordName: string): Promise<User> {
-        return this.getRepo().findOne({where: {discord_id: discordId}}).then((user) => {
-            if (!user) {
-                return this.create(discordId, discordName);
-            }
+        return this.getRepo().findOne({where: {discord_id: discordId}, relations: ["defaultCharacter"]})
+            .then((user) => {
+                if (!user) {
+                    return this.create(discordId, discordName);
+                }
 
-            // Update the name, if needed.
-            if (user.discord_name != discordName) {
-                user.discord_name = discordName;
-                return this.save(user);
-            }
+                // Update the name, if needed.
+                if (user.discord_name != discordName) {
+                    user.discord_name = discordName;
+                    return this.save(user);
+                }
 
-            return user;
-        }).catch((err: Error) => {
-            console.error("ERR ::: Could not get the user.");
-            console.error(err);
-            return null;
-        });
+                return user;
+            }).catch((err: Error) => {
+                console.error("ERR ::: Could not get the user.");
+                console.error(err);
+                return null;
+            });
     }
 
     /**

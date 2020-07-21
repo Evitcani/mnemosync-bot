@@ -39,7 +39,12 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
             if (id == null || id < 1) {
                 return null;
             }
-            return this.getRepo().findOne({ where: { id: id } }).catch((err) => {
+            return this.getRepo().findOne({ where: { id: id }, relations: ["party", "travel_config"] })
+                .then((character) => {
+                // Check the party is valid.
+                return character;
+            })
+                .catch((err) => {
                 console.error("ERR ::: Could not get character by ID.");
                 console.error(err);
                 return null;

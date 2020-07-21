@@ -56,7 +56,8 @@ let UserController = class UserController extends AbstractController_1.AbstractC
      */
     get(discordId, discordName) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().findOne({ where: { discord_id: discordId } }).then((user) => {
+            return this.getRepo().findOne({ where: { discord_id: discordId }, relations: ["defaultCharacter"] })
+                .then((user) => {
                 if (!user) {
                     return this.create(discordId, discordName);
                 }
