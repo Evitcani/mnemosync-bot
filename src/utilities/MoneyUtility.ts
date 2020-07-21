@@ -108,12 +108,12 @@ export class MoneyUtility {
         }
 
         // Make all values negative if we're subtracting.
-        if (negative) {
-            fund.platinum *= -1;
-            fund.gold *= -1;
-            fund.silver *= -1;
-            fund.copper *= -1;
-        }
+        // if (negative) {
+        //     fund.platinum *= -1;
+        //     fund.gold *= -1;
+        //     fund.silver *= -1;
+        //     fund.copper *= -1;
+        // }
 
         return fund;
     }
