@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const Character_1 = require("./Character");
 const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
 let User = class User {
@@ -42,6 +43,15 @@ __decorate([
     typeorm_1.Column("int", { name: "default_character_id", nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "defaultCharacterId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Character_1.Character, character => character.defaultUsers, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    }),
+    typeorm_1.JoinColumn({ name: "default_character_id" }),
+    __metadata("design:type", Character_1.Character)
+], User.prototype, "defaultCharacter", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),

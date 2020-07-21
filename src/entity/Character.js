@@ -15,6 +15,7 @@ const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
 const Nickname_1 = require("./Nickname");
 const StringUtility_1 = require("../utilities/StringUtility");
+const User_1 = require("./User");
 let Character = class Character {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
@@ -47,6 +48,7 @@ __decorate([
         nullable: true,
         onDelete: "SET NULL"
     }),
+    typeorm_1.JoinColumn(),
     __metadata("design:type", TravelConfig_1.TravelConfig)
 ], Character.prototype, "travel_config", void 0);
 __decorate([
@@ -63,6 +65,12 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Character.prototype, "nicknames", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => User_1.User, user => user.defaultCharacter, {
+        onDelete: "SET NULL"
+    }),
+    __metadata("design:type", Array)
+], Character.prototype, "defaultUsers", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),

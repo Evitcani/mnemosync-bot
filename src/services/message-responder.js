@@ -31,14 +31,16 @@ const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
 const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
 const Commands_1 = require("../documentation/commands/Commands");
 const CharacterCommandHandler_1 = require("../command-handlers/CharacterCommandHandler");
+const UserController_1 = require("../controllers/UserController");
 let MessageResponder = class MessageResponder {
-    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler) {
+    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler, userController) {
         this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
+        this.userController = userController;
     }
     /**
      * Handles all incoming commands.
@@ -51,20 +53,8 @@ let MessageResponder = class MessageResponder {
             // Get the base command.
             const cmd = command.getName();
             console.log("Command: " + cmd);
-            // Determine which handler to call.
+            // Commands that do not require the user.
             switch (cmd) {
-                case Commands_1.Commands.BANK:
-                    return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
-                        message.delete({ reason: "Bank command deletion." });
-                        return msg;
-                    });
-                case Commands_1.Commands.CHARACTER:
-                    return this.characterCommandHandler.handleCommand(command, message);
-                case Commands_1.Commands.FUND:
-                    return this.partyFundCommandHandler.handleCommand(command, message).then((msg) => {
-                        message.delete({ reason: "Fund command deletion." });
-                        return msg;
-                    });
                 case Commands_1.Commands.HELP:
                     return this.helpCommandHandler.handleCommand(command, message);
                 case Commands_1.Commands.QUOTE:
@@ -74,12 +64,41 @@ let MessageResponder = class MessageResponder {
                     });
                 case Commands_1.Commands.REGISTER:
                     return this.registerUserCommandHandler.handleCommand(command, message);
-                case Commands_1.Commands.WHICH:
-                    return this.whichCommandHandler.handleCommand(command, message).then((msg) => {
-                        message.delete({ reason: "Which command deletion." });
-                        return msg;
-                    });
             }
+            return message.channel.send("Processing command...").then((msg) => {
+                return this.processUserCommand(command, message).then((retMsg) => {
+                    msg.delete({ reason: "Delete processed command." });
+                    return retMsg;
+                });
+            });
+        });
+    }
+    processUserCommand(command, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Get the base command.
+            const cmd = command.getName();
+            return this.userController.get(message.author.id, message.author.username).then((user) => {
+                // Determine which handler to call.
+                switch (cmd) {
+                    case Commands_1.Commands.BANK:
+                        return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
+                            message.delete({ reason: "Bank command deletion." });
+                            return msg;
+                        });
+                    case Commands_1.Commands.CHARACTER:
+                        return this.characterCommandHandler.handleUserCommand(command, message, user);
+                    case Commands_1.Commands.FUND:
+                        return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
+                            message.delete({ reason: "Fund command deletion." });
+                            return msg;
+                        });
+                    case Commands_1.Commands.WHICH:
+                        return this.whichCommandHandler.handleUserCommand(command, message, user).then((msg) => {
+                            message.delete({ reason: "Which command deletion." });
+                            return msg;
+                        });
+                }
+            });
         });
     }
 };
@@ -91,12 +110,14 @@ MessageResponder = __decorate([
     __param(3, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
     __param(4, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
     __param(5, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __param(6, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CharacterCommandHandler_1.CharacterCommandHandler,
         HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterCommandHandler_1.RegisterCommandHandler,
-        WhichCommandHandler_1.WhichCommandHandler])
+        WhichCommandHandler_1.WhichCommandHandler,
+        UserController_1.UserController])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;
 //# sourceMappingURL=message-responder.js.map

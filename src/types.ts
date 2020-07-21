@@ -30,4 +30,5 @@ export const TYPES = {
     CharacterController: Symbol("CharacterController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
+    UserController: Symbol("UserController"),
 };

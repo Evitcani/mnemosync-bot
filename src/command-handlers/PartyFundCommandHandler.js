@@ -25,17 +25,17 @@ exports.PartyFundCommandHandler = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const MoneyUtility_1 = require("../utilities/MoneyUtility");
-const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const FundRelatedClientResponses_1 = require("../documentation/client-responses/FundRelatedClientResponses");
 const PartyFundService_1 = require("../database/PartyFundService");
 const Commands_1 = require("../documentation/commands/Commands");
 const PartyController_1 = require("../controllers/PartyController");
 const Subcommands_1 = require("../documentation/commands/Subcommands");
 const PartyFundController_1 = require("../controllers/PartyFundController");
+const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
 /**
  * Manages the fund related commands.
  */
-let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(partyController, partyFundController, partyFundService) {
         super();
         this.partyName = "The Seven Wonders";
@@ -49,7 +49,7 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
      * @param command The command to handle.
      * @param message The message calling this command.
      */
-    handleCommand(command, message) {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Figure out which command to use.
             let type = command.getName() == Commands_1.Commands.BANK ? "BANK" : "FUND";

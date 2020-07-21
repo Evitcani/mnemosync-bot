@@ -2,7 +2,7 @@ import {TravelConfig} from "./TravelConfig";
 import {
     BeforeInsert, BeforeUpdate,
     Column, CreateDateColumn,
-    Entity,
+    Entity, JoinColumn,
     ManyToOne,
     OneToMany, OneToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
@@ -10,6 +10,7 @@ import {
 import {Party} from "./Party";
 import {Nickname} from "./Nickname";
 import {StringUtility} from "../utilities/StringUtility";
+import {User} from "./User";
 
 @Entity({name: "characters"})
 export class Character {
@@ -33,6 +34,7 @@ export class Character {
         nullable: true,
         onDelete: "SET NULL"
     })
+    @JoinColumn()
     travel_config?: TravelConfig;
 
     @ManyToOne(type => Party, party => party.members, {
@@ -46,6 +48,11 @@ export class Character {
         onDelete: "SET NULL"
     })
     nicknames: Nickname[];
+
+    @OneToMany(type => User, user => user.defaultCharacter, {
+        onDelete: "SET NULL"
+    })
+    defaultUsers: User[];
 
     @BeforeInsert()
     @BeforeUpdate()

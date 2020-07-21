@@ -5,11 +5,12 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinColumn,
+    JoinColumn, ManyToOne,
     OneToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
 import {StringUtility} from "../utilities/StringUtility";
+import {Party} from "./Party";
 
 @Entity({name: "users"})
 export class User {
@@ -30,6 +31,14 @@ export class User {
 
     @Column("int", {name: "default_character_id", nullable: true})
     defaultCharacterId?: number;
+
+    @ManyToOne(type => Character, character => character.defaultUsers, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    })
+    @JoinColumn({name: "default_character_id"})
+    defaultCharacter: Character;
 
     @BeforeInsert()
     @BeforeUpdate()
