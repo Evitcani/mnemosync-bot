@@ -1,11 +1,15 @@
-import {getManager, Repository} from "typeorm";
 import {Table} from "../documentation/databases/Table";
 import {Party} from "../entity/Party";
 import {injectable} from "inversify";
-import {StringUtility} from "../utilities/StringUtility";
+import {AbstractController} from "./Base/AbstractController";
+import {NameValuePair} from "./Base/NameValuePair";
 
 @injectable()
-export class PartyController {
+export class PartyController extends AbstractController<Party> {
+    constructor() {
+        super(Table.PARTY);
+    }
+
     /**
      * Creates a new party in the server with the given name.
      *
@@ -19,7 +23,7 @@ export class PartyController {
         party.guildId = guildId;
         party.creatorDiscordId = discordId;
 
-        return PartyController.getRepo().save(party).then((party) => {
+        return this.getRepo().save(party).then((party) => {
             return party;
         }).catch((err: Error) => {
             console.error("ERR ::: Could not create new party.");
@@ -34,20 +38,28 @@ export class PartyController {
      * @param id The ID of the party.
      */
     public getById (id: number): Promise<Party> {
-        return PartyController.getRepo().findOne({where: {id: id}}).then((party) => {
+        return this.getRepo().findOne({where: {id: id}}).then((party) => {
             if (party == undefined) {
                 return null;
             }
             return party;
+        }).catch((err: Error) => {
+            console.error("ERR ::: Could not get party.");
+            console.error(err);
+            return null;
         });
     }
 
     public getByGuild (guildId: string): Promise<Party[]> {
-        return PartyController.getRepo().find({where: {guildId: guildId}}).then((parties) => {
+        return this.getRepo().find({where: {guildId: guildId}}).then((parties) => {
             if (parties == undefined) {
                 return null;
             }
             return parties;
+        }).catch((err: Error) => {
+            console.error("ERR ::: Could not get parties in guild.");
+            console.error(err);
+            return null;
         });
     }
 
@@ -58,31 +70,13 @@ export class PartyController {
      * @param guildId The ID of the guild the party lives in.
      */
     public getByNameAndGuild(partyName: string, guildId: string): Promise<Party[]> {
-        const sanitizedPartyName = StringUtility.escapeSQLInput(partyName);
-        const sanitizedGuildId = StringUtility.escapeSQLInput(guildId);
-
-        return PartyController.getRepo()
-            .createQueryBuilder(Table.PARTY)
-            .where(`\"parties\".\"guild_id\" = '${sanitizedGuildId}' AND LOWER(\"parties\".\"name\") LIKE LOWER('%${sanitizedPartyName}%')`)
-            .getMany()
-            .then((parties) => {
-                if (parties == null || parties.length < 1) {
-                    return null;
-                }
-
-                return parties;
-            })
+        return this.getLikeArgs(
+            [new NameValuePair("guild_id", guildId)],
+            [new NameValuePair("name", partyName)])
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get parties.");
                 console.error(err);
                 return null;
             });
-    }
-
-    /**
-     * Gets the repo.
-     */
-    private static getRepo(): Repository<Party> {
-        return getManager().getRepository(Table.PARTY);
     }
 }

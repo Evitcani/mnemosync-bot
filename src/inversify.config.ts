@@ -24,6 +24,7 @@ import {TravelCommandHandler} from "./command-handlers/TravelCommandHandler";
 import {UserToCharacterService} from "./database/UserToCharacterService";
 import {PartyController} from "./controllers/PartyController";
 import {PartyFundController} from "./controllers/PartyFundController";
+import {CharacterController} from "./controllers/CharacterController";
 
 let container = new Container();
 
@@ -53,6 +54,7 @@ container.bind<RegisterCommandHandler>(TYPES.RegisterUserCommandHandler).to(Regi
 container.bind<TravelCommandHandler>(TYPES.TravelCommandHandler).to(TravelCommandHandler).inSingletonScope();
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 
+container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
 
