@@ -34,10 +34,12 @@ class StringUtility {
         if (input == null) {
             return null;
         }
-        let sanitizedInput = StringUtility.escapeMySQLInput(input);
+        let sanitizedInput = this.escapeMySQLInput(input);
+        // Replace quotes with double quotes.
+        sanitizedInput = sanitizedInput.replace(this.sanitizeSQL1, "\\'");
         // Trim off trailing
-        sanitizedInput = sanitizedInput.replace(new RegExp("[" + this.charlist + "]+$"), "");
-        sanitizedInput = sanitizedInput.replace(new RegExp("^[" + this.charlist + "]+"), "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
         return sanitizedInput;
     }
 }
@@ -47,4 +49,7 @@ StringUtility.charlist = [" ", "\"", "'"];
 StringUtility.pattern = /(-?\d+)(\d{3})/;
 StringUtility.fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
 StringUtility.fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
+StringUtility.sanitizeSQL1 = new RegExp("(?:\\\\+'+)+", "g");
+StringUtility.removeDanglingQuotes1 = new RegExp("[" + StringUtility.charlist + "]+$");
+StringUtility.removeDanglingQuotes2 = new RegExp("^[" + StringUtility.charlist + "]+");
 //# sourceMappingURL=StringUtility.js.map
