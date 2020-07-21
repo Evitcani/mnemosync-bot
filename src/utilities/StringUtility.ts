@@ -12,7 +12,8 @@ export class StringUtility {
     /** Used for keeping  */
     private static sanitizeSQL1 = new RegExp("[\\\\']*(?:\\\\+'+)+[\\\\']*", "g");
     /** Removes any dangling quotes. */
-    private static removeDanglingQuotes = new RegExp("^[" + StringUtility.charList + "]+|[" + StringUtility.charList + "]+$");
+    private static removeDanglingQuotes1 = new RegExp("^[" + StringUtility.charList + "]+");
+    private static removeDanglingQuotes2 = new RegExp("[" + StringUtility.charList + "]+$");
     /** Used for formatting gold. */
     private static formatGold = new RegExp("(\\s|)g\\S*(\\s|$){0,1}", "gi");
     /** Used for formatting gold. */
@@ -57,7 +58,10 @@ export class StringUtility {
         let sanitizedInput = this.replaceFancyQuotes(input);
 
         // Trim off trailing
-        return sanitizedInput.replace(this.removeDanglingQuotes, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
+
+        return sanitizedInput;
     }
 
     /**
@@ -84,7 +88,8 @@ export class StringUtility {
         sanitizedInput = sanitizedInput.replace(this.sanitizeSQL1, "\\'");
 
         // Trim off trailing
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
 
         // Return the input.
         return sanitizedInput;
@@ -107,6 +112,9 @@ export class StringUtility {
         formattedInput = formattedInput.replace(this.formatPlatinum, " platinum ");
 
         // Trim off trailing
-        return formattedInput.replace(this.removeDanglingQuotes, "");
+        formattedInput = formattedInput.replace(this.removeDanglingQuotes1, "");
+        formattedInput = formattedInput.replace(this.removeDanglingQuotes2, "");
+
+        return formattedInput;
     }
 }
