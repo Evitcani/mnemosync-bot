@@ -96,6 +96,10 @@ export class StringUtility {
      * @param input The input to format.
      */
     static formatFundInput (input: string): string {
+        if (input == null) {
+            return null;
+        }
+
         // Replace.
         let formattedInput = input.replace(this.formatGold, " gold ");
         formattedInput = formattedInput.replace(this.formatCopper, " copper ");
