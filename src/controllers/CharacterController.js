@@ -104,7 +104,7 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
     }
     getNicknameByNickname(nickname, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getLikeArgs([new NameValuePair_1.NameValuePair("discord_id", discordId)], [new NameValuePair_1.NameValuePair("name", nickname)])
+            return this.getSecondaryLikeArgs([new NameValuePair_1.NameValuePair("discord_id", discordId)], [new NameValuePair_1.NameValuePair("name", nickname)])
                 .catch((err) => {
                 console.error("ERR ::: Could not get nickname.");
                 console.error(err);
