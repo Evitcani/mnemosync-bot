@@ -34,7 +34,9 @@ class StringUtility {
         }
         let sanitizedInput = this.replaceFancyQuotes(input);
         // Trim off trailing
-        return sanitizedInput.replace(this.removeDanglingQuotes, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
+        return sanitizedInput;
     }
     /**
      * Escapes the given input to be placed in a database.
@@ -57,7 +59,8 @@ class StringUtility {
         // Replace quotes with double quotes.
         sanitizedInput = sanitizedInput.replace(this.sanitizeSQL1, "\\'");
         // Trim off trailing
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
         // Return the input.
         return sanitizedInput;
     }
@@ -76,7 +79,9 @@ class StringUtility {
         formattedInput = formattedInput.replace(this.formatSilver, " silver ");
         formattedInput = formattedInput.replace(this.formatPlatinum, " platinum ");
         // Trim off trailing
-        return formattedInput.replace(this.removeDanglingQuotes, "");
+        formattedInput = formattedInput.replace(this.removeDanglingQuotes1, "");
+        formattedInput = formattedInput.replace(this.removeDanglingQuotes2, "");
+        return formattedInput;
     }
 }
 exports.StringUtility = StringUtility;
@@ -91,7 +96,8 @@ StringUtility.fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
 /** Used for keeping  */
 StringUtility.sanitizeSQL1 = new RegExp("[\\\\']*(?:\\\\+'+)+[\\\\']*", "g");
 /** Removes any dangling quotes. */
-StringUtility.removeDanglingQuotes = new RegExp("^[" + StringUtility.charList + "]+|[" + StringUtility.charList + "]+$");
+StringUtility.removeDanglingQuotes1 = new RegExp("^[" + StringUtility.charList + "]+");
+StringUtility.removeDanglingQuotes2 = new RegExp("[" + StringUtility.charList + "]+$");
 /** Used for formatting gold. */
 StringUtility.formatGold = new RegExp("(\\s|)g\\S*(\\s|$){0,1}", "gi");
 /** Used for formatting gold. */
