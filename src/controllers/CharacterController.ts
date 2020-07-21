@@ -44,7 +44,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
             if (!char) {
                 return null;
             }
-            return this.createNickname(character.name, character, discordId).then((nick) => {
+            return this.createNickname(nickname.name, char, discordId).then((nick) => {
                 if (nick == null) {
                     return this.getRepo().delete(char).then(() => {
                         return null;
