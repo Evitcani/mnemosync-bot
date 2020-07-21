@@ -53,8 +53,6 @@ export class StringUtility {
         sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
         sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
 
-
-
         return sanitizedInput;
     }
 }
