@@ -99,6 +99,9 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                     return null;
                 }
                 console.debug("Found nickname! Nickname: " + nickname[0].name);
+                if (nickname[0].character == null) {
+                    return this.getById(nickname[0].characterId);
+                }
                 return nickname[0].character;
             });
         });
