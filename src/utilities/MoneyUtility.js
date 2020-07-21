@@ -8,16 +8,16 @@ class MoneyUtility {
             return 0;
         }
         let amt = 0;
-        if (fund.platinum !== null) {
+        if (fund.platinum != null) {
             amt += (fund.platinum * 1000);
         }
-        if (fund.gold !== null) {
+        if (fund.gold != null) {
             amt += (fund.gold * 100);
         }
-        if (fund.silver !== null) {
+        if (fund.silver != null) {
             amt += (fund.silver * 10);
         }
-        if (fund.copper !== null) {
+        if (fund.copper != null) {
             amt += fund.copper;
         }
         console.debug("PILE INTO COPPER ::: Total amount is: " + amt);

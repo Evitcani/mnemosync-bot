@@ -101,16 +101,20 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractComm
                     return null;
                 }
                 let party = parties[0];
+                console.log("Looking for fund...");
                 // Get the funds. Not the most efficient.
                 if (party.funds != null) {
+                    console.log("Party has funds...");
                     let i, fund;
                     for (i = 0; i < party.funds.length; i++) {
                         fund = party.funds[i];
                         if (fund.type == type) {
+                            console.log("Found fund!");
                             return fund;
                         }
                     }
                 }
+                console.log("Could not find funds...");
                 return null;
             }).catch((err) => {
                 console.log("Failed to find party with given name ::: " + err.message);
