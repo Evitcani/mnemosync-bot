@@ -83,6 +83,8 @@ export class CharacterController extends AbstractSecondaryController<Character, 
                 return null;
             }
 
+            console.debug("Found nickname! Nickname: " + nickname[0].name);
+
             return nickname[0].character;
         })
     }
