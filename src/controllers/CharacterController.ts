@@ -46,8 +46,13 @@ export class CharacterController extends AbstractSecondaryController<Character, 
             }
             return this.createNickname(character.name, character, discordId).then((nick) => {
                 if (nick == null) {
-                    // TODO: Delete created character.
-                    return null;
+                    return this.getRepo().delete(char).then(() => {
+                        return null;
+                    }).catch((err: Error) => {
+                        console.error("ERR ::: Could not delete character after failed nickname mapping.");
+                        console.log(err.stack);
+                        return null;
+                    });
                 }
 
                 return char;
