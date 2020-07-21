@@ -1,13 +1,14 @@
 import {AbstractController} from "./AbstractController";
 import {getManager, Repository, SelectQueryBuilder} from "typeorm";
 import {NameValuePair} from "./NameValuePair";
-import {injectable} from "inversify";
+import {injectable, unmanaged} from "inversify";
 
 @injectable()
 export abstract class AbstractSecondaryController<T, E> extends AbstractController<T> {
     protected secondaryTableName: string;
 
-    protected constructor(primaryTableName: string, secondaryTableName: string) {
+    protected constructor(@unmanaged() primaryTableName: string,
+                          @unmanaged() secondaryTableName: string) {
         super(primaryTableName);
         this.secondaryTableName = secondaryTableName;
     }
