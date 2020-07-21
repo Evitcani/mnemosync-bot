@@ -3,7 +3,7 @@ import {
     BeforeUpdate,
     Column,
     CreateDateColumn,
-    Entity,
+    Entity, JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
@@ -29,10 +29,14 @@ export class Nickname {
     @Column("text")
     name: string;
 
+    @Column()
+    characterId: number;
+
     @ManyToOne(type => Character, {
         cascade: true,
         eager: true
     })
+    @JoinColumn()
     character: Character;
 
     @BeforeInsert()
