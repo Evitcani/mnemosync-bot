@@ -2,14 +2,12 @@ import {Command} from "../models/generic/Command";
 import {Subcommand} from "../models/generic/Subcommand";
 import {Bot} from "../bot";
 import {StringUtility} from "./StringUtility";
+import {Commands} from "../documentation/commands/Commands";
 
 /**
  * A utility for processing and understanding commands.
  */
 export class CommandUtility {
-    /** List of characters to trim from commands. */
-    private static readonly charlist = [" ", "\"", "'"];
-
     /**
      * Processes the commands into something legible.
      *
@@ -22,7 +20,7 @@ export class CommandUtility {
 
         // Get the base command.
         const baseCommand = args.shift();
-        const command = this.getSubcommand(baseCommand);
+        const command = this.getCommand(baseCommand);
 
         // Get the subcommands.
         let subcommands: Map<string, Subcommand> = null, subcommand: Subcommand;
@@ -30,40 +28,52 @@ export class CommandUtility {
             subcommands = new Map<string, Subcommand>();
             let i: number;
             for (i = 0; i < args.length; i++) {
-                subcommand = this.getSubcommand(args[i]);
+                subcommand = this.getSubcommand(args[i], command.isMoneyRelated);
                 subcommands.set(subcommand.getName(), subcommand);
 
             }
         }
 
         // Return the new command.
-        return new Command(command.getName(), command.getInput(), subcommands);
+        return new Command(command.subcommand.getName(), command.subcommand.getInput(), subcommands);
     }
 
     /**
      * Gets a subcommand from each command.
      * @param arg The simple arg to process.
+     * @param isMoneyRelated
      */
-    private static getSubcommand(arg: string): Subcommand {
-        // Remove all fancy quotes for proper processing.
-        arg = StringUtility.replaceFancyQuotes(arg);
-
+    private static getSubcommand(arg: string, isMoneyRelated: boolean): Subcommand {
         // Get the basic args.
         const args = arg.split(" ");
         const cmd = args.shift().toLowerCase();
 
         // Get the input, if there is one.
         let input = args.length > 0 ? args.join(" ") : null;
+        input = StringUtility.processUserInput(input);
 
-        // Trims off unneeded characters.
-        if (input != null) {
-            input = input.replace(new RegExp("[" + this.charlist + "]+$"), "");
-            input = input.replace(new RegExp("^[" + this.charlist + "]+"), "");
+        // Formats the money.
+        if (isMoneyRelated) {
+            input = StringUtility.formatFundInput(input);
         }
 
         console.debug(`COMMAND UTILITY ::: New subcommand '${cmd}': ${input}`);
 
         // Return the subcommand.
         return new Subcommand(cmd, input);
+    }
+
+    private static getCommand(arg: string): {subcommand: Subcommand, isMoneyRelated: boolean} {
+        // Get the basic args.
+        const args = arg.split(" ");
+        const cmd = args.shift().toLowerCase();
+
+        // It's money related!
+        if (cmd == Commands.FUND || cmd == Commands.BANK) {
+            return {subcommand: this.getSubcommand(arg, true), isMoneyRelated: true};
+        }
+
+        // Not money related.
+        return {subcommand: this.getSubcommand(arg, false), isMoneyRelated: false};
     }
 }

@@ -1,12 +1,41 @@
 import {StringUtility} from "../../utilities/StringUtility";
 import {Collection, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../BasicEmbed";
+import {Bot} from "../../bot";
+import {Commands} from "../commands/Commands";
+import {Subcommands} from "../commands/Subcommands";
 
 /**
  * A class for formatting responses related to the `$FUND` and `$BANK` commands.
  */
 export class FundRelatedClientResponses {
     private static responses: Collection<number, Collection<number, string>> = FundRelatedClientResponses.createResponses();
+
+    static NO_DEFAULT_CHARACTER (): MessageEmbed {
+        return BasicEmbed.get()
+            .setTitle(`No default character!`)
+            .setDescription(`You have no default character.\n\n` +
+                `**To create new character**\n` +
+                `To create a new character, use the following command: ` +
+                `\`${Bot.PREFIX}${Commands.CHARACTER} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.CREATE.name} [character name] ` +
+                `${Bot.PREFIX_SUBCOMMAND}${Subcommands.PARTY.name} [party name]\`` +
+                `**To check parties**\n` +
+                `To check the parties in this guild, use the following command: ` +
+                `\`${Bot.PREFIX}${Commands.WHICH} ${Subcommands.PARTY.name}\``);
+    }
+
+    static CHARACTER_NOT_IN_PARTY (characterName: string): MessageEmbed {
+        return BasicEmbed.get()
+            .setTitle(`Default character is not in a party!`)
+            .setDescription(`Your character, ${characterName}, is not in a party.\n\n` +
+                `**To add your character to a party**\n` +
+                `To add your character to a party, use the following command: ` +
+                `\`${Bot.PREFIX}${Commands.CHARACTER} ` +
+                `${Bot.PREFIX_SUBCOMMAND}${Subcommands.PARTY.name} [party name]\`` +
+                `**To check parties**\n` +
+                `To check the parties in this guild, use the following command: ` +
+                `\`${Bot.PREFIX}${Commands.WHICH} ${Subcommands.PARTY.name}\``);
+    }
 
     static GET_MONEY(currentMoney: number, type: string, partyName: string): MessageEmbed {
         let input = StringUtility.numberWithCommas(Math.abs(currentMoney));

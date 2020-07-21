@@ -4,10 +4,37 @@ exports.FundRelatedClientResponses = void 0;
 const StringUtility_1 = require("../../utilities/StringUtility");
 const discord_js_1 = require("discord.js");
 const BasicEmbed_1 = require("../BasicEmbed");
+const bot_1 = require("../../bot");
+const Commands_1 = require("../commands/Commands");
+const Subcommands_1 = require("../commands/Subcommands");
 /**
  * A class for formatting responses related to the `$FUND` and `$BANK` commands.
  */
 class FundRelatedClientResponses {
+    static NO_DEFAULT_CHARACTER() {
+        return BasicEmbed_1.BasicEmbed.get()
+            .setTitle(`No default character!`)
+            .setDescription(`You have no default character.\n\n` +
+            `**To create new character**\n` +
+            `To create a new character, use the following command: ` +
+            `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.CHARACTER} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.CREATE.name} [character name] ` +
+            `${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.PARTY.name} [party name]\`` +
+            `**To check parties**\n` +
+            `To check the parties in this guild, use the following command: ` +
+            `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.WHICH} ${Subcommands_1.Subcommands.PARTY.name}\``);
+    }
+    static CHARACTER_NOT_IN_PARTY(characterName) {
+        return BasicEmbed_1.BasicEmbed.get()
+            .setTitle(`Default character is not in a party!`)
+            .setDescription(`Your character, ${characterName}, is not in a party.\n\n` +
+            `**To add your character to a party**\n` +
+            `To add your character to a party, use the following command: ` +
+            `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.CHARACTER} ` +
+            `${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.PARTY.name} [party name]\`` +
+            `**To check parties**\n` +
+            `To check the parties in this guild, use the following command: ` +
+            `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.WHICH} ${Subcommands_1.Subcommands.PARTY.name}\``);
+    }
     static GET_MONEY(currentMoney, type, partyName) {
         let input = StringUtility_1.StringUtility.numberWithCommas(Math.abs(currentMoney));
         return BasicEmbed_1.BasicEmbed.get()

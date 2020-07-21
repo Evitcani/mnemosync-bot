@@ -23,6 +23,20 @@ class StringUtility {
         return correctedInput;
     }
     /**
+     * Processes the user input.
+     *
+     * @param input The input to process.
+     */
+    static processUserInput(input) {
+        // Input is null, return null.
+        if (input == null) {
+            return null;
+        }
+        let sanitizedInput = this.replaceFancyQuotes(input);
+        // Trim off trailing
+        return sanitizedInput.replace(this.removeDanglingQuotes, "");
+    }
+    /**
      * Escapes the given input to be placed in a database.
      *
      * @param input The input to escape.
@@ -30,6 +44,11 @@ class StringUtility {
     static escapeMySQLInput(input) {
         return SqlString.escape(input);
     }
+    /**
+     * Escapes the SQL, without quoting the input.
+     *
+     * @param input The input to sanitize.
+     */
     static escapeSQLInput(input) {
         if (input == null) {
             return null;
@@ -38,18 +57,44 @@ class StringUtility {
         // Replace quotes with double quotes.
         sanitizedInput = sanitizedInput.replace(this.sanitizeSQL1, "\\'");
         // Trim off trailing
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes, "");
+        // Return the input.
         return sanitizedInput;
+    }
+    /**
+     * Format the fund input. Makes it easier to process.
+     *
+     * @param input The input to format.
+     */
+    static formatFundInput(input) {
+        // Replace.
+        let formattedInput = input.replace(this.formatGold, " gold ");
+        formattedInput = formattedInput.replace(this.formatCopper, " copper ");
+        formattedInput = formattedInput.replace(this.formatSilver, " silver ");
+        formattedInput = formattedInput.replace(this.formatPlatinum, " platinum ");
+        // Trim off trailing
+        return formattedInput.replace(this.removeDanglingQuotes, "");
     }
 }
 exports.StringUtility = StringUtility;
 /** List of characters to trim from commands. */
-StringUtility.charlist = [" ", "\"", "'"];
+StringUtility.charList = [" ", "\"", "'"];
+/** Pattern for inserting quotes into numbers. */
 StringUtility.pattern = /(-?\d+)(\d{3})/;
+/** The fancy apostrophes to strip. */
 StringUtility.fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
+/** The fancy quotes to strip. */
 StringUtility.fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
-StringUtility.sanitizeSQL1 = new RegExp("(?:\\\\+'+)+", "g");
-StringUtility.removeDanglingQuotes1 = new RegExp("[" + StringUtility.charlist + "]+$");
-StringUtility.removeDanglingQuotes2 = new RegExp("^[" + StringUtility.charlist + "]+");
+/** Used for keeping  */
+StringUtility.sanitizeSQL1 = new RegExp("[\\\\']*(?:\\\\+'+)+[\\\\']*", "g");
+/** Removes any dangling quotes. */
+StringUtility.removeDanglingQuotes = new RegExp("^[" + StringUtility.charList + "]+|[" + StringUtility.charList + "]+$");
+/** Used for formatting gold. */
+StringUtility.formatGold = new RegExp("(\\s|)g\\S*(\\s|$){0,1}", "gi");
+/** Used for formatting gold. */
+StringUtility.formatCopper = new RegExp("(\\s|)c\\S*(\\s|$){0,1}", "gi");
+/** Used for formatting gold. */
+StringUtility.formatSilver = new RegExp("(\\s|)s\\S*(\\s|$){0,1}", "gi");
+/** Used for formatting gold. */
+StringUtility.formatPlatinum = new RegExp("(\\s|)p\\S*(\\s|$){0,1}", "gi");
 //# sourceMappingURL=StringUtility.js.map

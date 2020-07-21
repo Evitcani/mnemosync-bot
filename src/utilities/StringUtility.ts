@@ -2,13 +2,25 @@ const SqlString = require('sqlstring');
 
 export class StringUtility {
     /** List of characters to trim from commands. */
-    private static readonly charlist = [" ", "\"", "'"];
+    private static readonly charList = [" ", "\"", "'"];
+    /** Pattern for inserting quotes into numbers. */
     private static pattern = /(-?\d+)(\d{3})/;
+    /** The fancy apostrophes to strip. */
     private static fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
+    /** The fancy quotes to strip. */
     private static fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
-    private static sanitizeSQL1 = new RegExp("(?:\\\\+'+)+", "g");
-    private static removeDanglingQuotes1 = new RegExp("[" + StringUtility.charlist + "]+$");
-    private static removeDanglingQuotes2 = new RegExp("^[" + StringUtility.charlist + "]+");
+    /** Used for keeping  */
+    private static sanitizeSQL1 = new RegExp("[\\\\']*(?:\\\\+'+)+[\\\\']*", "g");
+    /** Removes any dangling quotes. */
+    private static removeDanglingQuotes = new RegExp("^[" + StringUtility.charList + "]+|[" + StringUtility.charList + "]+$");
+    /** Used for formatting gold. */
+    private static formatGold = new RegExp("(\\s|)g\\S*(\\s|$){0,1}", "gi");
+    /** Used for formatting gold. */
+    private static formatCopper = new RegExp("(\\s|)c\\S*(\\s|$){0,1}", "gi");
+    /** Used for formatting gold. */
+    private static formatSilver = new RegExp("(\\s|)s\\S*(\\s|$){0,1}", "gi");
+    /** Used for formatting gold. */
+    private static formatPlatinum = new RegExp("(\\s|)p\\S*(\\s|$){0,1}", "gi");
 
     /**
      * A utility to format numbers with commas. Works extra quickly.
@@ -32,15 +44,37 @@ export class StringUtility {
     }
 
     /**
+     * Processes the user input.
+     *
+     * @param input The input to process.
+     */
+    static processUserInput(input: string): string {
+        // Input is null, return null.
+        if (input == null) {
+            return null;
+        }
+
+        let sanitizedInput = this.replaceFancyQuotes(input);
+
+        // Trim off trailing
+        return sanitizedInput.replace(this.removeDanglingQuotes, "");
+    }
+
+    /**
      * Escapes the given input to be placed in a database.
      *
      * @param input The input to escape.
      */
-    static escapeMySQLInput(input: string): string {
+    static escapeMySQLInput(input: any): string {
         return SqlString.escape(input);
     }
 
-    static escapeSQLInput(input: string): string {
+    /**
+     * Escapes the SQL, without quoting the input.
+     *
+     * @param input The input to sanitize.
+     */
+    static escapeSQLInput(input: any): string {
         if (input == null) {
             return null;
         }
@@ -50,9 +84,25 @@ export class StringUtility {
         sanitizedInput = sanitizedInput.replace(this.sanitizeSQL1, "\\'");
 
         // Trim off trailing
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes1, "");
-        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes2, "");
+        sanitizedInput = sanitizedInput.replace(this.removeDanglingQuotes, "");
 
+        // Return the input.
         return sanitizedInput;
+    }
+
+    /**
+     * Format the fund input. Makes it easier to process.
+     *
+     * @param input The input to format.
+     */
+    static formatFundInput (input: string): string {
+        // Replace.
+        let formattedInput = input.replace(this.formatGold, " gold ");
+        formattedInput = formattedInput.replace(this.formatCopper, " copper ");
+        formattedInput = formattedInput.replace(this.formatSilver, " silver ");
+        formattedInput = formattedInput.replace(this.formatPlatinum, " platinum ");
+
+        // Trim off trailing
+        return formattedInput.replace(this.removeDanglingQuotes, "");
     }
 }

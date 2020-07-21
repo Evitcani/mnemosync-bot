@@ -12,6 +12,7 @@ import {Subcommands} from "../documentation/commands/Subcommands";
 import {PartyFundController} from "../controllers/PartyFundController";
 import {Party} from "../entity/Party";
 import {AbstractUserCommandHandler} from "./base/AbstractUserCommandHandler";
+import {User} from "../entity/User";
 
 /**
  * Manages the fund related commands.
@@ -23,7 +24,6 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     /** Connection the fund database. */
     private partyFundService: PartyFundService;
     private partyFundController: PartyFundController;
-    private readonly partyName: string = "The Seven Wonders";
 
     constructor(@inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.PartyFundController) partyFundController: PartyFundController,
@@ -39,37 +39,38 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
      *
      * @param command The command to handle.
      * @param message The message calling this command.
+     * @param user
      */
     public async handleUserCommand(command, message, user): Promise<Message | Message[]> {
+        if (user == null || user.defaultCharacter == null) {
+            return message.channel.send(FundRelatedClientResponses.NO_DEFAULT_CHARACTER());
+        }
+
+        if (user.defaultCharacter.party == null) {
+            return message.channel.send(FundRelatedClientResponses.CHARACTER_NOT_IN_PARTY(user.defaultCharacter.name));
+        }
+
         // Figure out which command to use.
         let type = command.getName() == Commands.BANK ? "BANK" : "FUND";
 
         // If there are no args, assume the user just wants a bank statement.
         if (command.getInput() == null) {
-            return this.getFunds(message, type, this.partyName);
+            return this.getFunds(message, type, user);
         }
 
         const createCommand = Subcommands.CREATE.isCommand(command);
         if (createCommand != null) {
-            return this.partyController.getByNameAndGuild(this.partyName, message.guild.id).then((parties) => {
-                if (parties == null) {
-                    return message.channel.send("No parties in this server.");
-                }
-
-                const party: Party = parties[0];
-
-                return this.partyFundController.create(party, type).then(() => {
-                    return message.channel.send("Created new party fund!");
-                });
+            return this.partyFundController.create(user.defaultCharacter.party, type).then(() => {
+                return message.channel.send("Created new party fund!");
             });
         }
 
         // Now we send the amount off to be processed.
-        return this.updateFunds(command, message, type, this.partyName);
+        return this.updateFunds(command, message, type, user.defaultCharacter.party);
     }
 
-    private async getFunds(message: Message, type: string, name: string): Promise<Message | Message[]> {
-        return this.findFunds(name, type, message).then((fund) => {
+    private async getFunds(message: Message, type: string, user: User): Promise<Message | Message[]> {
+        return this.findFunds(user.defaultCharacter.party, type, message).then((fund) => {
             let total = MoneyUtility.pileIntoCopper(fund) / 100;
             return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, name));
         });
@@ -82,34 +83,23 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     /**
      * Finds the fund for the given party of the given type.
      *
-     * @param name The name of the party that the fund belongs to.
+     * @param party
      * @param type The type of fund to find. Defaults to 'FUND'.
      * @param message The message object that originally sent the command.
      */
-    private async findFunds (name: string, type: string | null, message: Message): Promise<PartyFund> {
+    private async findFunds (party: Party, type: string | null, message: Message): Promise<PartyFund> {
         if (type == null) {
             type = "FUND";
         }
 
-        return this.partyController.getByNameAndGuild(name, message.guild.id).then((parties) => {
-            if (parties == null || parties.length < 1) {
-                return null;
-            }
-
-            let party = parties[0];
-
-            return this.partyFundController.getByPartyAndType(party, type);
-        }).catch((err: Error) => {
-            console.log("Failed to find party with given name ::: " + err.message);
-            return null;
-        });
+        return this.partyFundController.getByPartyAndType(party, type);
     }
 
     ////////////////////////////////////////////////////////////
     ///// UPDATING
     ////////////////////////////////////////////////////////////
 
-    private async updateFunds(command: Command, message: Message, fundType: string, partyName: string): Promise<Message | Message[]> {
+    private async updateFunds(command: Command, message: Message, fundType: string, party: Party): Promise<Message | Message[]> {
         // Process the arguments.
         const newFund = MoneyUtility.processMoneyArguments(command.getInput().split(" "));
 
@@ -118,7 +108,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Find and then update these funds.
-        return this.findFunds(partyName, fundType, message).then((fund) => {
+        return this.findFunds(party, fundType, message).then((fund) => {
             if (fund == null) {
                 return message.channel.send("Could not find fund!");
             }
