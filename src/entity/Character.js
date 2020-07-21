@@ -59,7 +59,6 @@ __decorate([
 ], Character.prototype, "party", void 0);
 __decorate([
     typeorm_1.OneToMany(type => Nickname_1.Nickname, nickname => nickname.character, {
-        eager: true,
         onDelete: "SET NULL"
     }),
     __metadata("design:type", Array)

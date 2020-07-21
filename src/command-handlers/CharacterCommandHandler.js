@@ -31,9 +31,11 @@ const CharacterService_1 = require("../database/CharacterService");
 const CharacterRelatedClientResponses_1 = require("../documentation/client-responses/CharacterRelatedClientResponses");
 const UserService_1 = require("../database/UserService");
 const PartyController_1 = require("../controllers/PartyController");
+const CharacterController_1 = require("../controllers/CharacterController");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(characterService, partyController, userService) {
+    constructor(characterController, characterService, partyController, userService) {
         super();
+        this.characterController = characterController;
         this.characterService = characterService;
         this.partyController = partyController;
         this.userService = userService;
@@ -53,7 +55,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     }
     switchCharacter(message, character) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.characterService.getCharacterByName(message.author.id, character.name).then((char) => {
+            return this.characterController.getCharacterByName(character.name, message.author.id).then((char) => {
                 if (char == null) {
                     return message.channel.send(`No character exists with a name like '${character.name}'`);
                 }
@@ -74,9 +76,14 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             if (character == null || character.name == null) {
                 return message.channel.send("You must provide a name for the character!");
             }
-            return this.characterService.createCharacter(character, message.author.id, message.author.username)
-                .then((character) => {
-                return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+            return this.characterController.create(character, message.author.id)
+                .then((char) => {
+                if (char == null) {
+                    return message.channel.send("Could not create character.");
+                }
+                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
+                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+                });
             });
         });
     }
@@ -140,10 +147,12 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     }
 };
 CharacterCommandHandler = __decorate([
-    __param(0, inversify_1.inject(types_1.TYPES.CharacterService)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyController)),
-    __param(2, inversify_1.inject(types_1.TYPES.UserService)),
-    __metadata("design:paramtypes", [CharacterService_1.CharacterService,
+    __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
+    __param(1, inversify_1.inject(types_1.TYPES.CharacterService)),
+    __param(2, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(3, inversify_1.inject(types_1.TYPES.UserService)),
+    __metadata("design:paramtypes", [CharacterController_1.CharacterController,
+        CharacterService_1.CharacterService,
         PartyController_1.PartyController,
         UserService_1.UserService])
 ], CharacterCommandHandler);

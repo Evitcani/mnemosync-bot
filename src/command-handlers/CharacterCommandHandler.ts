@@ -10,16 +10,20 @@ import {CharacterService} from "../database/CharacterService";
 import {CharacterRelatedClientResponses} from "../documentation/client-responses/CharacterRelatedClientResponses";
 import {UserService} from "../database/UserService";
 import {PartyController} from "../controllers/PartyController";
+import {CharacterController} from "../controllers/CharacterController";
 
 export class CharacterCommandHandler extends AbstractCommandHandler {
+    private characterController: CharacterController;
     private characterService: CharacterService;
     private partyController: PartyController;
     private userService: UserService;
 
-    constructor(@inject(TYPES.CharacterService) characterService: CharacterService,
+    constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
+                @inject(TYPES.CharacterService) characterService: CharacterService,
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.UserService) userService: UserService) {
         super();
+        this.characterController = characterController;
         this.characterService = characterService;
         this.partyController = partyController;
         this.userService = userService;
@@ -39,7 +43,7 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
     }
 
     private async switchCharacter(message: Message, character: Character): Promise<Message | Message[]> {
-        return this.characterService.getCharacterByName(message.author.id, character.name).then((char) => {
+        return this.characterController.getCharacterByName(character.name, message.author.id).then((char) => {
             if (char == null) {
                 return message.channel.send(`No character exists with a name like '${character.name}'`);
             }
@@ -61,9 +65,15 @@ export class CharacterCommandHandler extends AbstractCommandHandler {
             return message.channel.send("You must provide a name for the character!");
         }
 
-        return this.characterService.createCharacter(character, message.author.id, message.author.username)
-            .then((character) => {
-                return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+        return this.characterController.create(character, message.author.id)
+            .then((char) => {
+                if (char == null) {
+                    return message.channel.send("Could not create character.");
+                }
+
+                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
+                    return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+                });
             });
     }
 

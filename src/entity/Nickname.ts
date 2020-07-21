@@ -30,7 +30,8 @@ export class Nickname {
     name: string;
 
     @ManyToOne(type => Character, {
-        cascade: true
+        cascade: true,
+        eager: true
     })
     character: Character;
 

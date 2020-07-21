@@ -43,7 +43,6 @@ export class Character {
     party?: Party;
 
     @OneToMany(type => Nickname, nickname => nickname.character, {
-        eager: true,
         onDelete: "SET NULL"
     })
     nicknames: Nickname[];
