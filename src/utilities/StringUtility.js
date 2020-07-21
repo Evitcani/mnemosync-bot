@@ -19,7 +19,7 @@ class StringUtility {
             return null;
         }
         let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]+"), "'");
-        correctedInput = input.replace(new RegExp("[" + ["“", "”"] + "]+"), "\"");
+        correctedInput = correctedInput.replace(new RegExp("[" + ["“", "”"] + "]+"), "\"");
         return correctedInput;
     }
     /**
