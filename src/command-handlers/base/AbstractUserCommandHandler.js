@@ -15,18 +15,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BagCommandHandler = void 0;
-const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
+exports.AbstractUserCommandHandler = void 0;
 const inversify_1 = require("inversify");
-let BagCommandHandler = class BagCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    handleUserCommand(command, message, user) {
+let AbstractUserCommandHandler = class AbstractUserCommandHandler {
+    /**
+     * This method is not used by this command type.
+     *
+     * @param command
+     * @param message
+     */
+    handleCommand(command, message) {
         return __awaiter(this, void 0, void 0, function* () {
             return undefined;
         });
     }
 };
-BagCommandHandler = __decorate([
+AbstractUserCommandHandler = __decorate([
     inversify_1.injectable()
-], BagCommandHandler);
-exports.BagCommandHandler = BagCommandHandler;
-//# sourceMappingURL=BagCommandHandler.js.map
+], AbstractUserCommandHandler);
+exports.AbstractUserCommandHandler = AbstractUserCommandHandler;
+//# sourceMappingURL=AbstractUserCommandHandler.js.map

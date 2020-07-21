@@ -22,44 +22,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CharacterCommandHandler = void 0;
-const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const Character_1 = require("../entity/Character");
 const Subcommands_1 = require("../documentation/commands/Subcommands");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const CharacterService_1 = require("../database/CharacterService");
 const CharacterRelatedClientResponses_1 = require("../documentation/client-responses/CharacterRelatedClientResponses");
-const UserService_1 = require("../database/UserService");
 const PartyController_1 = require("../controllers/PartyController");
 const CharacterController_1 = require("../controllers/CharacterController");
-let CharacterCommandHandler = class CharacterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(characterController, characterService, partyController, userService) {
+const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
+const UserController_1 = require("../controllers/UserController");
+let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+    constructor(characterController, partyController, userController) {
         super();
         this.characterController = characterController;
-        this.characterService = characterService;
         this.partyController = partyController;
-        this.userService = userService;
+        this.userController = userController;
     }
-    handleCommand(command, message) {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.constructCharacter(command, message).then((character) => {
+            return this.constructCharacter(command, message, user).then((character) => {
                 if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
-                    return this.createCharacter(message, character);
+                    return this.createCharacter(message, character, user);
                 }
                 if (Subcommands_1.Subcommands.SWITCH.isCommand(command) != null) {
-                    return this.switchCharacter(message, character);
+                    return this.switchCharacter(message, character, user);
                 }
                 return undefined;
             });
         });
     }
-    switchCharacter(message, character) {
+    switchCharacter(message, character, user) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.characterController.getCharacterByName(character.name, message.author.id).then((char) => {
                 if (char == null) {
                     return message.channel.send(`No character exists with a name like '${character.name}'`);
                 }
-                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
+                return this.userController.updateDefaultCharacter(user, char).then(() => {
                     return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
                 });
             });
@@ -68,10 +66,11 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
     /**
      * Creates a character.
      *
-     * @param message
+     * @param message The message object that spurred this command.
      * @param character The character to create.
+     * @param user The user
      */
-    createCharacter(message, character) {
+    createCharacter(message, character, user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (character == null || character.name == null) {
                 return message.channel.send("You must provide a name for the character!");
@@ -81,16 +80,16 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
                 if (char == null) {
                     return message.channel.send("Could not create character.");
                 }
-                return this.userService.updateDefaultCharacter(message.author.id, message.author.username, char).then(() => {
+                return this.userController.updateDefaultCharacter(user, char).then(() => {
                     return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
                 });
             });
         });
     }
-    constructCharacter(command, message) {
+    constructCharacter(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Construct the character and add the name.
-            const character = new Character_1.Character();
+            const character = user.defaultCharacter == null ? new Character_1.Character() : user.defaultCharacter;
             // Set the image URL.
             const imgCmd = Subcommands_1.Subcommands.IMG_URL.isCommand(command);
             if (imgCmd != null) {
@@ -100,16 +99,6 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
             const nameCmd = CharacterCommandHandler.getNameCmd(command);
             if (nameCmd != null) {
                 character.name = nameCmd.getInput();
-            }
-            else {
-                // Get this user's default character.
-                return this.characterService.getUserWithCharacter(message.author.id, message.author.username).then((user) => {
-                    if (user == null || user.defaultCharacterId) {
-                        return null;
-                    }
-                    character.id = user.defaultCharacterId;
-                    return this.getOtherValues(command, message, character);
-                });
             }
             return this.getOtherValues(command, message, character);
         });
@@ -148,13 +137,11 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractComm
 };
 CharacterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
-    __param(1, inversify_1.inject(types_1.TYPES.CharacterService)),
-    __param(2, inversify_1.inject(types_1.TYPES.PartyController)),
-    __param(3, inversify_1.inject(types_1.TYPES.UserService)),
+    __param(1, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(2, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CharacterController_1.CharacterController,
-        CharacterService_1.CharacterService,
         PartyController_1.PartyController,
-        UserService_1.UserService])
+        UserController_1.UserController])
 ], CharacterCommandHandler);
 exports.CharacterCommandHandler = CharacterCommandHandler;
 //# sourceMappingURL=CharacterCommandHandler.js.map

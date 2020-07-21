@@ -25,6 +25,7 @@ import {UserToCharacterService} from "./database/UserToCharacterService";
 import {PartyController} from "./controllers/PartyController";
 import {PartyFundController} from "./controllers/PartyFundController";
 import {CharacterController} from "./controllers/CharacterController";
+import {UserController} from "./controllers/UserController";
 
 let container = new Container();
 
@@ -57,5 +58,6 @@ container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHa
 container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
+container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
 
 export default container;

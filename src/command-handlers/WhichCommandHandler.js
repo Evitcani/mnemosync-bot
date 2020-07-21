@@ -24,18 +24,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WhichCommandHandler = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const WhichRelatedClientResponses_1 = require("../documentation/client-responses/WhichRelatedClientResponses");
 const PartyController_1 = require("../controllers/PartyController");
+const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
 /**
  * Handles questions about the state of the world.
  */
-let WhichCommandHandler = class WhichCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
+let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(partyController) {
         super();
         this.partyController = partyController;
     }
-    handleCommand(command, message) {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.partyController.getByGuild(message.guild.id).then((res) => {
                 return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));

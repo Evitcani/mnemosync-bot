@@ -2,7 +2,6 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {Message} from "discord.js";
 import {MoneyUtility} from "../utilities/MoneyUtility";
-import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {PartyFund} from "../entity/PartyFund";
 import {Command} from "../models/generic/Command";
 import {FundRelatedClientResponses} from "../documentation/client-responses/FundRelatedClientResponses";
@@ -12,12 +11,13 @@ import {PartyController} from "../controllers/PartyController";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {PartyFundController} from "../controllers/PartyFundController";
 import {Party} from "../entity/Party";
+import {AbstractUserCommandHandler} from "./base/AbstractUserCommandHandler";
 
 /**
  * Manages the fund related commands.
  */
 @injectable()
-export class PartyFundCommandHandler extends AbstractCommandHandler {
+export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     /** The party service to connect to the database. */
     private partyController: PartyController;
     /** Connection the fund database. */
@@ -40,7 +40,7 @@ export class PartyFundCommandHandler extends AbstractCommandHandler {
      * @param command The command to handle.
      * @param message The message calling this command.
      */
-    public async handleCommand (command: Command, message: Message): Promise<Message | Message[]> {
+    public async handleUserCommand(command, message, user): Promise<Message | Message[]> {
         // Figure out which command to use.
         let type = command.getName() == Commands.BANK ? "BANK" : "FUND";
 
