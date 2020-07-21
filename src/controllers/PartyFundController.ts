@@ -22,6 +22,10 @@ export class PartyFundController {
         });
     }
 
+    public async getByPartyAndType(party: Party, type: string): Promise<PartyFund> {
+        return PartyFundController.getRepo().findOne({where: {partyId: party.id, type: type}});
+    }
+
     /**
      * Gets the repo.
      */
