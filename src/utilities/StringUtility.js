@@ -18,8 +18,8 @@ class StringUtility {
         if (input == null) {
             return null;
         }
-        let correctedInput = input.replace(new RegExp("[" + ["‘", "’"] + "]"), "'");
-        correctedInput = correctedInput.replace(new RegExp("[" + ["“", "”"] + "]"), "\"");
+        let correctedInput = input.replace(this.fancyQuote1, "'");
+        correctedInput = correctedInput.replace(this.fancyQuote2, "\"");
         return correctedInput;
     }
     /**
@@ -45,4 +45,6 @@ exports.StringUtility = StringUtility;
 /** List of characters to trim from commands. */
 StringUtility.charlist = [" ", "\"", "'"];
 StringUtility.pattern = /(-?\d+)(\d{3})/;
+StringUtility.fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
+StringUtility.fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
 //# sourceMappingURL=StringUtility.js.map
