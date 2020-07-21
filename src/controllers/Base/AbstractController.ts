@@ -1,7 +1,9 @@
 import {getManager, QueryBuilder, Repository, SelectQueryBuilder} from "typeorm";
 import {NameValuePair} from "./NameValuePair";
 import {StringUtility} from "../../utilities/StringUtility";
+import {injectable} from "inversify";
 
+@injectable()
 export abstract class AbstractController<T> {
     protected tableName: string;
 
