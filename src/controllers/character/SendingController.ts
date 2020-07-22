@@ -5,6 +5,7 @@ import {Table} from "../../documentation/databases/Table";
 import {World} from "../../entity/World";
 import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
 import {Character} from "../../entity/Character";
+import {getConnection} from "typeorm";
 
 @injectable()
 export class SendingController extends AbstractController<Sending> {
@@ -28,10 +29,29 @@ export class SendingController extends AbstractController<Sending> {
             });
     }
 
+    public async getByIds(ids: string[]): Promise<Sending[]> {
+        // Not a valid argument.
+        if (ids == null || ids.length < 1) {
+            return null;
+        }
+
+        return this.getRepo().find({where: {id: ids}, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"]})
+            .then((sending) => {
+                // Check the party is valid.
+
+                return sending;
+            })
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get sendings.");
+                console.error(err);
+                return null;
+            });
+    }
+
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
         let flag = false, sub;
 
-        let query = this.getRepo().createQueryBuilder("msg");
+        let query = getConnection().createQueryBuilder(Sending, "msg");
 
         if (world != null) {
             query = query.where(`"msg"."world_id" = '${world.id}'`);
@@ -67,6 +87,7 @@ export class SendingController extends AbstractController<Sending> {
         // Add final touches.
         query = query
             .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
+            .addSelect(["id"])
             .addOrderBy("\"msg\".\"created_date\"", "ASC")
             .limit(SendingController.SENDING_LIMIT)
             .skip(page * SendingController.SENDING_LIMIT);
@@ -76,10 +97,13 @@ export class SendingController extends AbstractController<Sending> {
                 if (!messages || messages.length < 1) {
                     return null;
                 }
+                let input : string[] = [], i;
+                // Put into a map
+                for (i = 0; i < messages.length; i++) {
+                    input[i] = messages[i].id;
+                }
 
-                // Go out and get the
-
-                return messages;
+                return this.getByIds(input);
             })
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get any sendings.");
