@@ -158,7 +158,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 // Notify the player of the reply.
                 if (sending.fromPlayerId != null) {
                     return this.characterController.getDiscordId(sending.fromPlayerId).then(async (discordIds) => {
-                        if (discordIds == null || discordIds.length < 1) {
+                        if (!discordIds || discordIds.length < 1) {
                             return message.channel.send("No discord accounts associated with this message!");
                         }
 
