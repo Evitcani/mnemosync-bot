@@ -148,8 +148,11 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                             let discordId, i;
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
-                                if (this.client.users.cache.get(discordId) == null) {
+                                if (this.client.users.cache == null || this.client.users.cache.has(discordId)) {
                                     yield this.client.users.fetch(discordId).then((user) => {
+                                        if (this.client.users.cache == null) {
+                                            this.client.users.cache = new discord_js_1.Collection();
+                                        }
                                         this.client.users.cache.set(user.id, user);
                                         return user.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                     });
