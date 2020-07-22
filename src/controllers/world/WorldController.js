@@ -113,6 +113,9 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
             return null;
         });
     }
+    static isWorld(obj) {
+        return obj.parties !== undefined && obj.npcs !== undefined;
+    }
 };
 WorldController = __decorate([
     inversify_1.injectable(),

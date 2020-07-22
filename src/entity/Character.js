@@ -17,6 +17,9 @@ const Nickname_1 = require("./Nickname");
 const StringUtility_1 = require("../utilities/StringUtility");
 const User_1 = require("./User");
 let Character = class Character {
+    constructor() {
+        this.type = "Character";
+    }
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
         this.img_url = StringUtility_1.StringUtility.escapeSQLInput(this.img_url);

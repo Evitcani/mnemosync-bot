@@ -20,6 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var SendingCommandHandler_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendingCommandHandler = void 0;
 const AbstractUserCommandHandler_1 = require("../../../base/AbstractUserCommandHandler");
@@ -32,7 +33,7 @@ const NPCController_1 = require("../../../../controllers/character/NPCController
 const SendingController_1 = require("../../../../controllers/character/SendingController");
 const SendingHelpRelatedResponses_1 = require("../../../../documentation/client-responses/misc/SendingHelpRelatedResponses");
 const WorldController_1 = require("../../../../controllers/world/WorldController");
-let SendingCommandHandler = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(encryptionUtility, npcController, sendingController, worldController) {
         super();
         this.encryptionUtility = encryptionUtility;
@@ -44,6 +45,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
         return __awaiter(this, void 0, void 0, function* () {
             // Want to view sendings.
             if (command.getSubcommands() == null || command.getSubcommands().size < 1) {
+                return this.getUnrepliedSendings(command, user, message);
             }
             // Reading a message.
             if (Subcommands_1.Subcommands.READ.isCommand(command)) {
@@ -77,6 +79,59 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             });
         });
     }
+    getUnrepliedSendings(command, user, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Process the next  command.
+            let page = 0;
+            if (Subcommands_1.Subcommands.NEXT.isCommand(command)) {
+                const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
+                if (nextCmd.getInput() != null) {
+                    let pg = Number(nextCmd.getInput());
+                    if (!isNaN(pg)) {
+                        page = pg;
+                    }
+                }
+                else {
+                    page = 1;
+                }
+            }
+            if (user.defaultCharacter != null && user.defaultWorld != null) {
+                return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
+                    if (ret == null) {
+                        return null;
+                    }
+                    // Type is world.
+                    if (WorldController_1.WorldController.isWorld(ret)) {
+                        return this.getUnrepliedSendingsForWorld(page, ret, message);
+                    }
+                    return this.getUnrepliedSendingsForCharacter(page, ret, message);
+                });
+            }
+            if (user.defaultCharacter != null) {
+                return this.getUnrepliedSendingsForCharacter(page, user.defaultCharacter, message);
+            }
+            if (user.defaultWorld != null) {
+                return this.getUnrepliedSendingsForWorld(page, user.defaultWorld, message);
+            }
+            return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
+        });
+    }
+    getUnrepliedSendingsForWorld(page, world, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Go out to fetch the messages.
+            return this.sendingController.get(page, world, null, null).then((messages) => {
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page));
+            });
+        });
+    }
+    getUnrepliedSendingsForCharacter(page, character, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Go out to fetch the messages.
+            return this.sendingController.get(page, null, null, character).then((messages) => {
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page));
+            });
+        });
+    }
     constructNewSending(command, user, world, sending, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the content.
@@ -97,7 +152,25 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             // Get the in-game date.
             if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
                 const dateCmd = Subcommands_1.Subcommands.DATE.getCommand(command);
-                sending.inGameDate = dateCmd.getInput();
+                let input = dateCmd.getInput();
+                if (input == null) {
+                    return null;
+                }
+                // Split the date and process.
+                let dates = input.split("/");
+                if (dates.length < 3) {
+                    return null;
+                }
+                // TODO: Implement era processing.
+                let day = SendingCommandHandler_1.getNumber(dates[0]), month = SendingCommandHandler_1.getNumber(dates[1]), year = SendingCommandHandler_1.getNumber(dates[2]);
+                // TODO: Better response here.
+                if (day == null || month == null || year == null) {
+                    return null;
+                }
+                // Now put it inside the sending.
+                sending.inGameDate.day = day;
+                sending.inGameDate.month = month;
+                sending.inGameDate.year = year;
             }
             else {
                 yield message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content));
@@ -109,6 +182,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 sending.toNpc = yield this.npcController.getByName(tonCmd.getInput(), world.id);
                 // Could not find the NPC.
                 if (sending.toNpc == null) {
+                    return null;
                 }
             }
             else {
@@ -138,8 +212,43 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             return sending;
         });
     }
+    worldOrCharacter(world, character, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.CHECK_SENDINGS_FOR_WHICH(character, world)).then((msg) => {
+                return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                    max: 1,
+                    time: 10e3,
+                    errors: ['time'],
+                }).then((input) => {
+                    msg.delete({ reason: "Removed processing command." });
+                    let content = input.first().content;
+                    let choice = Number(content);
+                    if (isNaN(choice) || choice > 2 || choice < 1) {
+                        message.channel.send("Input doesn't make sense!");
+                        return null;
+                    }
+                    input.first().delete();
+                    return choice == 1 ? world : character;
+                }).catch(() => {
+                    msg.delete({ reason: "Removed processing command." });
+                    message.channel.send("Message timed out.");
+                    return null;
+                });
+            });
+        });
+    }
+    static getNumber(input) {
+        if (input == null) {
+            return null;
+        }
+        let ret = Number(input);
+        if (isNaN(ret)) {
+            return null;
+        }
+        return ret;
+    }
 };
-SendingCommandHandler = __decorate([
+SendingCommandHandler = SendingCommandHandler_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.EncryptionUtility)),
     __param(1, inversify_1.inject(types_1.TYPES.NPCController)),

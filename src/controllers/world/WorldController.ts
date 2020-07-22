@@ -101,4 +101,8 @@ export class WorldController extends AbstractController<World> {
                 return null;
             });
     }
+
+    public static isWorld(obj: any): obj is World {
+        return (obj as World).parties !== undefined && (obj as World).npcs !== undefined;
+    }
 }

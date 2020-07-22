@@ -17,6 +17,10 @@ const NonPlayableCharacter_1 = require("./NonPlayableCharacter");
 const Table_1 = require("../documentation/databases/Table");
 const User_1 = require("./User");
 let World = class World {
+    constructor() {
+        // Type of this class.
+        this.type = "World";
+    }
     purifyInsertUpdate() {
         this.guildId = StringUtility_1.StringUtility.escapeSQLInput(this.guildId);
         this.mapUrl = StringUtility_1.StringUtility.escapeSQLInput(this.mapUrl);

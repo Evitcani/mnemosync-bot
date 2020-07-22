@@ -15,11 +15,14 @@ const NonPlayableCharacter_1 = require("./NonPlayableCharacter");
 const Character_1 = require("./Character");
 const Table_1 = require("../documentation/databases/Table");
 const StringUtility_1 = require("../utilities/StringUtility");
+const World_1 = require("./World");
 let Sending = class Sending {
     purifyInsertUpdate() {
-        this.inGameDate = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate);
+        this.inGameDate.era = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate.era);
         this.reply = StringUtility_1.StringUtility.escapeSQLInput(this.reply);
         this.content = StringUtility_1.StringUtility.escapeSQLInput(this.content);
+        // Checks if the message is replied to or not.
+        this.isReplied = this.reply != null || this.noConnection || this.noReply;
     }
 };
 __decorate([
@@ -35,8 +38,20 @@ __decorate([
     __metadata("design:type", Date)
 ], Sending.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.Column("text", { name: "in_game_date" }),
+    typeorm_1.Column({ name: "world_id", nullable: true }),
     __metadata("design:type", String)
+], Sending.prototype, "worldId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => World_1.World, {
+        nullable: true,
+        onDelete: "SET NULL"
+    }),
+    typeorm_1.JoinColumn({ name: "world_id" }),
+    __metadata("design:type", World_1.World)
+], Sending.prototype, "world", void 0);
+__decorate([
+    typeorm_1.Column({ name: "in_game_date" }),
+    __metadata("design:type", Object)
 ], Sending.prototype, "inGameDate", void 0);
 __decorate([
     typeorm_1.Column("text"),
@@ -46,6 +61,18 @@ __decorate([
     typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", String)
 ], Sending.prototype, "reply", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true, name: "no_reply" }),
+    __metadata("design:type", Boolean)
+], Sending.prototype, "noReply", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true, name: "no_connection" }),
+    __metadata("design:type", Boolean)
+], Sending.prototype, "noConnection", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true, name: "is_replied" }),
+    __metadata("design:type", Boolean)
+], Sending.prototype, "isReplied", void 0);
 __decorate([
     typeorm_1.Column({ name: "to_npc_id", nullable: true }),
     __metadata("design:type", String)
