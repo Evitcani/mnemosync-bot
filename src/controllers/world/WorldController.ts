@@ -103,6 +103,6 @@ export class WorldController extends AbstractController<World> {
     }
 
     public static isWorld(obj: any): obj is World {
-        return (obj as World).parties !== undefined && (obj as World).npcs !== undefined;
+        return ((obj as World).type != undefined && (obj as World).type == "World") || typeof (obj as World).id == "string";
     }
 }

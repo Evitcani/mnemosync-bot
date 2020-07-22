@@ -114,7 +114,7 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
         });
     }
     static isWorld(obj) {
-        return obj.parties !== undefined && obj.npcs !== undefined;
+        return (obj.type != undefined && obj.type == "World") || typeof obj.id == "string";
     }
 };
 WorldController = __decorate([
