@@ -59,20 +59,27 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
+        console.log("Going to send a new message...");
+
         return this.worldController.worldSelectionFromUser(user, message).then((world) => {
             if (world == null) {
                 return message.channel.send("No world where this message can be sent!");
             }
 
+            console.log("Constructing a new sending..");
             return this.constructNewSending(command, user, world, new Sending(), message).then((sending) => {
                 if (sending == null) {
                     return message.channel.send("Could not send message.");
                 }
 
+                console.log("Created sending, now saving...");
+
                 return this.sendingController.create(sending).then((sent) => {
                     if (sent == null) {
                         return message.channel.send("Could not send message.");
                     }
+
+                    console.log("Saved, returning...");
 
                     return message.channel.send(`Sent message to ` +
                         `${sent.toNpc == null ? sent.toPlayer.name : sent.toNpc.name} with message ` +
