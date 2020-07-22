@@ -37,11 +37,11 @@ __decorate([
     __metadata("design:type", String)
 ], Sending.prototype, "content", void 0);
 __decorate([
-    typeorm_1.Column("text"),
+    typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", String)
 ], Sending.prototype, "reply", void 0);
 __decorate([
-    typeorm_1.Column({ name: "to_npc_id" }),
+    typeorm_1.Column({ name: "to_npc_id", nullable: true }),
     __metadata("design:type", String)
 ], Sending.prototype, "toNpcId", void 0);
 __decorate([
@@ -53,7 +53,7 @@ __decorate([
     __metadata("design:type", NonPlayableCharacter_1.NonPlayableCharacter)
 ], Sending.prototype, "toNpc", void 0);
 __decorate([
-    typeorm_1.Column({ name: "from_npc_id" }),
+    typeorm_1.Column({ name: "from_npc_id", nullable: true }),
     __metadata("design:type", String)
 ], Sending.prototype, "fromNpcId", void 0);
 __decorate([
@@ -65,7 +65,7 @@ __decorate([
     __metadata("design:type", NonPlayableCharacter_1.NonPlayableCharacter)
 ], Sending.prototype, "fromNpc", void 0);
 __decorate([
-    typeorm_1.Column({ name: "to_player_id" }),
+    typeorm_1.Column({ name: "to_player_id", nullable: true }),
     __metadata("design:type", Number)
 ], Sending.prototype, "toPlayerId", void 0);
 __decorate([
@@ -77,7 +77,7 @@ __decorate([
     __metadata("design:type", Character_1.Character)
 ], Sending.prototype, "toPlayer", void 0);
 __decorate([
-    typeorm_1.Column({ name: "from_player_id" }),
+    typeorm_1.Column({ name: "from_player_id", nullable: true }),
     __metadata("design:type", Number)
 ], Sending.prototype, "fromPlayerId", void 0);
 __decorate([

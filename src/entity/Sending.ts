@@ -28,10 +28,10 @@ export class Sending {
     @Column("text")
     content: string;
 
-    @Column("text")
-    reply: string;
+    @Column("text", {nullable: true})
+    reply?: string;
 
-    @Column({name: "to_npc_id"})
+    @Column({name: "to_npc_id", nullable: true})
     toNpcId?: string;
 
     @ManyToOne(type => NonPlayableCharacter, {
@@ -41,7 +41,7 @@ export class Sending {
     @JoinColumn({name: "to_npc_id"})
     toNpc?: NonPlayableCharacter;
 
-    @Column({name: "from_npc_id"})
+    @Column({name: "from_npc_id", nullable: true})
     fromNpcId?: string;
 
     @ManyToOne(type => NonPlayableCharacter, {
@@ -51,7 +51,7 @@ export class Sending {
     @JoinColumn({name: "from_npc_id"})
     fromNpc?: NonPlayableCharacter;
 
-    @Column({name: "to_player_id"})
+    @Column({name: "to_player_id", nullable: true})
     toPlayerId?: number;
 
     @ManyToOne(type => Character, {
@@ -61,7 +61,7 @@ export class Sending {
     @JoinColumn({name: "to_player_id"})
     toPlayer?: Character;
 
-    @Column({name: "from_player_id"})
+    @Column({name: "from_player_id", nullable: true})
     fromPlayerId?: number;
 
     @ManyToOne(type => Character, {
