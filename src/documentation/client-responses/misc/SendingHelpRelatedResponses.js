@@ -42,32 +42,32 @@ class SendingHelpRelatedResponses {
             .setTitle("You have no default world or character.")
             .setDescription("Can't fetch messages for no one or nothing!");
     }
-    static PRINT_MESSAGES_FROM_WORLD(messages, world, page) {
-        let messageStr = this.processMessages(messages, page, true, true);
+    static PRINT_MESSAGES_FROM_WORLD(messages, world, page, encryptionUtility) {
+        let messageStr = this.processMessages(messages, page, true, true, encryptionUtility);
         return BasicEmbed_1.BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
     }
-    static PRINT_MESSAGES_TO_CHARACTER(messages, character, page) {
-        let messageStr = this.processMessages(messages, page, false, true);
+    static PRINT_MESSAGES_TO_CHARACTER(messages, character, page, encryptionUtility) {
+        let messageStr = this.processMessages(messages, page, false, true, encryptionUtility);
         return BasicEmbed_1.BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
             .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
     }
-    static processMessages(messages, page, includeTo, includeFrom) {
+    static processMessages(messages, page, includeTo, includeFrom, encryptionUtility) {
         let additional = page * SendingController_1.SendingController.SENDING_LIMIT;
         let str = "";
         let i, message;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
-            str += `[\`${additional + i}\`] **GAME DATE:** ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}\n`;
+            str += `**[\`${additional + i}\`] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
             if (includeFrom) {
                 str += `\`FROM:\` ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
             }
             if (includeTo) {
                 str += `\`TO  :\` ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
             }
-            str += `"${message.content}"\n\n`;
+            str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         return str;
     }
