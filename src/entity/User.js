@@ -14,6 +14,7 @@ const Character_1 = require("./Character");
 const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
 const World_1 = require("./World");
+const Table_1 = require("../documentation/databases/Table");
 let User = class User {
     purifyInsertUpdate() {
         this.discord_name = StringUtility_1.StringUtility.escapeSQLInput(this.discord_name);
@@ -68,7 +69,7 @@ __decorate([
 ], User.prototype, "defaultWorld", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => World_1.World, { nullable: true }),
-    typeorm_1.JoinTable({ name: "world_owners_to_users" }),
+    typeorm_1.JoinTable({ name: Table_1.Table.WORLD_OWNERS }),
     __metadata("design:type", Array)
 ], User.prototype, "campaignsDMing", void 0);
 __decorate([

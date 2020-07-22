@@ -25,6 +25,7 @@ exports.TYPES = {
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
     TravelCommandHandler: Symbol("TravelCommandHandler"),
     WhichCommandHandler: Symbol("WhichCommandHandler"),
+    WorldCommandHandler: Symbol("WorldCommandHandler"),
     CharacterController: Symbol("CharacterController"),
     NPCController: Symbol("NPCController"),
     PartyController: Symbol("PartyController"),

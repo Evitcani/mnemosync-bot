@@ -13,4 +13,5 @@ Commands.QUOTE = "quote";
 Commands.REGISTER = "register";
 Commands.TRAVEL = "travel";
 Commands.WHICH = "which";
+Commands.WORLD = "world";
 //# sourceMappingURL=Commands.js.map

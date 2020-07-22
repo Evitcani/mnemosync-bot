@@ -22,6 +22,7 @@ exports.WorldController = void 0;
 const AbstractController_1 = require("./Base/AbstractController");
 const Table_1 = require("../documentation/databases/Table");
 const inversify_1 = require("inversify");
+const StringUtility_1 = require("../utilities/StringUtility");
 let WorldController = class WorldController extends AbstractController_1.AbstractController {
     /**
      * Constructs this controller.
@@ -42,6 +43,24 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
                 console.error(err);
                 return null;
             });
+        });
+    }
+    /**
+     * Gets all parties in the given guild with a name similar.
+     *
+     * @param name The name of the world to get.
+     * @param user
+     */
+    getByNameAndUser(name, user) {
+        let sanitizedName = StringUtility_1.StringUtility.escapeSQLInput(name);
+        return this
+            .getRepo()
+            .createQueryBuilder(Table_1.Table.USER)
+            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getMany().then((worlds) => {
+        }).catch((err) => {
+            console.error("ERR ::: Could not get worlds.");
+            console.error(err);
+            return null;
         });
     }
 };

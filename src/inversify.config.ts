@@ -28,6 +28,7 @@ import {CharacterController} from "./controllers/CharacterController";
 import {UserController} from "./controllers/UserController";
 import {WorldController} from "./controllers/WorldController";
 import {NPCController} from "./controllers/NPCController";
+import {WorldCommandHandler} from "./command-handlers/WorldCommandHandler";
 
 let container = new Container();
 
@@ -56,6 +57,7 @@ container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHa
 container.bind<RegisterCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler).inSingletonScope();
 container.bind<TravelCommandHandler>(TYPES.TravelCommandHandler).to(TravelCommandHandler).inSingletonScope();
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
+container.bind<WorldCommandHandler>(TYPES.WorldCommandHandler).to(WorldCommandHandler).inSingletonScope();
 
 container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
 container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();

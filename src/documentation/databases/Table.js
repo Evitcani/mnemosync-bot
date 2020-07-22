@@ -16,4 +16,5 @@ Table.USER_TO_CHARACTER = "user_to_character";
 Table.USER_DEFAULT_PARTY = "user_default_parties";
 Table.USER_TO_GUILD = "user_to_guild";
 Table.WORLD = "worlds";
+Table.WORLD_OWNERS = "world_owners_to_users";
 //# sourceMappingURL=Table.js.map

@@ -32,14 +32,16 @@ const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler")
 const Commands_1 = require("../documentation/commands/Commands");
 const CharacterCommandHandler_1 = require("../command-handlers/CharacterCommandHandler");
 const UserController_1 = require("../controllers/UserController");
+const WorldCommandHandler_1 = require("../command-handlers/WorldCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler, userController) {
+    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
         this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
+        this.worldCommandHandler = worldCommandHandler;
         this.userController = userController;
     }
     /**
@@ -97,6 +99,8 @@ let MessageResponder = class MessageResponder {
                             message.delete({ reason: "Which command deletion." });
                             return msg;
                         });
+                    case Commands_1.Commands.WORLD:
+                        return this.worldCommandHandler.handleUserCommand(command, message, user);
                 }
             });
         });
@@ -110,13 +114,15 @@ MessageResponder = __decorate([
     __param(3, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
     __param(4, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
     __param(5, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __param(6, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(6, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
+    __param(7, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CharacterCommandHandler_1.CharacterCommandHandler,
         HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterCommandHandler_1.RegisterCommandHandler,
         WhichCommandHandler_1.WhichCommandHandler,
+        WorldCommandHandler_1.WorldCommandHandler,
         UserController_1.UserController])
 ], MessageResponder);
 exports.MessageResponder = MessageResponder;

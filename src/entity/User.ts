@@ -12,6 +12,7 @@ import {
 import {StringUtility} from "../utilities/StringUtility";
 import {Party} from "./Party";
 import {World} from "./World";
+import {Table} from "../documentation/databases/Table";
 
 @Entity({name: "users"})
 export class User {
@@ -53,7 +54,7 @@ export class User {
     defaultWorld?: World;
 
     @ManyToMany(type => World, {nullable: true})
-    @JoinTable({name: "world_owners_to_users"})
+    @JoinTable({name: Table.WORLD_OWNERS})
     campaignsDMing?: World[];
 
     @BeforeInsert()
