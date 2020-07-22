@@ -36,12 +36,14 @@ const NPCRelatedClientResponses_1 = require("../documentation/client-responses/N
 let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(npcController, partyController, worldController) {
         super();
+        this.npcController = npcController;
         this.partyController = partyController;
+        this.worldController = worldController;
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get all NPCs in a given world.
-            if (command.getInput() != null && command.getInput().toLowerCase() == "npcs") {
+            if (command.getInput() != null && command.getInput().toLowerCase() == "npc") {
                 return this.worldController.worldSelectionFromUser(user, message).then((world) => {
                     if (world == null) {
                         return message.channel.send("No world associated with  account.");

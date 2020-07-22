@@ -22,7 +22,9 @@ export class WhichCommandHandler extends AbstractUserCommandHandler {
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
+        this.npcController = npcController;
         this.partyController = partyController;
+        this.worldController = worldController;
     }
 
     async handleUserCommand(command, message, user): Promise<Message | Message[]> {
