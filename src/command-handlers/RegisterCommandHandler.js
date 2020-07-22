@@ -51,6 +51,7 @@ let RegisterCommandHandler = class RegisterCommandHandler extends AbstractUserCo
             const createWorld = Subcommands_1.Subcommands.WORLD.isCommand(command);
             if (createWorld != null) {
                 const world = new World_1.World();
+                world.name = command.getInput();
                 world.defaultOfUsers = [];
                 world.defaultOfUsers.push(user);
                 return this.worldController.create(world).then((newWorld) => {

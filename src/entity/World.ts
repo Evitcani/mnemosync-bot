@@ -56,5 +56,6 @@ export class World {
     purifyInsertUpdate() {
         this.guildId = StringUtility.escapeSQLInput(this.guildId);
         this.mapUrl = StringUtility.escapeSQLInput(this.mapUrl);
+        this.name = StringUtility.escapeSQLInput(this.name);
     }
 }
