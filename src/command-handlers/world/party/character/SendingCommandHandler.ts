@@ -166,6 +166,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
+        // Set the world.
+        sending.world = world;
+
         // Get the in-game date.
         if (Subcommands.DATE.isCommand(command)) {
             const dateCmd = Subcommands.DATE.getCommand(command);

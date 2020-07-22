@@ -160,6 +160,8 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 yield message.channel.send("Message has no content. Add message content with `~msg [content]`.");
                 return null;
             }
+            // Set the world.
+            sending.world = world;
             // Get the in-game date.
             if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
                 const dateCmd = Subcommands_1.Subcommands.DATE.getCommand(command);
