@@ -61,7 +61,10 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 if (world == null) {
                     return message.channel.send("No world where this message can be sent!");
                 }
-                return this.constructNewSending(command, user, world, new Sending_1.Sending()).then((sending) => {
+                return this.constructNewSending(command, user, world, new Sending_1.Sending(), message).then((sending) => {
+                    if (sending == null) {
+                        return message.channel.send("Could not send message.");
+                    }
                     return this.sendingController.create(sending).then((sent) => {
                         return message.channel.send(`Sent message to ${sent.toNpc} with message ${this.encryptionUtility.decrypt(sent.content)}`);
                     });
@@ -86,7 +89,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             return user.defaultCharacter.party.world;
         });
     }
-    constructNewSending(command, user, world, sending) {
+    constructNewSending(command, user, world, sending, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get the content.
             const msgCmd = Subcommands_1.Subcommands.MESSAGE.isCommand(command);
@@ -101,6 +104,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 }
             }
             else {
+                yield message.channel.send("Message has no content. Add message content with `~msg [content]`.");
                 return null;
             }
             // Get the in-game date.
@@ -109,6 +113,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 sending.inGameDate = dateCmd.getInput();
             }
             else {
+                yield message.channel.send("Message has no date. Add message (in-game) date with `~date [day]/[month]/[year]`.");
                 return null;
             }
             // If going to an NPC, need to see which one.

@@ -57,7 +57,11 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 return message.channel.send("No world where this message can be sent!");
             }
 
-            return this.constructNewSending(command, user, world, new Sending()).then((sending) => {
+            return this.constructNewSending(command, user, world, new Sending(), message).then((sending) => {
+                if (sending == null) {
+                    return message.channel.send("Could not send message.");
+                }
+
                 return this.sendingController.create(sending).then((sent) => {
                     return message.channel.send(`Sent message to ${sent.toNpc} with message ${this.encryptionUtility.decrypt(sent.content)}`);
                 });
@@ -85,7 +89,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         return user.defaultCharacter.party.world;
     }
 
-    private async constructNewSending(command: Command, user: User, world: World, sending: Sending): Promise<Sending> {
+    private async constructNewSending(command: Command, user: User, world: World, sending: Sending, message: Message): Promise<Sending> {
         // Get the content.
         const msgCmd = Subcommands.MESSAGE.isCommand(command);
         const replyCmd = Subcommands.REPLY.isCommand(command);
@@ -96,8 +100,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 sending.reply = this.encryptionUtility.encrypt(msgCmd.getInput());
                 return sending;
             }
-
         } else {
+            await message.channel.send("Message has no content. Add message content with `~msg [content]`.");
             return null;
         }
 
@@ -106,6 +110,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         if (dateCmd != null) {
             sending.inGameDate = dateCmd.getInput();
         } else {
+            await message.channel.send("Message has no date. Add message (in-game) date with `~date [day]/[month]/[year]`.");
             return null;
         }
 
