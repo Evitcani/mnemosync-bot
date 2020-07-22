@@ -1,4 +1,4 @@
-import {PartyFundController} from "./controllers/PartyFundController";
+import {PartyFundController} from "./controllers/party/PartyFundController";
 
 export const TYPES = {
     Bot: Symbol("Bot"),

@@ -24,16 +24,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageResponder = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const PartyFundCommandHandler_1 = require("../command-handlers/PartyFundCommandHandler");
-const RegisterCommandHandler_1 = require("../command-handlers/RegisterCommandHandler");
-const WhichCommandHandler_1 = require("../command-handlers/WhichCommandHandler");
-const HelpCommandHandler_1 = require("../command-handlers/HelpCommandHandler");
-const QuoteCommandHandler_1 = require("../command-handlers/QuoteCommandHandler");
+const PartyFundCommandHandler_1 = require("../command-handlers/world/party/inventory/PartyFundCommandHandler");
+const RegisterCommandHandler_1 = require("../command-handlers/misc/RegisterCommandHandler");
+const WhichCommandHandler_1 = require("../command-handlers/world/information/WhichCommandHandler");
+const HelpCommandHandler_1 = require("../command-handlers/misc/HelpCommandHandler");
+const QuoteCommandHandler_1 = require("../command-handlers/misc/QuoteCommandHandler");
 const Commands_1 = require("../documentation/commands/Commands");
-const CharacterCommandHandler_1 = require("../command-handlers/CharacterCommandHandler");
-const UserController_1 = require("../controllers/UserController");
-const WorldCommandHandler_1 = require("../command-handlers/WorldCommandHandler");
-const SendingCommandHandler_1 = require("../command-handlers/SendingCommandHandler");
+const CharacterCommandHandler_1 = require("../command-handlers/world/party/character/CharacterCommandHandler");
+const UserController_1 = require("../controllers/user/UserController");
+const WorldCommandHandler_1 = require("../command-handlers/world/information/WorldCommandHandler");
+const SendingCommandHandler_1 = require("../command-handlers/world/party/character/SendingCommandHandler");
 let MessageResponder = class MessageResponder {
     constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
         this.characterCommandHandler = characterCommandHandler;

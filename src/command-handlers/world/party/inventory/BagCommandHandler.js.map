@@ -1,0 +1,1 @@
+{"version":3,"file":"BagCommandHandler.js","sourceRoot":"","sources":["BagCommandHandler.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;AAEA,yFAAoF;AACpF,yCAAqC;AAGrC,IAAa,iBAAiB,GAA9B,MAAa,iBAAkB,SAAQ,uDAA0B;IACvD,iBAAiB,CAAC,OAAO,EAAE,OAAO,EAAE,IAAI;;YAC1C,OAAO,SAAS,CAAC;QACrB,CAAC;KAAA;CAEJ,CAAA;AALY,iBAAiB;IAD7B,sBAAU,EAAE;GACA,iBAAiB,CAK7B;AALY,8CAAiB"}

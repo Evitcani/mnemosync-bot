@@ -2,16 +2,16 @@ import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {Command} from "../models/generic/Command";
-import {PartyFundCommandHandler} from "../command-handlers/PartyFundCommandHandler";
-import {RegisterCommandHandler} from "../command-handlers/RegisterCommandHandler";
-import {WhichCommandHandler} from "../command-handlers/WhichCommandHandler";
-import {HelpCommandHandler} from "../command-handlers/HelpCommandHandler";
-import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
+import {PartyFundCommandHandler} from "../command-handlers/world/party/inventory/PartyFundCommandHandler";
+import {RegisterCommandHandler} from "../command-handlers/misc/RegisterCommandHandler";
+import {WhichCommandHandler} from "../command-handlers/world/information/WhichCommandHandler";
+import {HelpCommandHandler} from "../command-handlers/misc/HelpCommandHandler";
+import {QuoteCommandHandler} from "../command-handlers/misc/QuoteCommandHandler";
 import {Commands} from "../documentation/commands/Commands";
-import {CharacterCommandHandler} from "../command-handlers/CharacterCommandHandler";
-import {UserController} from "../controllers/UserController";
-import {WorldCommandHandler} from "../command-handlers/WorldCommandHandler";
-import {SendingCommandHandler} from "../command-handlers/SendingCommandHandler";
+import {CharacterCommandHandler} from "../command-handlers/world/party/character/CharacterCommandHandler";
+import {UserController} from "../controllers/user/UserController";
+import {WorldCommandHandler} from "../command-handlers/world/information/WorldCommandHandler";
+import {SendingCommandHandler} from "../command-handlers/world/party/character/SendingCommandHandler";
 
 @injectable()
 export class MessageResponder {
