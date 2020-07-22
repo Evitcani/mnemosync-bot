@@ -45,8 +45,10 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
         return __awaiter(this, void 0, void 0, function* () {
             // Want to view sendings.
             if (command.getSubcommands() == null || command.getSubcommands().size < 1) {
+                console.log("Getting unreplied sendings...");
                 return this.getUnrepliedSendings(command, user, message);
             }
+            console.log("Not looking for unreplied sendings!");
             // Reading a message.
             if (Subcommands_1.Subcommands.READ.isCommand(command)) {
                 const readCmd = Subcommands_1.Subcommands.READ.getCommand(command);
@@ -54,15 +56,16 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 if (readCmd.getInput() == null) {
                 }
                 // TODO: Figure out how this'll work...
+                console.log("Deal with reads later...");
                 return null;
             }
-            // Replying to a sending.
-            const replyCmd = Subcommands_1.Subcommands.REPLY.isCommand(command);
-            if (replyCmd != null) {
+            console.log("Not reading!");
+            if (Subcommands_1.Subcommands.REPLY.isCommand(command)) {
                 // TODO: Will deal with later...
+                console.log("Deal with replies later...");
                 return null;
             }
-            console.log("Going to send a new message...");
+            console.log("Not replying! Going to send a new message...");
             return this.worldController.worldSelectionFromUser(user, message).then((world) => {
                 if (world == null) {
                     return message.channel.send("No world where this message can be sent!");
