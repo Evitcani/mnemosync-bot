@@ -159,12 +159,12 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                                         }
                                         message.client.users.cache.set(member.id, member);
                                         // Do response.
-                                        return this.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                        return SendingCommandHandler_1.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                     }));
                                 }
                                 else {
                                     let member = message.client.users.cache.get(discordId);
-                                    yield this.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                    yield SendingCommandHandler_1.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                 }
                             }
                             return message.channel.send("Finished informing all users of the reply.");
@@ -176,11 +176,12 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             });
         });
     }
-    doDM(member, message) {
+    static doDM(member, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return member.createDM().then((channel) => {
-                return channel.send(message);
-            });
+            if (member == null) {
+                return null;
+            }
+            return member.send(message);
         });
     }
     getUnrepliedSendings(command, user, message) {
