@@ -44,6 +44,7 @@ export class RegisterCommandHandler extends AbstractUserCommandHandler {
         if (createWorld != null) {
             const world = new World();
             world.name = createWorld.getInput();
+            world.guildId = message.guild.id;
             world.defaultOfUsers = [];
             world.defaultOfUsers.push(user);
             return this.worldController.create(world).then((newWorld) => {
