@@ -3,14 +3,16 @@ import {
     BeforeUpdate,
     Column,
     CreateDateColumn,
-    Entity,
-    OneToMany,
+    Entity, JoinColumn, ManyToOne,
+    OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
 import {StringUtility} from "../utilities/StringUtility";
+import {TravelConfig} from "./TravelConfig";
+import {World} from "./World";
 
 @Entity({name: "parties"})
 export class Party {
@@ -43,6 +45,14 @@ export class Party {
         eager: true
     })
     funds: PartyFund[];
+
+    @ManyToOne(type => World, campaign => campaign.parties, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    })
+    @JoinColumn({name: "world_id"})
+    world?: World;
 
     @BeforeInsert()
     @BeforeUpdate()

@@ -31,16 +31,29 @@ const PartyController_1 = require("../controllers/PartyController");
 const CharacterController_1 = require("../controllers/CharacterController");
 const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
 const UserController_1 = require("../controllers/UserController");
+const NonPlayableCharacter_1 = require("../entity/NonPlayableCharacter");
+const NPCController_1 = require("../controllers/NPCController");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(characterController, partyController, userController) {
+    constructor(characterController, npcController, partyController, userController) {
         super();
         this.characterController = characterController;
+        this.npcController = npcController;
         this.partyController = partyController;
         this.userController = userController;
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
+                const npcCmd = Subcommands_1.Subcommands.NPC.isCommand(command);
+                if (npcCmd != null) {
+                    const npc = this.constructNPC(command, message, user);
+                    return this.npcController.create(npc).then((character) => {
+                        if (character == null) {
+                            return message.channel.send("Could not create new NPC.");
+                        }
+                        return message.channel.send("Created new NPC: " + character.name);
+                    });
+                }
                 return this.constructCharacter(command, message, user, true).then((character) => {
                     return this.createCharacter(message, character, user);
                 });
@@ -105,6 +118,23 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             });
         });
     }
+    constructNPC(command, message, user) {
+        // TODO:  Make more dynamic.
+        const character = new NonPlayableCharacter_1.NonPlayableCharacter();
+        const nameCmd = CharacterCommandHandler.getNameCmd(command);
+        if (nameCmd != null) {
+            character.name = nameCmd.getInput();
+        }
+        // If the default world is not null, then add the character on that world.
+        if (user.defaultWorld != null) {
+            // 100% match, so we'll proceed.
+            if (message.guild != null && user.defaultWorld.guildId == message.guild.id) {
+                character.world = user.defaultWorld;
+            }
+            // TODO: Otherwise...
+        }
+        return character;
+    }
     constructCharacter(command, message, user, isNew) {
         return __awaiter(this, void 0, void 0, function* () {
             // Construct the character and add the name.
@@ -156,9 +186,11 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
 };
 CharacterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
-    __param(1, inversify_1.inject(types_1.TYPES.PartyController)),
-    __param(2, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(1, inversify_1.inject(types_1.TYPES.NPCController)),
+    __param(2, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(3, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CharacterController_1.CharacterController,
+        NPCController_1.NPCController,
         PartyController_1.PartyController,
         UserController_1.UserController])
 ], CharacterCommandHandler);

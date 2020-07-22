@@ -1,4 +1,3 @@
-import {AbstractCommandHandler} from "./base/AbstractCommandHandler";
 import {Command} from "../models/generic/Command";
 import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
@@ -8,29 +7,56 @@ import {UserService} from "../database/UserService";
 import {UserToGuildService} from "../database/UserToGuildService";
 import {PartyController} from "../controllers/PartyController";
 import {Subcommands} from "../documentation/commands/Subcommands";
+import {WorldController} from "../controllers/WorldController";
+import {World} from "../entity/World";
+import {AbstractUserCommandHandler} from "./base/AbstractUserCommandHandler";
+import {UserController} from "../controllers/UserController";
 
 /**
  * Command to register a user as having access to the funds created on a specific server.
  */
 @injectable()
-export class RegisterCommandHandler extends AbstractCommandHandler {
+export class RegisterCommandHandler extends AbstractUserCommandHandler {
     private partyController: PartyController;
     private userDefaultPartyService: UserDefaultPartyService;
+    private userController: UserController;
     private userService: UserService;
     private userToGuildService: UserToGuildService;
+    private worldController: WorldController;
 
     constructor(@inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
+                @inject(TYPES.UserController) userController: UserController,
                 @inject(TYPES.UserService) userService: UserService,
-                @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService) {
+                @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService,
+                @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.partyController = partyController;
         this.userDefaultPartyService = userDefaultPartyService;
+        this.userController = userController;
         this.userService = userService;
         this.userToGuildService = userToGuildService;
+        this.worldController = worldController;
     }
 
-    async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
+    async handleUserCommand(command: Command, message: Message, user): Promise<Message | Message[]> {
+        const createWorld = Subcommands.WORLD.isCommand(command);
+        if (createWorld != null) {
+            const world = new World();
+            world.defaultOfUsers = [];
+            world.defaultOfUsers.push(user);
+            return this.worldController.create(world).then((newWorld) => {
+                if (newWorld == null) {
+                    return message.channel.send("Could not create world.");
+                }
+
+                user.defaultWorld = world;
+                this.userController.updateDefaultWorld(user, newWorld).then(() => {
+                    return message.channel.send("Created new world: " + newWorld.name);
+                });
+            });
+        }
+
         const createParty = Subcommands.PARTY.isCommand(command);
         if (createParty != null) {
             return this.partyController.create(createParty.getInput(), message.guild.id, message.author.id)

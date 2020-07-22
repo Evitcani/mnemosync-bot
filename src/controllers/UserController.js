@@ -75,7 +75,7 @@ let UserController = class UserController extends AbstractController_1.AbstractC
         });
     }
     /**
-     * Updates the default characters.
+     * Updates the default character.
      *
      * @param user The user to update.
      * @param character The new character to make default.
@@ -84,6 +84,19 @@ let UserController = class UserController extends AbstractController_1.AbstractC
         return __awaiter(this, void 0, void 0, function* () {
             user.defaultCharacter = character;
             user.defaultCharacterId = character.id;
+            return this.save(user);
+        });
+    }
+    /**
+     * Updates the default characters.
+     *
+     * @param user The user to update.
+     * @param world The new character to make default.
+     */
+    updateDefaultWorld(user, world) {
+        return __awaiter(this, void 0, void 0, function* () {
+            user.defaultWorld = world;
+            user.defaultWorldId = world.id;
             return this.save(user);
         });
     }

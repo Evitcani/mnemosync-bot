@@ -5,12 +5,13 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinColumn, ManyToOne,
+    JoinColumn, JoinTable, ManyToMany, ManyToOne,
     OneToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
 import {StringUtility} from "../utilities/StringUtility";
 import {Party} from "./Party";
+import {World} from "./World";
 
 @Entity({name: "users"})
 export class User {
@@ -39,6 +40,21 @@ export class User {
     })
     @JoinColumn({name: "default_character_id"})
     defaultCharacter: Character;
+
+    @Column({name: "default_world_id"})
+    defaultWorldId: string;
+
+    @ManyToOne(type => World, world => world.defaultOfUsers, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    })
+    @JoinColumn({name: "default_world_id"})
+    defaultWorld: World;
+
+    @ManyToMany(type => World)
+    @JoinTable({name: "world_owners_to_users"})
+    campaignsDMing: World[];
 
     @BeforeInsert()
     @BeforeUpdate()

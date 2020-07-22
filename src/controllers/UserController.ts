@@ -3,6 +3,7 @@ import {User} from "../entity/User";
 import {Table} from "../documentation/databases/Table";
 import {injectable} from "inversify";
 import {Character} from "../entity/Character";
+import {World} from "../entity/World";
 
 @injectable()
 export class UserController extends AbstractController<User> {
@@ -59,7 +60,7 @@ export class UserController extends AbstractController<User> {
     }
 
     /**
-     * Updates the default characters.
+     * Updates the default character.
      *
      * @param user The user to update.
      * @param character The new character to make default.
@@ -67,6 +68,18 @@ export class UserController extends AbstractController<User> {
     public async updateDefaultCharacter(user: User, character: Character): Promise<User> {
         user.defaultCharacter = character;
         user.defaultCharacterId = character.id;
+        return this.save(user);
+    }
+
+    /**
+     * Updates the default characters.
+     *
+     * @param user The user to update.
+     * @param world The new character to make default.
+     */
+    public async updateDefaultWorld(user: User, world: World): Promise<User> {
+        user.defaultWorld = world;
+        user.defaultWorldId = world.id;
         return this.save(user);
     }
 

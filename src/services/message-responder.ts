@@ -58,8 +58,6 @@ export class MessageResponder {
                     message.delete({reason: "Quote command deletion."});
                     return msg;
                 });
-            case Commands.REGISTER:
-                return this.registerUserCommandHandler.handleCommand(command, message);
         }
 
         return message.channel.send("Processing command...").then((msg) => {
@@ -89,6 +87,8 @@ export class MessageResponder {
                         message.delete({reason: "Fund command deletion."});
                         return msg;
                     });
+                case Commands.REGISTER:
+                    return this.registerUserCommandHandler.handleUserCommand(command, message, user);
                 case Commands.WHICH:
                     return this.whichCommandHandler.handleUserCommand(command, message, user).then((msg) => {
                         message.delete({reason: "Which command deletion."});

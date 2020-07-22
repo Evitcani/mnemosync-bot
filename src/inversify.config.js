@@ -28,6 +28,8 @@ const PartyController_1 = require("./controllers/PartyController");
 const PartyFundController_1 = require("./controllers/PartyFundController");
 const CharacterController_1 = require("./controllers/CharacterController");
 const UserController_1 = require("./controllers/UserController");
+const WorldController_1 = require("./controllers/WorldController");
+const NPCController_1 = require("./controllers/NPCController");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -53,8 +55,10 @@ container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterCommandHandl
 container.bind(types_1.TYPES.TravelCommandHandler).to(TravelCommandHandler_1.TravelCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.CharacterController).to(CharacterController_1.CharacterController).inSingletonScope();
+container.bind(types_1.TYPES.NPCController).to(NPCController_1.NPCController).inSingletonScope();
 container.bind(types_1.TYPES.PartyController).to(PartyController_1.PartyController).inSingletonScope();
 container.bind(types_1.TYPES.PartyFundController).to(PartyFundController_1.PartyFundController).inSingletonScope();
 container.bind(types_1.TYPES.UserController).to(UserController_1.UserController).inSingletonScope();
+container.bind(types_1.TYPES.WorldController).to(WorldController_1.WorldController).inSingletonScope();
 exports.default = container;
 //# sourceMappingURL=inversify.config.js.map

@@ -13,6 +13,7 @@ exports.User = void 0;
 const Character_1 = require("./Character");
 const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
+const World_1 = require("./World");
 let User = class User {
     purifyInsertUpdate() {
         this.discord_name = StringUtility_1.StringUtility.escapeSQLInput(this.discord_name);
@@ -52,6 +53,24 @@ __decorate([
     typeorm_1.JoinColumn({ name: "default_character_id" }),
     __metadata("design:type", Character_1.Character)
 ], User.prototype, "defaultCharacter", void 0);
+__decorate([
+    typeorm_1.Column({ name: "default_world_id" }),
+    __metadata("design:type", String)
+], User.prototype, "defaultWorldId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => World_1.World, world => world.defaultOfUsers, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    }),
+    typeorm_1.JoinColumn({ name: "default_world_id" }),
+    __metadata("design:type", World_1.World)
+], User.prototype, "defaultWorld", void 0);
+__decorate([
+    typeorm_1.ManyToMany(type => World_1.World),
+    typeorm_1.JoinTable({ name: "world_owners_to_users" }),
+    __metadata("design:type", Array)
+], User.prototype, "campaignsDMing", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),

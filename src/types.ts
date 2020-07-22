@@ -28,7 +28,9 @@ export const TYPES = {
     WhichCommandHandler: Symbol("WhichCommandHandler"),
 
     CharacterController: Symbol("CharacterController"),
+    NPCController: Symbol("NPCController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
     UserController: Symbol("UserController"),
+    WorldController: Symbol("WorldController"),
 };
