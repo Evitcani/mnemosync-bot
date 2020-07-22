@@ -68,6 +68,10 @@ let PartyController = class PartyController extends AbstractController_1.Abstrac
             return null;
         });
     }
+    updatePartyWorld(party, world) {
+        party.world = world;
+        return this.getRepo().save(party);
+    }
     /**
      * Gets all parties in the given guild with a name similar.
      *

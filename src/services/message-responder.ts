@@ -11,6 +11,7 @@ import {Commands} from "../documentation/commands/Commands";
 import {CharacterCommandHandler} from "../command-handlers/CharacterCommandHandler";
 import {UserController} from "../controllers/UserController";
 import {WorldCommandHandler} from "../command-handlers/WorldCommandHandler";
+import {SendingCommandHandler} from "../command-handlers/SendingCommandHandler";
 
 @injectable()
 export class MessageResponder {
@@ -19,6 +20,7 @@ export class MessageResponder {
     private partyFundCommandHandler: PartyFundCommandHandler;
     private quoteCommandHandler: QuoteCommandHandler;
     private registerUserCommandHandler: RegisterCommandHandler;
+    private sendingCommandHandler: SendingCommandHandler;
     private whichCommandHandler: WhichCommandHandler;
     private worldCommandHandler: WorldCommandHandler;
     private userController: UserController;
@@ -28,6 +30,7 @@ export class MessageResponder {
                 @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
                 @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterCommandHandler,
+                @inject(TYPES.SendingCommandHandler) sendingCommandHandler: SendingCommandHandler,
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler,
                 @inject(TYPES.WorldCommandHandler) worldCommandHandler: WorldCommandHandler,
                 @inject(TYPES.UserController) userController: UserController) {
@@ -36,6 +39,7 @@ export class MessageResponder {
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
+        this.sendingCommandHandler = sendingCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
         this.worldCommandHandler = worldCommandHandler;
         this.userController = userController;
@@ -93,6 +97,8 @@ export class MessageResponder {
                     });
                 case Commands.REGISTER:
                     return this.registerUserCommandHandler.handleUserCommand(command, message, user);
+                case Commands.SENDING:
+                    return this.sendingCommandHandler.handleUserCommand(command, message, user);
                 case Commands.WHICH:
                     return this.whichCommandHandler.handleUserCommand(command, message, user).then((msg) => {
                         message.delete({reason: "Which command deletion."});

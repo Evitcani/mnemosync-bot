@@ -30,9 +30,11 @@ const WorldController_1 = require("../controllers/WorldController");
 const types_1 = require("../types");
 const UserController_1 = require("../controllers/UserController");
 const WorldRelatedClientResponses_1 = require("../documentation/client-responses/WorldRelatedClientResponses");
+const PartyController_1 = require("../controllers/PartyController");
 let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(userController, worldController) {
+    constructor(partyController, userController, worldController) {
         super();
+        this.partyController = partyController;
         this.userController = userController;
         this.worldController = worldController;
     }
@@ -59,7 +61,50 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
                 }
                 return this.switchDefaultWorld(switchCmd.getInput(), message, user);
             }
+            // Command to add the party to this world.
+            const ptCmd = Subcommands_1.Subcommands.PARTY.isCommand(command);
+            if (ptCmd != null) {
+                this.addPartyToWorld(ptCmd.getInput(), message, user);
+            }
             return undefined;
+        });
+    }
+    addPartyToWorld(partyName, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let worlds = [];
+            if (user.defaultWorld != null) {
+                worlds.push(user.defaultWorld);
+            }
+            if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
+                worlds.push(user.defaultCharacter.party.world);
+            }
+            if (worlds.length < 1) {
+                return message.channel.send("No world to choose from!");
+            }
+            // No selection needed.
+            if (worlds.length == 1) {
+                return this.continueAddingPartyToWorld(partyName, message, worlds[0]);
+            }
+            // Otherwise allow selection.
+            return this.worldSelection(worlds, message).then((world) => {
+                if (world == null) {
+                    return null;
+                }
+                return this.continueAddingPartyToWorld(partyName, message, world);
+            });
+        });
+    }
+    continueAddingPartyToWorld(partyName, message, world) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.partyController.getByNameAndGuild(partyName, message.guild.id).then((parties) => {
+                if (parties == null || parties.length < 1) {
+                    return message.channel.send("Could not find party with given name like: " + partyName);
+                }
+                // TODO: Allow user to select party if ambiguous.
+                return this.partyController.updatePartyWorld(parties[0], world).then((party) => {
+                    return message.channel.send(`Party ('${party.name}') added to world: ${world.name}`);
+                });
+            });
         });
     }
     switchDefaultWorld(worldName, message, user) {
@@ -74,26 +119,38 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
                         return message.channel.send(`Default world switched to '${worlds[0].name}'`);
                     });
                 }
-                return message.channel.send(WorldRelatedClientResponses_1.WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
-                    return message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                        max: 1,
-                        time: 10e3,
-                        errors: ['time'],
-                    }).then((input) => {
-                        msg.delete({ reason: "Removed world processing command." });
-                        let content = input.first().content;
-                        let choice = Number(content);
-                        if (isNaN(choice) || choice >= worlds.length || choice < 0) {
-                            return message.channel.send("That input doesn't make any sense!");
-                        }
-                        return this.userController.updateDefaultWorld(user, worlds[choice]).then(() => {
-                            input.first().delete({ reason: "Removed world processing command." });
-                            return message.channel.send(`Default world switched to '${worlds[choice].name}'`);
-                        });
-                    }).catch(() => {
-                        msg.delete({ reason: "Removed world processing command." });
-                        return message.channel.send("Message timed out.");
+                return this.worldSelection(worlds, message).then((world) => {
+                    if (world == null) {
+                        return null;
+                    }
+                    return this.userController.updateDefaultWorld(user, world).then(() => {
+                        return message.channel.send(`Default world switched to '${world.name}'`);
                     });
+                });
+            });
+        });
+    }
+    worldSelection(worlds, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return message.channel.send(WorldRelatedClientResponses_1.WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
+                return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                    max: 1,
+                    time: 10e3,
+                    errors: ['time'],
+                }).then((input) => {
+                    msg.delete({ reason: "Removed world processing command." });
+                    let content = input.first().content;
+                    let choice = Number(content);
+                    if (isNaN(choice) || choice >= worlds.length || choice < 0) {
+                        message.channel.send("Input doesn't make sense!");
+                        return null;
+                    }
+                    input.first().delete();
+                    return worlds[choice];
+                }).catch(() => {
+                    msg.delete({ reason: "Removed world processing command." });
+                    message.channel.send("Message timed out.");
+                    return null;
                 });
             });
         });
@@ -137,9 +194,11 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
 };
 WorldCommandHandler = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.UserController)),
-    __param(1, inversify_1.inject(types_1.TYPES.WorldController)),
-    __metadata("design:paramtypes", [UserController_1.UserController,
+    __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(1, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(2, inversify_1.inject(types_1.TYPES.WorldController)),
+    __metadata("design:paramtypes", [PartyController_1.PartyController,
+        UserController_1.UserController,
         WorldController_1.WorldController])
 ], WorldCommandHandler);
 exports.WorldCommandHandler = WorldCommandHandler;
