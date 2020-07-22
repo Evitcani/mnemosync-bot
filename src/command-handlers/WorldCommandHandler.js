@@ -29,6 +29,7 @@ const World_1 = require("../entity/World");
 const WorldController_1 = require("../controllers/WorldController");
 const types_1 = require("../types");
 const UserController_1 = require("../controllers/UserController");
+const WorldRelatedClientResponses_1 = require("../documentation/client-responses/WorldRelatedClientResponses");
 let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(userController, worldController) {
         super();
@@ -56,14 +57,44 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
                 if (switchCmd.getInput() == null) {
                     return this.removeDefaultWorld(message, user);
                 }
-                return this.findWorldByName(switchCmd.getInput(), user).then((worlds) => {
-                    if (worlds == null) {
-                        return message.channel.send("Could not find world with given name like: " + switchCmd.getInput());
-                    }
-                    return message.channel.send("Found worlds with given name like: " + switchCmd.getInput());
-                });
+                return this.switchDefaultWorld(switchCmd.getInput(), message, user);
             }
             return undefined;
+        });
+    }
+    switchDefaultWorld(worldName, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.findWorldByName(worldName, user).then((worlds) => {
+                if (worlds == null || worlds.length < 1) {
+                    return message.channel.send("Could not find world with given name like: " + worldName);
+                }
+                // Only one result.
+                if (worlds.length == 1) {
+                    return this.userController.updateDefaultWorld(user, worlds[0]).then(() => {
+                        return message.channel.send(`Default world switched to '${worlds[0].name}'`);
+                    });
+                }
+                return message.channel.send(WorldRelatedClientResponses_1.WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
+                    return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                        max: 1,
+                        time: 10e3,
+                        errors: ['time'],
+                    }).then((input) => {
+                        msg.delete({ reason: "Removed world processing command." });
+                        let content = input.first().content;
+                        let choice = Number(content);
+                        if (isNaN(choice) || choice >= worlds.length || choice < 0) {
+                            return message.channel.send("That input doesn't make any sense!");
+                        }
+                        return this.userController.updateDefaultWorld(user, worlds[choice]).then(() => {
+                            return message.channel.send(`Default world switched to '${worlds[choice].name}'`);
+                        });
+                    }).catch(() => {
+                        msg.delete({ reason: "Removed world processing command." });
+                        return message.channel.send("Message timed out.");
+                    });
+                });
+            });
         });
     }
     findWorldByName(worldName, user) {

@@ -36,6 +36,7 @@ export class WorldController extends AbstractController<World> {
      */
     public getByNameAndUser(name: string, user: User): Promise<World[]> {
         let sanitizedName = StringUtility.escapeSQLInput(name);
+
         return this
             .getRepo()
             .createQueryBuilder("world")
