@@ -48,7 +48,23 @@ export class SendingController extends AbstractController<Sending> {
             });
     }
 
+    public async getOne(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending> {
+        return this.getByParams(page, 1, world, toNpc, toPlayer).then((messages) => {
+            if (messages == null || messages.length < 1) {
+                return null;
+            }
+
+            return messages[0];
+        });
+    }
+
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
+        return this.getByParams(page * SendingController.SENDING_LIMIT, SendingController.SENDING_LIMIT,
+            world, toNpc, toPlayer);
+    }
+
+    private async getByParams(skip: number, limit: number,
+                              world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
         let flag = false, sub;
 
         let query = getConnection().createQueryBuilder(Sending, "msg");
@@ -89,8 +105,8 @@ export class SendingController extends AbstractController<Sending> {
             .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
             .addSelect(["id"])
             .addOrderBy("\"msg\".\"created_date\"", "ASC")
-            .limit(SendingController.SENDING_LIMIT)
-            .skip(page * SendingController.SENDING_LIMIT);
+            .limit(limit)
+            .skip(skip);
 
         return query
             .getMany().then((messages) => {

@@ -50,34 +50,50 @@ export class SendingHelpRelatedResponses {
     }
 
     static PRINT_MESSAGES_FROM_WORLD (messages: Sending[], world: World, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
-        let messageStr = this.processMessages(messages, page, true, true, encryptionUtility);
+        let messageStr = this.processMessages(messages, page, true, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
     }
 
     static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
-        let messageStr = this.processMessages(messages, page, false, true, encryptionUtility);
+        let messageStr = this.processMessages(messages, page, false, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
             .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
     }
 
-    private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean, encryptionUtility: EncryptionUtility): string {
+    static PRINT_MESSAGE_REPLY_TO_PLAYER (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
+        let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
+        return BasicEmbed.get()
+            .setTitle(`Got a message reply!`)
+            .setDescription(`Here is the reply:\n\n${messageStr}`);
+    }
+
+    private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
         let additional = page * SendingController.SENDING_LIMIT;
         let str = "";
         let i, message: Sending;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
-            str += `**[${additional + i}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
-            if (includeFrom) {
-                str += `> FROM: ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
-            }
-            if (includeTo) {
-                str += `> TO  : ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
-            }
+            this.processMessage(message, additional + i, includeTo, includeFrom, includeReply, encryptionUtility);
+        }
+
+        return str;
+    }
+
+    private static processMessage(message: Sending, location: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
+        let str = "";
+        str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
+        if (includeFrom) {
+            str += `> FROM: ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
             str += `\n> \n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
+        }
+        if (includeTo) {
+            str += `> TO  : ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
+            str += `\n> \n`;
+            str += `> ${encryptionUtility.decrypt(message.reply)}\n\n`;
         }
 
         return str;

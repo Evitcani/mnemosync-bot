@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Message} from "discord.js";
+import {Client, Message} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -14,19 +14,26 @@ import {SendingHelpRelatedResponses} from "../../../../documentation/client-resp
 import {WorldController} from "../../../../controllers/world/WorldController";
 import {Character} from "../../../../entity/Character";
 import {GameDate} from "../../../../entity/GameDate";
+import {CharacterController} from "../../../../controllers/character/CharacterController";
 
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
+    private characterController: CharacterController;
+    private client: Client;
     private readonly encryptionUtility: EncryptionUtility;
     private npcController: NPCController;
     private sendingController: SendingController;
     private worldController: WorldController;
 
-    constructor(@inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
+    constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
+                @inject(TYPES.Client) client: Client,
+                @inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
                 @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
+        this.characterController = characterController;
+        this.client = client;
         this.encryptionUtility = encryptionUtility;
         this.npcController = npcController;
         this.sendingController = sendingController;
@@ -61,9 +68,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         console.log("Not reading!");
 
         if (Subcommands.REPLY.isCommand(command)) {
-            // TODO: Will deal with later...
-            console.log("Deal with replies later...");
-            return null;
+            // Someone is replying!
+            return this.beginReply(command, user, message);
         }
 
         console.log("Not replying! Going to send a new message...");
@@ -92,6 +98,88 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                         `${sent.toNpc == null ? sent.toPlayer.name : sent.toNpc.name} with message ` +
                         `${this.encryptionUtility.decrypt(sent.content)}`);
                 });
+            });
+        });
+    }
+
+    private async beginReply (command: Command, user: User, message: Message): Promise<Message | Message[]> {
+        let replyCmd = Subcommands.REPLY.getCommand(command);
+        if (replyCmd.getInput() == null) {
+            return message.channel.send("No reply ID.");
+        }
+
+        let page = SendingCommandHandler.getNumber(replyCmd.getInput());
+        if (page == null) {
+            return message.channel.send("ID isn't a number.");
+        }
+
+        if (user.defaultCharacter != null && user.defaultWorld != null) {
+            return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
+                if (ret == null) {
+                    return null;
+                }
+
+                // Type is world.
+                if (WorldController.isWorld(ret)) {
+                    return this.sendingController.getOne(page, ret,  null, null).then((msg) => {
+                        return this.doReply(msg, command, user, message);
+                    });
+                }
+
+                return this.sendingController.getOne(page, null,  null, ret).then((msg) => {
+                    return this.doReply(msg, command, user, message);
+                });
+            })
+        }
+
+        if (user.defaultCharacter != null) {
+            return this.sendingController.getOne(page, null,  null, user.defaultCharacter).then((msg) => {
+                return this.doReply(msg, command, user, message);
+            });
+        }
+
+        if (user.defaultWorld != null) {
+            return this.sendingController.getOne(page, user.defaultWorld,  null, null).then((msg) => {
+                return this.doReply(msg, command, user, message);
+            });
+        }
+
+        return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
+    }
+
+    private async doReply(msg: Sending, command: Command, user: User, message: Message): Promise<Message | Message[]> {
+        if (msg == null) {
+            return message.channel.send("Could not find message with that ID.");
+        }
+
+        return this.constructNewSending(command, user, null, msg, message).then((sending) => {
+            if (sending == null) {
+                return null;
+            }
+
+            return this.sendingController.create(sending).then((sending) => {
+                // Notify the player of the reply.
+                if (sending.fromPlayerId != null) {
+                    return this.characterController.getDiscordId(sending.fromPlayerId).then(async (discordIds) => {
+                        let discordId, i;
+                        for (i = 0; i < discordIds.length; i++) {
+                            discordId = discordIds[i];
+                            if (this.client.users.cache.get(discordId) == null) {
+                                await this.client.users.fetch(discordId).then((user) => {
+                                    this.client.users.cache.set(user.id, user);
+                                    return user.send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                });
+                            } else {
+                                await this.client.users.cache.get(discordId)
+                                    .send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                            }
+                        }
+                        return message.channel.send("Finished informing all users of the reply.");
+                    });
+                }
+
+                // TODO: From an NPC.
+                return null;
             });
         });
     }

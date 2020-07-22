@@ -62,7 +62,22 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             });
         });
     }
+    getOne(page, world, toNpc, toPlayer) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getByParams(page, 1, world, toNpc, toPlayer).then((messages) => {
+                if (messages == null || messages.length < 1) {
+                    return null;
+                }
+                return messages[0];
+            });
+        });
+    }
     get(page, world, toNpc, toPlayer) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getByParams(page * SendingController_1.SENDING_LIMIT, SendingController_1.SENDING_LIMIT, world, toNpc, toPlayer);
+        });
+    }
+    getByParams(skip, limit, world, toNpc, toPlayer) {
         return __awaiter(this, void 0, void 0, function* () {
             let flag = false, sub;
             let query = typeorm_1.getConnection().createQueryBuilder(Sending_1.Sending, "msg");
@@ -100,8 +115,8 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
                 .addSelect(["id"])
                 .addOrderBy("\"msg\".\"created_date\"", "ASC")
-                .limit(SendingController_1.SENDING_LIMIT)
-                .skip(page * SendingController_1.SENDING_LIMIT);
+                .limit(limit)
+                .skip(skip);
             return query
                 .getMany().then((messages) => {
                 if (!messages || messages.length < 1) {
