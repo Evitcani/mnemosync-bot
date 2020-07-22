@@ -4,9 +4,11 @@ export const TYPES = {
     Bot: Symbol("Bot"),
     Client: Symbol("Client"),
     Token: Symbol("Token"),
+    CryptKey: Symbol("CryptKey"),
     DatabaseUrl: Symbol("DatabaseUrl"),
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
+    EncryptionUtility: Symbol("EncryptionUtility"),
 
     CharacterService: Symbol("CharacterService"),
     DatabaseService: Symbol("DatabaseService"),
@@ -24,6 +26,7 @@ export const TYPES = {
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     QuoteCommandHandler: Symbol("QuoteCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
+    SendingCommandHandler: Symbol("SendingCommandHandler"),
     TravelCommandHandler: Symbol("TravelCommandHandler"),
     WhichCommandHandler: Symbol("WhichCommandHandler"),
     WorldCommandHandler: Symbol("WorldCommandHandler"),
@@ -32,6 +35,7 @@ export const TYPES = {
     NPCController: Symbol("NPCController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
+    SendingController: Symbol("SendingController"),
     UserController: Symbol("UserController"),
     WorldController: Symbol("WorldController"),
 };

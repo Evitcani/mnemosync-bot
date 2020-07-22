@@ -8,7 +8,6 @@ import {UserToGuildService} from "../database/UserToGuildService";
 import {PartyController} from "../controllers/PartyController";
 import {Subcommands} from "../documentation/commands/Subcommands";
 import {WorldController} from "../controllers/WorldController";
-import {World} from "../entity/World";
 import {AbstractUserCommandHandler} from "./base/AbstractUserCommandHandler";
 import {UserController} from "../controllers/UserController";
 

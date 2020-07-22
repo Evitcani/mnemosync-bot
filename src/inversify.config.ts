@@ -29,6 +29,9 @@ import {UserController} from "./controllers/UserController";
 import {WorldController} from "./controllers/WorldController";
 import {NPCController} from "./controllers/NPCController";
 import {WorldCommandHandler} from "./command-handlers/WorldCommandHandler";
+import {EncryptionUtility} from "./utilities/EncryptionUtility";
+import {SendingController} from "./controllers/SendingController";
+import {SendingCommandHandler} from "./command-handlers/SendingCommandHandler";
 
 let container = new Container();
 
@@ -36,8 +39,10 @@ container.bind<Bot>(TYPES.Bot).to(Bot).inSingletonScope();
 container.bind<Client>(TYPES.Client).toConstantValue(new Client());
 container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN);
 container.bind<string>(TYPES.DatabaseUrl).toConstantValue(process.env.DATABASE_URL);
+container.bind<string>(TYPES.CryptKey).toConstantValue(process.env.CRYPT_KEY);
 container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).inSingletonScope();
 container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
+container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
 
 container.bind<CharacterService>(TYPES.CharacterService).to(CharacterService).inSingletonScope();
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
@@ -55,6 +60,7 @@ container.bind<HelpCommandHandler>(TYPES.HelpCommandHandler).to(HelpCommandHandl
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
 container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHandler).inSingletonScope();
 container.bind<RegisterCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler).inSingletonScope();
+container.bind<SendingCommandHandler>(TYPES.SendingCommandHandler).to(SendingCommandHandler).inSingletonScope();
 container.bind<TravelCommandHandler>(TYPES.TravelCommandHandler).to(TravelCommandHandler).inSingletonScope();
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 container.bind<WorldCommandHandler>(TYPES.WorldCommandHandler).to(WorldCommandHandler).inSingletonScope();
@@ -63,6 +69,7 @@ container.bind<CharacterController>(TYPES.CharacterController).to(CharacterContr
 container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
+container.bind<SendingController>(TYPES.SendingController).to(SendingController).inSingletonScope();
 container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
 container.bind<WorldController>(TYPES.WorldController).to(WorldController).inSingletonScope();
 

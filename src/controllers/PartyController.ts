@@ -3,6 +3,7 @@ import {Party} from "../entity/Party";
 import {injectable} from "inversify";
 import {AbstractController} from "./Base/AbstractController";
 import {NameValuePair} from "./Base/NameValuePair";
+import {World} from "../entity/World";
 
 @injectable()
 export class PartyController extends AbstractController<Party> {
@@ -61,6 +62,11 @@ export class PartyController extends AbstractController<Party> {
             console.error(err);
             return null;
         });
+    }
+
+    public updatePartyWorld (party: Party, world: World): Promise<Party> {
+        party.world = world;
+        return this.getRepo().save(party);
     }
 
     /**

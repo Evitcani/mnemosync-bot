@@ -10,6 +10,7 @@ Table.NPC = "npcs";
 Table.PARTY = "parties";
 Table.PARTY_FUND = "party_funds";
 Table.PARTY_TO_GUILD = "party_to_guild";
+Table.SENDING = "sendings";
 Table.SPECIAL_CHANNEL = "special_channels";
 Table.USER = "users";
 Table.USER_TO_CHARACTER = "user_to_character";

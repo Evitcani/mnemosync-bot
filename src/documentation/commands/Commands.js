@@ -11,6 +11,7 @@ Commands.FUND = "fund";
 Commands.HELP = "help";
 Commands.QUOTE = "quote";
 Commands.REGISTER = "register";
+Commands.SENDING = "sending";
 Commands.TRAVEL = "travel";
 Commands.WHICH = "which";
 Commands.WORLD = "world";

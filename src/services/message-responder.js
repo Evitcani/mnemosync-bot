@@ -33,13 +33,15 @@ const Commands_1 = require("../documentation/commands/Commands");
 const CharacterCommandHandler_1 = require("../command-handlers/CharacterCommandHandler");
 const UserController_1 = require("../controllers/UserController");
 const WorldCommandHandler_1 = require("../command-handlers/WorldCommandHandler");
+const SendingCommandHandler_1 = require("../command-handlers/SendingCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
+    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
         this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
+        this.sendingCommandHandler = sendingCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
         this.worldCommandHandler = worldCommandHandler;
         this.userController = userController;
@@ -94,6 +96,8 @@ let MessageResponder = class MessageResponder {
                         });
                     case Commands_1.Commands.REGISTER:
                         return this.registerUserCommandHandler.handleUserCommand(command, message, user);
+                    case Commands_1.Commands.SENDING:
+                        return this.sendingCommandHandler.handleUserCommand(command, message, user);
                     case Commands_1.Commands.WHICH:
                         return this.whichCommandHandler.handleUserCommand(command, message, user).then((msg) => {
                             message.delete({ reason: "Which command deletion." });
@@ -113,14 +117,16 @@ MessageResponder = __decorate([
     __param(2, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
     __param(3, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
     __param(4, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __param(5, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __param(6, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
-    __param(7, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(5, inversify_1.inject(types_1.TYPES.SendingCommandHandler)),
+    __param(6, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __param(7, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
+    __param(8, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CharacterCommandHandler_1.CharacterCommandHandler,
         HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterCommandHandler_1.RegisterCommandHandler,
+        SendingCommandHandler_1.SendingCommandHandler,
         WhichCommandHandler_1.WhichCommandHandler,
         WorldCommandHandler_1.WorldCommandHandler,
         UserController_1.UserController])
