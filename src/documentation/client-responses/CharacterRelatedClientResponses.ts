@@ -14,7 +14,7 @@ export class CharacterRelatedClientResponses {
         }
 
         embed.setDescription(`You are now playing as ${newlyCreated ? "newly created character " : ""}${character.name}. ` +
-            `To switch characters, type \`${Bot.PREFIX}${Commands.CHARACTER} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.SWITCH} ` +
+            `To switch characters, type \`${Bot.PREFIX}${Commands.CHARACTER} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.SWITCH.name} ` +
             `[character name]\`. To view all of your characters, type ` +
             `\`${Bot.PREFIX}${Commands.WHICH} ${Commands.CHARACTER}\`.`);
 

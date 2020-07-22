@@ -66,7 +66,9 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                         return message.channel.send("Could not send message.");
                     }
                     return this.sendingController.create(sending).then((sent) => {
-                        return message.channel.send(`Sent message to ${sent.toNpc} with message ${this.encryptionUtility.decrypt(sent.content)}`);
+                        return message.channel.send(`Sent message to ` +
+                            `${sent.toNpc == null ? sent.toPlayer.name : sent.toNpc.name} with message ` +
+                            `${this.encryptionUtility.decrypt(sent.content)}`);
                     });
                 });
             });

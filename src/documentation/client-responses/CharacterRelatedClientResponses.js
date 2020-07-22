@@ -13,7 +13,7 @@ class CharacterRelatedClientResponses {
             embed.setThumbnail(character.img_url);
         }
         embed.setDescription(`You are now playing as ${newlyCreated ? "newly created character " : ""}${character.name}. ` +
-            `To switch characters, type \`${bot_1.Bot.PREFIX}${Commands_1.Commands.CHARACTER} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.SWITCH} ` +
+            `To switch characters, type \`${bot_1.Bot.PREFIX}${Commands_1.Commands.CHARACTER} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.SWITCH.name} ` +
             `[character name]\`. To view all of your characters, type ` +
             `\`${bot_1.Bot.PREFIX}${Commands_1.Commands.WHICH} ${Commands_1.Commands.CHARACTER}\`.`);
         return embed;
