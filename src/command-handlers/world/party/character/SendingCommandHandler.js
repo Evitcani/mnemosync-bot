@@ -157,7 +157,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 }
             }
             else {
-                yield message.channel.send("Message has no content. Add message content with `~msg [content]`.");
+                yield message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.MESSAGE_HAS_NO_CONTENT(message.content));
                 return null;
             }
             // Set the world.

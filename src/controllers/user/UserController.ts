@@ -40,7 +40,12 @@ export class UserController extends AbstractController<User> {
      * @param discordName The discord name of user.
      */
     public async get(discordId: string, discordName: string): Promise<User> {
-        return this.getRepo().findOne({where: {discord_id: discordId}, relations: ["defaultCharacter"]})
+        return this.getRepo().findOne({
+                where: {
+                    discord_id: discordId
+                },
+                relations: ["defaultCharacter", "defaultWorld"]
+            })
             .then((user) => {
                 if (!user) {
                     return this.create(discordId, discordName);

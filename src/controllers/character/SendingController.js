@@ -23,7 +23,6 @@ exports.SendingController = void 0;
 const inversify_1 = require("inversify");
 const AbstractController_1 = require("../Base/AbstractController");
 const Table_1 = require("../../documentation/databases/Table");
-const typeorm_1 = require("typeorm");
 let SendingController = SendingController_1 = class SendingController extends AbstractController_1.AbstractController {
     constructor() {
         super(Table_1.Table.SENDING);
@@ -46,38 +45,35 @@ let SendingController = SendingController_1 = class SendingController extends Ab
     get(page, world, toNpc, toPlayer) {
         return __awaiter(this, void 0, void 0, function* () {
             let flag = false;
-            let where = {
-                isReplied: typeorm_1.Not(true)
-            };
+            let query = this.getRepo().createQueryBuilder("msg");
             if (world != null) {
                 flag = true;
-                // @ts-ignore
-                where.worldId = world.id;
+                query = query.where(`"msg"."worldId" = ${world.id}`);
             }
             if (toNpc != null) {
                 flag = true;
-                // @ts-ignore
-                where.toNpcId = toNpc.id;
+                query = query.where(`"msg"."toNpcId" = ${toNpc.id}`);
             }
             if (toPlayer != null) {
                 flag = true;
-                // @ts-ignore
-                where.toPlayer = toPlayer.id;
+                query = query.where(`"msg"."toPlayerId" = ${toPlayer.id}`);
             }
             // Nothing to see here.
             if (!flag) {
                 console.log("No world, character or NPC provided.");
                 return null;
             }
-            return this.getRepo().find({
-                where: where,
-                order: {
-                    createdDate: 'ASC'
-                },
-                cache: true,
-                skip: page * SendingController_1.SENDING_LIMIT,
-                take: SendingController_1.SENDING_LIMIT
-            }).catch((err) => {
+            // Add final touches.
+            query = query
+                .andWhere(`("msg"."isReplied" IS NULL OR "msg"."isReplied" IS FALSE)`)
+                .addOrderBy("createdDate", "ASC")
+                .limit(SendingController_1.SENDING_LIMIT)
+                .skip(page * SendingController_1.SENDING_LIMIT);
+            // Print query.
+            console.debug("QUERY USED: " + query.getQuery());
+            return query
+                .getMany()
+                .catch((err) => {
                 console.error("ERR ::: Could not get any sendings.");
                 console.error(err);
                 return null;

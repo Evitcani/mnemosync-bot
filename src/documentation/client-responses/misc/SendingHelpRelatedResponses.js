@@ -18,9 +18,17 @@ class SendingHelpRelatedResponses {
         return BasicEmbed_1.BasicEmbed.get()
             .setTitle(`Message has no date!`)
             .setDescription(`Message has no date. Add message (in-game) date with ` +
-            `\`${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.DATE} [day]/[month]/[year]\`.\n\n` +
+            `\`${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.DATE.name} [day]/[month]/[year]\`.\n\n` +
             `Here is your original message with the added date parameter:\n` +
-            `\`\`\`${messageContents} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.DATE} [day]/[month]/[year]\`\`\``);
+            `\`\`\`${messageContents} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.DATE.name} [day]/[month]/[year]\`\`\``);
+    }
+    static MESSAGE_HAS_NO_CONTENT(messageContents) {
+        return BasicEmbed_1.BasicEmbed.get()
+            .setTitle(`Message has no contents!`)
+            .setDescription(`Message has no content. Add message content with ` +
+            `\`${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.MESSAGE.name} [message contents]\`.\n\n` +
+            `Here is your original message with the added message parameter:\n` +
+            `\`\`\`${messageContents} ${bot_1.Bot.PREFIX_SUBCOMMAND}${Subcommands_1.Subcommands.MESSAGE.name} [message contents]\`\`\``);
     }
     static CHECK_SENDINGS_FOR_WHICH(character, world) {
         return BasicEmbed_1.BasicEmbed.get()

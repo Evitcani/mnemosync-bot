@@ -162,7 +162,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 return sending;
             }
         } else {
-            await message.channel.send("Message has no content. Add message content with `~msg [content]`.");
+            await message.channel.send(SendingHelpRelatedResponses.MESSAGE_HAS_NO_CONTENT(message.content));
             return null;
         }
 
