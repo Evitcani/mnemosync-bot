@@ -22,7 +22,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendingController = void 0;
 const inversify_1 = require("inversify");
 const AbstractController_1 = require("../Base/AbstractController");
+const Sending_1 = require("../../entity/Sending");
 const Table_1 = require("../../documentation/databases/Table");
+const typeorm_1 = require("typeorm");
 let SendingController = SendingController_1 = class SendingController extends AbstractController_1.AbstractController {
     constructor() {
         super(Table_1.Table.SENDING);
@@ -42,10 +44,28 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             });
         });
     }
+    getByIds(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Not a valid argument.
+            if (ids == null || ids.length < 1) {
+                return null;
+            }
+            return this.getRepo().find({ where: { id: ids }, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"] })
+                .then((sending) => {
+                // Check the party is valid.
+                return sending;
+            })
+                .catch((err) => {
+                console.error("ERR ::: Could not get sendings.");
+                console.error(err);
+                return null;
+            });
+        });
+    }
     get(page, world, toNpc, toPlayer) {
         return __awaiter(this, void 0, void 0, function* () {
             let flag = false, sub;
-            let query = this.getRepo().createQueryBuilder("msg");
+            let query = typeorm_1.getConnection().createQueryBuilder(Sending_1.Sending, "msg");
             if (world != null) {
                 query = query.where(`"msg"."world_id" = '${world.id}'`);
                 flag = true;
@@ -78,6 +98,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             // Add final touches.
             query = query
                 .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
+                .addSelect(["id"])
                 .addOrderBy("\"msg\".\"created_date\"", "ASC")
                 .limit(SendingController_1.SENDING_LIMIT)
                 .skip(page * SendingController_1.SENDING_LIMIT);
@@ -86,8 +107,12 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 if (!messages || messages.length < 1) {
                     return null;
                 }
-                // Go out and get the
-                return messages;
+                let input = [], i;
+                // Put into a map
+                for (i = 0; i < messages.length; i++) {
+                    input[i] = messages[i].id;
+                }
+                return this.getByIds(input);
             })
                 .catch((err) => {
                 console.error("ERR ::: Could not get any sendings.");
