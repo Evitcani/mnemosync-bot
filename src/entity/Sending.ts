@@ -97,7 +97,9 @@ export class Sending {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        this.inGameDate.era = StringUtility.escapeSQLInput(this.inGameDate.era);
+        if (this.inGameDate != null) {
+            this.inGameDate.era = StringUtility.escapeSQLInput(this.inGameDate.era);
+        }
         this.reply = StringUtility.escapeSQLInput(this.reply);
         this.content = StringUtility.escapeSQLInput(this.content);
 
