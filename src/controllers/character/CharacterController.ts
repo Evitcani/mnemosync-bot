@@ -111,9 +111,10 @@ export class CharacterController extends AbstractSecondaryController<Character, 
 
             console.log("Users: ");
 
-            let input: string[] = [], nickname, discordId: string;
-            for (nickname in nicknames) {
-                discordId = (nickname as Nickname).discord_id;
+            let input: string[] = [], nickname: Nickname, discordId: string, i;
+            for (i = 0; i < nicknames.length; i++) {
+                nickname = nicknames[i];
+                discordId = nickname.discord_id;
                 console.log(discordId);
                 if (!input.includes(discordId)) {
                     input.push(discordId);
