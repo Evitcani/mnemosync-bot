@@ -13,35 +13,41 @@ import {User} from "../entity/User";
 import {UserController} from "../controllers/UserController";
 import {NonPlayableCharacter} from "../entity/NonPlayableCharacter";
 import {NPCController} from "../controllers/NPCController";
+import {World} from "../entity/World";
+import {WorldController} from "../controllers/WorldController";
 
 export class CharacterCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
     private npcController: NPCController;
     private partyController: PartyController;
     private userController: UserController;
+    private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
                 @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.PartyController) partyController: PartyController,
-                @inject(TYPES.UserController) userController: UserController) {
+                @inject(TYPES.UserController) userController: UserController,
+                @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
         this.npcController = npcController;
         this.partyController = partyController;
         this.userController = userController;
+        this.worldController = worldController;
     }
 
     async handleUserCommand(command, message, user): Promise<Message | Message[]> {
         if (Subcommands.CREATE.isCommand(command) != null) {
             const npcCmd = Subcommands.NPC.isCommand(command);
             if (npcCmd != null) {
-                const npc = this.constructNPC(command, message, user);
-                return this.npcController.create(npc).then((character) => {
-                    if (character == null) {
-                        return message.channel.send("Could not create new NPC.");
-                    }
+                this.constructNPC(command, message, user).then((npc) => {
+                    return this.npcController.create(npc).then((character) => {
+                        if (character == null) {
+                            return message.channel.send("Could not create new NPC.");
+                        }
 
-                    return message.channel.send("Created new NPC: " + character.name);
+                        return message.channel.send("Created new NPC: " + character.name);
+                    });
                 });
             }
 
@@ -112,7 +118,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
             });
     }
 
-    private constructNPC(command: Command, message: Message, user: User): NonPlayableCharacter {
+    private async constructNPC(command: Command, message: Message, user: User): Promise<NonPlayableCharacter> {
         // TODO:  Make more dynamic.
         const character: NonPlayableCharacter = new NonPlayableCharacter();
 
@@ -122,18 +128,33 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
         }
 
         // If the default world is not null, then add the character on that world.
+        let worlds: World[] = [];
         if (user.defaultWorld != null) {
-            // 100% match, so we'll proceed.
-            if (message.guild != null && user.defaultWorld.guildId == message.guild.id) {
-                character.world = user.defaultWorld;
-            }
-
-            // TODO: Otherwise...
+            worlds.push(user.defaultWorld);
         }
 
+        if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
+            worlds.push(user.defaultCharacter.party.world);
+        }
 
+        if (worlds.length < 1) {
+            await message.channel.send("No world to choose from!");
+            return Promise.resolve(null);
+        }
 
-        return character;
+        // No selection needed.
+        if (worlds.length == 1) {
+            character.world = worlds[0];
+            return Promise.resolve(character);
+        }
+
+        return this.worldController.worldSelection(worlds, message).then((world) => {
+            if (world != null) {
+                character.world = world;
+            }
+
+            return character;
+        })
     }
 
     private async constructCharacter(command: Command, message: Message, user: User, isNew: boolean): Promise<Character> {

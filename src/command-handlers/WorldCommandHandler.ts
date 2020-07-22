@@ -80,7 +80,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Otherwise allow selection.
-        return this.worldSelection(worlds, message).then((world) => {
+        return this.worldController.worldSelection(worlds, message).then((world) => {
             if (world == null) {
                 return null;
             }
@@ -117,7 +117,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                 });
             }
 
-            return this.worldSelection(worlds, message).then((world) => {
+            return this.worldController.worldSelection(worlds, message).then((world) => {
                 if (world == null) {
                     return null;
                 }
@@ -125,31 +125,6 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                 return this.userController.updateDefaultWorld(user, world).then(() => {
                     return message.channel.send(`Default world switched to '${world.name}'`);
                 });
-            });
-        });
-    }
-
-    private async worldSelection(worlds: World[], message: Message): Promise<World> {
-        return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
-            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                max: 1,
-                time: 10e3,
-                errors: ['time'],
-            }).then((input) => {
-                msg.delete({reason: "Removed world processing command."});
-                let content = input.first().content;
-                let choice = Number(content);
-                if (isNaN(choice) || choice >= worlds.length || choice < 0) {
-                    message.channel.send("Input doesn't make sense!");
-                    return null;
-                }
-
-                input.first().delete();
-                return worlds[choice];
-            }).catch(()=> {
-                msg.delete({reason: "Removed world processing command."});
-                message.channel.send("Message timed out.");
-                return null;
             });
         });
     }

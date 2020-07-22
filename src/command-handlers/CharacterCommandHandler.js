@@ -33,25 +33,28 @@ const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler"
 const UserController_1 = require("../controllers/UserController");
 const NonPlayableCharacter_1 = require("../entity/NonPlayableCharacter");
 const NPCController_1 = require("../controllers/NPCController");
+const WorldController_1 = require("../controllers/WorldController");
 let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(characterController, npcController, partyController, userController) {
+    constructor(characterController, npcController, partyController, userController, worldController) {
         super();
         this.characterController = characterController;
         this.npcController = npcController;
         this.partyController = partyController;
         this.userController = userController;
+        this.worldController = worldController;
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
                 const npcCmd = Subcommands_1.Subcommands.NPC.isCommand(command);
                 if (npcCmd != null) {
-                    const npc = this.constructNPC(command, message, user);
-                    return this.npcController.create(npc).then((character) => {
-                        if (character == null) {
-                            return message.channel.send("Could not create new NPC.");
-                        }
-                        return message.channel.send("Created new NPC: " + character.name);
+                    this.constructNPC(command, message, user).then((npc) => {
+                        return this.npcController.create(npc).then((character) => {
+                            if (character == null) {
+                                return message.channel.send("Could not create new NPC.");
+                            }
+                            return message.channel.send("Created new NPC: " + character.name);
+                        });
                     });
                 }
                 return this.constructCharacter(command, message, user, true).then((character) => {
@@ -119,21 +122,37 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
         });
     }
     constructNPC(command, message, user) {
-        // TODO:  Make more dynamic.
-        const character = new NonPlayableCharacter_1.NonPlayableCharacter();
-        const nameCmd = CharacterCommandHandler.getNameCmd(command);
-        if (nameCmd != null) {
-            character.name = nameCmd.getInput();
-        }
-        // If the default world is not null, then add the character on that world.
-        if (user.defaultWorld != null) {
-            // 100% match, so we'll proceed.
-            if (message.guild != null && user.defaultWorld.guildId == message.guild.id) {
-                character.world = user.defaultWorld;
+        return __awaiter(this, void 0, void 0, function* () {
+            // TODO:  Make more dynamic.
+            const character = new NonPlayableCharacter_1.NonPlayableCharacter();
+            const nameCmd = CharacterCommandHandler.getNameCmd(command);
+            if (nameCmd != null) {
+                character.name = nameCmd.getInput();
             }
-            // TODO: Otherwise...
-        }
-        return character;
+            // If the default world is not null, then add the character on that world.
+            let worlds = [];
+            if (user.defaultWorld != null) {
+                worlds.push(user.defaultWorld);
+            }
+            if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
+                worlds.push(user.defaultCharacter.party.world);
+            }
+            if (worlds.length < 1) {
+                yield message.channel.send("No world to choose from!");
+                return Promise.resolve(null);
+            }
+            // No selection needed.
+            if (worlds.length == 1) {
+                character.world = worlds[0];
+                return Promise.resolve(character);
+            }
+            return this.worldController.worldSelection(worlds, message).then((world) => {
+                if (world != null) {
+                    character.world = world;
+                }
+                return character;
+            });
+        });
     }
     constructCharacter(command, message, user, isNew) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -189,10 +208,12 @@ CharacterCommandHandler = __decorate([
     __param(1, inversify_1.inject(types_1.TYPES.NPCController)),
     __param(2, inversify_1.inject(types_1.TYPES.PartyController)),
     __param(3, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(4, inversify_1.inject(types_1.TYPES.WorldController)),
     __metadata("design:paramtypes", [CharacterController_1.CharacterController,
         NPCController_1.NPCController,
         PartyController_1.PartyController,
-        UserController_1.UserController])
+        UserController_1.UserController,
+        WorldController_1.WorldController])
 ], CharacterCommandHandler);
 exports.CharacterCommandHandler = CharacterCommandHandler;
 //# sourceMappingURL=CharacterCommandHandler.js.map
