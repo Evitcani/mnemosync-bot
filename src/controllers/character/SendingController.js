@@ -47,11 +47,11 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             let flag = false, sub;
             let query = this.getRepo().createQueryBuilder("msg");
             if (world != null) {
-                query = query.where(`"msg"."world_id" = "${world.id}"`);
+                query = query.where(`"msg"."world_id" = '${world.id}'`);
                 flag = true;
             }
             if (toNpc != null) {
-                sub = `"msg"."to_npc_id" = "${toNpc.id}"`;
+                sub = `"msg"."to_npc_id" = '${toNpc.id}'`;
                 if (flag) {
                     query = query.andWhere(sub);
                 }
@@ -81,8 +81,6 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 .addOrderBy("\"msg\".\"created_date\"", "ASC")
                 .limit(SendingController_1.SENDING_LIMIT)
                 .skip(page * SendingController_1.SENDING_LIMIT);
-            // Print query.
-            console.debug("QUERY USED: " + query.getQuery());
             return query
                 .getMany()
                 .catch((err) => {

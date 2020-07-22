@@ -35,12 +35,12 @@ export class SendingController extends AbstractController<Sending> {
         let query = this.getRepo().createQueryBuilder("msg");
 
         if (world != null) {
-            query = query.where(`"msg"."world_id" = "${world.id}"`);
+            query = query.where(`"msg"."world_id" = '${world.id}'`);
             flag = true;
         }
 
         if (toNpc != null) {
-            sub = `"msg"."to_npc_id" = "${toNpc.id}"`;
+            sub = `"msg"."to_npc_id" = '${toNpc.id}'`;
             if (flag) {
                 query = query.andWhere(sub);
             } else {
@@ -71,9 +71,6 @@ export class SendingController extends AbstractController<Sending> {
             .addOrderBy("\"msg\".\"created_date\"", "ASC")
             .limit(SendingController.SENDING_LIMIT)
             .skip(page * SendingController.SENDING_LIMIT);
-
-        // Print query.
-        console.debug("QUERY USED: " + query.getQuery());
 
         return query
             .getMany()
