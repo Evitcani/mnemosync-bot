@@ -49,8 +49,8 @@ export class SendingHelpRelatedResponses {
     static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number): MessageEmbed {
         let messageStr = this.processMessages(messages, page, false, true);
         return BasicEmbed.get()
-            .setTitle(`Unreplied Messages Sent to NPCs in ${character.name}`)
-            .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
+            .setTitle(`Unreplied Messages Sent to ${character.name}`)
+            .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
     }
 
     private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean): string {

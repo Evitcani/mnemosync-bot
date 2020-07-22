@@ -43,8 +43,8 @@ class SendingHelpRelatedResponses {
     static PRINT_MESSAGES_TO_CHARACTER(messages, character, page) {
         let messageStr = this.processMessages(messages, page, false, true);
         return BasicEmbed_1.BasicEmbed.get()
-            .setTitle(`Unreplied Messages Sent to NPCs in ${character.name}`)
-            .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
+            .setTitle(`Unreplied Messages Sent to ${character.name}`)
+            .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
     }
     static processMessages(messages, page, includeTo, includeFrom) {
         let additional = page * SendingController_1.SendingController.SENDING_LIMIT;

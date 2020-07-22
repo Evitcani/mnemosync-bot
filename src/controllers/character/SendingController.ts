@@ -20,7 +20,12 @@ export class SendingController extends AbstractController<Sending> {
      * @param sending
      */
     public async create(sending: Sending): Promise<Sending> {
-        return this.getRepo().save(sending);
+        return this.getRepo().save(sending)
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not create new sending.");
+                console.error(err);
+                return null;
+            });
     }
 
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
@@ -60,6 +65,10 @@ export class SendingController extends AbstractController<Sending> {
             cache: true,
             skip: page * SendingController.SENDING_LIMIT,
             take: SendingController.SENDING_LIMIT
-        })
+        }).catch((err: Error) => {
+            console.error("ERR ::: Could not get any sendings.");
+            console.error(err);
+            return null;
+        });
     }
 }

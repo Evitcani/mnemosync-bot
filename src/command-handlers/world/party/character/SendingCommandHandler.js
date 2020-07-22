@@ -71,6 +71,9 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                         return message.channel.send("Could not send message.");
                     }
                     return this.sendingController.create(sending).then((sent) => {
+                        if (sent == null) {
+                            return message.channel.send("Could not send message.");
+                        }
                         return message.channel.send(`Sent message to ` +
                             `${sent.toNpc == null ? sent.toPlayer.name : sent.toNpc.name} with message ` +
                             `${this.encryptionUtility.decrypt(sent.content)}`);

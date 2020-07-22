@@ -34,7 +34,12 @@ let SendingController = SendingController_1 = class SendingController extends Ab
      */
     create(sending) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().save(sending);
+            return this.getRepo().save(sending)
+                .catch((err) => {
+                console.error("ERR ::: Could not create new sending.");
+                console.error(err);
+                return null;
+            });
         });
     }
     get(page, world, toNpc, toPlayer) {
@@ -70,6 +75,10 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 cache: true,
                 skip: page * SendingController_1.SENDING_LIMIT,
                 take: SendingController_1.SENDING_LIMIT
+            }).catch((err) => {
+                console.error("ERR ::: Could not get any sendings.");
+                console.error(err);
+                return null;
             });
         });
     }
