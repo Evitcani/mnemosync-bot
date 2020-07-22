@@ -37,7 +37,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
 
         // Want to view sendings.
-        if (command.getSubcommands() == null || command.getSubcommands().size < 1) {
+        if (command.getSubcommands() == null || command.getSubcommands().size < 1 || Subcommands.GET.isCommand(command)) {
             console.log("Getting unreplied sendings...");
             return this.getUnrepliedSendings(command, user, message);
         }
