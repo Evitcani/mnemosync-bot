@@ -7,6 +7,7 @@ export class Subcommands {
     public static EATS = new CommandStrut("eats", null);
     public static FROM = new CommandStrut("from", null);
     public static FROM_NPC = new CommandStrut("from-npc", "fromn");
+    public static GET = new CommandStrut("get", "g");
     public static IMG_URL = new CommandStrut("image-url", "img");
     public static NEXT = new CommandStrut("next", "n");
     public static NICKNAME = new CommandStrut("nickname", "nick");

@@ -45,7 +45,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Want to view sendings.
-            if (command.getSubcommands() == null || command.getSubcommands().size < 1) {
+            if (command.getSubcommands() == null || command.getSubcommands().size < 1 || Subcommands_1.Subcommands.GET.isCommand(command)) {
                 console.log("Getting unreplied sendings...");
                 return this.getUnrepliedSendings(command, user, message);
             }

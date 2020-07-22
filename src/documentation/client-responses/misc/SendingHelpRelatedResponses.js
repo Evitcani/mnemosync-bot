@@ -60,13 +60,14 @@ class SendingHelpRelatedResponses {
         let i, message;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
-            str += `**[\`${additional + i}\`] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
+            str += `**[${additional + i}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
             if (includeFrom) {
-                str += `\`FROM:\` ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
+                str += `> FROM: ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
             }
             if (includeTo) {
-                str += `\`TO  :\` ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
+                str += `> TO  : ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
             }
+            str += `\n> \n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         return str;
