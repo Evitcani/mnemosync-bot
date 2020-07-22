@@ -10,7 +10,6 @@ exports.TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     PingFinder: Symbol("PingFinder"),
     EncryptionUtility: Symbol("EncryptionUtility"),
-    CharacterService: Symbol("CharacterService"),
     DatabaseService: Symbol("DatabaseService"),
     PartyFundService: Symbol("PartyFundService"),
     PartyToGuildService: Symbol("PartyToGuildService"),

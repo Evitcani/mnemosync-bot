@@ -17,7 +17,6 @@ import {WhichCommandHandler} from "./command-handlers/WhichCommandHandler";
 import {SpecialChannelService} from "./database/SpecialChannelService";
 import {HelpCommandHandler} from "./command-handlers/HelpCommandHandler";
 import {QuoteCommandHandler} from "./command-handlers/QuoteCommandHandler";
-import {CharacterService} from "./database/CharacterService";
 import {BagCommandHandler} from "./command-handlers/BagCommandHandler";
 import {CharacterCommandHandler} from "./command-handlers/CharacterCommandHandler";
 import {TravelCommandHandler} from "./command-handlers/TravelCommandHandler";
@@ -44,7 +43,6 @@ container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).in
 container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
 container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
 
-container.bind<CharacterService>(TYPES.CharacterService).to(CharacterService).inSingletonScope();
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
 container.bind<PartyFundService>(TYPES.PartyFundService).to(PartyFundService).inSingletonScope();
 container.bind<PartyToGuildService>(TYPES.PartyToGuildService).to(PartyToGuildService).inSingletonScope();
