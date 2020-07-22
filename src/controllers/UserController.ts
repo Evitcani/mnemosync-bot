@@ -80,10 +80,8 @@ export class UserController extends AbstractController<User> {
     public async updateDefaultWorld(user: User, world: World): Promise<User> {
         if (world != null) {
             user.defaultWorld = world;
-            user.defaultWorldId = world.id;
         } else {
             user.defaultWorld = null;
-            user.defaultWorldId = null;
         }
 
         return this.save(user);

@@ -2,7 +2,6 @@ import {AbstractController} from "./Base/AbstractController";
 import {World} from "../entity/World";
 import {Table} from "../documentation/databases/Table";
 import {injectable} from "inversify";
-import {NameValuePair} from "./Base/NameValuePair";
 import {User} from "../entity/User";
 import {StringUtility} from "../utilities/StringUtility";
 
