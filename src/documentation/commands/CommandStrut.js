@@ -12,7 +12,7 @@ class CommandStrut {
     get shortenedName() {
         return this._shortenedName;
     }
-    isCommand(command) {
+    getCommand(command) {
         if (command == null || command.getSubcommands() == null) {
             return null;
         }
@@ -21,6 +21,14 @@ class CommandStrut {
             return cmd;
         }
         return this.shortenedName == null ? null : command.getSubcommands().get(this.shortenedName);
+    }
+    /**
+     * Gets if this subcommand exists in the command array.
+     *
+     * @param command The command to check for.
+     */
+    isCommand(command) {
+        return this.getCommand(command) != null;
     }
 }
 exports.CommandStrut = CommandStrut;

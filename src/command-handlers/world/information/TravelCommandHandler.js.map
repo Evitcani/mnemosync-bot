@@ -1,0 +1,1 @@
+{"version":3,"file":"TravelCommandHandler.js","sourceRoot":"","sources":["TravelCommandHandler.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,8EAAyE;AAKzE;;GAEG;AACH,MAAa,oBAAqB,SAAQ,+CAAsB;IACtD,aAAa,CAAC,OAAgB,EAAE,OAAgB;;YAClD,OAAO,SAAS,CAAC;QACrB,CAAC;KAAA;IAED;;;;OAIG;IACW,eAAe,CAAC,OAAe;;YACzC,OAAO,SAAS,CAAC;QACrB,CAAC;KAAA;CACJ;AAbD,oDAaC"}
