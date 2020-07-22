@@ -147,7 +147,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                             let discordId, i;
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
-                                if (message.client.users.cache == null || message.client.users.cache.has(discordId)) {
+                                if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
                                     yield message.client.users.fetch(discordId).then((member) => {
                                         // No member found, so can't send message.
                                         if (!member) {
