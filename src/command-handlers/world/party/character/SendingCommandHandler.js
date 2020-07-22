@@ -181,7 +181,13 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             if (member == null) {
                 return null;
             }
-            return member.send(message);
+            return member.fetch().then((freshUser) => {
+                return freshUser.send(message);
+            }).catch((err) => {
+                console.error("ERR ::: Could not DM user.");
+                console.error(err);
+                return null;
+            });
         });
     }
     getUnrepliedSendings(command, user, message) {
