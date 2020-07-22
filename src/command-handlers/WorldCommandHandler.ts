@@ -61,26 +61,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
     }
 
     private async addPartyToWorld(partyName: string, message: Message, user: User): Promise<Message | Message[]> {
-        let worlds: World[] = [];
-        if (user.defaultWorld != null) {
-            worlds.push(user.defaultWorld);
-        }
-
-        if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
-            worlds.push(user.defaultCharacter.party.world);
-        }
-
-        if (worlds.length < 1) {
-            return message.channel.send("No world to choose from!");
-        }
-
-        // No selection needed.
-        if (worlds.length == 1) {
-            return this.continueAddingPartyToWorld(partyName, message, worlds[0]);
-        }
-
-        // Otherwise allow selection.
-        return this.worldController.worldSelection(worlds, message).then((world) => {
+        return this.worldController.worldSelectionFromUser(user, message).then((world) => {
             if (world == null) {
                 return null;
             }

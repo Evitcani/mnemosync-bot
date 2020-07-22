@@ -46,6 +46,27 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
             });
         });
     }
+    worldSelectionFromUser(user, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // If the default world is not null, then add the character on that world.
+            let worlds = [];
+            if (user.defaultWorld != null) {
+                worlds.push(user.defaultWorld);
+            }
+            if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
+                worlds.push(user.defaultCharacter.party.world);
+            }
+            if (worlds.length < 1) {
+                yield message.channel.send("No world to choose from!");
+                return Promise.resolve(null);
+            }
+            // No selection needed.
+            if (worlds.length == 1) {
+                return Promise.resolve(worlds[0]);
+            }
+            return this.worldSelection(worlds, message);
+        });
+    }
     worldSelection(worlds, message) {
         return __awaiter(this, void 0, void 0, function* () {
             return message.channel.send(WorldRelatedClientResponses_1.WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {

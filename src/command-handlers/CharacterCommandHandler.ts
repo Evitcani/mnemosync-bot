@@ -127,28 +127,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
             character.name = nameCmd.getInput();
         }
 
-        // If the default world is not null, then add the character on that world.
-        let worlds: World[] = [];
-        if (user.defaultWorld != null) {
-            worlds.push(user.defaultWorld);
-        }
-
-        if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
-            worlds.push(user.defaultCharacter.party.world);
-        }
-
-        if (worlds.length < 1) {
-            await message.channel.send("No world to choose from!");
-            return Promise.resolve(null);
-        }
-
-        // No selection needed.
-        if (worlds.length == 1) {
-            character.world = worlds[0];
-            return Promise.resolve(character);
-        }
-
-        return this.worldController.worldSelection(worlds, message).then((world) => {
+        return this.worldController.worldSelectionFromUser(user, message).then((world) => {
             if (world != null) {
                 character.world = world;
             }

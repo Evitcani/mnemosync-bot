@@ -45,6 +45,16 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
             });
         });
     }
+    getByWorld(worldId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().find({ where: { worldId: worldId } })
+                .catch((err) => {
+                console.error("ERR ::: Could not get NPCs in world.");
+                console.error(err);
+                return null;
+            });
+        });
+    }
     getByName(name, worldId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.getLikeArgs([new NameValuePair_1.NameValuePair("world_id", worldId)], [new NameValuePair_1.NameValuePair("name", name)])

@@ -27,16 +27,36 @@ const types_1 = require("../types");
 const WhichRelatedClientResponses_1 = require("../documentation/client-responses/WhichRelatedClientResponses");
 const PartyController_1 = require("../controllers/PartyController");
 const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
+const NPCController_1 = require("../controllers/NPCController");
+const WorldController_1 = require("../controllers/WorldController");
+const NPCRelatedClientResponses_1 = require("../documentation/client-responses/NPCRelatedClientResponses");
 /**
  * Handles questions about the state of the world.
  */
 let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(partyController) {
+    constructor(npcController, partyController, worldController) {
         super();
         this.partyController = partyController;
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Get all NPCs in a given world.
+            if (command.getInput() != null && command.getInput().toLowerCase() == "npcs") {
+                return this.worldController.worldSelectionFromUser(user, message).then((world) => {
+                    if (world == null) {
+                        return message.channel.send("No world associated with  account.");
+                    }
+                    return this.npcController.getByWorld(world.id).then((npcs) => {
+                        if (npcs == null || npcs.length < 1) {
+                            return message.channel.send("No NPCs are in this world.");
+                        }
+                        npcs.sort((npc1, npc2) => {
+                            return npc1.name.localeCompare(npc2.name);
+                        });
+                        return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world));
+                    });
+                });
+            }
             return this.partyController.getByGuild(message.guild.id).then((res) => {
                 return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
             });
@@ -45,8 +65,12 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandH
 };
 WhichCommandHandler = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
-    __metadata("design:paramtypes", [PartyController_1.PartyController])
+    __param(0, inversify_1.inject(types_1.TYPES.NPCController)),
+    __param(1, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(2, inversify_1.inject(types_1.TYPES.WorldController)),
+    __metadata("design:paramtypes", [NPCController_1.NPCController,
+        PartyController_1.PartyController,
+        WorldController_1.WorldController])
 ], WhichCommandHandler);
 exports.WhichCommandHandler = WhichCommandHandler;
 //# sourceMappingURL=WhichCommandHandler.js.map

@@ -14,7 +14,13 @@ const typeorm_1 = require("typeorm");
 const NonPlayableCharacter_1 = require("./NonPlayableCharacter");
 const Character_1 = require("./Character");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
 let Sending = class Sending {
+    purifyInsertUpdate() {
+        this.inGameDate = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate);
+        this.reply = StringUtility_1.StringUtility.escapeSQLInput(this.reply);
+        this.content = StringUtility_1.StringUtility.escapeSQLInput(this.content);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('uuid'),
@@ -88,6 +94,13 @@ __decorate([
     typeorm_1.JoinColumn({ name: "from_player_id" }),
     __metadata("design:type", Character_1.Character)
 ], Sending.prototype, "fromPlayer", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Sending.prototype, "purifyInsertUpdate", null);
 Sending = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.SENDING })
 ], Sending);

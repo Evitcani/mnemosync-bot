@@ -1,4 +1,5 @@
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -10,6 +11,7 @@ import {
 import {NonPlayableCharacter} from "./NonPlayableCharacter";
 import {Character} from "./Character";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.SENDING})
 export class Sending {
@@ -70,4 +72,12 @@ export class Sending {
     })
     @JoinColumn({name: "from_player_id"})
     fromPlayer?: Character;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.inGameDate = StringUtility.escapeSQLInput(this.inGameDate);
+        this.reply = StringUtility.escapeSQLInput(this.reply);
+        this.content = StringUtility.escapeSQLInput(this.content);
+    }
 }
