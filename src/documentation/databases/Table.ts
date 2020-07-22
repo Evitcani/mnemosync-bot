@@ -1,6 +1,7 @@
 export class Table {
     public static CHARACTER = "characters";
     public static CHARACTER_TO_NICKNAME = "character_to_nickname";
+    public static NPC = "npcs";
     public static PARTY = "parties";
     public static PARTY_FUND = "party_funds";
     public static PARTY_TO_GUILD = "party_to_guild";
@@ -9,4 +10,5 @@ export class Table {
     public static USER_TO_CHARACTER = "user_to_character";
     public static USER_DEFAULT_PARTY = "user_default_parties";
     public static USER_TO_GUILD = "user_to_guild";
+    public static WORLD = "worlds";
 }

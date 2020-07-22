@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterCommandHandler = void 0;
-const AbstractCommandHandler_1 = require("./base/AbstractCommandHandler");
 const inversify_1 = require("inversify");
 const types_1 = require("../types");
 const UserDefaultPartyService_1 = require("../database/UserDefaultPartyService");
@@ -30,19 +29,40 @@ const UserService_1 = require("../database/UserService");
 const UserToGuildService_1 = require("../database/UserToGuildService");
 const PartyController_1 = require("../controllers/PartyController");
 const Subcommands_1 = require("../documentation/commands/Subcommands");
+const WorldController_1 = require("../controllers/WorldController");
+const World_1 = require("../entity/World");
+const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
+const UserController_1 = require("../controllers/UserController");
 /**
  * Command to register a user as having access to the funds created on a specific server.
  */
-let RegisterCommandHandler = class RegisterCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    constructor(partyController, userDefaultPartyService, userService, userToGuildService) {
+let RegisterCommandHandler = class RegisterCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+    constructor(partyController, userDefaultPartyService, userController, userService, userToGuildService, worldController) {
         super();
         this.partyController = partyController;
         this.userDefaultPartyService = userDefaultPartyService;
+        this.userController = userController;
         this.userService = userService;
         this.userToGuildService = userToGuildService;
+        this.worldController = worldController;
     }
-    handleCommand(command, message) {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            const createWorld = Subcommands_1.Subcommands.WORLD.isCommand(command);
+            if (createWorld != null) {
+                const world = new World_1.World();
+                world.defaultOfUsers = [];
+                world.defaultOfUsers.push(user);
+                return this.worldController.create(world).then((newWorld) => {
+                    if (newWorld == null) {
+                        return message.channel.send("Could not create world.");
+                    }
+                    user.defaultWorld = world;
+                    this.userController.updateDefaultWorld(user, newWorld).then(() => {
+                        return message.channel.send("Created new world: " + newWorld.name);
+                    });
+                });
+            }
             const createParty = Subcommands_1.Subcommands.PARTY.isCommand(command);
             if (createParty != null) {
                 return this.partyController.create(createParty.getInput(), message.guild.id, message.author.id)
@@ -84,12 +104,16 @@ RegisterCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
     __param(1, inversify_1.inject(types_1.TYPES.UserDefaultPartyService)),
-    __param(2, inversify_1.inject(types_1.TYPES.UserService)),
-    __param(3, inversify_1.inject(types_1.TYPES.UserToGuildService)),
+    __param(2, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(3, inversify_1.inject(types_1.TYPES.UserService)),
+    __param(4, inversify_1.inject(types_1.TYPES.UserToGuildService)),
+    __param(5, inversify_1.inject(types_1.TYPES.WorldController)),
     __metadata("design:paramtypes", [PartyController_1.PartyController,
         UserDefaultPartyService_1.UserDefaultPartyService,
+        UserController_1.UserController,
         UserService_1.UserService,
-        UserToGuildService_1.UserToGuildService])
+        UserToGuildService_1.UserToGuildService,
+        WorldController_1.WorldController])
 ], RegisterCommandHandler);
 exports.RegisterCommandHandler = RegisterCommandHandler;
 //# sourceMappingURL=RegisterCommandHandler.js.map

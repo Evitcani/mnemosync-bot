@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const Character_1 = require("./Character");
 const PartyFund_1 = require("./PartyFund");
 const StringUtility_1 = require("../utilities/StringUtility");
+const World_1 = require("./World");
 let Party = class Party {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
@@ -59,6 +60,15 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Party.prototype, "funds", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => World_1.World, campaign => campaign.parties, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    }),
+    typeorm_1.JoinColumn({ name: "world_id" }),
+    __metadata("design:type", World_1.World)
+], Party.prototype, "world", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),

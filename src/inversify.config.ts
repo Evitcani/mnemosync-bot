@@ -26,6 +26,8 @@ import {PartyController} from "./controllers/PartyController";
 import {PartyFundController} from "./controllers/PartyFundController";
 import {CharacterController} from "./controllers/CharacterController";
 import {UserController} from "./controllers/UserController";
+import {WorldController} from "./controllers/WorldController";
+import {NPCController} from "./controllers/NPCController";
 
 let container = new Container();
 
@@ -56,8 +58,10 @@ container.bind<TravelCommandHandler>(TYPES.TravelCommandHandler).to(TravelComman
 container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHandler).inSingletonScope();
 
 container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
+container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
 container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
+container.bind<WorldController>(TYPES.WorldController).to(WorldController).inSingletonScope();
 
 export default container;

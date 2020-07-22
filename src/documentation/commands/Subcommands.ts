@@ -6,9 +6,11 @@ export class Subcommands {
     public static EATS = new CommandStrut("eats", null);
     public static IMG_URL = new CommandStrut("image-url", "img");
     public static NICKNAME = new CommandStrut("nickname", "nick");
+    public static NPC = new CommandStrut("npc", null);
     public static PARTY = new CommandStrut("party", "pt");
     public static SWITCH = new CommandStrut("switch", "sw");
     public static UPDATE = new CommandStrut("update", "upd");
     public static WEIGHT = new CommandStrut("weight", "wt");
     public static WEIGHT_INVENTORY = new CommandStrut("inventory-weight", "inv-wt");
+    public static WORLD = new CommandStrut("world", null);
 }
