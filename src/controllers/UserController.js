@@ -23,6 +23,7 @@ const AbstractController_1 = require("./Base/AbstractController");
 const User_1 = require("../entity/User");
 const Table_1 = require("../documentation/databases/Table");
 const inversify_1 = require("inversify");
+const typeorm_1 = require("typeorm");
 let UserController = class UserController extends AbstractController_1.AbstractController {
     /**
      * Construct this controller.
@@ -102,6 +103,21 @@ let UserController = class UserController extends AbstractController_1.AbstractC
                 user.defaultWorld = null;
             }
             return this.save(user);
+        });
+    }
+    addWorld(user, world) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return typeorm_1.getConnection()
+                .createQueryBuilder()
+                .relation(User_1.User, "campaignsDMing")
+                .of(user)
+                .add(world).then(() => {
+                return user;
+            }).catch((err) => {
+                console.error("ERR ::: Could not add new world.");
+                console.error(err);
+                return null;
+            });
         });
     }
     /**

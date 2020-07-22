@@ -109,23 +109,20 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         const world = new World();
         world.name = worldName;
         world.guildId = message.guild.id;
-        world.defaultOfUsers = [];
-        world.defaultOfUsers.push(user);
         return this.worldController.create(world).then((newWorld) => {
             if (newWorld == null) {
                 return message.channel.send("Could not create world.");
             }
 
-            // Update the user details.
-            user.defaultWorld = newWorld;
-            if (user.campaignsDMing == null) {
-                user.campaignsDMing = [];
-            }
-            user.campaignsDMing.push(newWorld);
+            return this.userController.addWorld(user, newWorld).then((user) => {
+                if (user == null) {
+                    return message.channel.send("Could not add the world to the map.");
+                }
 
-            // Go and save this.
-            this.userController.updateDefaultWorld(user, newWorld).then(() => {
-                return message.channel.send("Created new world: " + newWorld.name);
+                // Go and save this.
+                return this.userController.updateDefaultWorld(user, newWorld).then(() => {
+                    return message.channel.send("Created new world: " + newWorld.name);
+                });
             });
         });
     }
