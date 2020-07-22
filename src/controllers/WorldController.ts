@@ -39,25 +39,24 @@ export class WorldController extends AbstractController<World> {
 
         let query =this
             .getRepo()
-            .createQueryBuilder(Table.USER)
-            .innerJoin(
-                `${Table.USER}.campaignsDMing`,
-                `${this.tableName}`,
-                `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`
-            ).getQuery();
+            .createQueryBuilder(Table.WORLD_OWNERS)
+            .leftJoinAndSelect(World, "world", `world.id = "${Table.WORLD_OWNERS}"."worldsId"`)
+            .where(`"${Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
+            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
+            .getQuery();
 
         console.log("QUERY: " + query);
         return this
             .getRepo()
-            .createQueryBuilder(Table.USER)
-            .innerJoin(
-                `${Table.USER}.campaignsDMing`,
-                `${this.tableName}`,
-                `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`
-            ).getMany().catch((err: Error) => {
-            console.error("ERR ::: Could not get worlds.");
-            console.error(err);
-            return null;
-        });
+            .createQueryBuilder(Table.WORLD_OWNERS)
+            .leftJoinAndSelect(World, "world", `world.id = "${Table.WORLD_OWNERS}"."worldsId"`)
+            .where(`"${Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
+            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
+            .getMany()
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get worlds.");
+                console.error(err);
+                return null;
+            });
     }
 }

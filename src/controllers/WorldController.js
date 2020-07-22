@@ -20,6 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorldController = void 0;
 const AbstractController_1 = require("./Base/AbstractController");
+const World_1 = require("../entity/World");
 const Table_1 = require("../documentation/databases/Table");
 const inversify_1 = require("inversify");
 const StringUtility_1 = require("../utilities/StringUtility");
@@ -55,13 +56,20 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
         let sanitizedName = StringUtility_1.StringUtility.escapeSQLInput(name);
         let query = this
             .getRepo()
-            .createQueryBuilder(Table_1.Table.USER)
-            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getQuery();
+            .createQueryBuilder(Table_1.Table.WORLD_OWNERS)
+            .leftJoinAndSelect(World_1.World, "world", `world.id = "${Table_1.Table.WORLD_OWNERS}"."worldsId"`)
+            .where(`"${Table_1.Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
+            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
+            .getQuery();
         console.log("QUERY: " + query);
         return this
             .getRepo()
-            .createQueryBuilder(Table_1.Table.USER)
-            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getMany().catch((err) => {
+            .createQueryBuilder(Table_1.Table.WORLD_OWNERS)
+            .leftJoinAndSelect(World_1.World, "world", `world.id = "${Table_1.Table.WORLD_OWNERS}"."worldsId"`)
+            .where(`"${Table_1.Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
+            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
+            .getMany()
+            .catch((err) => {
             console.error("ERR ::: Could not get worlds.");
             console.error(err);
             return null;
