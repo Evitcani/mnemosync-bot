@@ -96,7 +96,7 @@ export class SendingController extends AbstractController<Sending> {
 
         // Nothing to see here.
         if (!flag) {
-            console.log("No world, character or NPC provided.");
+            console.error("No world, character or NPC provided.");
             return null;
         }
 

@@ -107,7 +107,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             }
             // Nothing to see here.
             if (!flag) {
-                console.log("No world, character or NPC provided.");
+                console.error("No world, character or NPC provided.");
                 return null;
             }
             // Add final touches.

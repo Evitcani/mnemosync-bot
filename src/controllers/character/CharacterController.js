@@ -121,17 +121,14 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                 if (!nicknames || nicknames.length < 1) {
                     return null;
                 }
-                console.log("Users: ");
                 let input = [], nickname, discordId, i;
                 for (i = 0; i < nicknames.length; i++) {
                     nickname = nicknames[i];
                     discordId = nickname.discord_id;
-                    console.log(discordId);
                     if (!input.includes(discordId)) {
                         input.push(discordId);
                     }
                 }
-                console.log("End user fetching.");
                 return input;
             });
         });

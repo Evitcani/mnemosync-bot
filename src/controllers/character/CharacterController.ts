@@ -109,19 +109,14 @@ export class CharacterController extends AbstractSecondaryController<Character, 
                 return null;
             }
 
-            console.log("Users: ");
-
             let input: string[] = [], nickname: Nickname, discordId: string, i;
             for (i = 0; i < nicknames.length; i++) {
                 nickname = nicknames[i];
                 discordId = nickname.discord_id;
-                console.log(discordId);
                 if (!input.includes(discordId)) {
                     input.push(discordId);
                 }
             }
-
-            console.log("End user fetching.");
 
             return input;
         });
