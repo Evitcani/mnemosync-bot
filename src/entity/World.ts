@@ -30,21 +30,24 @@ export class World {
     @UpdateDateColumn({name: "updated_date"})
     updatedDate: Date;
 
-    @Column("text",{name: "map_url"})
+    @Column("text",{name: "map_url", nullable: true})
     mapUrl: string;
 
     @OneToMany(type => Party, party => party.world, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     })
     parties?: Party[];
 
     @OneToMany(type => NonPlayableCharacter, character => character.world, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     })
     npcs?: NonPlayableCharacter[];
 
     @OneToMany(type => User, user => user.defaultWorld, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     })
     defaultOfUsers?: User[];
 
