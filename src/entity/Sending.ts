@@ -59,7 +59,8 @@ export class Sending {
 
     @ManyToOne(type => NonPlayableCharacter, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     })
     @JoinColumn({name: "to_npc_id"})
     toNpc?: NonPlayableCharacter;
@@ -69,7 +70,8 @@ export class Sending {
 
     @ManyToOne(type => NonPlayableCharacter, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     })
     @JoinColumn({name: "from_npc_id"})
     fromNpc?: NonPlayableCharacter;
@@ -79,7 +81,8 @@ export class Sending {
 
     @ManyToOne(type => Character, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     })
     @JoinColumn({name: "to_player_id"})
     toPlayer?: Character;
@@ -89,7 +92,8 @@ export class Sending {
 
     @ManyToOne(type => Character, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     })
     @JoinColumn({name: "from_player_id"})
     fromPlayer?: Character;

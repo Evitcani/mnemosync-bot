@@ -82,7 +82,13 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 .limit(SendingController_1.SENDING_LIMIT)
                 .skip(page * SendingController_1.SENDING_LIMIT);
             return query
-                .getMany()
+                .getMany().then((messages) => {
+                if (!messages || messages.length < 1) {
+                    return null;
+                }
+                // Go out and get the
+                return messages;
+            })
                 .catch((err) => {
                 console.error("ERR ::: Could not get any sendings.");
                 console.error(err);

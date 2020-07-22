@@ -83,7 +83,8 @@ __decorate([
 __decorate([
     typeorm_1.ManyToOne(type => NonPlayableCharacter_1.NonPlayableCharacter, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     }),
     typeorm_1.JoinColumn({ name: "to_npc_id" }),
     __metadata("design:type", NonPlayableCharacter_1.NonPlayableCharacter)
@@ -95,7 +96,8 @@ __decorate([
 __decorate([
     typeorm_1.ManyToOne(type => NonPlayableCharacter_1.NonPlayableCharacter, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     }),
     typeorm_1.JoinColumn({ name: "from_npc_id" }),
     __metadata("design:type", NonPlayableCharacter_1.NonPlayableCharacter)
@@ -107,7 +109,8 @@ __decorate([
 __decorate([
     typeorm_1.ManyToOne(type => Character_1.Character, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     }),
     typeorm_1.JoinColumn({ name: "to_player_id" }),
     __metadata("design:type", Character_1.Character)
@@ -119,7 +122,8 @@ __decorate([
 __decorate([
     typeorm_1.ManyToOne(type => Character_1.Character, {
         nullable: true,
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        eager: true
     }),
     typeorm_1.JoinColumn({ name: "from_player_id" }),
     __metadata("design:type", Character_1.Character)
