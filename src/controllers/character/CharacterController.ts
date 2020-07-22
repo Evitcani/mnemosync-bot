@@ -99,6 +99,28 @@ export class CharacterController extends AbstractSecondaryController<Character, 
         })
     }
 
+    /**
+     * Gets all the discord IDs related to this character.
+     * @param characterId
+     */
+    public async getDiscordId(characterId: number): Promise<string[]> {
+        return this.getSecondaryRepo().find({where: {characterId: characterId}}).then((nicknames) => {
+            if (nicknames == null || nicknames.length < 1) {
+                return null;
+            }
+
+            let input: string[] = [], nickname, discordId: string;
+            for (nickname in nicknames) {
+                discordId = (nickname as Nickname).discord_id;
+                if (!input.includes(discordId)) {
+                    input.push(discordId);
+                }
+            }
+
+            return input;
+        });
+    }
+
     private async getNicknameByNickname(nickname: string, discordId: string): Promise<Nickname[]> {
         return this.getSecondaryLikeArgs(
             [new NameValuePair("discord_id", discordId)],

@@ -111,6 +111,27 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
             });
         });
     }
+    /**
+     * Gets all the discord IDs related to this character.
+     * @param characterId
+     */
+    getDiscordId(characterId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getSecondaryRepo().find({ where: { characterId: characterId } }).then((nicknames) => {
+                if (nicknames == null || nicknames.length < 1) {
+                    return null;
+                }
+                let input = [], nickname, discordId;
+                for (nickname in nicknames) {
+                    discordId = nickname.discord_id;
+                    if (!input.includes(discordId)) {
+                        input.push(discordId);
+                    }
+                }
+                return input;
+            });
+        });
+    }
     getNicknameByNickname(nickname, discordId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.getSecondaryLikeArgs([new NameValuePair_1.NameValuePair("discord_id", discordId)], [new NameValuePair_1.NameValuePair("name", nickname)])
