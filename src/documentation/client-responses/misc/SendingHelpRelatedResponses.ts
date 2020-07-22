@@ -92,8 +92,10 @@ export class SendingHelpRelatedResponses {
         }
         if (includeTo) {
             str += `> TO  : ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
-            str += `\n> \n`;
-            str += `> ${encryptionUtility.decrypt(message.reply)}\n\n`;
+            if (includeReply && message.reply != null) {
+                str += `\n> \n`;
+                str += `> ${encryptionUtility.decrypt(message.reply)}\n\n`;
+            }
         }
 
         return str;
