@@ -37,6 +37,17 @@ export class WorldController extends AbstractController<World> {
      */
     public getByNameAndUser(name: string, user: User): Promise<World[]> {
         let sanitizedName = StringUtility.escapeSQLInput(name);
+
+        let query =this
+            .getRepo()
+            .createQueryBuilder(Table.USER)
+            .innerJoin(
+                `${Table.USER}.campaignsDMing`,
+                `${this.tableName}`,
+                `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`
+            ).getQuery();
+
+        console.log("QUERY: " + query);
         return this
             .getRepo()
             .createQueryBuilder(Table.USER)
@@ -44,9 +55,7 @@ export class WorldController extends AbstractController<World> {
                 `${Table.USER}.campaignsDMing`,
                 `${this.tableName}`,
                 `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`
-            ).getMany().then((worlds) => {
-
-        }).catch((err: Error) => {
+            ).getMany().catch((err: Error) => {
             console.error("ERR ::: Could not get worlds.");
             console.error(err);
             return null;

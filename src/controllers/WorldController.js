@@ -53,11 +53,15 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
      */
     getByNameAndUser(name, user) {
         let sanitizedName = StringUtility_1.StringUtility.escapeSQLInput(name);
+        let query = this
+            .getRepo()
+            .createQueryBuilder(Table_1.Table.USER)
+            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getQuery();
+        console.log("QUERY: " + query);
         return this
             .getRepo()
             .createQueryBuilder(Table_1.Table.USER)
-            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getMany().then((worlds) => {
-        }).catch((err) => {
+            .innerJoin(`${Table_1.Table.USER}.campaignsDMing`, `${this.tableName}`, `LOWER(${this.tableName}.name) LIKE LOWER('%${sanitizedName}%')`).getMany().catch((err) => {
             console.error("ERR ::: Could not get worlds.");
             console.error(err);
             return null;
