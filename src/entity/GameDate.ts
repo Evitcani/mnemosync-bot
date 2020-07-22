@@ -10,6 +10,6 @@ export class GameDate {
     @Column()
     year: number;
 
-    @Column()
-    era: string;
+    @Column({nullable: true})
+    era?: string;
 }
