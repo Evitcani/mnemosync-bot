@@ -67,7 +67,7 @@ export class SendingController extends AbstractController<Sending> {
 
         // Add final touches.
         query = query
-            .andWhere(`("msg"."isReplied" IS NULL OR "msg"."isReplied" IS FALSE)`)
+            .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
             .addOrderBy("\"msg\".\"created_date\"", "ASC")
             .limit(SendingController.SENDING_LIMIT)
             .skip(page * SendingController.SENDING_LIMIT);

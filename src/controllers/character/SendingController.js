@@ -77,7 +77,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             }
             // Add final touches.
             query = query
-                .andWhere(`("msg"."isReplied" IS NULL OR "msg"."isReplied" IS FALSE)`)
+                .andWhere(`("msg"."is_replied" IS NULL OR "msg"."is_replied" IS FALSE)`)
                 .addOrderBy("\"msg\".\"created_date\"", "ASC")
                 .limit(SendingController_1.SENDING_LIMIT)
                 .skip(page * SendingController_1.SENDING_LIMIT);
