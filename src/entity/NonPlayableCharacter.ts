@@ -1,4 +1,5 @@
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -9,6 +10,7 @@ import {
 } from "typeorm";
 import {World} from "./World";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.NPC})
 export class NonPlayableCharacter {
@@ -33,4 +35,10 @@ export class NonPlayableCharacter {
     })
     @JoinColumn({name: "world_id"})
     world?: World;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeSQLInput(this.name);
+    }
 }

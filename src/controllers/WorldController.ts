@@ -30,6 +30,30 @@ export class WorldController extends AbstractController<World> {
             });
     }
 
+    public async worldSelectionFromUser(user: User, message: Message): Promise<World> {
+        // If the default world is not null, then add the character on that world.
+        let worlds: World[] = [];
+        if (user.defaultWorld != null) {
+            worlds.push(user.defaultWorld);
+        }
+
+        if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
+            worlds.push(user.defaultCharacter.party.world);
+        }
+
+        if (worlds.length < 1) {
+            await message.channel.send("No world to choose from!");
+            return Promise.resolve(null);
+        }
+
+        // No selection needed.
+        if (worlds.length == 1) {
+            return Promise.resolve(worlds[0]);
+        }
+
+        return this.worldSelection(worlds, message);
+    }
+
     public async worldSelection(worlds: World[], message: Message): Promise<World> {
         return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
             return message.channel.awaitMessages(m => m.author.id === message.author.id, {

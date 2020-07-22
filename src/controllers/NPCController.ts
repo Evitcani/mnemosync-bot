@@ -27,6 +27,15 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
             });
     }
 
+    public async getByWorld(worldId: string): Promise<NonPlayableCharacter[]> {
+        return this.getRepo().find({where: {worldId: worldId}})
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get NPCs in world.");
+                console.error(err);
+                return null;
+            });
+    }
+
     public async getByName(name: string, worldId: string): Promise<NonPlayableCharacter> {
         return this.getLikeArgs(
             [new NameValuePair("world_id", worldId)],

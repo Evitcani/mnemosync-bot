@@ -70,22 +70,7 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
     }
     addPartyToWorld(partyName, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let worlds = [];
-            if (user.defaultWorld != null) {
-                worlds.push(user.defaultWorld);
-            }
-            if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
-                worlds.push(user.defaultCharacter.party.world);
-            }
-            if (worlds.length < 1) {
-                return message.channel.send("No world to choose from!");
-            }
-            // No selection needed.
-            if (worlds.length == 1) {
-                return this.continueAddingPartyToWorld(partyName, message, worlds[0]);
-            }
-            // Otherwise allow selection.
-            return this.worldController.worldSelection(worlds, message).then((world) => {
+            return this.worldController.worldSelectionFromUser(user, message).then((world) => {
                 if (world == null) {
                     return null;
                 }
