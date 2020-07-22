@@ -118,16 +118,19 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
     getDiscordId(characterId) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.getSecondaryRepo().find({ where: { characterId: characterId } }).then((nicknames) => {
-                if (nicknames == null || nicknames.length < 1) {
+                if (!nicknames || nicknames.length < 1) {
                     return null;
                 }
+                console.log("Users: ");
                 let input = [], nickname, discordId;
                 for (nickname in nicknames) {
                     discordId = nickname.discord_id;
+                    console.log(discordId);
                     if (!input.includes(discordId)) {
                         input.push(discordId);
                     }
                 }
+                console.log("End user fetching.");
                 return input;
             });
         });

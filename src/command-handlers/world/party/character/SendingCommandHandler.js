@@ -144,7 +144,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                     // Notify the player of the reply.
                     if (sending.fromPlayerId != null) {
                         return this.characterController.getDiscordId(sending.fromPlayerId).then((discordIds) => __awaiter(this, void 0, void 0, function* () {
-                            if (discordIds == null || discordIds.length < 1) {
+                            if (!discordIds || discordIds.length < 1) {
                                 return message.channel.send("No discord accounts associated with this message!");
                             }
                             console.log("Got to flipping through user stuff..");

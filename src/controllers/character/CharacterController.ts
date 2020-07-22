@@ -105,17 +105,22 @@ export class CharacterController extends AbstractSecondaryController<Character, 
      */
     public async getDiscordId(characterId: number): Promise<string[]> {
         return this.getSecondaryRepo().find({where: {characterId: characterId}}).then((nicknames) => {
-            if (nicknames == null || nicknames.length < 1) {
+            if (!nicknames || nicknames.length < 1) {
                 return null;
             }
+
+            console.log("Users: ");
 
             let input: string[] = [], nickname, discordId: string;
             for (nickname in nicknames) {
                 discordId = (nickname as Nickname).discord_id;
+                console.log(discordId);
                 if (!input.includes(discordId)) {
                     input.push(discordId);
                 }
             }
+
+            console.log("End user fetching.");
 
             return input;
         });
