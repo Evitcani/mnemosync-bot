@@ -122,8 +122,9 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                     return null;
                 }
                 console.log("Users: ");
-                let input = [], nickname, discordId;
-                for (nickname in nicknames) {
+                let input = [], nickname, discordId, i;
+                for (i = 0; i < nicknames.length; i++) {
+                    nickname = nicknames[i];
                     discordId = nickname.discord_id;
                     console.log(discordId);
                     if (!input.includes(discordId)) {
