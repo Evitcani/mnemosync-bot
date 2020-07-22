@@ -12,6 +12,7 @@ import {World} from "../../../../entity/World";
 import {SendingController} from "../../../../controllers/character/SendingController";
 import {SendingHelpRelatedResponses} from "../../../../documentation/client-responses/misc/SendingHelpRelatedResponses";
 import {WorldController} from "../../../../controllers/world/WorldController";
+import {Character} from "../../../../entity/Character";
 
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
@@ -35,7 +36,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
         // Want to view sendings.
         if (command.getSubcommands() == null || command.getSubcommands().size < 1) {
-
+            return this.getUnrepliedSendings(command, user, message);
         }
 
         // Reading a message.
@@ -77,9 +78,63 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         });
     }
 
+    private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
+        // Process the next  command.
+        let page = 0;
+        if (Subcommands.NEXT.isCommand(command)) {
+            const nextCmd = Subcommands.NEXT.getCommand(command);
+            if (nextCmd.getInput() != null) {
+                let pg = Number(nextCmd.getInput());
+                if (!isNaN(pg)) {
+                    page = pg;
+                }
+            } else {
+                page = 1;
+            }
+        }
+
+        if (user.defaultCharacter != null && user.defaultWorld != null) {
+            return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
+                if (ret == null) {
+                    return null;
+                }
+
+                // Type is world.
+                if (WorldController.isWorld(ret)) {
+                    return this.getUnrepliedSendingsForWorld(page, ret, message);
+                }
+
+                return this.getUnrepliedSendingsForCharacter(page, ret, message);
+            })
+        }
+
+        if (user.defaultCharacter != null) {
+            return this.getUnrepliedSendingsForCharacter(page, user.defaultCharacter, message);
+        }
+
+        if (user.defaultWorld != null) {
+            return this.getUnrepliedSendingsForWorld(page, user.defaultWorld, message);
+        }
+
+        return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
+    }
+
+    private async getUnrepliedSendingsForWorld(page: number, world: World, message: Message): Promise<Message | Message[]> {
+        // Go out to fetch the messages.
+        return this.sendingController.get(page, world, null, null).then((messages) => {
+            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page));
+        });
+    }
+
+    private async getUnrepliedSendingsForCharacter(page: number, character: Character, message: Message): Promise<Message | Message[]> {
+        // Go out to fetch the messages.
+        return this.sendingController.get(page, null, null, character).then((messages) => {
+            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page));
+        });
+    }
+
     private async constructNewSending(command: Command, user: User, world: World, sending: Sending, message: Message): Promise<Sending> {
         // Get the content.
-
         if (Subcommands.MESSAGE.isCommand(command)) {
             const msgCmd = Subcommands.MESSAGE.getCommand(command);
             if (Subcommands.REPLY.isCommand(command)) {
@@ -96,7 +151,30 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // Get the in-game date.
         if (Subcommands.DATE.isCommand(command)) {
             const dateCmd = Subcommands.DATE.getCommand(command);
-            sending.inGameDate = dateCmd.getInput();
+            let input = dateCmd.getInput();
+            if (input == null) {
+                return null;
+            }
+            // Split the date and process.
+            let dates = input.split("/");
+            if (dates.length < 3) {
+                return null;
+            }
+
+            // TODO: Implement era processing.
+            let day = SendingCommandHandler.getNumber(dates[0]),
+                month = SendingCommandHandler.getNumber(dates[1]),
+                year = SendingCommandHandler.getNumber(dates[2]);
+
+            // TODO: Better response here.
+            if (day == null || month == null || year == null) {
+                return null;
+            }
+
+            // Now put it inside the sending.
+            sending.inGameDate.day = day;
+            sending.inGameDate.month = month;
+            sending.inGameDate.year = year;
         } else {
             await message.channel.send(SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content));
             return null;
@@ -109,7 +187,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
             // Could not find the NPC.
             if (sending.toNpc == null) {
-
+                return null;
             }
         } else {
             if (Subcommands.TO.isCommand(command)) {
@@ -135,5 +213,43 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         return sending;
+    }
+
+    public async worldOrCharacter(world: World, character: Character, message: Message): Promise<World | Character> {
+        return message.channel.send(SendingHelpRelatedResponses.CHECK_SENDINGS_FOR_WHICH(character, world)).then((msg) => {
+            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                max: 1,
+                time: 10e3,
+                errors: ['time'],
+            }).then((input) => {
+                msg.delete({reason: "Removed processing command."});
+                let content = input.first().content;
+                let choice = Number(content);
+                if (isNaN(choice) || choice > 2 || choice < 1) {
+                    message.channel.send("Input doesn't make sense!");
+                    return null;
+                }
+
+                input.first().delete();
+                return choice == 1 ? world : character;
+            }).catch(()=> {
+                msg.delete({reason: "Removed processing command."});
+                message.channel.send("Message timed out.");
+                return null;
+            });
+        });
+    }
+
+    private static getNumber(input: string): number | null {
+        if (input == null) {
+            return null;
+        }
+
+        let ret = Number(input);
+        if (isNaN(ret)) {
+            return null;
+        }
+
+        return ret;
     }
 }

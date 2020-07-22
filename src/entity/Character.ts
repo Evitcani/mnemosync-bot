@@ -14,6 +14,8 @@ import {User} from "./User";
 
 @Entity({name: "characters"})
 export class Character {
+    type = "Character";
+
     @PrimaryGeneratedColumn('increment')
     id: number;
 

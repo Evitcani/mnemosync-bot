@@ -15,6 +15,9 @@ import {User} from "./User";
 
 @Entity({name: Table.WORLD})
 export class World {
+    // Type of this class.
+    type = "World";
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

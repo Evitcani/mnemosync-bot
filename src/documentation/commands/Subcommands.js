@@ -12,6 +12,7 @@ Subcommands.EATS = new CommandStrut_1.CommandStrut("eats", null);
 Subcommands.FROM = new CommandStrut_1.CommandStrut("from", null);
 Subcommands.FROM_NPC = new CommandStrut_1.CommandStrut("from-npc", "fromn");
 Subcommands.IMG_URL = new CommandStrut_1.CommandStrut("image-url", "img");
+Subcommands.NEXT = new CommandStrut_1.CommandStrut("next", "n");
 Subcommands.NICKNAME = new CommandStrut_1.CommandStrut("nickname", "nick");
 Subcommands.NPC = new CommandStrut_1.CommandStrut("npc", null);
 Subcommands.MESSAGE = new CommandStrut_1.CommandStrut("message", "msg");
