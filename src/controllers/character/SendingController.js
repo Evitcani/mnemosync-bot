@@ -117,6 +117,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
                 .addOrderBy("\"msg\".\"created_date\"", "ASC")
                 .limit(limit)
                 .skip(skip);
+            console.debug(query);
             return query
                 .getMany().then((messages) => {
                 if (!messages || messages.length < 1) {
