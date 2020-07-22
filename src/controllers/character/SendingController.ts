@@ -30,23 +30,33 @@ export class SendingController extends AbstractController<Sending> {
     }
 
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
-        let flag = false;
+        let flag = false, sub;
 
         let query = this.getRepo().createQueryBuilder("msg");
 
         if (world != null) {
+            query = query.where(`"msg"."world_id" = "${world.id}"`);
             flag = true;
-            query = query.where(`"msg"."worldId" = ${world.id}`);
         }
 
         if (toNpc != null) {
+            sub = `"msg"."to_npc_id" = "${toNpc.id}"`;
+            if (flag) {
+                query = query.andWhere(sub);
+            } else {
+                query = query.where(sub);
+            }
             flag = true;
-            query = query.where(`"msg"."toNpcId" = ${toNpc.id}`);
         }
 
         if (toPlayer != null) {
+            sub = `"msg"."to_player_id" = ${toPlayer.id}`;
+            if (flag) {
+                query = query.andWhere(sub);
+            } else {
+                query = query.where(sub);
+            }
             flag = true;
-            query = query.where(`"msg"."toPlayerId" = ${toPlayer.id}`);
         }
 
         // Nothing to see here.
@@ -58,7 +68,7 @@ export class SendingController extends AbstractController<Sending> {
         // Add final touches.
         query = query
             .andWhere(`("msg"."isReplied" IS NULL OR "msg"."isReplied" IS FALSE)`)
-            .addOrderBy("createdDate", "ASC")
+            .addOrderBy("\"msg\".\"created_date\"", "ASC")
             .limit(SendingController.SENDING_LIMIT)
             .skip(page * SendingController.SENDING_LIMIT);
 
