@@ -23,6 +23,7 @@ const AbstractController_1 = require("./Base/AbstractController");
 const Table_1 = require("../documentation/databases/Table");
 const inversify_1 = require("inversify");
 const StringUtility_1 = require("../utilities/StringUtility");
+const WorldRelatedClientResponses_1 = require("../documentation/client-responses/WorldRelatedClientResponses");
 let WorldController = class WorldController extends AbstractController_1.AbstractController {
     /**
      * Constructs this controller.
@@ -42,6 +43,31 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
                 console.error("ERR ::: Could not create new world.");
                 console.error(err);
                 return null;
+            });
+        });
+    }
+    worldSelection(worlds, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return message.channel.send(WorldRelatedClientResponses_1.WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
+                return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                    max: 1,
+                    time: 10e3,
+                    errors: ['time'],
+                }).then((input) => {
+                    msg.delete({ reason: "Removed world processing command." });
+                    let content = input.first().content;
+                    let choice = Number(content);
+                    if (isNaN(choice) || choice >= worlds.length || choice < 0) {
+                        message.channel.send("Input doesn't make sense!");
+                        return null;
+                    }
+                    input.first().delete();
+                    return worlds[choice];
+                }).catch(() => {
+                    msg.delete({ reason: "Removed world processing command." });
+                    message.channel.send("Message timed out.");
+                    return null;
+                });
             });
         });
     }

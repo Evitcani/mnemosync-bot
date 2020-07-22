@@ -4,6 +4,8 @@ import {Table} from "../documentation/databases/Table";
 import {injectable} from "inversify";
 import {User} from "../entity/User";
 import {StringUtility} from "../utilities/StringUtility";
+import {Message} from "discord.js";
+import {WorldRelatedClientResponses} from "../documentation/client-responses/WorldRelatedClientResponses";
 
 @injectable()
 export class WorldController extends AbstractController<World> {
@@ -26,6 +28,31 @@ export class WorldController extends AbstractController<World> {
                 console.error(err);
                 return null;
             });
+    }
+
+    public async worldSelection(worlds: World[], message: Message): Promise<World> {
+        return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
+            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                max: 1,
+                time: 10e3,
+                errors: ['time'],
+            }).then((input) => {
+                msg.delete({reason: "Removed world processing command."});
+                let content = input.first().content;
+                let choice = Number(content);
+                if (isNaN(choice) || choice >= worlds.length || choice < 0) {
+                    message.channel.send("Input doesn't make sense!");
+                    return null;
+                }
+
+                input.first().delete();
+                return worlds[choice];
+            }).catch(()=> {
+                msg.delete({reason: "Removed world processing command."});
+                message.channel.send("Message timed out.");
+                return null;
+            });
+        });
     }
 
     /**
