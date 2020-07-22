@@ -154,17 +154,21 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 const dateCmd = Subcommands_1.Subcommands.DATE.getCommand(command);
                 let input = dateCmd.getInput();
                 if (input == null) {
+                    yield message.channel.send("There was no actual date given.");
                     return null;
                 }
                 // Split the date and process.
                 let dates = input.split("/");
                 if (dates.length < 3) {
+                    yield message.channel.send("Date was malformed. Should be like `[day]/[month]/[year]`");
                     return null;
                 }
                 // TODO: Implement era processing.
                 let day = SendingCommandHandler_1.getNumber(dates[0]), month = SendingCommandHandler_1.getNumber(dates[1]), year = SendingCommandHandler_1.getNumber(dates[2]);
                 // TODO: Better response here.
                 if (day == null || month == null || year == null) {
+                    yield message.channel.send("Date was malformed. Day, month or year was not a number. Should be like " +
+                        "`[# day]/[# month]/[# year]`");
                     return null;
                 }
                 // Now put it inside the sending.
@@ -182,6 +186,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 sending.toNpc = yield this.npcController.getByName(tonCmd.getInput(), world.id);
                 // Could not find the NPC.
                 if (sending.toNpc == null) {
+                    yield message.channel.send("Could not find the given NPC you were trying to send to.");
                     return null;
                 }
             }
@@ -189,6 +194,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 if (Subcommands_1.Subcommands.TO.isCommand(command)) {
                     const toCmd = Subcommands_1.Subcommands.TO.getCommand(command);
                     // TODO: Allow players to send messages to other players.
+                    yield message.channel.send("Not yet supporting player-to-player messages!");
                     return null;
                 }
                 else {
@@ -206,6 +212,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 }
                 else {
                     // From no one...
+                    yield message.channel.send("Couldn't figure out who this message was meant to be from!");
                     return null;
                 }
             }
