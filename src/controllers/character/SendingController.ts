@@ -5,7 +5,7 @@ import {Table} from "../../documentation/databases/Table";
 import {World} from "../../entity/World";
 import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
 import {Character} from "../../entity/Character";
-import {getConnection} from "typeorm";
+import {Any, getConnection} from "typeorm";
 
 @injectable()
 export class SendingController extends AbstractController<Sending> {
@@ -35,7 +35,7 @@ export class SendingController extends AbstractController<Sending> {
             return null;
         }
 
-        return this.getRepo().find({where: {id: ids}, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"]})
+        return this.getRepo().find({where: {id: Any(ids)}, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"]})
             .then((sending) => {
                 // Check the party is valid.
 
