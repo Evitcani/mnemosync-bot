@@ -87,16 +87,18 @@ export class SendingHelpRelatedResponses {
         str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
         if (includeFrom) {
             str += `> FROM: ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
-            str += `\n> \n`;
-            str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
+            str += `> \n`;
+            str += `> ${encryptionUtility.decrypt(message.content)}\n`;
         }
         if (includeTo) {
             str += `> TO  : ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
             if (includeReply && message.reply != null) {
-                str += `\n> \n`;
-                str += `> ${encryptionUtility.decrypt(message.reply)}\n\n`;
+                str += `> \n`;
+                str += `> ${encryptionUtility.decrypt(message.reply)}\n`;
             }
         }
+
+        str += `\n`;
 
         return str;
     }
