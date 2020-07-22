@@ -36,22 +36,12 @@ export class WorldController extends AbstractController<World> {
      */
     public getByNameAndUser(name: string, user: User): Promise<World[]> {
         let sanitizedName = StringUtility.escapeSQLInput(name);
-
-        let query =this
-            .getRepo()
-            .createQueryBuilder(Table.WORLD_OWNERS)
-            .leftJoinAndSelect(World, "world", `world.id = "${Table.WORLD_OWNERS}"."worldsId"`)
-            .where(`"${Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
-            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
-            .getQuery();
-
-        console.log("QUERY: " + query);
         return this
             .getRepo()
             .createQueryBuilder("world")
             .leftJoinAndSelect(Table.WORLD_OWNERS, "owners", `world.id = "owners"."worldsId"`)
             .where(`"owners"."usersId" = ${user.id}`)
-            .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
+            .andWhere(`LOWER(world.name) LIKE LOWER('%${sanitizedName}%')`)
             .getMany()
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get worlds.");
