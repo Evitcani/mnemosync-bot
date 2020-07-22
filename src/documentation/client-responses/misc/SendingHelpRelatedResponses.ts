@@ -6,6 +6,7 @@ import {Character} from "../../../entity/Character";
 import {World} from "../../../entity/World";
 import {Sending} from "../../../entity/Sending";
 import {SendingController} from "../../../controllers/character/SendingController";
+import {EncryptionUtility} from "../../../utilities/EncryptionUtility";
 
 /**
  * Helps the sending command if something went wrong.
@@ -48,34 +49,34 @@ export class SendingHelpRelatedResponses {
             .setDescription("Can't fetch messages for no one or nothing!");
     }
 
-    static PRINT_MESSAGES_FROM_WORLD (messages: Sending[], world: World, page: number): MessageEmbed {
-        let messageStr = this.processMessages(messages, page, true, true);
+    static PRINT_MESSAGES_FROM_WORLD (messages: Sending[], world: World, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
+        let messageStr = this.processMessages(messages, page, true, true, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
     }
 
-    static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number): MessageEmbed {
-        let messageStr = this.processMessages(messages, page, false, true);
+    static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
+        let messageStr = this.processMessages(messages, page, false, true, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
             .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
     }
 
-    private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean): string {
+    private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean, encryptionUtility: EncryptionUtility): string {
         let additional = page * SendingController.SENDING_LIMIT;
         let str = "";
         let i, message: Sending;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
-            str += `[\`${additional + i}\`] **GAME DATE:** ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}\n`;
+            str += `**[\`${additional + i}\`] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
             if (includeFrom) {
                 str += `\`FROM:\` ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
             }
             if (includeTo) {
                 str += `\`TO  :\` ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
             }
-            str += `"${message.content}"\n\n`;
+            str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
 
         return str;

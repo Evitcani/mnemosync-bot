@@ -131,7 +131,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
         return __awaiter(this, void 0, void 0, function* () {
             // Go out to fetch the messages.
             return this.sendingController.get(page, world, null, null).then((messages) => {
-                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page));
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page, this.encryptionUtility));
             });
         });
     }
@@ -139,7 +139,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
         return __awaiter(this, void 0, void 0, function* () {
             // Go out to fetch the messages.
             return this.sendingController.get(page, null, null, character).then((messages) => {
-                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page));
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page, this.encryptionUtility));
             });
         });
     }
@@ -206,7 +206,6 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             }
             else {
                 if (Subcommands_1.Subcommands.TO.isCommand(command)) {
-                    const toCmd = Subcommands_1.Subcommands.TO.getCommand(command);
                     // TODO: Allow players to send messages to other players.
                     yield message.channel.send("Not yet supporting player-to-player messages!");
                     return null;

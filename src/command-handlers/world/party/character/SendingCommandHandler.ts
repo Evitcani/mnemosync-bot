@@ -17,7 +17,7 @@ import {GameDate} from "../../../../entity/GameDate";
 
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
-    private encryptionUtility: EncryptionUtility;
+    private readonly encryptionUtility: EncryptionUtility;
     private npcController: NPCController;
     private sendingController: SendingController;
     private worldController: WorldController;
@@ -140,14 +140,14 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     private async getUnrepliedSendingsForWorld(page: number, world: World, message: Message): Promise<Message | Message[]> {
         // Go out to fetch the messages.
         return this.sendingController.get(page, world, null, null).then((messages) => {
-            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page));
+            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page, this.encryptionUtility));
         });
     }
 
     private async getUnrepliedSendingsForCharacter(page: number, character: Character, message: Message): Promise<Message | Message[]> {
         // Go out to fetch the messages.
         return this.sendingController.get(page, null, null, character).then((messages) => {
-            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page));
+            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page, this.encryptionUtility));
         });
     }
 
@@ -218,7 +218,6 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
         } else {
             if (Subcommands.TO.isCommand(command)) {
-                const toCmd = Subcommands.TO.getCommand(command);
                 // TODO: Allow players to send messages to other players.
                 await message.channel.send("Not yet supporting player-to-player messages!");
                 return null;
