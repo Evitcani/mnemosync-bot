@@ -199,7 +199,13 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
-        return member.send(message);
+        return member.fetch().then((freshUser) => {
+            return freshUser.send(message);
+        }).catch((err: Error) => {
+            console.error("ERR ::: Could not DM user.");
+            console.error(err);
+            return null;
+        });
     }
 
     private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
