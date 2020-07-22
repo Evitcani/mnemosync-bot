@@ -195,12 +195,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     }
 
     private async doDM(member: DiscordUser, message: MessageEmbed): Promise<Message> {
-        if (member.dmChannel == null) {
-            return member.createDM().then((channel) => {
-                return channel.send(message);
-            })
-        }
-        return member.dmChannel.fetch().then((channel) => {
+        return member.createDM().then((channel) => {
             return channel.send(message);
         });
     }
