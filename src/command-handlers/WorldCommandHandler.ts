@@ -77,6 +77,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                     }
 
                     return this.userController.updateDefaultWorld(user, worlds[choice]).then(() => {
+                        input.first().delete({reason: "Removed world processing command."});
                         return message.channel.send(`Default world switched to '${worlds[choice].name}'`);
                     });
                 }).catch(()=> {
@@ -84,10 +85,6 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                     return message.channel.send("Message timed out.");
                 });
             });
-
-
-
-
         });
     }
 

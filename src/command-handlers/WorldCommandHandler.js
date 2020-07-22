@@ -87,6 +87,7 @@ let WorldCommandHandler = class WorldCommandHandler extends AbstractUserCommandH
                             return message.channel.send("That input doesn't make any sense!");
                         }
                         return this.userController.updateDefaultWorld(user, worlds[choice]).then(() => {
+                            input.first().delete({ reason: "Removed world processing command." });
                             return message.channel.send(`Default world switched to '${worlds[choice].name}'`);
                         });
                     }).catch(() => {
