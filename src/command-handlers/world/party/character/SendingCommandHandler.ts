@@ -158,23 +158,37 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 // Notify the player of the reply.
                 if (sending.fromPlayerId != null) {
                     return this.characterController.getDiscordId(sending.fromPlayerId).then(async (discordIds) => {
+                        if (discordIds == null || discordIds.length < 1) {
+                            return message.channel.send("No discord accounts associated with this message!");
+                        }
+
+                        console.log("Got to flipping through user stuff..");
+
                         let discordId, i;
                         for (i = 0; i < discordIds.length; i++) {
                             discordId = discordIds[i];
+                            console.log("Trying to find user of id " + discordId);
                             if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
+                                console.log("No discord user of that ID is cached. Fetching...");
                                 await message.client.users.fetch(discordId).then(async (member: DiscordUser) => {
+                                    console.log("Finished fetching!");
+
                                     // No member found, so can't send message.
                                     if (!member) {
+                                        console.log("Nothing found.");
                                         return;
                                     }
 
                                     // Set the cache.
                                     if (message.client.users.cache == null) {
+                                        console.log("Creating a new cache.");
                                         message.client.users.cache = new Collection<Snowflake, DiscordUser>();
                                     }
+                                    console.log("Caching user...");
                                     message.client.users.cache.set(member.id, member);
 
                                     // Do response.
+                                    console.log("Sending response...");
                                     return SendingCommandHandler.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
                                         this.encryptionUtility));
                                 });
@@ -199,7 +213,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
+        console.log("Got to fetching a user.");
         return member.fetch().then((freshUser) => {
+            console.log("Got to sending a user.");
             return freshUser.send(message);
         }).catch((err: Error) => {
             console.error("ERR ::: Could not DM user.");

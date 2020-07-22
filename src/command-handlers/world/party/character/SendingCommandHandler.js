@@ -144,21 +144,32 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                     // Notify the player of the reply.
                     if (sending.fromPlayerId != null) {
                         return this.characterController.getDiscordId(sending.fromPlayerId).then((discordIds) => __awaiter(this, void 0, void 0, function* () {
+                            if (discordIds == null || discordIds.length < 1) {
+                                return message.channel.send("No discord accounts associated with this message!");
+                            }
+                            console.log("Got to flipping through user stuff..");
                             let discordId, i;
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
+                                console.log("Trying to find user of id " + discordId);
                                 if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
+                                    console.log("No discord user of that ID is cached. Fetching...");
                                     yield message.client.users.fetch(discordId).then((member) => __awaiter(this, void 0, void 0, function* () {
+                                        console.log("Finished fetching!");
                                         // No member found, so can't send message.
                                         if (!member) {
+                                            console.log("Nothing found.");
                                             return;
                                         }
                                         // Set the cache.
                                         if (message.client.users.cache == null) {
+                                            console.log("Creating a new cache.");
                                             message.client.users.cache = new discord_js_1.Collection();
                                         }
+                                        console.log("Caching user...");
                                         message.client.users.cache.set(member.id, member);
                                         // Do response.
+                                        console.log("Sending response...");
                                         return SendingCommandHandler_1.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                     }));
                                 }
@@ -181,7 +192,9 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             if (member == null) {
                 return null;
             }
+            console.log("Got to fetching a user.");
             return member.fetch().then((freshUser) => {
+                console.log("Got to sending a user.");
                 return freshUser.send(message);
             }).catch((err) => {
                 console.error("ERR ::: Could not DM user.");
