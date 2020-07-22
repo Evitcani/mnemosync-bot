@@ -64,9 +64,9 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
         console.log("QUERY: " + query);
         return this
             .getRepo()
-            .createQueryBuilder(Table_1.Table.WORLD_OWNERS)
-            .leftJoinAndSelect(World_1.World, "world", `world.id = "${Table_1.Table.WORLD_OWNERS}"."worldsId"`)
-            .where(`"${Table_1.Table.WORLD_OWNERS}"."usersId" = ${user.id}`)
+            .createQueryBuilder("world")
+            .leftJoinAndSelect(Table_1.Table.WORLD_OWNERS, "owners", `world.id = "owners"."worldsId"`)
+            .where(`"owners"."usersId" = ${user.id}`)
             .andWhere(`LOWER(world.name) LIKE LOWER('%${name}%')`)
             .getMany()
             .catch((err) => {
