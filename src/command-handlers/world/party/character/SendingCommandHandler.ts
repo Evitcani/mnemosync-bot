@@ -13,6 +13,7 @@ import {SendingController} from "../../../../controllers/character/SendingContro
 import {SendingHelpRelatedResponses} from "../../../../documentation/client-responses/misc/SendingHelpRelatedResponses";
 import {WorldController} from "../../../../controllers/world/WorldController";
 import {Character} from "../../../../entity/Character";
+import {GameDate} from "../../../../entity/GameDate";
 
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
@@ -193,6 +194,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
 
             // Now put it inside the sending.
+            sending.inGameDate = new GameDate();
             sending.inGameDate.day = day;
             sending.inGameDate.month = month;
             sending.inGameDate.year = year;
