@@ -60,6 +60,12 @@ class SendingHelpRelatedResponses {
             .setTitle(`Got a message reply!`)
             .setDescription(`Here is the reply:\n\n${messageStr}`);
     }
+    static PRINT_FINISHED_INFORMING(message, encryptionUtility) {
+        let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
+        return BasicEmbed_1.BasicEmbed.get()
+            .setTitle(`Finished informing all users of the reply.`)
+            .setDescription(`Here is the reply you just sent:\n\n${messageStr}`);
+    }
     static processMessages(messages, page, includeTo, includeFrom, includeReply, encryptionUtility) {
         let additional = page * SendingController_1.SendingController.SENDING_LIMIT;
         let str = "";

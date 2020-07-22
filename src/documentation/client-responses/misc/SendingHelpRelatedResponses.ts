@@ -70,6 +70,13 @@ export class SendingHelpRelatedResponses {
             .setDescription(`Here is the reply:\n\n${messageStr}`);
     }
 
+    static PRINT_FINISHED_INFORMING (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
+        let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
+        return BasicEmbed.get()
+            .setTitle(`Finished informing all users of the reply.`)
+            .setDescription(`Here is the reply you just sent:\n\n${messageStr}`);
+    }
+
     private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
         let additional = page * SendingController.SENDING_LIMIT;
         let str = "";
