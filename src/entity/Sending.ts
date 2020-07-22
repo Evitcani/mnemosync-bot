@@ -13,6 +13,7 @@ import {Character} from "./Character";
 import {Table} from "../documentation/databases/Table";
 import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
+import {GameDate} from "./GameDate";
 
 @Entity({name: Table.SENDING})
 export class Sending {
@@ -35,8 +36,8 @@ export class Sending {
     @JoinColumn({name: "world_id"})
     world?: World;
 
-    @Column( {name: "in_game_date"})
-    inGameDate: {day: number, month: number, year: number, era: string};
+    @Column( type => GameDate)
+    inGameDate: GameDate;
 
     @Column("text")
     content: string;

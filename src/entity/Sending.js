@@ -16,6 +16,7 @@ const Character_1 = require("./Character");
 const Table_1 = require("../documentation/databases/Table");
 const StringUtility_1 = require("../utilities/StringUtility");
 const World_1 = require("./World");
+const GameDate_1 = require("./GameDate");
 let Sending = class Sending {
     purifyInsertUpdate() {
         this.inGameDate.era = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate.era);
@@ -50,8 +51,8 @@ __decorate([
     __metadata("design:type", World_1.World)
 ], Sending.prototype, "world", void 0);
 __decorate([
-    typeorm_1.Column({ name: "in_game_date" }),
-    __metadata("design:type", Object)
+    typeorm_1.Column(type => GameDate_1.GameDate),
+    __metadata("design:type", GameDate_1.GameDate)
 ], Sending.prototype, "inGameDate", void 0);
 __decorate([
     typeorm_1.Column("text"),
