@@ -33,6 +33,7 @@ const NPCController_1 = require("../../../../controllers/character/NPCController
 const SendingController_1 = require("../../../../controllers/character/SendingController");
 const SendingHelpRelatedResponses_1 = require("../../../../documentation/client-responses/misc/SendingHelpRelatedResponses");
 const WorldController_1 = require("../../../../controllers/world/WorldController");
+const GameDate_1 = require("../../../../entity/GameDate");
 let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(encryptionUtility, npcController, sendingController, worldController) {
         super();
@@ -182,6 +183,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                     return null;
                 }
                 // Now put it inside the sending.
+                sending.inGameDate = new GameDate_1.GameDate();
                 sending.inGameDate.day = day;
                 sending.inGameDate.month = month;
                 sending.inGameDate.year = year;
