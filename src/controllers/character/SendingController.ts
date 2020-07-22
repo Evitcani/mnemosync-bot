@@ -31,26 +31,22 @@ export class SendingController extends AbstractController<Sending> {
 
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
         let flag = false;
-        let where = {
-            isReplied: Not(true)
-        };
+
+        let query = this.getRepo().createQueryBuilder("msg");
 
         if (world != null) {
             flag = true;
-            // @ts-ignore
-            where.worldId = world.id;
+            query = query.where(`"msg"."worldId" = ${world.id}`);
         }
 
         if (toNpc != null) {
             flag = true;
-            // @ts-ignore
-            where.toNpcId = toNpc.id;
+            query = query.where(`"msg"."toNpcId" = ${toNpc.id}`);
         }
 
         if (toPlayer != null) {
             flag = true;
-            // @ts-ignore
-            where.toPlayer = toPlayer.id;
+            query = query.where(`"msg"."toPlayerId" = ${toPlayer.id}`);
         }
 
         // Nothing to see here.
@@ -59,18 +55,22 @@ export class SendingController extends AbstractController<Sending> {
             return null;
         }
 
-        return this.getRepo().find({
-            where: where,
-            order: {
-                createdDate: 'ASC'
-            },
-            cache: true,
-            skip: page * SendingController.SENDING_LIMIT,
-            take: SendingController.SENDING_LIMIT
-        }).catch((err: Error) => {
-            console.error("ERR ::: Could not get any sendings.");
-            console.error(err);
-            return null;
-        });
+        // Add final touches.
+        query = query
+            .andWhere(`("msg"."isReplied" IS NULL OR "msg"."isReplied" IS FALSE)`)
+            .addOrderBy("createdDate", "ASC")
+            .limit(SendingController.SENDING_LIMIT)
+            .skip(page * SendingController.SENDING_LIMIT);
+
+        // Print query.
+        console.debug("QUERY USED: " + query.getQuery());
+
+        return query
+            .getMany()
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get any sendings.");
+                console.error(err);
+                return null;
+            });
     }
 }

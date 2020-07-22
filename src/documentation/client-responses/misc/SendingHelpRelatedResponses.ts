@@ -20,9 +20,18 @@ export class SendingHelpRelatedResponses {
         return BasicEmbed.get()
             .setTitle(`Message has no date!`)
             .setDescription(`Message has no date. Add message (in-game) date with ` +
-                `\`${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE} [day]/[month]/[year]\`.\n\n` +
+                `\`${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE.name} [day]/[month]/[year]\`.\n\n` +
                 `Here is your original message with the added date parameter:\n` +
-                `\`\`\`${messageContents} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE} [day]/[month]/[year]\`\`\``)
+                `\`\`\`${messageContents} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE.name} [day]/[month]/[year]\`\`\``)
+    }
+
+    static MESSAGE_HAS_NO_CONTENT(messageContents: string): MessageEmbed {
+        return BasicEmbed.get()
+            .setTitle(`Message has no contents!`)
+            .setDescription(`Message has no content. Add message content with ` +
+                `\`${Bot.PREFIX_SUBCOMMAND}${Subcommands.MESSAGE.name} [message contents]\`.\n\n` +
+                `Here is your original message with the added message parameter:\n` +
+                `\`\`\`${messageContents} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.MESSAGE.name} [message contents]\`\`\``)
     }
 
     static CHECK_SENDINGS_FOR_WHICH (character: Character, world: World): MessageEmbed {
