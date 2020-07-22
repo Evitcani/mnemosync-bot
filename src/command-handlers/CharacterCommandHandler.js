@@ -48,7 +48,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
                 const npcCmd = Subcommands_1.Subcommands.NPC.isCommand(command);
                 if (npcCmd != null) {
-                    this.constructNPC(command, message, user).then((npc) => {
+                    return this.constructNPC(command, message, user).then((npc) => {
                         return this.npcController.create(npc).then((character) => {
                             if (character == null) {
                                 return message.channel.send("Could not create new NPC.");
