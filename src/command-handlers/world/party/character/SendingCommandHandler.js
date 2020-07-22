@@ -178,12 +178,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
     }
     doDM(member, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (member.dmChannel == null) {
-                return member.createDM().then((channel) => {
-                    return channel.send(message);
-                });
-            }
-            return member.dmChannel.fetch().then((channel) => {
+            return member.createDM().then((channel) => {
                 return channel.send(message);
             });
         });
