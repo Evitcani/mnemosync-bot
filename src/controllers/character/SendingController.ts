@@ -108,6 +108,8 @@ export class SendingController extends AbstractController<Sending> {
             .limit(limit)
             .skip(skip);
 
+        console.debug(query);
+
         return query
             .getMany().then((messages) => {
                 if (!messages || messages.length < 1) {
