@@ -153,11 +153,13 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             const dateCmd = Subcommands.DATE.getCommand(command);
             let input = dateCmd.getInput();
             if (input == null) {
+                await message.channel.send("There was no actual date given.");
                 return null;
             }
             // Split the date and process.
             let dates = input.split("/");
             if (dates.length < 3) {
+                await message.channel.send("Date was malformed. Should be like `[day]/[month]/[year]`");
                 return null;
             }
 
@@ -168,6 +170,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
             // TODO: Better response here.
             if (day == null || month == null || year == null) {
+                await message.channel.send("Date was malformed. Day, month or year was not a number. Should be like " +
+                    "`[# day]/[# month]/[# year]`");
                 return null;
             }
 
@@ -187,12 +191,14 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
             // Could not find the NPC.
             if (sending.toNpc == null) {
+                await message.channel.send("Could not find the given NPC you were trying to send to.");
                 return null;
             }
         } else {
             if (Subcommands.TO.isCommand(command)) {
                 const toCmd = Subcommands.TO.getCommand(command);
                 // TODO: Allow players to send messages to other players.
+                await message.channel.send("Not yet supporting player-to-player messages!");
                 return null;
             } else {
                 return null;
@@ -208,6 +214,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 sending.fromPlayer = user.defaultCharacter;
             } else {
                 // From no one...
+                await message.channel.send("Couldn't figure out who this message was meant to be from!");
                 return null;
             }
         }
