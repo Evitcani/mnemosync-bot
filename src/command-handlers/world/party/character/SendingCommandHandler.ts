@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Collection, Message, Snowflake, User as DiscordUser} from "discord.js";
+import {Collection, Message, MessageEmbed, Snowflake, User as DiscordUser} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -162,24 +162,26 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                         for (i = 0; i < discordIds.length; i++) {
                             discordId = discordIds[i];
                             if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
-                                await message.client.users.fetch(discordId).then((member: DiscordUser) => {
+                                await message.client.users.fetch(discordId).then(async (member: DiscordUser) => {
                                     // No member found, so can't send message.
                                     if (!member) {
                                         return;
                                     }
 
+                                    // Set the cache.
                                     if (message.client.users.cache == null) {
                                         message.client.users.cache = new Collection<Snowflake, DiscordUser>();
                                     }
                                     message.client.users.cache.set(member.id, member);
-                                    return member.send(
-                                        SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
-                                            this.encryptionUtility));
+
+                                    // Do response.
+                                    return this.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                        this.encryptionUtility));
                                 });
                             } else {
-                                await message.client.users.cache.get(discordId)
-                                    .send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
-                                        this.encryptionUtility));
+                                let member = message.client.users.cache.get(discordId);
+                                await this.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                    this.encryptionUtility));
                             }
                         }
                         return message.channel.send("Finished informing all users of the reply.");
@@ -189,6 +191,17 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 // TODO: From an NPC.
                 return null;
             });
+        });
+    }
+
+    private async doDM(member: DiscordUser, message: MessageEmbed): Promise<Message> {
+        if (member.dmChannel == null) {
+            return member.createDM().then((channel) => {
+                return channel.send(message);
+            })
+        }
+        return member.dmChannel.fetch().then((channel) => {
+            return channel.send(message);
         });
     }
 

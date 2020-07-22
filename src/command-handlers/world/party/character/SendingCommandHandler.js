@@ -148,21 +148,23 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
                                 if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
-                                    yield message.client.users.fetch(discordId).then((member) => {
+                                    yield message.client.users.fetch(discordId).then((member) => __awaiter(this, void 0, void 0, function* () {
                                         // No member found, so can't send message.
                                         if (!member) {
                                             return;
                                         }
+                                        // Set the cache.
                                         if (message.client.users.cache == null) {
                                             message.client.users.cache = new discord_js_1.Collection();
                                         }
                                         message.client.users.cache.set(member.id, member);
-                                        return member.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
-                                    });
+                                        // Do response.
+                                        return this.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                    }));
                                 }
                                 else {
-                                    yield message.client.users.cache.get(discordId)
-                                        .send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                    let member = message.client.users.cache.get(discordId);
+                                    yield this.doDM(member, SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                 }
                             }
                             return message.channel.send("Finished informing all users of the reply.");
@@ -171,6 +173,18 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                     // TODO: From an NPC.
                     return null;
                 });
+            });
+        });
+    }
+    doDM(member, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (member.dmChannel == null) {
+                return member.createDM().then((channel) => {
+                    return channel.send(message);
+                });
+            }
+            return member.dmChannel.fetch().then((channel) => {
+                return channel.send(message);
             });
         });
     }
