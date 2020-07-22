@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Client, Collection, GuildMember, Message, Snowflake, User as DiscordUser} from "discord.js";
+import {Collection, Message, Snowflake, User as DiscordUser} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -19,21 +19,18 @@ import {CharacterController} from "../../../../controllers/character/CharacterCo
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
-    private client: Client;
     private readonly encryptionUtility: EncryptionUtility;
     private npcController: NPCController;
     private sendingController: SendingController;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
-                @inject(TYPES.Client) client: Client,
                 @inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
                 @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
-        this.client = client;
         this.encryptionUtility = encryptionUtility;
         this.npcController = npcController;
         this.sendingController = sendingController;
@@ -164,22 +161,25 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                         let discordId, i;
                         for (i = 0; i < discordIds.length; i++) {
                             discordId = discordIds[i];
-                            if (this.client.users.cache == null || this.client.users.cache.has(discordId)) {
-                                await message.guild.members.fetch(discordId).then((member) => {
+                            if (message.client.users.cache == null || message.client.users.cache.has(discordId)) {
+                                await message.client.users.fetch(discordId).then((member: DiscordUser) => {
                                     // No member found, so can't send message.
-                                    if (member == null) {
+                                    if (!member) {
                                         return;
                                     }
 
-                                    if (message.guild.members.cache == null) {
-                                        message.guild.members.cache = new Collection<Snowflake, GuildMember>();
+                                    if (message.client.users.cache == null) {
+                                        message.client.users.cache = new Collection<Snowflake, DiscordUser>();
                                     }
-                                    message.guild.members.cache.set(member.id, member);
-                                    return member.send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                    message.client.users.cache.set(member.id, member);
+                                    return member.send(
+                                        SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                            this.encryptionUtility));
                                 });
                             } else {
-                                await message.guild.members.cache.get(discordId)
-                                    .send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                await message.client.users.cache.get(discordId)
+                                    .send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                        this.encryptionUtility));
                             }
                         }
                         return message.channel.send("Finished informing all users of the reply.");

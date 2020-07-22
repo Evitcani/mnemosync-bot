@@ -37,10 +37,9 @@ const WorldController_1 = require("../../../../controllers/world/WorldController
 const GameDate_1 = require("../../../../entity/GameDate");
 const CharacterController_1 = require("../../../../controllers/character/CharacterController");
 let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(characterController, client, encryptionUtility, npcController, sendingController, worldController) {
+    constructor(characterController, encryptionUtility, npcController, sendingController, worldController) {
         super();
         this.characterController = characterController;
-        this.client = client;
         this.encryptionUtility = encryptionUtility;
         this.npcController = npcController;
         this.sendingController = sendingController;
@@ -148,21 +147,21 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                             let discordId, i;
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
-                                if (this.client.users.cache == null || this.client.users.cache.has(discordId)) {
-                                    yield message.guild.members.fetch(discordId).then((member) => {
+                                if (message.client.users.cache == null || message.client.users.cache.has(discordId)) {
+                                    yield message.client.users.fetch(discordId).then((member) => {
                                         // No member found, so can't send message.
-                                        if (member == null) {
+                                        if (!member) {
                                             return;
                                         }
-                                        if (message.guild.members.cache == null) {
-                                            message.guild.members.cache = new discord_js_1.Collection();
+                                        if (message.client.users.cache == null) {
+                                            message.client.users.cache = new discord_js_1.Collection();
                                         }
-                                        message.guild.members.cache.set(member.id, member);
+                                        message.client.users.cache.set(member.id, member);
                                         return member.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                     });
                                 }
                                 else {
-                                    yield message.guild.members.cache.get(discordId)
+                                    yield message.client.users.cache.get(discordId)
                                         .send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                 }
                             }
@@ -356,13 +355,11 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
 SendingCommandHandler = SendingCommandHandler_1 = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
-    __param(1, inversify_1.inject(types_1.TYPES.Client)),
-    __param(2, inversify_1.inject(types_1.TYPES.EncryptionUtility)),
-    __param(3, inversify_1.inject(types_1.TYPES.NPCController)),
-    __param(4, inversify_1.inject(types_1.TYPES.SendingController)),
-    __param(5, inversify_1.inject(types_1.TYPES.WorldController)),
+    __param(1, inversify_1.inject(types_1.TYPES.EncryptionUtility)),
+    __param(2, inversify_1.inject(types_1.TYPES.NPCController)),
+    __param(3, inversify_1.inject(types_1.TYPES.SendingController)),
+    __param(4, inversify_1.inject(types_1.TYPES.WorldController)),
     __metadata("design:paramtypes", [CharacterController_1.CharacterController,
-        discord_js_1.Client,
         EncryptionUtility_1.EncryptionUtility,
         NPCController_1.NPCController,
         SendingController_1.SendingController,
