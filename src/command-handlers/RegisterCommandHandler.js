@@ -30,7 +30,6 @@ const UserToGuildService_1 = require("../database/UserToGuildService");
 const PartyController_1 = require("../controllers/PartyController");
 const Subcommands_1 = require("../documentation/commands/Subcommands");
 const WorldController_1 = require("../controllers/WorldController");
-const World_1 = require("../entity/World");
 const AbstractUserCommandHandler_1 = require("./base/AbstractUserCommandHandler");
 const UserController_1 = require("../controllers/UserController");
 /**
@@ -48,23 +47,6 @@ let RegisterCommandHandler = class RegisterCommandHandler extends AbstractUserCo
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createWorld = Subcommands_1.Subcommands.WORLD.isCommand(command);
-            if (createWorld != null) {
-                const world = new World_1.World();
-                world.name = createWorld.getInput();
-                world.guildId = message.guild.id;
-                world.defaultOfUsers = [];
-                world.defaultOfUsers.push(user);
-                return this.worldController.create(world).then((newWorld) => {
-                    if (newWorld == null) {
-                        return message.channel.send("Could not create world.");
-                    }
-                    user.defaultWorld = world;
-                    this.userController.updateDefaultWorld(user, newWorld).then(() => {
-                        return message.channel.send("Created new world: " + newWorld.name);
-                    });
-                });
-            }
             const createParty = Subcommands_1.Subcommands.PARTY.isCommand(command);
             if (createParty != null) {
                 return this.partyController.create(createParty.getInput(), message.guild.id, message.author.id)

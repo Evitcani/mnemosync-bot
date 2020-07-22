@@ -30,6 +30,7 @@ const CharacterController_1 = require("./controllers/CharacterController");
 const UserController_1 = require("./controllers/UserController");
 const WorldController_1 = require("./controllers/WorldController");
 const NPCController_1 = require("./controllers/NPCController");
+const WorldCommandHandler_1 = require("./command-handlers/WorldCommandHandler");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -54,6 +55,7 @@ container.bind(types_1.TYPES.QuoteCommandHandler).to(QuoteCommandHandler_1.Quote
 container.bind(types_1.TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler_1.RegisterCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.TravelCommandHandler).to(TravelCommandHandler_1.TravelCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.WorldCommandHandler).to(WorldCommandHandler_1.WorldCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.CharacterController).to(CharacterController_1.CharacterController).inSingletonScope();
 container.bind(types_1.TYPES.NPCController).to(NPCController_1.NPCController).inSingletonScope();
 container.bind(types_1.TYPES.PartyController).to(PartyController_1.PartyController).inSingletonScope();

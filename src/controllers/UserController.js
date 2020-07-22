@@ -95,8 +95,14 @@ let UserController = class UserController extends AbstractController_1.AbstractC
      */
     updateDefaultWorld(user, world) {
         return __awaiter(this, void 0, void 0, function* () {
-            user.defaultWorld = world;
-            user.defaultWorldId = world.id;
+            if (world != null) {
+                user.defaultWorld = world;
+                user.defaultWorldId = world.id;
+            }
+            else {
+                user.defaultWorld = null;
+                user.defaultWorldId = null;
+            }
             return this.save(user);
         });
     }

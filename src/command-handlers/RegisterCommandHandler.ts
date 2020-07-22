@@ -40,24 +40,7 @@ export class RegisterCommandHandler extends AbstractUserCommandHandler {
     }
 
     async handleUserCommand(command: Command, message: Message, user): Promise<Message | Message[]> {
-        const createWorld = Subcommands.WORLD.isCommand(command);
-        if (createWorld != null) {
-            const world = new World();
-            world.name = createWorld.getInput();
-            world.guildId = message.guild.id;
-            world.defaultOfUsers = [];
-            world.defaultOfUsers.push(user);
-            return this.worldController.create(world).then((newWorld) => {
-                if (newWorld == null) {
-                    return message.channel.send("Could not create world.");
-                }
 
-                user.defaultWorld = world;
-                this.userController.updateDefaultWorld(user, newWorld).then(() => {
-                    return message.channel.send("Created new world: " + newWorld.name);
-                });
-            });
-        }
 
         const createParty = Subcommands.PARTY.isCommand(command);
         if (createParty != null) {

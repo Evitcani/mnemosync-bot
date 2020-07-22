@@ -8,4 +8,5 @@ export class Commands {
     public static REGISTER = "register";
     public static TRAVEL = "travel";
     public static WHICH = "which";
+    public static WORLD = "world";
 }

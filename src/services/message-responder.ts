@@ -10,6 +10,7 @@ import {QuoteCommandHandler} from "../command-handlers/QuoteCommandHandler";
 import {Commands} from "../documentation/commands/Commands";
 import {CharacterCommandHandler} from "../command-handlers/CharacterCommandHandler";
 import {UserController} from "../controllers/UserController";
+import {WorldCommandHandler} from "../command-handlers/WorldCommandHandler";
 
 @injectable()
 export class MessageResponder {
@@ -19,6 +20,7 @@ export class MessageResponder {
     private quoteCommandHandler: QuoteCommandHandler;
     private registerUserCommandHandler: RegisterCommandHandler;
     private whichCommandHandler: WhichCommandHandler;
+    private worldCommandHandler: WorldCommandHandler;
     private userController: UserController;
 
     constructor(@inject(TYPES.CharacterCommandHandler) characterCommandHandler: CharacterCommandHandler,
@@ -27,6 +29,7 @@ export class MessageResponder {
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
                 @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterCommandHandler,
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler,
+                @inject(TYPES.WorldCommandHandler) worldCommandHandler: WorldCommandHandler,
                 @inject(TYPES.UserController) userController: UserController) {
         this.characterCommandHandler = characterCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
@@ -34,6 +37,7 @@ export class MessageResponder {
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
         this.whichCommandHandler = whichCommandHandler;
+        this.worldCommandHandler = worldCommandHandler;
         this.userController = userController;
     }
 
@@ -94,6 +98,8 @@ export class MessageResponder {
                         message.delete({reason: "Which command deletion."});
                         return msg;
                     });
+                case Commands.WORLD:
+                    return this.worldCommandHandler.handleUserCommand(command, message, user);
             }
         });
     }

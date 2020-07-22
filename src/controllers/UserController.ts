@@ -78,8 +78,14 @@ export class UserController extends AbstractController<User> {
      * @param world The new character to make default.
      */
     public async updateDefaultWorld(user: User, world: World): Promise<User> {
-        user.defaultWorld = world;
-        user.defaultWorldId = world.id;
+        if (world != null) {
+            user.defaultWorld = world;
+            user.defaultWorldId = world.id;
+        } else {
+            user.defaultWorld = null;
+            user.defaultWorldId = null;
+        }
+
         return this.save(user);
     }
 

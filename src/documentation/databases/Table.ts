@@ -11,4 +11,5 @@ export class Table {
     public static USER_DEFAULT_PARTY = "user_default_parties";
     public static USER_TO_GUILD = "user_to_guild";
     public static WORLD = "worlds";
+    public static WORLD_OWNERS = "world_owners_to_users";
 }
