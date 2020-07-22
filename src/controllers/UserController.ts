@@ -4,6 +4,7 @@ import {Table} from "../documentation/databases/Table";
 import {injectable} from "inversify";
 import {Character} from "../entity/Character";
 import {World} from "../entity/World";
+import {getConnection} from "typeorm";
 
 @injectable()
 export class UserController extends AbstractController<User> {
@@ -85,6 +86,20 @@ export class UserController extends AbstractController<User> {
         }
 
         return this.save(user);
+    }
+
+    public async addWorld(user: User, world: World): Promise<User> {
+        return getConnection()
+            .createQueryBuilder()
+            .relation(User, "campaignsDMing")
+            .of(user)
+            .add(world).then(() => {
+                return user;
+            }).catch((err: Error) => {
+                console.error("ERR ::: Could not add new world.");
+                console.error(err);
+                return null;
+            });
     }
 
     /**
