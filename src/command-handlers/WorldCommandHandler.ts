@@ -8,7 +8,7 @@ import {World} from "../entity/World";
 import {WorldController} from "../controllers/WorldController";
 import {TYPES} from "../types";
 import {UserController} from "../controllers/UserController";
-import {getConnection} from "typeorm";
+import {WorldRelatedClientResponses} from "../documentation/client-responses/WorldRelatedClientResponses";
 
 @injectable()
 export class WorldCommandHandler extends AbstractUserCommandHandler {
@@ -44,23 +44,58 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                 return this.removeDefaultWorld(message, user);
             }
 
-            return this.findWorldByName(switchCmd.getInput(), user).then((worlds) => {
-                if (worlds == null) {
-                    return message.channel.send("Could not find world with given name like: " + switchCmd.getInput());
-                }
-
-                return message.channel.send("Found worlds with given name like: " + switchCmd.getInput());
-            })
+            return this.switchDefaultWorld(switchCmd.getInput(), message, user);
         }
 
         return undefined;
     }
 
-    public async findWorldByName(worldName: string, user: User): Promise<World[]> {
+    private async switchDefaultWorld(worldName: string, message: Message, user: User): Promise<Message | Message[]> {
+        return this.findWorldByName(worldName, user).then((worlds) => {
+            if (worlds == null || worlds.length < 1) {
+                return message.channel.send("Could not find world with given name like: " + worldName);
+            }
+
+            // Only one result.
+            if (worlds.length == 1) {
+                return this.userController.updateDefaultWorld(user, worlds[0]).then(() => {
+                    return message.channel.send(`Default world switched to '${worlds[0].name}'`);
+                });
+            }
+
+            return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
+                return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                    max: 1,
+                    time: 10e3,
+                    errors: ['time'],
+                }).then((input) => {
+                    msg.delete({reason: "Removed world processing command."});
+                    let content = input.first().content;
+                    let choice = Number(content);
+                    if (isNaN(choice) || choice >= worlds.length || choice < 0) {
+                        return message.channel.send("That input doesn't make any sense!");
+                    }
+
+                    return this.userController.updateDefaultWorld(user, worlds[choice]).then(() => {
+                        return message.channel.send(`Default world switched to '${worlds[choice].name}'`);
+                    });
+                }).catch(()=> {
+                    msg.delete({reason: "Removed world processing command."});
+                    return message.channel.send("Message timed out.");
+                });
+            });
+
+
+
+
+        });
+    }
+
+    private async findWorldByName(worldName: string, user: User): Promise<World[]> {
         return this.worldController.getByNameAndUser(worldName, user);
     }
 
-    public async removeDefaultWorld (message: Message, user: User): Promise<Message | Message[]> {
+    private async removeDefaultWorld (message: Message, user: User): Promise<Message | Message[]> {
         return this.userController.updateDefaultWorld(user, null).then((usr) => {
             if (usr == null) {
                 return message.channel.send("Could not remove default world.");
