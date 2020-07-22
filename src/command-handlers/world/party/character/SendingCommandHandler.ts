@@ -154,7 +154,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // Get the content.
         if (Subcommands.MESSAGE.isCommand(command)) {
             const msgCmd = Subcommands.MESSAGE.getCommand(command);
-            if (Subcommands.REPLY.isCommand(command)) {
+            if (!Subcommands.REPLY.isCommand(command)) {
                 sending.content = this.encryptionUtility.encrypt(msgCmd.getInput());
             } else {
                 sending.reply = this.encryptionUtility.encrypt(msgCmd.getInput());

@@ -147,7 +147,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             // Get the content.
             if (Subcommands_1.Subcommands.MESSAGE.isCommand(command)) {
                 const msgCmd = Subcommands_1.Subcommands.MESSAGE.getCommand(command);
-                if (Subcommands_1.Subcommands.REPLY.isCommand(command)) {
+                if (!Subcommands_1.Subcommands.REPLY.isCommand(command)) {
                     sending.content = this.encryptionUtility.encrypt(msgCmd.getInput());
                 }
                 else {
