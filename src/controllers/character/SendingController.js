@@ -23,6 +23,7 @@ exports.SendingController = void 0;
 const inversify_1 = require("inversify");
 const AbstractController_1 = require("../Base/AbstractController");
 const Table_1 = require("../../documentation/databases/Table");
+const typeorm_1 = require("typeorm");
 let SendingController = SendingController_1 = class SendingController extends AbstractController_1.AbstractController {
     constructor() {
         super(Table_1.Table.SENDING);
@@ -46,7 +47,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
         return __awaiter(this, void 0, void 0, function* () {
             let flag = false;
             let where = {
-                isReplied: false
+                isReplied: typeorm_1.Not(true)
             };
             if (world != null) {
                 flag = true;
@@ -65,6 +66,7 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             }
             // Nothing to see here.
             if (!flag) {
+                console.log("No world, character or NPC provided.");
                 return null;
             }
             return this.getRepo().find({

@@ -5,6 +5,7 @@ import {Table} from "../../documentation/databases/Table";
 import {World} from "../../entity/World";
 import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
 import {Character} from "../../entity/Character";
+import {Not} from "typeorm";
 
 @injectable()
 export class SendingController extends AbstractController<Sending> {
@@ -31,7 +32,7 @@ export class SendingController extends AbstractController<Sending> {
     public async get(page: number, world: World, toNpc: NonPlayableCharacter, toPlayer: Character): Promise<Sending[]> {
         let flag = false;
         let where = {
-            isReplied: false
+            isReplied: Not(true)
         };
 
         if (world != null) {
@@ -54,6 +55,7 @@ export class SendingController extends AbstractController<Sending> {
 
         // Nothing to see here.
         if (!flag) {
+            console.log("No world, character or NPC provided.");
             return null;
         }
 
