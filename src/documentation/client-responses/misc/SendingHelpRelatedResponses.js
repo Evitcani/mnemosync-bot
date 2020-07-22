@@ -45,7 +45,7 @@ class SendingHelpRelatedResponses {
     static PRINT_MESSAGES_FROM_WORLD(messages, world, page) {
         let messageStr = this.processMessages(messages, page, true, true);
         return BasicEmbed_1.BasicEmbed.get()
-            .setTitle(`Unreplied Messages Sent to NPCs in your world`)
+            .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
     }
     static PRINT_MESSAGES_TO_CHARACTER(messages, character, page) {

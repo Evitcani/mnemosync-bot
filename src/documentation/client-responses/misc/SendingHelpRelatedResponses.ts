@@ -51,7 +51,7 @@ export class SendingHelpRelatedResponses {
     static PRINT_MESSAGES_FROM_WORLD (messages: Sending[], world: World, page: number): MessageEmbed {
         let messageStr = this.processMessages(messages, page, true, true);
         return BasicEmbed.get()
-            .setTitle(`Unreplied Messages Sent to NPCs in your world`)
+            .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
     }
 

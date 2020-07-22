@@ -5,7 +5,6 @@ import {Table} from "../../documentation/databases/Table";
 import {World} from "../../entity/World";
 import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
 import {Character} from "../../entity/Character";
-import {Not} from "typeorm";
 
 @injectable()
 export class SendingController extends AbstractController<Sending> {
@@ -73,7 +72,15 @@ export class SendingController extends AbstractController<Sending> {
             .skip(page * SendingController.SENDING_LIMIT);
 
         return query
-            .getMany()
+            .getMany().then((messages) => {
+                if (!messages || messages.length < 1) {
+                    return null;
+                }
+
+                // Go out and get the
+
+                return messages;
+            })
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get any sendings.");
                 console.error(err);
