@@ -175,12 +175,12 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                                     message.client.users.cache.set(member.id, member);
 
                                     // Do response.
-                                    return this.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                    return SendingCommandHandler.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
                                         this.encryptionUtility));
                                 });
                             } else {
                                 let member = message.client.users.cache.get(discordId);
-                                await this.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
+                                await SendingCommandHandler.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
                                     this.encryptionUtility));
                             }
                         }
@@ -194,10 +194,12 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         });
     }
 
-    private async doDM(member: DiscordUser, message: MessageEmbed): Promise<Message> {
-        return member.createDM().then((channel) => {
-            return channel.send(message);
-        });
+    private static async doDM(member: DiscordUser, message: MessageEmbed): Promise<Message> {
+        if (member == null) {
+            return null;
+        }
+
+        return member.send(message);
     }
 
     private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
