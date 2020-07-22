@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Client, Collection, Message, Snowflake, User as DiscordUser} from "discord.js";
+import {Client, Collection, GuildMember, Message, Snowflake, User as DiscordUser} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -165,15 +165,20 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                         for (i = 0; i < discordIds.length; i++) {
                             discordId = discordIds[i];
                             if (this.client.users.cache == null || this.client.users.cache.has(discordId)) {
-                                await this.client.users.fetch(discordId).then((user: DiscordUser) => {
-                                    if (this.client.users.cache == null) {
-                                        this.client.users.cache = new Collection<Snowflake, DiscordUser>();
+                                await message.guild.members.fetch(discordId).then((member) => {
+                                    // No member found, so can't send message.
+                                    if (member == null) {
+                                        return;
                                     }
-                                    this.client.users.cache.set(user.id, user);
-                                    return user.send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+
+                                    if (message.guild.members.cache == null) {
+                                        message.guild.members.cache = new Collection<Snowflake, GuildMember>();
+                                    }
+                                    message.guild.members.cache.set(member.id, member);
+                                    return member.send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                 });
                             } else {
-                                await this.client.users.cache.get(discordId)
+                                await message.guild.members.cache.get(discordId)
                                     .send(SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                             }
                         }

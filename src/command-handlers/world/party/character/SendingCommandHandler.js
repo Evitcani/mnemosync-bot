@@ -149,16 +149,20 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                             for (i = 0; i < discordIds.length; i++) {
                                 discordId = discordIds[i];
                                 if (this.client.users.cache == null || this.client.users.cache.has(discordId)) {
-                                    yield this.client.users.fetch(discordId).then((user) => {
-                                        if (this.client.users.cache == null) {
-                                            this.client.users.cache = new discord_js_1.Collection();
+                                    yield message.guild.members.fetch(discordId).then((member) => {
+                                        // No member found, so can't send message.
+                                        if (member == null) {
+                                            return;
                                         }
-                                        this.client.users.cache.set(user.id, user);
-                                        return user.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
+                                        if (message.guild.members.cache == null) {
+                                            message.guild.members.cache = new discord_js_1.Collection();
+                                        }
+                                        message.guild.members.cache.set(member.id, member);
+                                        return member.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                     });
                                 }
                                 else {
-                                    yield this.client.users.cache.get(discordId)
+                                    yield message.guild.members.cache.get(discordId)
                                         .send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility));
                                 }
                             }
