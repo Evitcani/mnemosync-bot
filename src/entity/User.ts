@@ -39,10 +39,10 @@ export class User {
         onDelete: "SET NULL"
     })
     @JoinColumn({name: "default_character_id"})
-    defaultCharacter: Character;
+    defaultCharacter?: Character;
 
-    @Column({name: "default_world_id"})
-    defaultWorldId: string;
+    @Column({name: "default_world_id", nullable: true})
+    defaultWorldId?: string;
 
     @ManyToOne(type => World, world => world.defaultOfUsers, {
         eager: true,
@@ -50,11 +50,11 @@ export class User {
         onDelete: "SET NULL"
     })
     @JoinColumn({name: "default_world_id"})
-    defaultWorld: World;
+    defaultWorld?: World;
 
-    @ManyToMany(type => World)
+    @ManyToMany(type => World, {nullable: true})
     @JoinTable({name: "world_owners_to_users"})
-    campaignsDMing: World[];
+    campaignsDMing?: World[];
 
     @BeforeInsert()
     @BeforeUpdate()

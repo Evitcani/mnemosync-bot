@@ -43,24 +43,27 @@ __decorate([
     __metadata("design:type", Date)
 ], World.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.Column("text", { name: "map_url" }),
+    typeorm_1.Column("text", { name: "map_url", nullable: true }),
     __metadata("design:type", String)
 ], World.prototype, "mapUrl", void 0);
 __decorate([
     typeorm_1.OneToMany(type => Party_1.Party, party => party.world, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], World.prototype, "parties", void 0);
 __decorate([
     typeorm_1.OneToMany(type => NonPlayableCharacter_1.NonPlayableCharacter, character => character.world, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], World.prototype, "npcs", void 0);
 __decorate([
     typeorm_1.OneToMany(type => User_1.User, user => user.defaultWorld, {
-        onDelete: "SET NULL"
+        onDelete: "SET NULL",
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], World.prototype, "defaultOfUsers", void 0);

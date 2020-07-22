@@ -54,7 +54,7 @@ __decorate([
     __metadata("design:type", Character_1.Character)
 ], User.prototype, "defaultCharacter", void 0);
 __decorate([
-    typeorm_1.Column({ name: "default_world_id" }),
+    typeorm_1.Column({ name: "default_world_id", nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "defaultWorldId", void 0);
 __decorate([
@@ -67,7 +67,7 @@ __decorate([
     __metadata("design:type", World_1.World)
 ], User.prototype, "defaultWorld", void 0);
 __decorate([
-    typeorm_1.ManyToMany(type => World_1.World),
+    typeorm_1.ManyToMany(type => World_1.World, { nullable: true }),
     typeorm_1.JoinTable({ name: "world_owners_to_users" }),
     __metadata("design:type", Array)
 ], User.prototype, "campaignsDMing", void 0);
