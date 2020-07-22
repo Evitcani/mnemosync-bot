@@ -19,7 +19,9 @@ const World_1 = require("./World");
 const GameDate_1 = require("./GameDate");
 let Sending = class Sending {
     purifyInsertUpdate() {
-        this.inGameDate.era = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate.era);
+        if (this.inGameDate != null) {
+            this.inGameDate.era = StringUtility_1.StringUtility.escapeSQLInput(this.inGameDate.era);
+        }
         this.reply = StringUtility_1.StringUtility.escapeSQLInput(this.reply);
         this.content = StringUtility_1.StringUtility.escapeSQLInput(this.content);
         // Checks if the message is replied to or not.
