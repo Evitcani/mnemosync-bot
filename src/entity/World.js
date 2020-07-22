@@ -20,6 +20,7 @@ let World = class World {
     purifyInsertUpdate() {
         this.guildId = StringUtility_1.StringUtility.escapeSQLInput(this.guildId);
         this.mapUrl = StringUtility_1.StringUtility.escapeSQLInput(this.mapUrl);
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
     }
 };
 __decorate([
