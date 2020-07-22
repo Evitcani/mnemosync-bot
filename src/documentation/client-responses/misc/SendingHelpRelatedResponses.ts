@@ -76,7 +76,7 @@ export class SendingHelpRelatedResponses {
         let i, message: Sending;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
-            this.processMessage(message, additional + i, includeTo, includeFrom, includeReply, encryptionUtility);
+            str += this.processMessage(message, additional + i, includeTo, includeFrom, includeReply, encryptionUtility);
         }
 
         return str;
