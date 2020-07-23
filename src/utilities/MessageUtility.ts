@@ -44,6 +44,6 @@ export class MessageUtility {
         message.client.users.cache.set(member.id, member);
 
         // Send the message.
-        return member.send(message);
+        return member.send(messageToSend);
     }
 }
