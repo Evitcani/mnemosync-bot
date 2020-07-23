@@ -3,7 +3,6 @@ import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../types";
 import {UserDefaultPartyService} from "../../database/UserDefaultPartyService";
-import {UserService} from "../../database/UserService";
 import {UserToGuildService} from "../../database/UserToGuildService";
 import {PartyController} from "../../controllers/party/PartyController";
 import {Subcommands} from "../../documentation/commands/Subcommands";
@@ -19,21 +18,18 @@ export class RegisterCommandHandler extends AbstractUserCommandHandler {
     private partyController: PartyController;
     private userDefaultPartyService: UserDefaultPartyService;
     private userController: UserController;
-    private userService: UserService;
     private userToGuildService: UserToGuildService;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
                 @inject(TYPES.UserController) userController: UserController,
-                @inject(TYPES.UserService) userService: UserService,
                 @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.partyController = partyController;
         this.userDefaultPartyService = userDefaultPartyService;
         this.userController = userController;
-        this.userService = userService;
         this.userToGuildService = userToGuildService;
         this.worldController = worldController;
     }
@@ -66,7 +62,7 @@ export class RegisterCommandHandler extends AbstractUserCommandHandler {
         const guild = message.guild.id;
 
         // First get the user.
-        return this.userService.getUser(user.id, user.username).then((res) => {
+        return this.userController.get(user.id, user.username).then((res) => {
             if (res == null) {
                 return false;
             }

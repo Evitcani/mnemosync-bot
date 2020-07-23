@@ -10,7 +10,6 @@ import {PartyFundCommandHandler} from "./command-handlers/world/party/inventory/
 import {RegisterCommandHandler} from "./command-handlers/misc/RegisterCommandHandler";
 import {PartyToGuildService} from "./database/PartyToGuildService";
 import {UserDefaultPartyService} from "./database/UserDefaultPartyService";
-import {UserService} from "./database/UserService";
 import {UserToGuildService} from "./database/UserToGuildService";
 import {WhichCommandHandler} from "./command-handlers/world/information/WhichCommandHandler";
 import {SpecialChannelService} from "./database/SpecialChannelService";
@@ -45,7 +44,6 @@ container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSin
 container.bind<PartyToGuildService>(TYPES.PartyToGuildService).to(PartyToGuildService).inSingletonScope();
 container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialChannelService).inSingletonScope();
 container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();
-container.bind<UserService>(TYPES.UserService).to(UserService).inSingletonScope();
 container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();

@@ -25,7 +25,6 @@ exports.RegisterCommandHandler = void 0;
 const inversify_1 = require("inversify");
 const types_1 = require("../../types");
 const UserDefaultPartyService_1 = require("../../database/UserDefaultPartyService");
-const UserService_1 = require("../../database/UserService");
 const UserToGuildService_1 = require("../../database/UserToGuildService");
 const PartyController_1 = require("../../controllers/party/PartyController");
 const Subcommands_1 = require("../../documentation/commands/Subcommands");
@@ -36,12 +35,11 @@ const UserController_1 = require("../../controllers/user/UserController");
  * Command to register a user as having access to the funds created on a specific server.
  */
 let RegisterCommandHandler = class RegisterCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(partyController, userDefaultPartyService, userController, userService, userToGuildService, worldController) {
+    constructor(partyController, userDefaultPartyService, userController, userToGuildService, worldController) {
         super();
         this.partyController = partyController;
         this.userDefaultPartyService = userDefaultPartyService;
         this.userController = userController;
-        this.userService = userService;
         this.userToGuildService = userToGuildService;
         this.worldController = worldController;
     }
@@ -73,7 +71,7 @@ let RegisterCommandHandler = class RegisterCommandHandler extends AbstractUserCo
             const user = message.author;
             const guild = message.guild.id;
             // First get the user.
-            return this.userService.getUser(user.id, user.username).then((res) => {
+            return this.userController.get(user.id, user.username).then((res) => {
                 if (res == null) {
                     return false;
                 }
@@ -89,13 +87,11 @@ RegisterCommandHandler = __decorate([
     __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
     __param(1, inversify_1.inject(types_1.TYPES.UserDefaultPartyService)),
     __param(2, inversify_1.inject(types_1.TYPES.UserController)),
-    __param(3, inversify_1.inject(types_1.TYPES.UserService)),
-    __param(4, inversify_1.inject(types_1.TYPES.UserToGuildService)),
-    __param(5, inversify_1.inject(types_1.TYPES.WorldController)),
+    __param(3, inversify_1.inject(types_1.TYPES.UserToGuildService)),
+    __param(4, inversify_1.inject(types_1.TYPES.WorldController)),
     __metadata("design:paramtypes", [PartyController_1.PartyController,
         UserDefaultPartyService_1.UserDefaultPartyService,
         UserController_1.UserController,
-        UserService_1.UserService,
         UserToGuildService_1.UserToGuildService,
         WorldController_1.WorldController])
 ], RegisterCommandHandler);
