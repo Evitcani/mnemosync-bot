@@ -63,9 +63,6 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandH
             if (npcs == null || npcs.length < 1) {
                 return message.channel.send("No NPCs are in this world.");
             }
-            npcs.sort((npc1, npc2) => {
-                return npc1.name.localeCompare(npc2.name);
-            });
             return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world, page));
         });
     }
