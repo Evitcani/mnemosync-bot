@@ -19,11 +19,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CharacterController = void 0;
+const Character_1 = require("../../entity/Character");
 const inversify_1 = require("inversify");
 const Table_1 = require("../../documentation/databases/Table");
 const Nickname_1 = require("../../entity/Nickname");
 const AbstractSecondaryController_1 = require("../Base/AbstractSecondaryController");
 const NameValuePair_1 = require("../Base/NameValuePair");
+const typeorm_1 = require("typeorm");
+const StringUtility_1 = require("../../utilities/StringUtility");
 let CharacterController = class CharacterController extends AbstractSecondaryController_1.AbstractSecondaryController {
     constructor() {
         super(Table_1.Table.CHARACTER, Table_1.Table.USER_TO_CHARACTER);
@@ -92,6 +95,32 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
             nn.character = character;
             return this.getSecondaryRepo().save(nn).catch((err) => {
                 console.error("ERR ::: Could not create new nickname.");
+                console.error(err);
+                return null;
+            });
+        });
+    }
+    getCharacterByNameInParties(name, parties) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sanitizedName = StringUtility_1.StringUtility.escapeSQLInput(name);
+            let partyIds = [], i;
+            for (i = 0; i < parties.length; i++) {
+                partyIds.push(parties[i].id);
+            }
+            return typeorm_1.getConnection()
+                .createQueryBuilder(Character_1.Character, "character")
+                .leftJoinAndSelect(Nickname_1.Nickname, "nick", `character.id = "nick"."characterId"`)
+                .where(`LOWER("nick"."name") = LOWER('%${sanitizedName}%')`)
+                .andWhere(`"character"."partyId" = ANY(${partyIds.join(",")})`)
+                .getMany()
+                .then((characters) => {
+                if (!characters || characters.length < 1) {
+                    return null;
+                }
+                return characters;
+            })
+                .catch((err) => {
+                console.error("ERR ::: Could not get characters.");
                 console.error(err);
                 return null;
             });

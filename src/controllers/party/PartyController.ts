@@ -64,6 +64,19 @@ export class PartyController extends AbstractController<Party> {
         });
     }
 
+    public getByWorld (world: World): Promise<Party[]> {
+        return this.getRepo().find({where: {world: world}}).then((parties) => {
+            if (parties == undefined || parties.length < 1) {
+                return null;
+            }
+            return parties;
+        }).catch((err: Error) => {
+            console.error("ERR ::: Could not get parties in world.");
+            console.error(err);
+            return null;
+        });
+    }
+
     public updatePartyWorld (party: Party, world: World): Promise<Party> {
         party.world = world;
         return this.getRepo().save(party);

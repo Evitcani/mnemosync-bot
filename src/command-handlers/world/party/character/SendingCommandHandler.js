@@ -36,14 +36,16 @@ const GameDate_1 = require("../../../../entity/GameDate");
 const CharacterController_1 = require("../../../../controllers/character/CharacterController");
 const MessageUtility_1 = require("../../../../utilities/MessageUtility");
 const StringUtility_1 = require("../../../../utilities/StringUtility");
+const PartyController_1 = require("../../../../controllers/party/PartyController");
 /**
  * Handles sending related commands.
  */
 let SendingCommandHandler = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(characterController, encryptionUtility, npcController, sendingController, worldController) {
+    constructor(characterController, encryptionUtility, partyController, npcController, sendingController, worldController) {
         super();
         this.characterController = characterController;
         this.encryptionUtility = encryptionUtility;
+        this.partyController = partyController;
         this.npcController = npcController;
         this.sendingController = sendingController;
         this.worldController = worldController;
@@ -303,10 +305,25 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 }
             }
             else {
+                // Message is for another player character.
                 if (Subcommands_1.Subcommands.TO.isCommand(command)) {
-                    // TODO: Allow players to send messages to other players.
-                    yield message.channel.send("Not yet supporting player-to-player messages!");
-                    return null;
+                    const toCmd = Subcommands_1.Subcommands.TO.getCommand(command);
+                    // Get all the parties in this world.
+                    if (world == null) {
+                        return null;
+                    }
+                    const parties = yield this.partyController.getByWorld(world);
+                    if (parties == null) {
+                        yield message.channel.send("No parties exist in world.");
+                        return null;
+                    }
+                    const characters = yield this.characterController.getCharacterByNameInParties(toCmd.getInput(), parties);
+                    if (characters == null) {
+                        yield message.channel.send("No characters exist in world with name like: " + toCmd.getInput());
+                        return null;
+                    }
+                    // TODO: Allow multiselect characters.
+                    sending.toPlayerId = characters[0].id;
                 }
                 else {
                     return null;
@@ -360,11 +377,13 @@ SendingCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
     __param(1, inversify_1.inject(types_1.TYPES.EncryptionUtility)),
-    __param(2, inversify_1.inject(types_1.TYPES.NPCController)),
-    __param(3, inversify_1.inject(types_1.TYPES.SendingController)),
-    __param(4, inversify_1.inject(types_1.TYPES.WorldController)),
+    __param(2, inversify_1.inject(types_1.TYPES.PartyController)),
+    __param(3, inversify_1.inject(types_1.TYPES.NPCController)),
+    __param(4, inversify_1.inject(types_1.TYPES.SendingController)),
+    __param(5, inversify_1.inject(types_1.TYPES.WorldController)),
     __metadata("design:paramtypes", [CharacterController_1.CharacterController,
         EncryptionUtility_1.EncryptionUtility,
+        PartyController_1.PartyController,
         NPCController_1.NPCController,
         SendingController_1.SendingController,
         WorldController_1.WorldController])
