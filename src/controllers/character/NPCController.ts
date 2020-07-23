@@ -38,13 +38,17 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
     }
 
     public async getByWorld(worldId: string, page: number): Promise<NonPlayableCharacter[]> {
-        return this.getRepo()
+        let query = this.getRepo()
             .createQueryBuilder("npc")
             .where("\"npc\".\"world_id\" = :id", { id: worldId })
             .orderBy("\"npc\".\"name\"", "ASC")
             .limit(NPCController.NPC_LIMIT)
             .skip(page * NPCController.NPC_LIMIT)
-            .loadAllRelationIds({relations: ["world"]})
+            .loadAllRelationIds({relations: ["world"]});
+
+        console.log(query.getQuery());
+
+        return query
             .getMany()
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get NPCs in world.");

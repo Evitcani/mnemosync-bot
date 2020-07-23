@@ -58,13 +58,15 @@ let NPCController = NPCController_1 = class NPCController extends AbstractContro
     }
     getByWorld(worldId, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo()
+            let query = this.getRepo()
                 .createQueryBuilder("npc")
                 .where("\"npc\".\"world_id\" = :id", { id: worldId })
                 .orderBy("\"npc\".\"name\"", "ASC")
                 .limit(NPCController_1.NPC_LIMIT)
                 .skip(page * NPCController_1.NPC_LIMIT)
-                .loadAllRelationIds({ relations: ["world"] })
+                .loadAllRelationIds({ relations: ["world"] });
+            console.log(query.getQuery());
+            return query
                 .getMany()
                 .catch((err) => {
                 console.error("ERR ::: Could not get NPCs in world.");
