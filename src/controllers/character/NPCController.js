@@ -57,7 +57,12 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
     }
     getByWorld(worldId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().find({ where: { worldId: worldId }, relations: ["world"] })
+            return this.getRepo()
+                .createQueryBuilder("npc")
+                .where("\"npc\".\"worldId\" = :id", { id: worldId })
+                .orderBy("\"npc\".\"name\"", "ASC")
+                .loadAllRelationIds({ relations: ["world"] })
+                .getMany()
                 .catch((err) => {
                 console.error("ERR ::: Could not get NPCs in world.");
                 console.error(err);

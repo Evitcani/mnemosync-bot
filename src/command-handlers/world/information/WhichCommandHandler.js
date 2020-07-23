@@ -44,24 +44,27 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandH
         return __awaiter(this, void 0, void 0, function* () {
             // Get all NPCs in a given world.
             if (command.getInput() != null && command.getInput().toLowerCase() == "npc") {
-                return this.worldController.worldSelectionFromUser(user, message).then((world) => {
-                    if (world == null) {
-                        return message.channel.send("No world associated with  account.");
-                    }
-                    return this.npcController.getByWorld(world.id).then((npcs) => {
-                        if (npcs == null || npcs.length < 1) {
-                            return message.channel.send("No NPCs are in this world.");
-                        }
-                        npcs.sort((npc1, npc2) => {
-                            return npc1.name.localeCompare(npc2.name);
-                        });
-                        return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world));
-                    });
-                });
+                return this.fetchNPCs(message, user);
             }
             return this.partyController.getByGuild(message.guild.id).then((res) => {
                 return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
             });
+        });
+    }
+    fetchNPCs(message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let world = yield this.worldController.worldSelectionFromUser(user, message);
+            if (world == null) {
+                return message.channel.send("No world associated with  account.");
+            }
+            let npcs = yield this.npcController.getByWorld(world.id);
+            if (npcs == null || npcs.length < 1) {
+                return message.channel.send("No NPCs are in this world.");
+            }
+            npcs.sort((npc1, npc2) => {
+                return npc1.name.localeCompare(npc2.name);
+            });
+            return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world));
         });
     }
 };
