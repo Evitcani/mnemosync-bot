@@ -17,13 +17,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var NPCController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NPCController = void 0;
 const AbstractController_1 = require("../Base/AbstractController");
 const Table_1 = require("../../documentation/databases/Table");
 const inversify_1 = require("inversify");
 const NameValuePair_1 = require("../Base/NameValuePair");
-let NPCController = class NPCController extends AbstractController_1.AbstractController {
+let NPCController = NPCController_1 = class NPCController extends AbstractController_1.AbstractController {
     /**
      * Constructs this controller.
      */
@@ -55,12 +56,14 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
             });
         });
     }
-    getByWorld(worldId) {
+    getByWorld(worldId, page) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.getRepo()
                 .createQueryBuilder("npc")
                 .where("\"npc\".\"world_id\" = :id", { id: worldId })
                 .orderBy("\"npc\".\"name\"", "ASC")
+                .limit(NPCController_1.NPC_LIMIT)
+                .skip(page * NPCController_1.NPC_LIMIT)
                 .loadAllRelationIds({ relations: ["world"] })
                 .getMany()
                 .catch((err) => {
@@ -87,7 +90,8 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
         });
     }
 };
-NPCController = __decorate([
+NPCController.NPC_LIMIT = 10;
+NPCController = NPCController_1 = __decorate([
     inversify_1.injectable(),
     __metadata("design:paramtypes", [])
 ], NPCController);

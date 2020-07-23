@@ -30,6 +30,7 @@ const AbstractUserCommandHandler_1 = require("../../base/AbstractUserCommandHand
 const NPCController_1 = require("../../../controllers/character/NPCController");
 const WorldController_1 = require("../../../controllers/world/WorldController");
 const NPCRelatedClientResponses_1 = require("../../../documentation/client-responses/character/NPCRelatedClientResponses");
+const MessageUtility_1 = require("../../../utilities/MessageUtility");
 /**
  * Handles questions about the state of the world.
  */
@@ -44,27 +45,28 @@ let WhichCommandHandler = class WhichCommandHandler extends AbstractUserCommandH
         return __awaiter(this, void 0, void 0, function* () {
             // Get all NPCs in a given world.
             if (command.getInput() != null && command.getInput().toLowerCase() == "npc") {
-                return this.fetchNPCs(message, user);
+                return this.fetchNPCs(command, message, user);
             }
             return this.partyController.getByGuild(message.guild.id).then((res) => {
                 return message.channel.send(WhichRelatedClientResponses_1.WhichRelatedClientResponses.LIST_ALL_PARTIES(res));
             });
         });
     }
-    fetchNPCs(message, user) {
+    fetchNPCs(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let page = MessageUtility_1.MessageUtility.getPage(command);
             let world = yield this.worldController.worldSelectionFromUser(user, message);
             if (world == null) {
                 return message.channel.send("No world associated with  account.");
             }
-            let npcs = yield this.npcController.getByWorld(world.id);
+            let npcs = yield this.npcController.getByWorld(world.id, page);
             if (npcs == null || npcs.length < 1) {
                 return message.channel.send("No NPCs are in this world.");
             }
             npcs.sort((npc1, npc2) => {
                 return npc1.name.localeCompare(npc2.name);
             });
-            return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world));
+            return message.channel.send(NPCRelatedClientResponses_1.NPCRelatedClientResponses.DISPLAY_ALL(npcs, world, page));
         });
     }
 };

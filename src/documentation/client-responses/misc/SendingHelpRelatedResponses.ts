@@ -53,14 +53,16 @@ export class SendingHelpRelatedResponses {
         let messageStr = this.processMessages(messages, page, true, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
-            .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`);
+            .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`)
+            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, messages.length));
     }
 
     static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessages(messages, page, false, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
-            .setDescription(`Here are the messages sent to you:\n\n${messageStr}`);
+            .setDescription(`Here are the messages sent to you:\n\n${messageStr}`)
+            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, messages.length));
     }
 
     static PRINT_MESSAGE_REPLY_TO_PLAYER (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {

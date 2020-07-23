@@ -1,4 +1,7 @@
 import {Collection, User as DiscordUser, Message, MessageEmbed, Snowflake} from "discord.js";
+import {Subcommands} from "../documentation/commands/Subcommands";
+import {StringUtility} from "./StringUtility";
+import {Command} from "../models/generic/Command";
 
 export class MessageUtility {
 
@@ -45,5 +48,27 @@ export class MessageUtility {
 
         // Send the message.
         return member.send(messageToSend);
+    }
+
+    /**
+     * Gets the page based on next or previous.
+     *
+     * @param command The commands to search for commands from.
+     */
+    public static getPage(command: Command): number {
+        let page = 0;
+        if (Subcommands.NEXT.isCommand(command)) {
+            const nextCmd = Subcommands.NEXT.getCommand(command);
+            page = StringUtility.getNumber(nextCmd.getInput());
+            if (page == null) {
+                if (nextCmd.getInput() == null) {
+                    page = 1;
+                } else  {
+                    page = 0
+                }
+            }
+        }
+
+        return page;
     }
 }

@@ -1,13 +1,13 @@
-import {AbstractCommandHandler} from "../../base/AbstractCommandHandler";
 import {Command} from "../../../models/generic/Command";
 import {Message} from "discord.js";
 import {Character} from "../../../entity/Character";
+import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 
 /**
  * The "travel" command is used to calculate the most efficient gear to travel with over a period of days.
  */
-export class TravelCommandHandler extends AbstractCommandHandler {
-    async handleCommand(command: Command, message: Message): Promise<Message | Message[]> {
+export class TravelCommandHandler extends AbstractUserCommandHandler {
+    async handleUserCommand(command: Command, message, user): Promise<Message | Message[]> {
         return undefined;
     }
 

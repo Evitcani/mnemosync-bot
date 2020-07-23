@@ -11,6 +11,10 @@ class BasicEmbed {
             .setColor('#0099ff')
             .setFooter('Created by @Evit_cani on Twitter.');
     }
+    static getPageFooter(page, limit, total) {
+        return `On page ${page}. ${total < limit ? `No more pages.` :
+            `Add \`~next ${page + 1}\` to see the next page`}`;
+    }
 }
 exports.BasicEmbed = BasicEmbed;
 //# sourceMappingURL=BasicEmbed.js.map

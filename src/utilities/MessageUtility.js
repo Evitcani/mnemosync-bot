@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageUtility = void 0;
 const discord_js_1 = require("discord.js");
+const Subcommands_1 = require("../documentation/commands/Subcommands");
+const StringUtility_1 = require("./StringUtility");
 class MessageUtility {
     static sendPrivateMessages(discordIds, message, completionMessage, messageToSend) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,6 +56,27 @@ class MessageUtility {
             // Send the message.
             return member.send(messageToSend);
         });
+    }
+    /**
+     * Gets the page based on next or previous.
+     *
+     * @param command The commands to search for commands from.
+     */
+    static getPage(command) {
+        let page = 0;
+        if (Subcommands_1.Subcommands.NEXT.isCommand(command)) {
+            const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
+            page = StringUtility_1.StringUtility.getNumber(nextCmd.getInput());
+            if (page == null) {
+                if (nextCmd.getInput() == null) {
+                    page = 1;
+                }
+                else {
+                    page = 0;
+                }
+            }
+        }
+        return page;
     }
 }
 exports.MessageUtility = MessageUtility;
