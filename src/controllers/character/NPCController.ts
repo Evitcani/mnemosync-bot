@@ -46,8 +46,6 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
             .offset(page * NPCController.NPC_LIMIT)
             .loadAllRelationIds({relations: ["world"]});
 
-        console.log(query.getQuery());
-
         return query
             .getMany()
             .catch((err: Error) => {
