@@ -59,7 +59,7 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
         return __awaiter(this, void 0, void 0, function* () {
             return this.getRepo()
                 .createQueryBuilder("npc")
-                .where("\"npc\".\"worldId\" = :id", { id: worldId })
+                .where("\"npc\".\"world_id\" = :id", { id: worldId })
                 .orderBy("\"npc\".\"name\"", "ASC")
                 .loadAllRelationIds({ relations: ["world"] })
                 .getMany()

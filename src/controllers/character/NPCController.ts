@@ -39,7 +39,7 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
     public async getByWorld(worldId: string): Promise<NonPlayableCharacter[]> {
         return this.getRepo()
             .createQueryBuilder("npc")
-            .where("\"npc\".\"worldId\" = :id", { id: worldId })
+            .where("\"npc\".\"world_id\" = :id", { id: worldId })
             .orderBy("\"npc\".\"name\"", "ASC")
             .loadAllRelationIds({relations: ["world"]})
             .getMany()
