@@ -97,7 +97,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
         return getConnection()
             .createQueryBuilder(Character, "character")
             .leftJoinAndSelect(Nickname, "nick", `character.id = "nick"."characterId"`)
-            .where(`LOWER("nick"."name") = LOWER('%${sanitizedName}%')`)
+            .where(`LOWER("nick"."name") LIKE LOWER('%${sanitizedName}%')`)
             .andWhere(`"character"."partyId" = ANY([${partyIds.join(",")}])`)
             .getMany()
             .then((characters) => {
