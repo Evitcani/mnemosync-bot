@@ -323,7 +323,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                         return null;
                     }
                     // TODO: Allow multiselect characters.
-                    sending.toPlayerId = characters[0].id;
+                    sending.toPlayer = characters[0];
                 }
                 else {
                     return null;
