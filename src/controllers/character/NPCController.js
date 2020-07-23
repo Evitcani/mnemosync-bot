@@ -63,7 +63,7 @@ let NPCController = NPCController_1 = class NPCController extends AbstractContro
                 .where("\"npc\".\"world_id\" = :id", { id: worldId })
                 .orderBy("\"npc\".\"name\"", "ASC")
                 .limit(NPCController_1.NPC_LIMIT)
-                .skip(page * NPCController_1.NPC_LIMIT)
+                .offset(page * NPCController_1.NPC_LIMIT)
                 .loadAllRelationIds({ relations: ["world"] });
             console.log(query.getQuery());
             return query

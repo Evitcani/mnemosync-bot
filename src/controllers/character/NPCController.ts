@@ -43,7 +43,7 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
             .where("\"npc\".\"world_id\" = :id", { id: worldId })
             .orderBy("\"npc\".\"name\"", "ASC")
             .limit(NPCController.NPC_LIMIT)
-            .skip(page * NPCController.NPC_LIMIT)
+            .offset(page * NPCController.NPC_LIMIT)
             .loadAllRelationIds({relations: ["world"]});
 
         console.log(query.getQuery());
