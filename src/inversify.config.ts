@@ -7,7 +7,6 @@ import {MessageResponder} from "./services/message-responder";
 import {PingFinder} from "./services/ping-finder";
 import {DatabaseService} from "./database/base/DatabaseService";
 import {PartyFundCommandHandler} from "./command-handlers/world/party/inventory/PartyFundCommandHandler";
-import {PartyFundService} from "./database/PartyFundService";
 import {RegisterCommandHandler} from "./command-handlers/misc/RegisterCommandHandler";
 import {PartyToGuildService} from "./database/PartyToGuildService";
 import {UserDefaultPartyService} from "./database/UserDefaultPartyService";
@@ -44,7 +43,6 @@ container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
 container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
 
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
-container.bind<PartyFundService>(TYPES.PartyFundService).to(PartyFundService).inSingletonScope();
 container.bind<PartyToGuildService>(TYPES.PartyToGuildService).to(PartyToGuildService).inSingletonScope();
 container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialChannelService).inSingletonScope();
 container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();

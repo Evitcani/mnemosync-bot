@@ -3,6 +3,10 @@ import {Table} from "../../documentation/databases/Table";
 import {PartyFund} from "../../entity/PartyFund";
 import {Party} from "../../entity/Party";
 import {AbstractController} from "../Base/AbstractController";
+import {DbColumn} from "../../models/database/schema/columns/DbColumn";
+import {Column} from "../../documentation/databases/Column";
+import {DbTable} from "../../models/database/schema/DbTable";
+import {DatabaseHelperService} from "../../database/base/DatabaseHelperService";
 
 @injectable()
 export class PartyFundController extends AbstractController<PartyFund> {
@@ -29,8 +33,19 @@ export class PartyFundController extends AbstractController<PartyFund> {
     }
 
     public async getByPartyAndType(party: Party, type: string): Promise<PartyFund> {
-        return this.getRepo().findOne({where: {party: party, type: type}});
+        return this.getRepo().findOne({where: {party: party, type: type}})
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not find party fund.");
+                console.error(err);
+                return null;
+            });
     }
 
-
+    public async updateFunds (fund: PartyFund): Promise<PartyFund> {
+        return this.getRepo().save(fund).catch((err: Error) => {
+            console.error("ERR ::: Could not update party fund.");
+            console.error(err);
+            return null;
+        });
+    }
 }

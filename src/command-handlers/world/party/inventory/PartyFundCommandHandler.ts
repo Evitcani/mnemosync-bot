@@ -5,7 +5,6 @@ import {MoneyUtility} from "../../../../utilities/MoneyUtility";
 import {PartyFund} from "../../../../entity/PartyFund";
 import {Command} from "../../../../models/generic/Command";
 import {FundRelatedClientResponses} from "../../../../documentation/client-responses/party/FundRelatedClientResponses";
-import {PartyFundService} from "../../../../database/PartyFundService";
 import {Commands} from "../../../../documentation/commands/Commands";
 import {PartyController} from "../../../../controllers/party/PartyController";
 import {Subcommands} from "../../../../documentation/commands/Subcommands";
@@ -22,15 +21,12 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     /** The party service to connect to the database. */
     private partyController: PartyController;
     /** Connection the fund database. */
-    private partyFundService: PartyFundService;
     private partyFundController: PartyFundController;
 
     constructor(@inject(TYPES.PartyController) partyController: PartyController,
-                @inject(TYPES.PartyFundController) partyFundController: PartyFundController,
-                @inject(TYPES.PartyFundService) partyFundService: PartyFundService) {
+                @inject(TYPES.PartyFundController) partyFundController: PartyFundController) {
         super();
         this.partyController = partyController;
-        this.partyFundService = partyFundService;
         this.partyFundController = partyFundController;
     }
 
@@ -108,31 +104,34 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Find and then update these funds.
-        return this.findFunds(party, fundType, message).then((fund) => {
-            if (fund == null) {
-                return message.channel.send("Could not find fund!");
-            }
+        let fund: PartyFund = await this.findFunds(party, fundType, message);
 
-            // Pile everything into copper.
-            let newAmtTotal = MoneyUtility.pileIntoCopper(newFund);
-            let oldAmt = MoneyUtility.pileIntoCopper(fund);
+        if (fund == null) {
+            return message.channel.send("Could not find fund!");
+        }
 
-            let newAmt = newAmtTotal + oldAmt;
+        // Pile everything into copper.
+        let newAmtTotal = MoneyUtility.pileIntoCopper(newFund);
+        let oldAmt = MoneyUtility.pileIntoCopper(fund);
 
-            if (newAmt < 0) {
-                let newAmtInGold = newAmt / 100;
-                return message.channel.send(FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100,
-                    newAmtTotal / 100, newAmtInGold));
-            }
+        let newAmt = newAmtTotal + oldAmt;
 
-            const finalFund = MoneyUtility.copperToFund(newAmt);
+        if (newAmt < 0) {
+            let newAmtInGold = newAmt / 100;
+            return message.channel.send(FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100,
+                newAmtTotal / 100, newAmtInGold));
+        }
 
-            return this.partyFundService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver,
-                finalFund.copper).then((updatedFund) => {
-                    const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
-                    return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
-                        oldAmt / 100, newAmtTotal /100, newAmtTotal < 0));
-            });
-        });
+        const finalFund = MoneyUtility.copperToFund(newAmt);
+        fund.platinum = finalFund.platinum;
+        fund.gold = finalFund.gold;
+        fund.silver = finalFund.silver;
+        fund.copper = finalFund.copper;
+
+        let updatedFund = await this.partyFundController.updateFunds(fund);
+
+        const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
+        return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
+            oldAmt / 100, newAmtTotal /100, newAmtTotal < 0));
     }
 }
