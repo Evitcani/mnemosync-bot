@@ -110,7 +110,7 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
             return typeorm_1.getConnection()
                 .createQueryBuilder(Character_1.Character, "character")
                 .leftJoinAndSelect(Nickname_1.Nickname, "nick", `character.id = "nick"."characterId"`)
-                .where(`LOWER("nick"."name") = LOWER('%${sanitizedName}%')`)
+                .where(`LOWER("nick"."name") LIKE LOWER('%${sanitizedName}%')`)
                 .andWhere(`"character"."partyId" = ANY([${partyIds.join(",")}])`)
                 .getMany()
                 .then((characters) => {
