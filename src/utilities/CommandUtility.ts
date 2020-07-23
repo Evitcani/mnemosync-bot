@@ -57,8 +57,6 @@ export class CommandUtility {
             input = StringUtility.formatFundInput(input);
         }
 
-        console.debug(`COMMAND UTILITY ::: New subcommand '${cmd}': ${input}`);
-
         // Return the subcommand.
         return new Subcommand(cmd, input);
     }

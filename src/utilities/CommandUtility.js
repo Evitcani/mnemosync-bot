@@ -50,7 +50,6 @@ class CommandUtility {
         if (isMoneyRelated) {
             input = StringUtility_1.StringUtility.formatFundInput(input);
         }
-        console.debug(`COMMAND UTILITY ::: New subcommand '${cmd}': ${input}`);
         // Return the subcommand.
         return new Subcommand_1.Subcommand(cmd, input);
     }
