@@ -111,7 +111,7 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                 .createQueryBuilder(Character_1.Character, "character")
                 .leftJoinAndSelect(Nickname_1.Nickname, "nick", `character.id = "nick"."characterId"`)
                 .where(`LOWER("nick"."name") = LOWER('%${sanitizedName}%')`)
-                .andWhere(`"character"."partyId" = ANY(${partyIds.join(",")})`)
+                .andWhere(`"character"."partyId" = ANY([${partyIds.join(",")}])`)
                 .getMany()
                 .then((characters) => {
                 if (!characters || characters.length < 1) {
