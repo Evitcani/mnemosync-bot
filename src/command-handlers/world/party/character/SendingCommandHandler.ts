@@ -18,6 +18,7 @@ import {CharacterController} from "../../../../controllers/character/CharacterCo
 import {MessageUtility} from "../../../../utilities/MessageUtility";
 import {NonPlayableCharacter} from "../../../../entity/NonPlayableCharacter";
 import {StringUtility} from "../../../../utilities/StringUtility";
+import {PartyController} from "../../../../controllers/party/PartyController";
 
 /**
  * Handles sending related commands.
@@ -26,18 +27,21 @@ import {StringUtility} from "../../../../utilities/StringUtility";
 export class SendingCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
     private readonly encryptionUtility: EncryptionUtility;
+    private partyController: PartyController;
     private npcController: NPCController;
     private sendingController: SendingController;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
                 @inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
+                @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
         this.encryptionUtility = encryptionUtility;
+        this.partyController = partyController;
         this.npcController = npcController;
         this.sendingController = sendingController;
         this.worldController = worldController;
@@ -332,10 +336,29 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 return null;
             }
         } else {
+            // Message is for another player character.
             if (Subcommands.TO.isCommand(command)) {
-                // TODO: Allow players to send messages to other players.
-                await message.channel.send("Not yet supporting player-to-player messages!");
-                return null;
+                const toCmd = Subcommands.TO.getCommand(command);
+
+                // Get all the parties in this world.
+                if (world == null) {
+                    return null;
+                }
+
+                const parties = await this.partyController.getByWorld(world);
+                if (parties == null) {
+                    await message.channel.send("No parties exist in world.");
+                    return null;
+                }
+
+                const characters = await this.characterController.getCharacterByNameInParties(toCmd.getInput(), parties);
+                if (characters == null) {
+                    await message.channel.send("No characters exist in world with name like: " + toCmd.getInput());
+                    return null;
+                }
+
+                // TODO: Allow multiselect characters.
+                sending.toPlayerId = characters[0].id;
             } else {
                 return null;
             }

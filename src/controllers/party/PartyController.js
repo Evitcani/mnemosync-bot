@@ -68,6 +68,18 @@ let PartyController = class PartyController extends AbstractController_1.Abstrac
             return null;
         });
     }
+    getByWorld(world) {
+        return this.getRepo().find({ where: { world: world } }).then((parties) => {
+            if (parties == undefined || parties.length < 1) {
+                return null;
+            }
+            return parties;
+        }).catch((err) => {
+            console.error("ERR ::: Could not get parties in world.");
+            console.error(err);
+            return null;
+        });
+    }
     updatePartyWorld(party, world) {
         party.world = world;
         return this.getRepo().save(party);

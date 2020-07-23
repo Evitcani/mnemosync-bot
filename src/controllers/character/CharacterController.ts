@@ -4,6 +4,10 @@ import {Table} from "../../documentation/databases/Table";
 import {Nickname} from "../../entity/Nickname";
 import {AbstractSecondaryController} from "../Base/AbstractSecondaryController";
 import {NameValuePair} from "../Base/NameValuePair";
+import {Party} from "../../entity/Party";
+import {getConnection} from "typeorm";
+import {User} from "../../entity/User";
+import {StringUtility} from "../../utilities/StringUtility";
 
 @injectable()
 export class CharacterController extends AbstractSecondaryController<Character, Nickname> {
@@ -81,6 +85,33 @@ export class CharacterController extends AbstractSecondaryController<Character, 
             console.error(err);
             return null;
         });
+    }
+
+    public async getCharacterByNameInParties (name: string, parties: Party[]): Promise<Character[]> {
+        let sanitizedName = StringUtility.escapeSQLInput(name);
+        let partyIds: number[] = [], i;
+        for (i = 0; i < parties.length; i++) {
+            partyIds.push(parties[i].id);
+        }
+
+        return getConnection()
+            .createQueryBuilder(Character, "character")
+            .leftJoinAndSelect(Nickname, "nick", `character.id = "nick"."characterId"`)
+            .where(`LOWER("nick"."name") = LOWER('%${sanitizedName}%')`)
+            .andWhere(`"character"."partyId" = ANY(${partyIds.join(",")})`)
+            .getMany()
+            .then((characters) => {
+                if (!characters || characters.length < 1) {
+                    return null;
+                }
+
+                return characters;
+            })
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get characters.");
+                console.error(err);
+                return null;
+            });
     }
 
     public async getCharacterByName(name: string, discordId: string): Promise<Character> {
