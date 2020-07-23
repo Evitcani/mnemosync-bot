@@ -6,6 +6,7 @@ import {NameValuePair} from "../Base/NameValuePair";
 
 @injectable()
 export class NPCController extends AbstractController<NonPlayableCharacter> {
+    public static NPC_LIMIT = 10;
     /**
      * Constructs this controller.
      */
@@ -36,11 +37,13 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
             });
     }
 
-    public async getByWorld(worldId: string): Promise<NonPlayableCharacter[]> {
+    public async getByWorld(worldId: string, page: number): Promise<NonPlayableCharacter[]> {
         return this.getRepo()
             .createQueryBuilder("npc")
             .where("\"npc\".\"world_id\" = :id", { id: worldId })
             .orderBy("\"npc\".\"name\"", "ASC")
+            .limit(NPCController.NPC_LIMIT)
+            .skip(page * NPCController.NPC_LIMIT)
             .loadAllRelationIds({relations: ["world"]})
             .getMany()
             .catch((err: Error) => {

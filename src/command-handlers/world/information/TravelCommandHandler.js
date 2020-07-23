@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TravelCommandHandler = void 0;
-const AbstractCommandHandler_1 = require("../../base/AbstractCommandHandler");
+const AbstractUserCommandHandler_1 = require("../../base/AbstractUserCommandHandler");
 /**
  * The "travel" command is used to calculate the most efficient gear to travel with over a period of days.
  */
-class TravelCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    handleCommand(command, message) {
+class TravelCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
             return undefined;
         });

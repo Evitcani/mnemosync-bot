@@ -242,18 +242,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
      */
     private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
         // Process the next  command.
-        let page = 0;
-        if (Subcommands.NEXT.isCommand(command)) {
-            const nextCmd = Subcommands.NEXT.getCommand(command);
-            page = StringUtility.getNumber(nextCmd.getInput());
-            if (page == null) {
-                if (nextCmd.getInput() == null) {
-                    page = 1;
-                } else  {
-                    page = 0
-                }
-            }
-        }
+        let page = MessageUtility.getPage(command);
 
         let arr = await this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
 

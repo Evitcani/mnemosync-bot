@@ -217,19 +217,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
     getUnrepliedSendings(command, user, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Process the next  command.
-            let page = 0;
-            if (Subcommands_1.Subcommands.NEXT.isCommand(command)) {
-                const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
-                page = StringUtility_1.StringUtility.getNumber(nextCmd.getInput());
-                if (page == null) {
-                    if (nextCmd.getInput() == null) {
-                        page = 1;
-                    }
-                    else {
-                        page = 0;
-                    }
-                }
-            }
+            let page = MessageUtility_1.MessageUtility.getPage(command);
             let arr = yield this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
             // If both are null, return a standard message.
             if (arr.world == null && arr.character == null) {

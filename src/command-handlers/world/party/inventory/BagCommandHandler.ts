@@ -1,4 +1,3 @@
-import {Command} from "../../../../models/generic/Command";
 import {Message} from "discord.js";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {injectable} from "inversify";
