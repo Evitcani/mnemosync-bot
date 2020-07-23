@@ -14,6 +14,16 @@ class StringUtility {
             str = str.replace(this.pattern, "$1,$2");
         return str;
     }
+    static getNumber(input) {
+        if (input == null) {
+            return null;
+        }
+        let ret = Number(input);
+        if (isNaN(ret)) {
+            return null;
+        }
+        return ret;
+    }
     static replaceFancyQuotes(input) {
         if (input == null) {
             return null;

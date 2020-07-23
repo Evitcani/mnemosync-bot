@@ -35,6 +35,19 @@ export class StringUtility {
         return str;
     }
 
+    public static getNumber(input: string): number | null {
+        if (input == null) {
+            return null;
+        }
+
+        let ret = Number(input);
+        if (isNaN(ret)) {
+            return null;
+        }
+
+        return ret;
+    }
+
     static replaceFancyQuotes(input: string): string {
         if (input == null) {
             return null;
