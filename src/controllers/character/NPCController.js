@@ -65,7 +65,6 @@ let NPCController = NPCController_1 = class NPCController extends AbstractContro
                 .limit(NPCController_1.NPC_LIMIT)
                 .offset(page * NPCController_1.NPC_LIMIT)
                 .loadAllRelationIds({ relations: ["world"] });
-            console.log(query.getQuery());
             return query
                 .getMany()
                 .catch((err) => {
