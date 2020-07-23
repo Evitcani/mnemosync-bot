@@ -21,7 +21,6 @@ const QuoteCommandHandler_1 = require("./command-handlers/misc/QuoteCommandHandl
 const BagCommandHandler_1 = require("./command-handlers/world/party/inventory/BagCommandHandler");
 const CharacterCommandHandler_1 = require("./command-handlers/world/party/character/CharacterCommandHandler");
 const TravelCommandHandler_1 = require("./command-handlers/world/information/TravelCommandHandler");
-const UserToCharacterService_1 = require("./database/UserToCharacterService");
 const PartyController_1 = require("./controllers/party/PartyController");
 const PartyFundController_1 = require("./controllers/party/PartyFundController");
 const CharacterController_1 = require("./controllers/character/CharacterController");
@@ -47,7 +46,6 @@ container.bind(types_1.TYPES.SpecialChannelService).to(SpecialChannelService_1.S
 container.bind(types_1.TYPES.UserDefaultPartyService).to(UserDefaultPartyService_1.UserDefaultPartyService).inSingletonScope();
 container.bind(types_1.TYPES.UserService).to(UserService_1.UserService).inSingletonScope();
 container.bind(types_1.TYPES.UserToGuildService).to(UserToGuildService_1.UserToGuildService).inSingletonScope();
-container.bind(types_1.TYPES.UserToCharacterService).to(UserToCharacterService_1.UserToCharacterService).inSingletonScope();
 container.bind(types_1.TYPES.BagCommandHandler).to(BagCommandHandler_1.BagCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.CharacterCommandHandler).to(CharacterCommandHandler_1.CharacterCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.HelpCommandHandler).to(HelpCommandHandler_1.HelpCommandHandler).inSingletonScope();

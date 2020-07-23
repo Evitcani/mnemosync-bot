@@ -19,7 +19,6 @@ import {QuoteCommandHandler} from "./command-handlers/misc/QuoteCommandHandler";
 import {BagCommandHandler} from "./command-handlers/world/party/inventory/BagCommandHandler";
 import {CharacterCommandHandler} from "./command-handlers/world/party/character/CharacterCommandHandler";
 import {TravelCommandHandler} from "./command-handlers/world/information/TravelCommandHandler";
-import {UserToCharacterService} from "./database/UserToCharacterService";
 import {PartyController} from "./controllers/party/PartyController";
 import {PartyFundController} from "./controllers/party/PartyFundController";
 import {CharacterController} from "./controllers/character/CharacterController";
@@ -48,7 +47,6 @@ container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialCha
 container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService).inSingletonScope();
 container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
-container.bind<UserToCharacterService>(TYPES.UserToCharacterService).to(UserToCharacterService).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();
 container.bind<CharacterCommandHandler>(TYPES.CharacterCommandHandler).to(CharacterCommandHandler).inSingletonScope();
