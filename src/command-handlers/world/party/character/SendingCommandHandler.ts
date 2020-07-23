@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Collection, Message, MessageEmbed, Snowflake, User as DiscordUser} from "discord.js";
+import {Message, MessageEmbed} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -15,7 +15,13 @@ import {WorldController} from "../../../../controllers/world/WorldController";
 import {Character} from "../../../../entity/Character";
 import {GameDate} from "../../../../entity/GameDate";
 import {CharacterController} from "../../../../controllers/character/CharacterController";
+import {MessageUtility} from "../../../../utilities/MessageUtility";
+import {NonPlayableCharacter} from "../../../../entity/NonPlayableCharacter";
+import {StringUtility} from "../../../../utilities/StringUtility";
 
+/**
+ * Handles sending related commands.
+ */
 @injectable()
 export class SendingCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
@@ -39,7 +45,6 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
 
     async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
-
         // Want to view sendings.
         if (command.getSubcommands() == null || command.getSubcommands().size < 1 || Subcommands.GET.isCommand(command)) {
             return this.getUnrepliedSendings(command, user, message);
@@ -55,225 +60,210 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
 
             // TODO: Figure out how this'll work...
-            console.log("Deal with reads later...");
             return null;
         }
 
         if (Subcommands.REPLY.isCommand(command)) {
             // Someone is replying!
-            return this.beginReply(command, user, message);
+            return this.replyToSending(command, user, message);
         }
 
-        return this.worldController.worldSelectionFromUser(user, message).then((world) => {
-            if (world == null) {
-                return message.channel.send("No world where this message can be sent!");
-            }
-
-            return this.constructNewSending(command, user, world, new Sending(), message).then((sending) => {
-                if (sending == null) {
-                    return message.channel.send("Could not send message.");
-                }
-
-                return this.sendingController.create(sending).then((sent) => {
-                    if (sent == null) {
-                        return message.channel.send("Could not send message.");
-                    }
-
-                    let embed = SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
-                    return this.signalUserOfMessage(sent, message, embed, false);
-                });
-            });
-        });
+        return this.createNewSending(command, message, user);
     }
 
-    private async beginReply (command: Command, user: User, message: Message): Promise<Message | Message[]> {
+    /**
+     * Creates a new sending from the information given by the command.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     */
+    private async createNewSending(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+        // Go and get the world.
+        let world = await this.worldController.worldSelectionFromUser(user, message);
+
+        // If there is no world, then give an automated reply.
+        if (world == null) {
+            return message.channel.send("No world where this message can be sent!");
+        }
+
+        // Construct the sending.
+        let sending = await this.constructNewSending(command, user, world, new Sending(), message);
+
+        // Some sort of failure happened.
+        if (sending == null) {
+            return message.channel.send("Could not send message.");
+        }
+
+        // Put the sending in the database.
+        const sent = await this.sendingController.create(sending);
+
+        // If could not send, respond in kind.
+        if (sent == null) {
+            return message.channel.send("Could not send message.");
+        }
+
+        // Create embed and notify users.
+        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
+        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
+        return this.signalUserOfMessage(sent, message, onComplete, toSend, false);
+    }
+
+    /**
+     * Handles the process of replying to a sending.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     */
+    private async replyToSending (command: Command, user: User, message: Message): Promise<Message | Message[]> {
         let replyCmd = Subcommands.REPLY.getCommand(command);
         if (replyCmd.getInput() == null) {
             return message.channel.send("No reply ID.");
         }
 
-        let page = SendingCommandHandler.getNumber(replyCmd.getInput());
+        let page = StringUtility.getNumber(replyCmd.getInput());
         if (page == null) {
             return message.channel.send("ID isn't a number.");
         }
 
-        if (user.defaultCharacter != null && user.defaultWorld != null) {
-            return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
-                if (ret == null) {
-                    return null;
-                }
+        let arr = await this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
 
-                // Type is world.
-                if (WorldController.isWorld(ret)) {
-                    return this.sendingController.getOne(page, ret,  null, null).then((msg) => {
-                        return this.doReply(msg, command, user, message);
-                    });
-                }
-
-                return this.sendingController.getOne(page, null,  null, ret).then((msg) => {
-                    return this.doReply(msg, command, user, message);
-                });
-            })
+        // If both are null, return a standard message.
+        if (arr.world == null && arr.character == null) {
+            return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        if (user.defaultCharacter != null) {
-            return this.sendingController.getOne(page, null,  null, user.defaultCharacter).then((msg) => {
-                return this.doReply(msg, command, user, message);
-            });
-        }
+        let msg = await this.sendingController.getOne(page, arr.world, arr.npc, arr.character);
 
-        if (user.defaultWorld != null) {
-            return this.sendingController.getOne(page, user.defaultWorld,  null, null).then((msg) => {
-                return this.doReply(msg, command, user, message);
-            });
-        }
-
-        return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
-    }
-
-    private async doReply(msg: Sending, command: Command, user: User, message: Message): Promise<Message | Message[]> {
+        // If no message, couldn't find it.
         if (msg == null) {
             return message.channel.send("Could not find message with that ID.");
         }
 
-        return this.constructNewSending(command, user, null, msg, message).then((sending) => {
-            if (sending == null) {
+        // Now get the sending to put in the message.
+        let sending = await this.constructNewSending(command, user, null, msg, message);
+
+        // IF null, something went wrong upstream.
+        if (sending == null) {
+            return null;
+        }
+
+        // Get the sending from creating a new one.
+        sending = await this.sendingController.create(sending);
+
+        // Now craft the embed and send to users.
+        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
+        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
+        return this.signalUserOfMessage(sending, message, onComplete, toSend, true);
+    }
+
+    /**
+     * Gets who the message should be retrieved for.
+     * @param world
+     * @param character
+     * @param npc
+     * @param message
+     */
+    private async getSendingArray(world: World, character: Character, npc: NonPlayableCharacter, message: Message): Promise<{world: World,
+        character: Character,
+        npc: NonPlayableCharacter}> {
+        // TODO: Implement for NPC.
+
+        // If both are not null, give user a choice.
+        if (world != null && character != null) {
+            let ret = await this.worldOrCharacter(world, character, message);
+
+            if (ret == null) {
                 return null;
             }
 
-            return this.sendingController.create(sending).then((sending) => {
-                let embed = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
-                return this.signalUserOfMessage(sending, message, embed, true);
-            });
-        });
+            // Type is world.
+            if (WorldController.isWorld(ret)) {
+                world = ret;
+                character = null;
+            } else {
+                character = ret;
+                world = null;
+            }
+        }
+
+        return {world: world, character: character, npc: npc};
     }
 
-    private async signalUserOfMessage(sending: Sending, message: Message, embed: MessageEmbed, to: boolean): Promise<Message> {
+    /**
+     * Signals users of the changes made.
+     *
+     * @param sending
+     * @param message
+     * @param completionMessage
+     * @param messageToSend
+     * @param to
+     */
+    private async signalUserOfMessage(sending: Sending, message: Message,
+                                      completionMessage: MessageEmbed, messageToSend: MessageEmbed,
+                                      to: boolean): Promise<Message | Message[]> {
+        // Get discord ids of users to send messages to.
+        let discordIds: string[] = null;
+
+        // Are we getting from a player character?
         let playerCharacter = (sending.fromPlayerId != null && to) ?
             sending.fromPlayerId :
             ((sending.toPlayerId != null && !to) ? sending.toPlayerId : null);
 
-        // Notify the player of the reply.
-        if (playerCharacter != null) {
-            return this.characterController.getDiscordId(playerCharacter).then(async (discordIds) => {
-                return this.sendAllDMs(embed, message, discordIds);
-            });
-        }
-
+        // Are we getting from an NPC?
         let npc = (sending.fromNpc != null && to) ?
             sending.fromNpc :
             ((sending.toNpc != null && !to) ? sending.toNpc : null);
 
+        // Notify the player of the reply.
+        if (playerCharacter != null) {
+            discordIds = await this.characterController.getDiscordId(playerCharacter);
+        }
+
         // From an NPC.
         if (npc != null) {
-            return this.worldController.getDiscordId(npc.worldId).then((discordIds) => {
-                return this.sendAllDMs(embed, message, discordIds);
-            });
+            discordIds = await this.worldController.getDiscordId(npc.worldId);
         }
 
-        return message.channel.send("Couldn't figure out who to notify.");
-    }
-
-    private async sendAllDMs (embed: MessageEmbed, message: Message, discordIds: string[]): Promise<Message> {
-        if (!discordIds || discordIds.length < 1) {
-            return message.channel.send("No discord accounts associated with this message!");
-        }
-
-        let discordId, i;
-        for (i = 0; i < discordIds.length; i++) {
-            discordId = discordIds[i];
-            if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
-                await message.client.users.fetch(discordId).then(async (member: DiscordUser) => {
-                    // No member found, so can't send message.
-                    if (!member) {
-                        return;
-                    }
-
-                    // Set the cache.
-                    if (message.client.users.cache == null) {
-                        message.client.users.cache = new Collection<Snowflake, DiscordUser>();
-                    }
-                    message.client.users.cache.set(member.id, member);
-
-                    // Do response.
-                    return SendingCommandHandler.doDM(member, embed);
-                });
-            } else {
-                let member = message.client.users.cache.get(discordId);
-                await SendingCommandHandler.doDM(member, embed);
-            }
-        }
-        return message.channel.send(embed);
-
+        return MessageUtility.sendPrivateMessages(discordIds, message, completionMessage, messageToSend);
     }
 
     /**
-     * Does the DM.
+     * Gets all the unreplied messages.
      *
-     * @param member The member to send a DM to.
-     * @param message The message to send.
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
      */
-    private static async doDM(member: DiscordUser, message: MessageEmbed): Promise<Message> {
-        if (member == null) {
-            return null;
-        }
-
-        return member.send(message);
-    }
-
     private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
         // Process the next  command.
-        let page = 0;
-        if (Subcommands.NEXT.isCommand(command)) {
-            const nextCmd = Subcommands.NEXT.getCommand(command);
-            if (nextCmd.getInput() != null) {
-                let pg = Number(nextCmd.getInput());
-                if (!isNaN(pg)) {
-                    page = pg;
-                }
-            } else {
+        const nextCmd = Subcommands.NEXT.getCommand(command);
+        let page = StringUtility.getNumber(nextCmd.getInput());
+        if (page == null) {
+            if (nextCmd.getInput() == null) {
                 page = 1;
+            } else  {
+                page = 0
             }
         }
 
-        if (user.defaultCharacter != null && user.defaultWorld != null) {
-            return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
-                if (ret == null) {
-                    return null;
-                }
+        let arr = await this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
 
-                // Type is world.
-                if (WorldController.isWorld(ret)) {
-                    return this.getUnrepliedSendingsForWorld(page, ret, message);
-                }
-
-                return this.getUnrepliedSendingsForCharacter(page, ret, message);
-            })
+        // If both are null, return a standard message.
+        if (arr.world == null && arr.character == null) {
+            return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        if (user.defaultCharacter != null) {
-            return this.getUnrepliedSendingsForCharacter(page, user.defaultCharacter, message);
+        const messages = await this.sendingController.get(page, arr.world, arr.npc, arr.character);
+        let embed: MessageEmbed;
+        if (arr.character != null) {
+            embed = SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, arr.character, page, this.encryptionUtility);
+        } else {
+            embed = SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, arr.world, page, this.encryptionUtility);
         }
 
-        if (user.defaultWorld != null) {
-            return this.getUnrepliedSendingsForWorld(page, user.defaultWorld, message);
-        }
-
-        return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
-    }
-
-    private async getUnrepliedSendingsForWorld(page: number, world: World, message: Message): Promise<Message | Message[]> {
-        // Go out to fetch the messages.
-        return this.sendingController.get(page, world, null, null).then((messages) => {
-            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page, this.encryptionUtility));
-        });
-    }
-
-    private async getUnrepliedSendingsForCharacter(page: number, character: Character, message: Message): Promise<Message | Message[]> {
-        // Go out to fetch the messages.
-        return this.sendingController.get(page, null, null, character).then((messages) => {
-            return message.channel.send(SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page, this.encryptionUtility));
-        });
+        return message.channel.send(embed);
     }
 
     private async constructNewSending(command: Command, user: User, world: World, sending: Sending, message: Message): Promise<Sending> {
@@ -310,9 +300,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
 
             // TODO: Implement era processing.
-            let day = SendingCommandHandler.getNumber(dates[0]),
-                month = SendingCommandHandler.getNumber(dates[1]),
-                year = SendingCommandHandler.getNumber(dates[2]);
+            let day = StringUtility.getNumber(dates[0]),
+                month = StringUtility.getNumber(dates[1]),
+                year = StringUtility.getNumber(dates[2]);
 
             // TODO: Better response here.
             if (day == null || month == null || year == null) {
@@ -391,18 +381,5 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 return null;
             });
         });
-    }
-
-    private static getNumber(input: string): number | null {
-        if (input == null) {
-            return null;
-        }
-
-        let ret = Number(input);
-        if (isNaN(ret)) {
-            return null;
-        }
-
-        return ret;
     }
 }

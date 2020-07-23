@@ -20,12 +20,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var SendingCommandHandler_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendingCommandHandler = void 0;
 const AbstractUserCommandHandler_1 = require("../../../base/AbstractUserCommandHandler");
 const inversify_1 = require("inversify");
-const discord_js_1 = require("discord.js");
 const types_1 = require("../../../../types");
 const EncryptionUtility_1 = require("../../../../utilities/EncryptionUtility");
 const Subcommands_1 = require("../../../../documentation/commands/Subcommands");
@@ -36,7 +34,12 @@ const SendingHelpRelatedResponses_1 = require("../../../../documentation/client-
 const WorldController_1 = require("../../../../controllers/world/WorldController");
 const GameDate_1 = require("../../../../entity/GameDate");
 const CharacterController_1 = require("../../../../controllers/character/CharacterController");
-let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+const MessageUtility_1 = require("../../../../utilities/MessageUtility");
+const StringUtility_1 = require("../../../../utilities/StringUtility");
+/**
+ * Handles sending related commands.
+ */
+let SendingCommandHandler = class SendingCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(characterController, encryptionUtility, npcController, sendingController, worldController) {
         super();
         this.characterController = characterController;
@@ -58,206 +61,184 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                 if (readCmd.getInput() == null) {
                 }
                 // TODO: Figure out how this'll work...
-                console.log("Deal with reads later...");
                 return null;
             }
             if (Subcommands_1.Subcommands.REPLY.isCommand(command)) {
                 // Someone is replying!
-                return this.beginReply(command, user, message);
+                return this.replyToSending(command, user, message);
             }
-            return this.worldController.worldSelectionFromUser(user, message).then((world) => {
-                if (world == null) {
-                    return message.channel.send("No world where this message can be sent!");
-                }
-                return this.constructNewSending(command, user, world, new Sending_1.Sending(), message).then((sending) => {
-                    if (sending == null) {
-                        return message.channel.send("Could not send message.");
-                    }
-                    return this.sendingController.create(sending).then((sent) => {
-                        if (sent == null) {
-                            return message.channel.send("Could not send message.");
-                        }
-                        let embed = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
-                        return this.signalUserOfMessage(sent, message, embed, false);
-                    });
-                });
-            });
+            return this.createNewSending(command, message, user);
         });
     }
-    beginReply(command, user, message) {
+    /**
+     * Creates a new sending from the information given by the command.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     */
+    createNewSending(command, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Go and get the world.
+            let world = yield this.worldController.worldSelectionFromUser(user, message);
+            // If there is no world, then give an automated reply.
+            if (world == null) {
+                return message.channel.send("No world where this message can be sent!");
+            }
+            // Construct the sending.
+            let sending = yield this.constructNewSending(command, user, world, new Sending_1.Sending(), message);
+            // Some sort of failure happened.
+            if (sending == null) {
+                return message.channel.send("Could not send message.");
+            }
+            // Put the sending in the database.
+            const sent = yield this.sendingController.create(sending);
+            // If could not send, respond in kind.
+            if (sent == null) {
+                return message.channel.send("Could not send message.");
+            }
+            // Create embed and notify users.
+            let toSend = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
+            let onComplete = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
+            return this.signalUserOfMessage(sent, message, onComplete, toSend, false);
+        });
+    }
+    /**
+     * Handles the process of replying to a sending.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     */
+    replyToSending(command, user, message) {
         return __awaiter(this, void 0, void 0, function* () {
             let replyCmd = Subcommands_1.Subcommands.REPLY.getCommand(command);
             if (replyCmd.getInput() == null) {
                 return message.channel.send("No reply ID.");
             }
-            let page = SendingCommandHandler_1.getNumber(replyCmd.getInput());
+            let page = StringUtility_1.StringUtility.getNumber(replyCmd.getInput());
             if (page == null) {
                 return message.channel.send("ID isn't a number.");
             }
-            if (user.defaultCharacter != null && user.defaultWorld != null) {
-                return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
-                    if (ret == null) {
-                        return null;
-                    }
-                    // Type is world.
-                    if (WorldController_1.WorldController.isWorld(ret)) {
-                        return this.sendingController.getOne(page, ret, null, null).then((msg) => {
-                            return this.doReply(msg, command, user, message);
-                        });
-                    }
-                    return this.sendingController.getOne(page, null, null, ret).then((msg) => {
-                        return this.doReply(msg, command, user, message);
-                    });
-                });
+            let arr = yield this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
+            // If both are null, return a standard message.
+            if (arr.world == null && arr.character == null) {
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
             }
-            if (user.defaultCharacter != null) {
-                return this.sendingController.getOne(page, null, null, user.defaultCharacter).then((msg) => {
-                    return this.doReply(msg, command, user, message);
-                });
-            }
-            if (user.defaultWorld != null) {
-                return this.sendingController.getOne(page, user.defaultWorld, null, null).then((msg) => {
-                    return this.doReply(msg, command, user, message);
-                });
-            }
-            return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
-        });
-    }
-    doReply(msg, command, user, message) {
-        return __awaiter(this, void 0, void 0, function* () {
+            let msg = yield this.sendingController.getOne(page, arr.world, arr.npc, arr.character);
+            // If no message, couldn't find it.
             if (msg == null) {
                 return message.channel.send("Could not find message with that ID.");
             }
-            return this.constructNewSending(command, user, null, msg, message).then((sending) => {
-                if (sending == null) {
-                    return null;
-                }
-                return this.sendingController.create(sending).then((sending) => {
-                    let embed = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
-                    return this.signalUserOfMessage(sending, message, embed, true);
-                });
-            });
-        });
-    }
-    signalUserOfMessage(sending, message, embed, to) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let playerCharacter = (sending.fromPlayerId != null && to) ?
-                sending.fromPlayerId :
-                ((sending.toPlayerId != null && !to) ? sending.toPlayerId : null);
-            // Notify the player of the reply.
-            if (playerCharacter != null) {
-                return this.characterController.getDiscordId(playerCharacter).then((discordIds) => __awaiter(this, void 0, void 0, function* () {
-                    return this.sendAllDMs(embed, message, discordIds);
-                }));
+            // Now get the sending to put in the message.
+            let sending = yield this.constructNewSending(command, user, null, msg, message);
+            // IF null, something went wrong upstream.
+            if (sending == null) {
+                return null;
             }
-            let npc = (sending.fromNpc != null && to) ?
-                sending.fromNpc :
-                ((sending.toNpc != null && !to) ? sending.toNpc : null);
-            // From an NPC.
-            if (npc != null) {
-                return this.worldController.getDiscordId(npc.worldId).then((discordIds) => {
-                    return this.sendAllDMs(embed, message, discordIds);
-                });
-            }
-            return message.channel.send("Couldn't figure out who to notify.");
-        });
-    }
-    sendAllDMs(embed, message, discordIds) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!discordIds || discordIds.length < 1) {
-                return message.channel.send("No discord accounts associated with this message!");
-            }
-            let discordId, i;
-            for (i = 0; i < discordIds.length; i++) {
-                discordId = discordIds[i];
-                if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
-                    yield message.client.users.fetch(discordId).then((member) => __awaiter(this, void 0, void 0, function* () {
-                        // No member found, so can't send message.
-                        if (!member) {
-                            return;
-                        }
-                        // Set the cache.
-                        if (message.client.users.cache == null) {
-                            message.client.users.cache = new discord_js_1.Collection();
-                        }
-                        message.client.users.cache.set(member.id, member);
-                        // Do response.
-                        return SendingCommandHandler_1.doDM(member, embed);
-                    }));
-                }
-                else {
-                    let member = message.client.users.cache.get(discordId);
-                    yield SendingCommandHandler_1.doDM(member, embed);
-                }
-            }
-            return message.channel.send(embed);
+            // Get the sending from creating a new one.
+            sending = yield this.sendingController.create(sending);
+            // Now craft the embed and send to users.
+            let toSend = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
+            let onComplete = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
+            return this.signalUserOfMessage(sending, message, onComplete, toSend, true);
         });
     }
     /**
-     * Does the DM.
-     *
-     * @param member The member to send a DM to.
-     * @param message The message to send.
+     * Gets who the message should be retrieved for.
+     * @param world
+     * @param character
+     * @param npc
+     * @param message
      */
-    static doDM(member, message) {
+    getSendingArray(world, character, npc, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (member == null) {
-                return null;
+            // TODO: Implement for NPC.
+            // If both are not null, give user a choice.
+            if (world != null && character != null) {
+                let ret = yield this.worldOrCharacter(world, character, message);
+                if (ret == null) {
+                    return null;
+                }
+                // Type is world.
+                if (WorldController_1.WorldController.isWorld(ret)) {
+                    world = ret;
+                    character = null;
+                }
+                else {
+                    character = ret;
+                    world = null;
+                }
             }
-            return member.send(message);
+            return { world: world, character: character, npc: npc };
         });
     }
+    /**
+     * Signals users of the changes made.
+     *
+     * @param sending
+     * @param message
+     * @param completionMessage
+     * @param messageToSend
+     * @param to
+     */
+    signalUserOfMessage(sending, message, completionMessage, messageToSend, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Get discord ids of users to send messages to.
+            let discordIds = null;
+            // Are we getting from a player character?
+            let playerCharacter = (sending.fromPlayerId != null && to) ?
+                sending.fromPlayerId :
+                ((sending.toPlayerId != null && !to) ? sending.toPlayerId : null);
+            // Are we getting from an NPC?
+            let npc = (sending.fromNpc != null && to) ?
+                sending.fromNpc :
+                ((sending.toNpc != null && !to) ? sending.toNpc : null);
+            // Notify the player of the reply.
+            if (playerCharacter != null) {
+                discordIds = yield this.characterController.getDiscordId(playerCharacter);
+            }
+            // From an NPC.
+            if (npc != null) {
+                discordIds = yield this.worldController.getDiscordId(npc.worldId);
+            }
+            return MessageUtility_1.MessageUtility.sendPrivateMessages(discordIds, message, completionMessage, messageToSend);
+        });
+    }
+    /**
+     * Gets all the unreplied messages.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     */
     getUnrepliedSendings(command, user, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Process the next  command.
-            let page = 0;
-            if (Subcommands_1.Subcommands.NEXT.isCommand(command)) {
-                const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
-                if (nextCmd.getInput() != null) {
-                    let pg = Number(nextCmd.getInput());
-                    if (!isNaN(pg)) {
-                        page = pg;
-                    }
-                }
-                else {
+            const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
+            let page = StringUtility_1.StringUtility.getNumber(nextCmd.getInput());
+            if (page == null) {
+                if (nextCmd.getInput() == null) {
                     page = 1;
                 }
+                else {
+                    page = 0;
+                }
             }
-            if (user.defaultCharacter != null && user.defaultWorld != null) {
-                return this.worldOrCharacter(user.defaultWorld, user.defaultCharacter, message).then((ret) => {
-                    if (ret == null) {
-                        return null;
-                    }
-                    // Type is world.
-                    if (WorldController_1.WorldController.isWorld(ret)) {
-                        return this.getUnrepliedSendingsForWorld(page, ret, message);
-                    }
-                    return this.getUnrepliedSendingsForCharacter(page, ret, message);
-                });
+            let arr = yield this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
+            // If both are null, return a standard message.
+            if (arr.world == null && arr.character == null) {
+                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
             }
-            if (user.defaultCharacter != null) {
-                return this.getUnrepliedSendingsForCharacter(page, user.defaultCharacter, message);
+            const messages = yield this.sendingController.get(page, arr.world, arr.npc, arr.character);
+            let embed;
+            if (arr.character != null) {
+                embed = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, arr.character, page, this.encryptionUtility);
             }
-            if (user.defaultWorld != null) {
-                return this.getUnrepliedSendingsForWorld(page, user.defaultWorld, message);
+            else {
+                embed = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, arr.world, page, this.encryptionUtility);
             }
-            return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
-        });
-    }
-    getUnrepliedSendingsForWorld(page, world, message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Go out to fetch the messages.
-            return this.sendingController.get(page, world, null, null).then((messages) => {
-                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, world, page, this.encryptionUtility));
-            });
-        });
-    }
-    getUnrepliedSendingsForCharacter(page, character, message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Go out to fetch the messages.
-            return this.sendingController.get(page, null, null, character).then((messages) => {
-                return message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, character, page, this.encryptionUtility));
-            });
+            return message.channel.send(embed);
         });
     }
     constructNewSending(command, user, world, sending, message) {
@@ -294,7 +275,7 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
                     return null;
                 }
                 // TODO: Implement era processing.
-                let day = SendingCommandHandler_1.getNumber(dates[0]), month = SendingCommandHandler_1.getNumber(dates[1]), year = SendingCommandHandler_1.getNumber(dates[2]);
+                let day = StringUtility_1.StringUtility.getNumber(dates[0]), month = StringUtility_1.StringUtility.getNumber(dates[1]), year = StringUtility_1.StringUtility.getNumber(dates[2]);
                 // TODO: Better response here.
                 if (day == null || month == null || year == null) {
                     yield message.channel.send("Date was malformed. Day, month or year was not a number. Should be like " +
@@ -374,18 +355,8 @@ let SendingCommandHandler = SendingCommandHandler_1 = class SendingCommandHandle
             });
         });
     }
-    static getNumber(input) {
-        if (input == null) {
-            return null;
-        }
-        let ret = Number(input);
-        if (isNaN(ret)) {
-            return null;
-        }
-        return ret;
-    }
 };
-SendingCommandHandler = SendingCommandHandler_1 = __decorate([
+SendingCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.CharacterController)),
     __param(1, inversify_1.inject(types_1.TYPES.EncryptionUtility)),
