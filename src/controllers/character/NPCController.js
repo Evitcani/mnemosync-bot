@@ -45,9 +45,19 @@ let NPCController = class NPCController extends AbstractController_1.AbstractCon
             });
         });
     }
+    getById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().findOne({ where: { id: id }, relations: ["world"] })
+                .catch((err) => {
+                console.error("ERR ::: Could not get NPCs by id.");
+                console.error(err);
+                return null;
+            });
+        });
+    }
     getByWorld(worldId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().find({ where: { worldId: worldId } })
+            return this.getRepo().find({ where: { worldId: worldId }, relations: ["world"] })
                 .catch((err) => {
                 console.error("ERR ::: Could not get NPCs in world.");
                 console.error(err);

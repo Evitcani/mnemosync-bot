@@ -42,11 +42,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // Want to view sendings.
         if (command.getSubcommands() == null || command.getSubcommands().size < 1 || Subcommands.GET.isCommand(command)) {
-            console.log("Getting unreplied sendings...");
             return this.getUnrepliedSendings(command, user, message);
         }
-
-        console.log("Not looking for unreplied sendings!");
 
         // Reading a message.
         if (Subcommands.READ.isCommand(command)) {
@@ -62,38 +59,28 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
-        console.log("Not reading!");
-
         if (Subcommands.REPLY.isCommand(command)) {
             // Someone is replying!
             return this.beginReply(command, user, message);
         }
-
-        console.log("Not replying! Going to send a new message...");
 
         return this.worldController.worldSelectionFromUser(user, message).then((world) => {
             if (world == null) {
                 return message.channel.send("No world where this message can be sent!");
             }
 
-            console.log("Constructing a new sending..");
             return this.constructNewSending(command, user, world, new Sending(), message).then((sending) => {
                 if (sending == null) {
                     return message.channel.send("Could not send message.");
                 }
-
-                console.log("Created sending, now saving...");
 
                 return this.sendingController.create(sending).then((sent) => {
                     if (sent == null) {
                         return message.channel.send("Could not send message.");
                     }
 
-                    console.log("Saved, returning...");
-
-                    return message.channel.send(`Sent message to ` +
-                        `${sent.toNpc == null ? sent.toPlayer.name : sent.toNpc.name} with message ` +
-                        `${this.encryptionUtility.decrypt(sent.content)}`);
+                    let embed = SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
+                    return this.signalUserOfMessage(sent, message, embed, false);
                 });
             });
         });
@@ -155,49 +142,69 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
 
             return this.sendingController.create(sending).then((sending) => {
-                // Notify the player of the reply.
-                if (sending.fromPlayerId != null) {
-                    return this.characterController.getDiscordId(sending.fromPlayerId).then(async (discordIds) => {
-                        if (!discordIds || discordIds.length < 1) {
-                            return message.channel.send("No discord accounts associated with this message!");
-                        }
-
-                        let discordId, i;
-                        for (i = 0; i < discordIds.length; i++) {
-                            discordId = discordIds[i];
-                            if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
-                                await message.client.users.fetch(discordId).then(async (member: DiscordUser) => {
-                                    // No member found, so can't send message.
-                                    if (!member) {
-                                        return;
-                                    }
-
-                                    // Set the cache.
-                                    if (message.client.users.cache == null) {
-                                        message.client.users.cache = new Collection<Snowflake, DiscordUser>();
-                                    }
-                                    message.client.users.cache.set(member.id, member);
-
-                                    // Do response.
-                                    return SendingCommandHandler.doDM(member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
-                                        this.encryptionUtility));
-                                });
-                            } else {
-                                let member = message.client.users.cache.get(discordId);
-                                await SendingCommandHandler.doDM(
-                                    member, SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending,
-                                        this.encryptionUtility));
-                            }
-                        }
-                        return message.channel.send(
-                            SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility));
-                    });
-                }
-
-                // TODO: From an NPC.
-                return null;
+                let embed = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
+                return this.signalUserOfMessage(sending, message, embed, true);
             });
         });
+    }
+
+    private async signalUserOfMessage(sending: Sending, message: Message, embed: MessageEmbed, to: boolean): Promise<Message> {
+        let playerCharacter = (sending.fromPlayerId != null && to) ?
+            sending.fromPlayerId :
+            ((sending.toPlayerId != null && !to) ? sending.toPlayerId : null);
+
+        // Notify the player of the reply.
+        if (playerCharacter != null) {
+            return this.characterController.getDiscordId(playerCharacter).then(async (discordIds) => {
+                return this.sendAllDMs(embed, message, discordIds);
+            });
+        }
+
+        let npc = (sending.fromNpc != null && to) ?
+            sending.fromNpc :
+            ((sending.toNpc != null && !to) ? sending.toNpc : null);
+
+        // From an NPC.
+        if (npc != null) {
+            return this.worldController.getDiscordId(npc.worldId).then((discordIds) => {
+                return this.sendAllDMs(embed, message, discordIds);
+            });
+        }
+
+        return message.channel.send("Couldn't figure out who to notify.");
+    }
+
+    private async sendAllDMs (embed: MessageEmbed, message: Message, discordIds: string[]): Promise<Message> {
+        if (!discordIds || discordIds.length < 1) {
+            return message.channel.send("No discord accounts associated with this message!");
+        }
+
+        let discordId, i;
+        for (i = 0; i < discordIds.length; i++) {
+            discordId = discordIds[i];
+            if (message.client.users.cache == null || !message.client.users.cache.has(discordId)) {
+                await message.client.users.fetch(discordId).then(async (member: DiscordUser) => {
+                    // No member found, so can't send message.
+                    if (!member) {
+                        return;
+                    }
+
+                    // Set the cache.
+                    if (message.client.users.cache == null) {
+                        message.client.users.cache = new Collection<Snowflake, DiscordUser>();
+                    }
+                    message.client.users.cache.set(member.id, member);
+
+                    // Do response.
+                    return SendingCommandHandler.doDM(member, embed);
+                });
+            } else {
+                let member = message.client.users.cache.get(discordId);
+                await SendingCommandHandler.doDM(member, embed);
+            }
+        }
+        return message.channel.send(embed);
+
     }
 
     /**
