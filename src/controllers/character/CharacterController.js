@@ -112,7 +112,6 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                 .leftJoinAndSelect(Nickname_1.Nickname, "nick", `character.id = "nick"."characterId"`)
                 .where(`LOWER("nick"."name") LIKE LOWER('%${sanitizedName}%')`)
                 .andWhere(`"character"."partyId" = ANY(ARRAY[${partyIds.join(",")}])`)
-                .distinctOn(["character.id"])
                 .getMany()
                 .then((characters) => {
                 if (!characters || characters.length < 1) {
