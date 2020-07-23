@@ -60,13 +60,23 @@ class SendingHelpRelatedResponses {
             .setTitle(`Got a message reply!`)
             .setDescription(`Here is the reply:\n\n${messageStr}`);
     }
+    static PRINT_MESSAGE_TO_PLAYER(message, encryptionUtility) {
+        let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
+        return BasicEmbed_1.BasicEmbed.get()
+            .setTitle(`Got a new message!`)
+            .setDescription(`You can see your unreplied sendings by typing \`$sending\`.\n\n` +
+            `Here is the message:\n\n${messageStr}`);
+    }
     static PRINT_FINISHED_INFORMING(message, encryptionUtility) {
         let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
         return BasicEmbed_1.BasicEmbed.get()
             .setTitle(`Finished informing all users of the reply.`)
-            .setDescription(`Here is the reply you just sent:\n\n${messageStr}`);
+            .setDescription(`Here is the message you just sent:\n\n${messageStr}`);
     }
     static processMessages(messages, page, includeTo, includeFrom, includeReply, encryptionUtility) {
+        if (!messages || messages.length < 1) {
+            return "No messages!";
+        }
         let additional = page * SendingController_1.SendingController.SENDING_LIMIT;
         let str = "";
         let i, message;

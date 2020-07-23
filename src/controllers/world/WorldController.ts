@@ -6,6 +6,9 @@ import {User} from "../../entity/User";
 import {StringUtility} from "../../utilities/StringUtility";
 import {Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../documentation/client-responses/information/WorldRelatedClientResponses";
+import {getConnection} from "typeorm";
+import {BaseQueryRunner} from "typeorm/query-runner/BaseQueryRunner";
+import {Nickname} from "../../entity/Nickname";
 
 @injectable()
 export class WorldController extends AbstractController<World> {
@@ -95,6 +98,41 @@ export class WorldController extends AbstractController<World> {
             .where(`"owners"."usersId" = ${user.id}`)
             .andWhere(`LOWER(world.name) LIKE LOWER('%${sanitizedName}%')`)
             .getMany()
+            .catch((err: Error) => {
+                console.error("ERR ::: Could not get worlds.");
+                console.error(err);
+                return null;
+            });
+    }
+
+    /**
+     * Gets all parties in the given guild with a name similar.
+     *
+     * @param id The name of the world to get.
+     * @param user
+     */
+    public getDiscordId(id: string): Promise<string[]> {
+        return getConnection()
+            .createQueryBuilder(User, "user")
+            .leftJoinAndSelect(Table.WORLD_OWNERS, "owners", `user.id = "owners"."usersId"`)
+            .where(`"owners"."worldsId" = '${id}'`)
+            .getMany()
+            .then((users) => {
+                if (!users || users.length < 1) {
+                    return null;
+                }
+
+                let input: string[] = [], user: User, discordId: string, i;
+                for (i = 0; i < users.length; i++) {
+                    user = users[i];
+                    discordId = user.discord_id;
+                    if (!input.includes(discordId)) {
+                        input.push(discordId);
+                    }
+                }
+
+                return input;
+            })
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get worlds.");
                 console.error(err);
