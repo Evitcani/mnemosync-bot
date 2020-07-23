@@ -37,7 +37,12 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
     }
 
     public async getByWorld(worldId: string): Promise<NonPlayableCharacter[]> {
-        return this.getRepo().find({where: {worldId: worldId}, relations: ["world"]})
+        return this.getRepo()
+            .createQueryBuilder("npc")
+            .where("\"npc\".\"worldId\" = :id", { id: worldId })
+            .orderBy("\"npc\".\"name\"", "ASC")
+            .loadAllRelationIds({relations: ["world"]})
+            .getMany()
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get NPCs in world.");
                 console.error(err);

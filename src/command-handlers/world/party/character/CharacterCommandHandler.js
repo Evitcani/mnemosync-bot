@@ -48,7 +48,7 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
                 const npcCmd = Subcommands_1.Subcommands.NPC.isCommand(command);
                 if (npcCmd != null) {
-                    return this.constructNPC(command, message, user).then((npc) => {
+                    return this.constructNPC(command, message, user, new NonPlayableCharacter_1.NonPlayableCharacter()).then((npc) => {
                         return this.npcController.create(npc).then((character) => {
                             if (character == null) {
                                 return message.channel.send("Could not create new NPC.");
@@ -74,16 +74,25 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             return undefined;
         });
     }
+    /**
+     * Switches the character.
+     *
+     * @param message
+     * @param cmd
+     * @param user
+     */
     switchCharacter(message, cmd, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.characterController.getCharacterByName(cmd.getInput(), message.author.id).then((char) => {
-                if (char == null) {
-                    return message.channel.send(`No character exists with a name like '${cmd.getInput()}'`);
-                }
-                return this.userController.updateDefaultCharacter(user, char).then(() => {
-                    return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
-                });
-            });
+            // Go out and get the character.
+            let char = yield this.characterController.getCharacterByName(cmd.getInput(), message.author.id);
+            // Couldn't find character.
+            if (char == null) {
+                return message.channel.send(`No character exists with a name like '${cmd.getInput()}'`);
+            }
+            // Update the default character.
+            yield this.userController.updateDefaultCharacter(user, char);
+            // Return message.
+            return message.channel.send(CharacterRelatedClientResponses_1.CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
         });
     }
     addNickname(command, message, user) {
@@ -91,13 +100,11 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             if (user == null || user.defaultCharacter == null) {
                 return message.channel.send("Unable to add nickname to character. No default character.");
             }
-            return this.characterController.createNickname(command.getInput(), user.defaultCharacter, message.author.id)
-                .then((nick) => {
-                if (nick == null) {
-                    return message.channel.send("Unable to add nickname to character.");
-                }
-                return message.channel.send("Added nickname to character!");
-            });
+            let nick = yield this.characterController.createNickname(command.getInput(), user.defaultCharacter, message.author.id);
+            if (nick == null) {
+                return message.channel.send("Unable to add nickname to character.");
+            }
+            return message.channel.send("Added nickname to character!");
         });
     }
     /**
@@ -123,10 +130,16 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
             });
         });
     }
-    constructNPC(command, message, user) {
+    /**
+     * Constructs an NPC.
+     *
+     * @param command The command originally sent.
+     * @param message Message object of the originating command.
+     * @param user The user doing the command.
+     * @param character The character to update with the given command.
+     */
+    constructNPC(command, message, user, character) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO:  Make more dynamic.
-            const character = new NonPlayableCharacter_1.NonPlayableCharacter();
             const nameCmd = CharacterCommandHandler.getNameCmd(command);
             if (nameCmd != null) {
                 character.name = nameCmd.getInput();
