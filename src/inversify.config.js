@@ -9,7 +9,6 @@ const message_responder_1 = require("./services/message-responder");
 const ping_finder_1 = require("./services/ping-finder");
 const DatabaseService_1 = require("./database/base/DatabaseService");
 const PartyFundCommandHandler_1 = require("./command-handlers/world/party/inventory/PartyFundCommandHandler");
-const PartyFundService_1 = require("./database/PartyFundService");
 const RegisterCommandHandler_1 = require("./command-handlers/misc/RegisterCommandHandler");
 const PartyToGuildService_1 = require("./database/PartyToGuildService");
 const UserDefaultPartyService_1 = require("./database/UserDefaultPartyService");
@@ -43,7 +42,6 @@ container.bind(types_1.TYPES.MessageResponder).to(message_responder_1.MessageRes
 container.bind(types_1.TYPES.PingFinder).to(ping_finder_1.PingFinder).inSingletonScope();
 container.bind(types_1.TYPES.EncryptionUtility).to(EncryptionUtility_1.EncryptionUtility).inSingletonScope();
 container.bind(types_1.TYPES.DatabaseService).to(DatabaseService_1.DatabaseService).inSingletonScope();
-container.bind(types_1.TYPES.PartyFundService).to(PartyFundService_1.PartyFundService).inSingletonScope();
 container.bind(types_1.TYPES.PartyToGuildService).to(PartyToGuildService_1.PartyToGuildService).inSingletonScope();
 container.bind(types_1.TYPES.SpecialChannelService).to(SpecialChannelService_1.SpecialChannelService).inSingletonScope();
 container.bind(types_1.TYPES.UserDefaultPartyService).to(UserDefaultPartyService_1.UserDefaultPartyService).inSingletonScope();

@@ -11,7 +11,6 @@ export const TYPES = {
     EncryptionUtility: Symbol("EncryptionUtility"),
 
     DatabaseService: Symbol("DatabaseService"),
-    PartyFundService: Symbol("PartyFundService"),
     PartyToGuildService: Symbol("PartyToGuildService"),
     SpecialChannelService: Symbol("SpecialChannelService"),
     UserDefaultPartyService: Symbol("UserDefaultPartyService"),

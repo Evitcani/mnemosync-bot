@@ -11,7 +11,6 @@ exports.TYPES = {
     PingFinder: Symbol("PingFinder"),
     EncryptionUtility: Symbol("EncryptionUtility"),
     DatabaseService: Symbol("DatabaseService"),
-    PartyFundService: Symbol("PartyFundService"),
     PartyToGuildService: Symbol("PartyToGuildService"),
     SpecialChannelService: Symbol("SpecialChannelService"),
     UserDefaultPartyService: Symbol("UserDefaultPartyService"),

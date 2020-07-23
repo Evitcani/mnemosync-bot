@@ -47,7 +47,21 @@ let PartyFundController = class PartyFundController extends AbstractController_1
     }
     getByPartyAndType(party, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getRepo().findOne({ where: { party: party, type: type } });
+            return this.getRepo().findOne({ where: { party: party, type: type } })
+                .catch((err) => {
+                console.error("ERR ::: Could not find party fund.");
+                console.error(err);
+                return null;
+            });
+        });
+    }
+    updateFunds(fund) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().save(fund).catch((err) => {
+                console.error("ERR ::: Could not update party fund.");
+                console.error(err);
+                return null;
+            });
         });
     }
 };

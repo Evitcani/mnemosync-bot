@@ -26,7 +26,6 @@ const inversify_1 = require("inversify");
 const types_1 = require("../../../../types");
 const MoneyUtility_1 = require("../../../../utilities/MoneyUtility");
 const FundRelatedClientResponses_1 = require("../../../../documentation/client-responses/party/FundRelatedClientResponses");
-const PartyFundService_1 = require("../../../../database/PartyFundService");
 const Commands_1 = require("../../../../documentation/commands/Commands");
 const PartyController_1 = require("../../../../controllers/party/PartyController");
 const Subcommands_1 = require("../../../../documentation/commands/Subcommands");
@@ -36,10 +35,9 @@ const AbstractUserCommandHandler_1 = require("../../../base/AbstractUserCommandH
  * Manages the fund related commands.
  */
 let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(partyController, partyFundController, partyFundService) {
+    constructor(partyController, partyFundController) {
         super();
         this.partyController = partyController;
-        this.partyFundService = partyFundService;
         this.partyFundController = partyFundController;
     }
     /**
@@ -110,24 +108,26 @@ let PartyFundCommandHandler = class PartyFundCommandHandler extends AbstractUser
                 return message.channel.send("Command appears to be formatted incorrectly. Please try again!");
             }
             // Find and then update these funds.
-            return this.findFunds(party, fundType, message).then((fund) => {
-                if (fund == null) {
-                    return message.channel.send("Could not find fund!");
-                }
-                // Pile everything into copper.
-                let newAmtTotal = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
-                let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
-                let newAmt = newAmtTotal + oldAmt;
-                if (newAmt < 0) {
-                    let newAmtInGold = newAmt / 100;
-                    return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100, newAmtTotal / 100, newAmtInGold));
-                }
-                const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
-                return this.partyFundService.updateFunds(fund.id, finalFund.platinum, finalFund.gold, finalFund.silver, finalFund.copper).then((updatedFund) => {
-                    const currentMoney = MoneyUtility_1.MoneyUtility.pileIntoCopper(updatedFund) / 100;
-                    return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.UPDATED_MONEY(currentMoney, oldAmt / 100, newAmtTotal / 100, newAmtTotal < 0));
-                });
-            });
+            let fund = yield this.findFunds(party, fundType, message);
+            if (fund == null) {
+                return message.channel.send("Could not find fund!");
+            }
+            // Pile everything into copper.
+            let newAmtTotal = MoneyUtility_1.MoneyUtility.pileIntoCopper(newFund);
+            let oldAmt = MoneyUtility_1.MoneyUtility.pileIntoCopper(fund);
+            let newAmt = newAmtTotal + oldAmt;
+            if (newAmt < 0) {
+                let newAmtInGold = newAmt / 100;
+                return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100, newAmtTotal / 100, newAmtInGold));
+            }
+            const finalFund = MoneyUtility_1.MoneyUtility.copperToFund(newAmt);
+            fund.platinum = finalFund.platinum;
+            fund.gold = finalFund.gold;
+            fund.silver = finalFund.silver;
+            fund.copper = finalFund.copper;
+            let updatedFund = yield this.partyFundController.updateFunds(fund);
+            const currentMoney = MoneyUtility_1.MoneyUtility.pileIntoCopper(updatedFund) / 100;
+            return message.channel.send(FundRelatedClientResponses_1.FundRelatedClientResponses.UPDATED_MONEY(currentMoney, oldAmt / 100, newAmtTotal / 100, newAmtTotal < 0));
         });
     }
 };
@@ -135,10 +135,8 @@ PartyFundCommandHandler = __decorate([
     inversify_1.injectable(),
     __param(0, inversify_1.inject(types_1.TYPES.PartyController)),
     __param(1, inversify_1.inject(types_1.TYPES.PartyFundController)),
-    __param(2, inversify_1.inject(types_1.TYPES.PartyFundService)),
     __metadata("design:paramtypes", [PartyController_1.PartyController,
-        PartyFundController_1.PartyFundController,
-        PartyFundService_1.PartyFundService])
+        PartyFundController_1.PartyFundController])
 ], PartyFundCommandHandler);
 exports.PartyFundCommandHandler = PartyFundCommandHandler;
 //# sourceMappingURL=PartyFundCommandHandler.js.map
