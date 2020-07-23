@@ -7,7 +7,6 @@ import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler"
 import {NPCController} from "../../../controllers/character/NPCController";
 import {WorldController} from "../../../controllers/world/WorldController";
 import {NPCRelatedClientResponses} from "../../../documentation/client-responses/character/NPCRelatedClientResponses";
-import {World} from "../../../entity/World";
 
 /**
  * Handles questions about the state of the world.
