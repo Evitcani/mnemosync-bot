@@ -115,7 +115,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
     replyToSending(command, user, message) {
         return __awaiter(this, void 0, void 0, function* () {
             let replyCmd = Subcommands_1.Subcommands.REPLY.getCommand(command);
-            if (replyCmd.getInput() == null) {
+            if (replyCmd == null || replyCmd.getInput() == null) {
                 return message.channel.send("No reply ID.");
             }
             let page = StringUtility_1.StringUtility.getNumber(replyCmd.getInput());
@@ -217,14 +217,17 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
     getUnrepliedSendings(command, user, message) {
         return __awaiter(this, void 0, void 0, function* () {
             // Process the next  command.
-            const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
-            let page = StringUtility_1.StringUtility.getNumber(nextCmd.getInput());
-            if (page == null) {
-                if (nextCmd.getInput() == null) {
-                    page = 1;
-                }
-                else {
-                    page = 0;
+            let page = 0;
+            if (Subcommands_1.Subcommands.NEXT.isCommand(command)) {
+                const nextCmd = Subcommands_1.Subcommands.NEXT.getCommand(command);
+                page = StringUtility_1.StringUtility.getNumber(nextCmd.getInput());
+                if (page == null) {
+                    if (nextCmd.getInput() == null) {
+                        page = 1;
+                    }
+                    else {
+                        page = 0;
+                    }
                 }
             }
             let arr = yield this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
