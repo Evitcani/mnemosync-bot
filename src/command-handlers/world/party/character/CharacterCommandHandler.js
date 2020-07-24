@@ -45,9 +45,8 @@ let CharacterCommandHandler = class CharacterCommandHandler extends AbstractUser
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (Subcommands_1.Subcommands.CREATE.isCommand(command) != null) {
-                const npcCmd = Subcommands_1.Subcommands.NPC.isCommand(command);
-                if (npcCmd != null) {
+            if (Subcommands_1.Subcommands.CREATE.isCommand(command)) {
+                if (Subcommands_1.Subcommands.NPC.isCommand(command)) {
                     return this.constructNPC(command, message, user, new NonPlayableCharacter_1.NonPlayableCharacter()).then((npc) => {
                         return this.npcController.create(npc).then((character) => {
                             if (character == null) {
