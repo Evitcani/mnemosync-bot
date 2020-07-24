@@ -36,9 +36,8 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
     }
 
     async handleUserCommand(command, message, user): Promise<Message | Message[]> {
-        if (Subcommands.CREATE.isCommand(command) != null) {
-            const npcCmd = Subcommands.NPC.isCommand(command);
-            if (npcCmd != null) {
+        if (Subcommands.CREATE.isCommand(command)) {
+            if (Subcommands.NPC.isCommand(command)) {
                 return this.constructNPC(command, message, user, new NonPlayableCharacter()).then((npc) => {
                     return this.npcController.create(npc).then((character) => {
                         if (character == null) {
