@@ -14,6 +14,7 @@ import {Table} from "../documentation/databases/Table";
 import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
 import {GameDate} from "./GameDate";
+import {User} from "./User";
 
 @Entity({name: Table.SENDING})
 export class Sending {
@@ -97,6 +98,22 @@ export class Sending {
     })
     @JoinColumn({name: "from_player_id"})
     fromPlayer?: Character;
+
+    @ManyToOne(type => User, {
+        nullable: true,
+        onDelete: "SET NULL",
+        eager: true
+    })
+    @JoinColumn({name: "sending_message_from_user_id"})
+    sendingMessageFromUser: User;
+
+    @ManyToOne(type => User, {
+        nullable: true,
+        onDelete: "SET NULL",
+        eager: true
+    })
+    @JoinColumn({name: "sending_reply_from_user_id"})
+    sendingReplyFromUser: User;
 
     @BeforeInsert()
     @BeforeUpdate()

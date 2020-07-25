@@ -50,7 +50,8 @@ let SendingController = SendingController_1 = class SendingController extends Ab
             if (ids == null || ids.length < 1) {
                 return null;
             }
-            return this.getRepo().find({ where: { id: typeorm_1.Any(ids) }, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"] })
+            return this.getRepo().find({ where: { id: typeorm_1.Any(ids) }, relations: ["toNpc", "fromNpc", "toPlayer",
+                    "fromPlayer", "sendingReplyFromUser", "sendingMessageFromUser"] })
                 .then((sending) => {
                 // Check the party is valid.
                 return sending;

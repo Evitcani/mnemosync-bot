@@ -17,6 +17,7 @@ const Table_1 = require("../documentation/databases/Table");
 const StringUtility_1 = require("../utilities/StringUtility");
 const World_1 = require("./World");
 const GameDate_1 = require("./GameDate");
+const User_1 = require("./User");
 let Sending = class Sending {
     purifyInsertUpdate() {
         if (this.inGameDate != null) {
@@ -128,6 +129,24 @@ __decorate([
     typeorm_1.JoinColumn({ name: "from_player_id" }),
     __metadata("design:type", Character_1.Character)
 ], Sending.prototype, "fromPlayer", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, {
+        nullable: true,
+        onDelete: "SET NULL",
+        eager: true
+    }),
+    typeorm_1.JoinColumn({ name: "sending_message_from_user_id" }),
+    __metadata("design:type", User_1.User)
+], Sending.prototype, "sendingMessageFromUser", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, {
+        nullable: true,
+        onDelete: "SET NULL",
+        eager: true
+    }),
+    typeorm_1.JoinColumn({ name: "sending_reply_from_user_id" }),
+    __metadata("design:type", User_1.User)
+], Sending.prototype, "sendingReplyFromUser", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),
