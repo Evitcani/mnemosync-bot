@@ -35,8 +35,8 @@ export class SendingController extends AbstractController<Sending> {
             return null;
         }
 
-        return this.getRepo().find({where: {id: Any(ids)}, relations: ["toNpc", "fromNpc", "toPlayer",
-                "fromPlayer", "sendingReplyFromUser", "sendingMessageFromUser"]})
+        return this.getRepo().find({where: {id: Any(ids)}, relations: ["toNpc", "fromNpc", "toPlayerCharacter",
+                "fromPlayerCharacter", "sendingReplyFromUser", "sendingMessageFromUser"]})
             .then((sending) => {
                 // Check the party is valid.
 
@@ -86,7 +86,7 @@ export class SendingController extends AbstractController<Sending> {
         }
 
         if (toPlayer != null) {
-            sub = `"msg"."to_player_id" = ${toPlayer.id}`;
+            sub = `"msg"."to_player_character_id" = ${toPlayer.id}`;
             if (flag) {
                 query = query.andWhere(sub);
             } else {
