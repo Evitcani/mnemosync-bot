@@ -104,31 +104,31 @@ __decorate([
     __metadata("design:type", NonPlayableCharacter_1.NonPlayableCharacter)
 ], Sending.prototype, "fromNpc", void 0);
 __decorate([
-    typeorm_1.Column({ name: "to_player_id", nullable: true }),
+    typeorm_1.Column({ name: "to_player_character_id", nullable: true }),
     __metadata("design:type", Number)
-], Sending.prototype, "toPlayerId", void 0);
+], Sending.prototype, "toPlayerCharacterId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Character_1.Character, {
         nullable: true,
         onDelete: "SET NULL",
         eager: true
     }),
-    typeorm_1.JoinColumn({ name: "to_player_id" }),
+    typeorm_1.JoinColumn({ name: "to_player_character_id" }),
     __metadata("design:type", Character_1.Character)
-], Sending.prototype, "toPlayer", void 0);
+], Sending.prototype, "toPlayerCharacter", void 0);
 __decorate([
-    typeorm_1.Column({ name: "from_player_id", nullable: true }),
+    typeorm_1.Column({ name: "from_player_character_id", nullable: true }),
     __metadata("design:type", Number)
-], Sending.prototype, "fromPlayerId", void 0);
+], Sending.prototype, "fromPlayerCharacterId", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => Character_1.Character, {
         nullable: true,
         onDelete: "SET NULL",
         eager: true
     }),
-    typeorm_1.JoinColumn({ name: "from_player_id" }),
+    typeorm_1.JoinColumn({ name: "from_player_character_id" }),
     __metadata("design:type", Character_1.Character)
-], Sending.prototype, "fromPlayer", void 0);
+], Sending.prototype, "fromPlayerCharacter", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => User_1.User, {
         nullable: true,

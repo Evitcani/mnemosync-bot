@@ -212,7 +212,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         let discordIds: string[] = [];
 
         // Are we getting from a player character?
-        let playerCharacter = sending.fromPlayerId;
+        let playerCharacter = sending.fromPlayerCharacterId;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
@@ -220,7 +220,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Are we getting from a player character?
-        playerCharacter = sending.toPlayerId;
+        playerCharacter = sending.toPlayerCharacterId;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
@@ -375,7 +375,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 }
 
                 // TODO: Allow multiselect characters.
-                sending.toPlayer = characters[0];
+                sending.toPlayerCharacter = characters[0];
             } else {
                 return null;
             }
@@ -387,7 +387,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             sending.fromNpc = await this.npcController.getByName(fromCmd.getInput(), world.id);
         } else {
             if (user.defaultCharacter != null) {
-                sending.fromPlayer = user.defaultCharacter;
+                sending.fromPlayerCharacter = user.defaultCharacter;
             } else {
                 // From no one...
                 await message.channel.send("Couldn't figure out who this message was meant to be from!");
