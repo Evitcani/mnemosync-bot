@@ -212,23 +212,37 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         let discordIds: string[] = [];
 
         // Are we getting from a player character?
-        let playerCharacter = (sending.fromPlayerId != null) ?
-            sending.fromPlayerId :
-            ((sending.toPlayerId != null) ? sending.toPlayerId : null);
-
-        // Are we getting from an NPC?
-        let npc = (sending.fromNpc != null) ?
-            sending.fromNpc :
-            ((sending.toNpc != null) ? sending.toNpc : null);
+        let playerCharacter = sending.fromPlayerId;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
             discordIds = discordIds.concat(await this.characterController.getDiscordId(playerCharacter));
         }
 
+        // Are we getting from a player character?
+        playerCharacter = sending.toPlayerId;
+
+        // Notify the player of the reply.
+        if (playerCharacter != null) {
+            discordIds = discordIds.concat(await this.characterController.getDiscordId(playerCharacter));
+        }
+
+        // Are we getting from an NPC?
+        let npc = (sending.fromNpc != null) ?
+            sending.fromNpc :
+            ((sending.toNpc != null) ? sending.toNpc : null);
+
         // From an NPC.
         if (npc != null) {
             discordIds = discordIds.concat(await this.worldController.getDiscordId(npc.worldId));
+        }
+
+        // Check for the world.
+        let world = sending.worldId;
+
+        // We'll want to inform the GM as well.
+        if (world != null) {
+            discordIds = discordIds.concat(await this.worldController.getDiscordId(world));
         }
 
         // Find current user in the list.
