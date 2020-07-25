@@ -102,7 +102,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             // Create embed and notify users.
             let toSend = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
             let onComplete = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
-            return this.signalUserOfMessage(sent, message, onComplete, toSend, false);
+            return this.signalUserOfMessage(sent, message, onComplete, toSend, false, user);
         });
     }
     /**
@@ -143,7 +143,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             // Now craft the embed and send to users.
             let toSend = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
             let onComplete = SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
-            return this.signalUserOfMessage(sending, message, onComplete, toSend, true);
+            return this.signalUserOfMessage(sending, message, onComplete, toSend, true, user);
         });
     }
     /**
@@ -183,26 +183,33 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
      * @param completionMessage
      * @param messageToSend
      * @param to
+     * @param user
      */
-    signalUserOfMessage(sending, message, completionMessage, messageToSend, to) {
+    signalUserOfMessage(sending, message, completionMessage, messageToSend, to, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get discord ids of users to send messages to.
-            let discordIds = null;
+            let discordIds = [];
             // Are we getting from a player character?
-            let playerCharacter = (sending.fromPlayerId != null && to) ?
+            let playerCharacter = (sending.fromPlayerId != null) ?
                 sending.fromPlayerId :
-                ((sending.toPlayerId != null && !to) ? sending.toPlayerId : null);
+                ((sending.toPlayerId != null) ? sending.toPlayerId : null);
             // Are we getting from an NPC?
-            let npc = (sending.fromNpc != null && to) ?
+            let npc = (sending.fromNpc != null) ?
                 sending.fromNpc :
-                ((sending.toNpc != null && !to) ? sending.toNpc : null);
+                ((sending.toNpc != null) ? sending.toNpc : null);
             // Notify the player of the reply.
             if (playerCharacter != null) {
-                discordIds = yield this.characterController.getDiscordId(playerCharacter);
+                discordIds = discordIds.concat(yield this.characterController.getDiscordId(playerCharacter));
             }
             // From an NPC.
             if (npc != null) {
-                discordIds = yield this.worldController.getDiscordId(npc.worldId);
+                discordIds = discordIds.concat(yield this.worldController.getDiscordId(npc.worldId));
+            }
+            // Find current user in the list.
+            let index = discordIds.indexOf(user.discord_id);
+            // Remove the current user from this list.
+            if (index >= 0) {
+                discordIds = discordIds.splice(index, 1);
             }
             return MessageUtility_1.MessageUtility.sendPrivateMessages(discordIds, message, completionMessage, messageToSend);
         });
