@@ -24,6 +24,7 @@ const Table_1 = require("../../documentation/databases/Table");
 const inversify_1 = require("inversify");
 const User_1 = require("../../entity/User");
 const StringUtility_1 = require("../../utilities/StringUtility");
+const discord_js_1 = require("discord.js");
 const WorldRelatedClientResponses_1 = require("../../documentation/client-responses/information/WorldRelatedClientResponses");
 const typeorm_1 = require("typeorm");
 let WorldController = class WorldController extends AbstractController_1.AbstractController {
@@ -131,13 +132,11 @@ let WorldController = class WorldController extends AbstractController_1.Abstrac
             if (!users || users.length < 1) {
                 return null;
             }
-            let input = [], user, discordId, i;
+            let input = new discord_js_1.Collection(), user, discordId, i;
             for (i = 0; i < users.length; i++) {
                 user = users[i];
                 discordId = user.discord_id;
-                if (!input.includes(discordId)) {
-                    input.push(discordId);
-                }
+                input.set(discordId, discordId);
             }
             return input;
         })

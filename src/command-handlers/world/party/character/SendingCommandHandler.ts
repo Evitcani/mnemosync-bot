@@ -1,7 +1,7 @@
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../models/generic/Command";
-import {Message, MessageEmbed} from "discord.js";
+import {Collection, Message, MessageEmbed} from "discord.js";
 import {TYPES} from "../../../../types";
 import {User} from "../../../../entity/User";
 import {EncryptionUtility} from "../../../../utilities/EncryptionUtility";
@@ -209,7 +209,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                                       completionMessage: MessageEmbed, messageToSend: MessageEmbed,
                                       to: boolean, user: User): Promise<Message | Message[]> {
         // Get discord ids of users to send messages to.
-        let discordIds: string[] = [];
+        let discordIds: Collection<string, string> = new Collection<string, string>();
 
         // Are we getting from a player character?
         let playerCharacter = sending.fromPlayerCharacterId;
@@ -245,17 +245,10 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             discordIds = discordIds.concat(await this.worldController.getDiscordId(world));
         }
 
-        // Find current user in the list.
-        let index = discordIds.indexOf(user.discord_id);
+        // Remove the current user.
+        discordIds.delete(user.discord_id);
 
-        console.log("Index: " + index);
-
-        // Remove the current user from this list.
-        if  (index >= 0) {
-            discordIds = discordIds.splice(index, 1);
-        }
-
-        return MessageUtility.sendPrivateMessages(discordIds, message, completionMessage, messageToSend);
+        return MessageUtility.sendPrivateMessages(discordIds.array(), message, completionMessage, messageToSend);
     }
 
     /**

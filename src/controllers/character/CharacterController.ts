@@ -8,6 +8,7 @@ import {Party} from "../../entity/Party";
 import {getConnection} from "typeorm";
 import {User} from "../../entity/User";
 import {StringUtility} from "../../utilities/StringUtility";
+import {Collection} from "discord.js";
 
 @injectable()
 export class CharacterController extends AbstractSecondaryController<Character, Nickname> {
@@ -134,19 +135,18 @@ export class CharacterController extends AbstractSecondaryController<Character, 
      * Gets all the discord IDs related to this character.
      * @param characterId
      */
-    public async getDiscordId(characterId: number): Promise<string[]> {
+    public async getDiscordId(characterId: number): Promise<Collection<string, string>> {
         return this.getSecondaryRepo().find({where: {characterId: characterId}}).then((nicknames) => {
             if (!nicknames || nicknames.length < 1) {
                 return null;
             }
 
-            let input: string[] = [], nickname: Nickname, discordId: string, i;
+            let input = new Collection<string, string>();
+            let nickname: Nickname, discordId: string, i;
             for (i = 0; i < nicknames.length; i++) {
                 nickname = nicknames[i];
                 discordId = nickname.discord_id;
-                if (!input.includes(discordId)) {
-                    input.push(discordId);
-                }
+                input.set(discordId, discordId);
             }
 
             return input;

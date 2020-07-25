@@ -27,6 +27,7 @@ const AbstractSecondaryController_1 = require("../Base/AbstractSecondaryControll
 const NameValuePair_1 = require("../Base/NameValuePair");
 const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../../utilities/StringUtility");
+const discord_js_1 = require("discord.js");
 let CharacterController = class CharacterController extends AbstractSecondaryController_1.AbstractSecondaryController {
     constructor() {
         super(Table_1.Table.CHARACTER, Table_1.Table.USER_TO_CHARACTER);
@@ -150,13 +151,12 @@ let CharacterController = class CharacterController extends AbstractSecondaryCon
                 if (!nicknames || nicknames.length < 1) {
                     return null;
                 }
-                let input = [], nickname, discordId, i;
+                let input = new discord_js_1.Collection();
+                let nickname, discordId, i;
                 for (i = 0; i < nicknames.length; i++) {
                     nickname = nicknames[i];
                     discordId = nickname.discord_id;
-                    if (!input.includes(discordId)) {
-                        input.push(discordId);
-                    }
+                    input.set(discordId, discordId);
                 }
                 return input;
             });

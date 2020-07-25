@@ -4,7 +4,7 @@ import {Table} from "../../documentation/databases/Table";
 import {injectable} from "inversify";
 import {User} from "../../entity/User";
 import {StringUtility} from "../../utilities/StringUtility";
-import {Message} from "discord.js";
+import {Collection, Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../documentation/client-responses/information/WorldRelatedClientResponses";
 import {getConnection} from "typeorm";
 import {BaseQueryRunner} from "typeorm/query-runner/BaseQueryRunner";
@@ -111,7 +111,7 @@ export class WorldController extends AbstractController<World> {
      * @param id The name of the world to get.
      * @param user
      */
-    public getDiscordId(id: string): Promise<string[]> {
+    public getDiscordId(id: string): Promise<Collection<string, string>> {
         return getConnection()
             .createQueryBuilder(User, "user")
             .leftJoinAndSelect(Table.WORLD_OWNERS, "owners", `user.id = "owners"."usersId"`)
@@ -122,13 +122,11 @@ export class WorldController extends AbstractController<World> {
                     return null;
                 }
 
-                let input: string[] = [], user: User, discordId: string, i;
+                let input = new Collection<string, string>(), user: User, discordId: string, i;
                 for (i = 0; i < users.length; i++) {
                     user = users[i];
                     discordId = user.discord_id;
-                    if (!input.includes(discordId)) {
-                        input.push(discordId);
-                    }
+                    input.set(discordId, discordId);
                 }
 
                 return input;

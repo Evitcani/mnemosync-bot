@@ -24,6 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendingCommandHandler = void 0;
 const AbstractUserCommandHandler_1 = require("../../../base/AbstractUserCommandHandler");
 const inversify_1 = require("inversify");
+const discord_js_1 = require("discord.js");
 const types_1 = require("../../../../types");
 const EncryptionUtility_1 = require("../../../../utilities/EncryptionUtility");
 const Subcommands_1 = require("../../../../documentation/commands/Subcommands");
@@ -188,7 +189,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
     signalUserOfMessage(sending, message, completionMessage, messageToSend, to, user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Get discord ids of users to send messages to.
-            let discordIds = [];
+            let discordIds = new discord_js_1.Collection();
             // Are we getting from a player character?
             let playerCharacter = sending.fromPlayerCharacterId;
             // Notify the player of the reply.
@@ -215,14 +216,9 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             if (world != null) {
                 discordIds = discordIds.concat(yield this.worldController.getDiscordId(world));
             }
-            // Find current user in the list.
-            let index = discordIds.indexOf(user.discord_id);
-            console.log("Index: " + index);
-            // Remove the current user from this list.
-            if (index >= 0) {
-                discordIds = discordIds.splice(index, 1);
-            }
-            return MessageUtility_1.MessageUtility.sendPrivateMessages(discordIds, message, completionMessage, messageToSend);
+            // Remove the current user.
+            discordIds.delete(user.discord_id);
+            return MessageUtility_1.MessageUtility.sendPrivateMessages(discordIds.array(), message, completionMessage, messageToSend);
         });
     }
     /**
