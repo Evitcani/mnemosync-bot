@@ -241,9 +241,11 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                 const msgCmd = Subcommands_1.Subcommands.MESSAGE.getCommand(command);
                 if (!Subcommands_1.Subcommands.REPLY.isCommand(command)) {
                     sending.content = this.encryptionUtility.encrypt(msgCmd.getInput());
+                    sending.sendingMessageFromUser = user;
                 }
                 else {
                     sending.reply = this.encryptionUtility.encrypt(msgCmd.getInput());
+                    sending.sendingReplyFromUser = user;
                     return sending;
                 }
             }

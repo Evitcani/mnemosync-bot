@@ -35,7 +35,8 @@ export class SendingController extends AbstractController<Sending> {
             return null;
         }
 
-        return this.getRepo().find({where: {id: Any(ids)}, relations: ["toNpc", "fromNpc", "toPlayer", "fromPlayer"]})
+        return this.getRepo().find({where: {id: Any(ids)}, relations: ["toNpc", "fromNpc", "toPlayer",
+                "fromPlayer", "sendingReplyFromUser", "sendingMessageFromUser"]})
             .then((sending) => {
                 // Check the party is valid.
 

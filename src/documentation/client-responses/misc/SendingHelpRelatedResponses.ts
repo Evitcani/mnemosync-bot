@@ -107,13 +107,17 @@ export class SendingHelpRelatedResponses {
         let str = "";
         str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
         if (includeFrom) {
-            str += `> **FROM:** ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name}\n`;
+            str += `> **FROM:** ${message.fromPlayer != null ? message.fromPlayer.name : message.fromNpc.name} `;
+            str += `(*${message.sendingMessageFromUser.discord_name}*)\n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         if (includeTo) {
-            str += `> **TO  :** ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}\n`;
+            str += `> **TO  :** ${message.toPlayer != null ? message.toPlayer.name : message.toNpc.name}`;
             if (includeReply && message.reply != null) {
+                str += `(*${message.sendingReplyFromUser.discord_name}*)\n`;
                 str += `> ${encryptionUtility.decrypt(message.reply)}\n`;
+            } else {
+                str += `\n`;
             }
         }
 
