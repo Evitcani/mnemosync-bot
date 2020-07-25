@@ -54,7 +54,7 @@ export class SendingHelpRelatedResponses {
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
             .setDescription(`Here are the messages sent to NPCs in this world:\n\n${messageStr}`)
-            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, messages.length));
+            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, (messages == null? 0 : messages.length)));
     }
 
     static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
@@ -62,7 +62,7 @@ export class SendingHelpRelatedResponses {
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
             .setDescription(`Here are the messages sent to you:\n\n${messageStr}`)
-            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, messages.length));
+            .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, (messages == null? 0 : messages.length)));
     }
 
     static PRINT_MESSAGE_REPLY_TO_PLAYER (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
