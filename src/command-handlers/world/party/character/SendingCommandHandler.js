@@ -190,13 +190,13 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             // Get discord ids of users to send messages to.
             let discordIds = [];
             // Are we getting from a player character?
-            let playerCharacter = sending.fromPlayerId;
+            let playerCharacter = sending.fromPlayerCharacterId;
             // Notify the player of the reply.
             if (playerCharacter != null) {
                 discordIds = discordIds.concat(yield this.characterController.getDiscordId(playerCharacter));
             }
             // Are we getting from a player character?
-            playerCharacter = sending.toPlayerId;
+            playerCharacter = sending.toPlayerCharacterId;
             // Notify the player of the reply.
             if (playerCharacter != null) {
                 discordIds = discordIds.concat(yield this.characterController.getDiscordId(playerCharacter));
@@ -333,7 +333,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
                         return null;
                     }
                     // TODO: Allow multiselect characters.
-                    sending.toPlayer = characters[0];
+                    sending.toPlayerCharacter = characters[0];
                 }
                 else {
                     return null;
@@ -346,7 +346,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             }
             else {
                 if (user.defaultCharacter != null) {
-                    sending.fromPlayer = user.defaultCharacter;
+                    sending.fromPlayerCharacter = user.defaultCharacter;
                 }
                 else {
                     // From no one...
