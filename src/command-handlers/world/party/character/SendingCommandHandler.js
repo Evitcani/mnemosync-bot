@@ -217,6 +217,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             }
             // Find current user in the list.
             let index = discordIds.indexOf(user.discord_id);
+            console.log("Index: " + index);
             // Remove the current user from this list.
             if (index >= 0) {
                 discordIds = discordIds.splice(index, 1);
