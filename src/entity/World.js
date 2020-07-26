@@ -73,6 +73,19 @@ __decorate([
     __metadata("design:type", Array)
 ], World.prototype, "defaultOfUsers", void 0);
 __decorate([
+    typeorm_1.Column({ name: "default_party_id", nullable: true }),
+    __metadata("design:type", String)
+], World.prototype, "defaultPartyId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Party_1.Party, {
+        nullable: true,
+        onDelete: "SET NULL",
+        eager: true
+    }),
+    typeorm_1.JoinColumn({ name: "default_party_id" }),
+    __metadata("design:type", Party_1.Party)
+], World.prototype, "defaultParty", void 0);
+__decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),
     __metadata("design:type", Function),

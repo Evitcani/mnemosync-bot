@@ -15,6 +15,7 @@ const Character_1 = require("./Character");
 const PartyFund_1 = require("./PartyFund");
 const StringUtility_1 = require("../utilities/StringUtility");
 const World_1 = require("./World");
+const CurrentDate_1 = require("./CurrentDate");
 let Party = class Party {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
@@ -69,6 +70,15 @@ __decorate([
     typeorm_1.JoinColumn({ name: "world_id" }),
     __metadata("design:type", World_1.World)
 ], Party.prototype, "world", void 0);
+__decorate([
+    typeorm_1.OneToOne(type => CurrentDate_1.CurrentDate, date => date.party, {
+        onDelete: "SET NULL",
+        nullable: true,
+        eager: true
+    }),
+    typeorm_1.JoinColumn({ name: "current_date_id" }),
+    __metadata("design:type", CurrentDate_1.CurrentDate)
+], Party.prototype, "currentDate", void 0);
 __decorate([
     typeorm_1.BeforeInsert(),
     typeorm_1.BeforeUpdate(),

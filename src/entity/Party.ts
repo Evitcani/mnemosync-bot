@@ -11,8 +11,9 @@ import {
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
 import {StringUtility} from "../utilities/StringUtility";
-import {TravelConfig} from "./TravelConfig";
 import {World} from "./World";
+import {Calendar} from "./Calendar";
+import {CurrentDate} from "./CurrentDate";
 
 @Entity({name: "parties"})
 export class Party {
@@ -53,6 +54,14 @@ export class Party {
     })
     @JoinColumn({name: "world_id"})
     world?: World;
+
+    @OneToOne(type => CurrentDate, date => date.party, {
+        onDelete: "SET NULL",
+        nullable: true,
+        eager: true
+    })
+    @JoinColumn({name: "current_date_id"})
+    currentDate: CurrentDate;
 
     @BeforeInsert()
     @BeforeUpdate()

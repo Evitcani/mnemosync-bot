@@ -28,6 +28,12 @@ export const TYPES = {
     WorldCommandHandler: Symbol("WorldCommandHandler"),
 
     CharacterController: Symbol("CharacterController"),
+    CalendarController: Symbol("CalendarController"),
+    CalendarEraController: Symbol("CalendarEraController"),
+    CalendarMonthController: Symbol("CalendarMonthController"),
+    CalendarMoonController: Symbol("CalendarMoonController"),
+    CalendarWeekDayController: Symbol("CalendarWeekDayController"),
+    CurrentDateController: Symbol("CurrentDateController"),
     NPCController: Symbol("NPCController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),

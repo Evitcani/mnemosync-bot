@@ -30,6 +30,12 @@ const WorldCommandHandler_1 = require("./command-handlers/world/information/Worl
 const EncryptionUtility_1 = require("./utilities/EncryptionUtility");
 const SendingController_1 = require("./controllers/character/SendingController");
 const SendingCommandHandler_1 = require("./command-handlers/world/party/character/SendingCommandHandler");
+const CalendarController_1 = require("./controllers/world/calendar/CalendarController");
+const CalendarEraController_1 = require("./controllers/world/calendar/CalendarEraController");
+const CalendarMonthController_1 = require("./controllers/world/calendar/CalendarMonthController");
+const CalendarMoonController_1 = require("./controllers/world/calendar/CalendarMoonController");
+const CalendarWeekDayController_1 = require("./controllers/world/calendar/CalendarWeekDayController");
+const CurrentDateController_1 = require("./controllers/world/calendar/CurrentDateController");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -55,6 +61,12 @@ container.bind(types_1.TYPES.TravelCommandHandler).to(TravelCommandHandler_1.Tra
 container.bind(types_1.TYPES.WhichCommandHandler).to(WhichCommandHandler_1.WhichCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.WorldCommandHandler).to(WorldCommandHandler_1.WorldCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.CharacterController).to(CharacterController_1.CharacterController).inSingletonScope();
+container.bind(types_1.TYPES.CalendarController).to(CalendarController_1.CalendarController).inSingletonScope();
+container.bind(types_1.TYPES.CalendarEraController).to(CalendarEraController_1.CalendarEraController).inSingletonScope();
+container.bind(types_1.TYPES.CalendarMonthController).to(CalendarMonthController_1.CalendarMonthController).inSingletonScope();
+container.bind(types_1.TYPES.CalendarMoonController).to(CalendarMoonController_1.CalendarMoonController).inSingletonScope();
+container.bind(types_1.TYPES.CalendarWeekDayController).to(CalendarWeekDayController_1.CalendarWeekDayController).inSingletonScope();
+container.bind(types_1.TYPES.CurrentDateController).to(CurrentDateController_1.CurrentDateController).inSingletonScope();
 container.bind(types_1.TYPES.NPCController).to(NPCController_1.NPCController).inSingletonScope();
 container.bind(types_1.TYPES.PartyController).to(PartyController_1.PartyController).inSingletonScope();
 container.bind(types_1.TYPES.PartyFundController).to(PartyFundController_1.PartyFundController).inSingletonScope();

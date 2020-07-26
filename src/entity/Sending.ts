@@ -118,9 +118,6 @@ export class Sending {
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
-        if (this.inGameDate != null) {
-            this.inGameDate.era = StringUtility.escapeSQLInput(this.inGameDate.era);
-        }
         this.reply = StringUtility.escapeSQLInput(this.reply);
         this.content = StringUtility.escapeSQLInput(this.content);
 

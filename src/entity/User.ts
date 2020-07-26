@@ -6,11 +6,9 @@ import {
     CreateDateColumn,
     Entity,
     JoinColumn, JoinTable, ManyToMany, ManyToOne,
-    OneToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
 import {StringUtility} from "../utilities/StringUtility";
-import {Party} from "./Party";
 import {World} from "./World";
 import {Table} from "../documentation/databases/Table";
 

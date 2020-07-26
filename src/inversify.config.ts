@@ -28,6 +28,12 @@ import {WorldCommandHandler} from "./command-handlers/world/information/WorldCom
 import {EncryptionUtility} from "./utilities/EncryptionUtility";
 import {SendingController} from "./controllers/character/SendingController";
 import {SendingCommandHandler} from "./command-handlers/world/party/character/SendingCommandHandler";
+import {CalendarController} from "./controllers/world/calendar/CalendarController";
+import {CalendarEraController} from "./controllers/world/calendar/CalendarEraController";
+import {CalendarMonthController} from "./controllers/world/calendar/CalendarMonthController";
+import {CalendarMoonController} from "./controllers/world/calendar/CalendarMoonController";
+import {CalendarWeekDayController} from "./controllers/world/calendar/CalendarWeekDayController";
+import {CurrentDateController} from "./controllers/world/calendar/CurrentDateController";
 
 let container = new Container();
 
@@ -58,6 +64,12 @@ container.bind<WhichCommandHandler>(TYPES.WhichCommandHandler).to(WhichCommandHa
 container.bind<WorldCommandHandler>(TYPES.WorldCommandHandler).to(WorldCommandHandler).inSingletonScope();
 
 container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
+container.bind<CalendarController>(TYPES.CalendarController).to(CalendarController).inSingletonScope();
+container.bind<CalendarEraController>(TYPES.CalendarEraController).to(CalendarEraController).inSingletonScope();
+container.bind<CalendarMonthController>(TYPES.CalendarMonthController).to(CalendarMonthController).inSingletonScope();
+container.bind<CalendarMoonController>(TYPES.CalendarMoonController).to(CalendarMoonController).inSingletonScope();
+container.bind<CalendarWeekDayController>(TYPES.CalendarWeekDayController).to(CalendarWeekDayController).inSingletonScope();
+container.bind<CurrentDateController>(TYPES.CurrentDateController).to(CurrentDateController).inSingletonScope();
 container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();

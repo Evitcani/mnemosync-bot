@@ -6,7 +6,9 @@ class Commands {
 exports.Commands = Commands;
 Commands.BAG = "bag";
 Commands.BANK = "bank";
+Commands.CALENDAR = "calendar";
 Commands.CHARACTER = "character";
+Commands.DATE = "date";
 Commands.FUND = "fund";
 Commands.HELP = "help";
 Commands.QUOTE = "quote";

@@ -3,12 +3,14 @@ import {CommandStrut} from "./CommandStrut";
 export class Subcommands {
     public static CREATE = new CommandStrut("create", "cr");
     public static DATE = new CommandStrut("date", "dt");
+    public static DONJON = new CommandStrut("donjon", "donj");
     public static DRINKS = new CommandStrut("drinks", null);
     public static EATS = new CommandStrut("eats", null);
     public static FROM = new CommandStrut("from", null);
     public static FROM_NPC = new CommandStrut("from-npc", "fromn");
     public static GET = new CommandStrut("get", "g");
     public static IMG_URL = new CommandStrut("image-url", "img");
+    public static NAME = new CommandStrut("name", "nm");
     public static NEXT = new CommandStrut("next", "n");
     public static NICKNAME = new CommandStrut("nickname", "nick");
     public static NPC = new CommandStrut("npc", null);
