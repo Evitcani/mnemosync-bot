@@ -34,9 +34,9 @@ export class CalendarEra {
     @Column( type => GameDate)
     end?: GameDate;
 
-    @ManyToOne(type => Calendar, calendar => calendar.eras,{
-        cascade: true
-    })
-    @JoinColumn({name: "calendar_id"})
-    calendar: Calendar;
+    // @ManyToOne(type => Calendar, calendar => calendar.eras,{
+    //     cascade: true
+    // })
+    // @JoinColumn({name: "calendar_id"})
+    // calendar: Calendar;
 }

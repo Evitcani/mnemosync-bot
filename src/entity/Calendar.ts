@@ -44,12 +44,14 @@ export class Calendar {
     @JoinColumn({name: "world_id"})
     world: World;
 
-    @OneToMany(type => CalendarEra, era => era.calendar, {
-        onDelete: "SET NULL",
-        nullable: true,
-        eager: true
-    })
-    eras?: CalendarEra[];
+    // @OneToMany(type => CalendarEra,
+    //         // era => era.calendar,
+    //     {
+    //         onDelete: "SET NULL",
+    //         nullable: true,
+    //         eager: true
+    //     })
+    // eras?: CalendarEra[];
 
     @OneToMany(type => CalendarMonth, month => month.calendar, {
         onDelete: "SET NULL",
