@@ -17,7 +17,9 @@ export const TYPES = {
     UserToGuildService: Symbol("UserToGuildService"),
 
     BagCommandHandler: Symbol("BagCommandHandler"),
+    CalendarCommandHandler: Symbol("CalendarCommandHandler"),
     CharacterCommandHandler: Symbol("CharacterCommandHandler"),
+    DateCommandHandler: Symbol("DateCommandHandler"),
     HelpCommandHandler: Symbol("HelpCommandHandler"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     QuoteCommandHandler: Symbol("QuoteCommandHandler"),

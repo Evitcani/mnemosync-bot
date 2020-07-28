@@ -12,10 +12,14 @@ import {CharacterCommandHandler} from "../command-handlers/world/party/character
 import {UserController} from "../controllers/user/UserController";
 import {WorldCommandHandler} from "../command-handlers/world/information/WorldCommandHandler";
 import {SendingCommandHandler} from "../command-handlers/world/party/character/SendingCommandHandler";
+import {CalendarCommandHandler} from "../command-handlers/world/information/CalendarCommandHandler";
+import {DateCommandHandler} from "../command-handlers/world/information/DateCommandHandler";
 
 @injectable()
 export class MessageResponder {
+    private calendarCommandHandler: CalendarCommandHandler;
     private characterCommandHandler: CharacterCommandHandler;
+    private dateCommandHandler: DateCommandHandler;
     private helpCommandHandler: HelpCommandHandler;
     private partyFundCommandHandler: PartyFundCommandHandler;
     private quoteCommandHandler: QuoteCommandHandler;
@@ -25,7 +29,9 @@ export class MessageResponder {
     private worldCommandHandler: WorldCommandHandler;
     private userController: UserController;
 
-    constructor(@inject(TYPES.CharacterCommandHandler) characterCommandHandler: CharacterCommandHandler,
+    constructor(@inject(TYPES.CalendarCommandHandler) calendarCommandHandler: CalendarCommandHandler,
+                @inject(TYPES.CharacterCommandHandler) characterCommandHandler: CharacterCommandHandler,
+                @inject(TYPES.DateCommandHandler) dateCommandHandler: DateCommandHandler,
                 @inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
                 @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
@@ -34,7 +40,9 @@ export class MessageResponder {
                 @inject(TYPES.WhichCommandHandler) whichCommandHandler: WhichCommandHandler,
                 @inject(TYPES.WorldCommandHandler) worldCommandHandler: WorldCommandHandler,
                 @inject(TYPES.UserController) userController: UserController) {
+        this.calendarCommandHandler = calendarCommandHandler;
         this.characterCommandHandler = characterCommandHandler;
+        this.dateCommandHandler = dateCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
@@ -88,8 +96,12 @@ export class MessageResponder {
                         message.delete({reason: "Bank command deletion."});
                         return msg;
                     });
+                case Commands.CALENDAR:
+                    return this.calendarCommandHandler.handleUserCommand(command, message, user);
                 case Commands.CHARACTER:
                     return this.characterCommandHandler.handleUserCommand(command, message, user);
+                case Commands.DATE:
+                    return this.dateCommandHandler.handleUserCommand(command, message, user);
                 case Commands.FUND:
                     return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
                         message.delete({reason: "Fund command deletion."});

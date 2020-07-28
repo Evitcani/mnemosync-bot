@@ -34,6 +34,8 @@ import {CalendarMonthController} from "./controllers/world/calendar/CalendarMont
 import {CalendarMoonController} from "./controllers/world/calendar/CalendarMoonController";
 import {CalendarWeekDayController} from "./controllers/world/calendar/CalendarWeekDayController";
 import {CurrentDateController} from "./controllers/world/calendar/CurrentDateController";
+import {DateCommandHandler} from "./command-handlers/world/information/DateCommandHandler";
+import {CalendarCommandHandler} from "./command-handlers/world/information/CalendarCommandHandler";
 
 let container = new Container();
 
@@ -53,7 +55,9 @@ container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDe
 container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();
+container.bind<CalendarCommandHandler>(TYPES.CalendarCommandHandler).to(CalendarCommandHandler).inSingletonScope();
 container.bind<CharacterCommandHandler>(TYPES.CharacterCommandHandler).to(CharacterCommandHandler).inSingletonScope();
+container.bind<DateCommandHandler>(TYPES.DateCommandHandler).to(DateCommandHandler).inSingletonScope();
 container.bind<HelpCommandHandler>(TYPES.HelpCommandHandler).to(HelpCommandHandler).inSingletonScope();
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
 container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHandler).inSingletonScope();

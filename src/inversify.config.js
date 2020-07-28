@@ -36,6 +36,8 @@ const CalendarMonthController_1 = require("./controllers/world/calendar/Calendar
 const CalendarMoonController_1 = require("./controllers/world/calendar/CalendarMoonController");
 const CalendarWeekDayController_1 = require("./controllers/world/calendar/CalendarWeekDayController");
 const CurrentDateController_1 = require("./controllers/world/calendar/CurrentDateController");
+const DateCommandHandler_1 = require("./command-handlers/world/information/DateCommandHandler");
+const CalendarCommandHandler_1 = require("./command-handlers/world/information/CalendarCommandHandler");
 let container = new inversify_1.Container();
 container.bind(types_1.TYPES.Bot).to(bot_1.Bot).inSingletonScope();
 container.bind(types_1.TYPES.Client).toConstantValue(new discord_js_1.Client());
@@ -51,7 +53,9 @@ container.bind(types_1.TYPES.SpecialChannelService).to(SpecialChannelService_1.S
 container.bind(types_1.TYPES.UserDefaultPartyService).to(UserDefaultPartyService_1.UserDefaultPartyService).inSingletonScope();
 container.bind(types_1.TYPES.UserToGuildService).to(UserToGuildService_1.UserToGuildService).inSingletonScope();
 container.bind(types_1.TYPES.BagCommandHandler).to(BagCommandHandler_1.BagCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.CalendarCommandHandler).to(CalendarCommandHandler_1.CalendarCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.CharacterCommandHandler).to(CharacterCommandHandler_1.CharacterCommandHandler).inSingletonScope();
+container.bind(types_1.TYPES.DateCommandHandler).to(DateCommandHandler_1.DateCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.HelpCommandHandler).to(HelpCommandHandler_1.HelpCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler_1.PartyFundCommandHandler).inSingletonScope();
 container.bind(types_1.TYPES.QuoteCommandHandler).to(QuoteCommandHandler_1.QuoteCommandHandler).inSingletonScope();

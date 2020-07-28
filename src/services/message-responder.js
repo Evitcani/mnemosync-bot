@@ -34,9 +34,13 @@ const CharacterCommandHandler_1 = require("../command-handlers/world/party/chara
 const UserController_1 = require("../controllers/user/UserController");
 const WorldCommandHandler_1 = require("../command-handlers/world/information/WorldCommandHandler");
 const SendingCommandHandler_1 = require("../command-handlers/world/party/character/SendingCommandHandler");
+const CalendarCommandHandler_1 = require("../command-handlers/world/information/CalendarCommandHandler");
+const DateCommandHandler_1 = require("../command-handlers/world/information/DateCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(characterCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
+    constructor(calendarCommandHandler, characterCommandHandler, dateCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
+        this.calendarCommandHandler = calendarCommandHandler;
         this.characterCommandHandler = characterCommandHandler;
+        this.dateCommandHandler = dateCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
@@ -87,8 +91,12 @@ let MessageResponder = class MessageResponder {
                             message.delete({ reason: "Bank command deletion." });
                             return msg;
                         });
+                    case Commands_1.Commands.CALENDAR:
+                        return this.calendarCommandHandler.handleUserCommand(command, message, user);
                     case Commands_1.Commands.CHARACTER:
                         return this.characterCommandHandler.handleUserCommand(command, message, user);
+                    case Commands_1.Commands.DATE:
+                        return this.dateCommandHandler.handleUserCommand(command, message, user);
                     case Commands_1.Commands.FUND:
                         return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
                             message.delete({ reason: "Fund command deletion." });
@@ -112,16 +120,20 @@ let MessageResponder = class MessageResponder {
 };
 MessageResponder = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.CharacterCommandHandler)),
-    __param(1, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
-    __param(2, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
-    __param(3, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
-    __param(4, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __param(5, inversify_1.inject(types_1.TYPES.SendingCommandHandler)),
-    __param(6, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __param(7, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
-    __param(8, inversify_1.inject(types_1.TYPES.UserController)),
-    __metadata("design:paramtypes", [CharacterCommandHandler_1.CharacterCommandHandler,
+    __param(0, inversify_1.inject(types_1.TYPES.CalendarCommandHandler)),
+    __param(1, inversify_1.inject(types_1.TYPES.CharacterCommandHandler)),
+    __param(2, inversify_1.inject(types_1.TYPES.DateCommandHandler)),
+    __param(3, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
+    __param(4, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
+    __param(5, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
+    __param(6, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
+    __param(7, inversify_1.inject(types_1.TYPES.SendingCommandHandler)),
+    __param(8, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __param(9, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
+    __param(10, inversify_1.inject(types_1.TYPES.UserController)),
+    __metadata("design:paramtypes", [CalendarCommandHandler_1.CalendarCommandHandler,
+        CharacterCommandHandler_1.CharacterCommandHandler,
+        DateCommandHandler_1.DateCommandHandler,
         HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
