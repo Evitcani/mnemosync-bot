@@ -112,7 +112,7 @@ export class UserController extends AbstractController<User> {
      *
      * @param user The user to save.
      */
-    private async save(user: User): Promise<User> {
+    public async save(user: User): Promise<User> {
         return this.getRepo().save(user).catch((err: Error) => {
             console.error("ERR ::: Could not save the user.");
             console.error(err);

@@ -36,12 +36,14 @@ const WorldCommandHandler_1 = require("../command-handlers/world/information/Wor
 const SendingCommandHandler_1 = require("../command-handlers/world/party/character/SendingCommandHandler");
 const CalendarCommandHandler_1 = require("../command-handlers/world/information/CalendarCommandHandler");
 const DateCommandHandler_1 = require("../command-handlers/world/information/DateCommandHandler");
+const PartyCommandHandler_1 = require("../command-handlers/world/party/PartyCommandHandler");
 let MessageResponder = class MessageResponder {
-    constructor(calendarCommandHandler, characterCommandHandler, dateCommandHandler, helpCommandHandler, partyFundCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
+    constructor(calendarCommandHandler, characterCommandHandler, dateCommandHandler, helpCommandHandler, partyFundCommandHandler, partyCommandHandler, quoteCommandHandler, registerUserCommandHandler, sendingCommandHandler, whichCommandHandler, worldCommandHandler, userController) {
         this.calendarCommandHandler = calendarCommandHandler;
         this.characterCommandHandler = characterCommandHandler;
         this.dateCommandHandler = dateCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
+        this.partyCommandHandler = partyCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
@@ -102,6 +104,8 @@ let MessageResponder = class MessageResponder {
                             message.delete({ reason: "Fund command deletion." });
                             return msg;
                         });
+                    case Commands_1.Commands.PARTY:
+                        return this.partyCommandHandler.handleUserCommand(command, message, user);
                     case Commands_1.Commands.REGISTER:
                         return this.registerUserCommandHandler.handleUserCommand(command, message, user);
                     case Commands_1.Commands.SENDING:
@@ -125,17 +129,19 @@ MessageResponder = __decorate([
     __param(2, inversify_1.inject(types_1.TYPES.DateCommandHandler)),
     __param(3, inversify_1.inject(types_1.TYPES.HelpCommandHandler)),
     __param(4, inversify_1.inject(types_1.TYPES.PartyFundCommandHandler)),
-    __param(5, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
-    __param(6, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
-    __param(7, inversify_1.inject(types_1.TYPES.SendingCommandHandler)),
-    __param(8, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
-    __param(9, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
-    __param(10, inversify_1.inject(types_1.TYPES.UserController)),
+    __param(5, inversify_1.inject(types_1.TYPES.PartyCommandHandler)),
+    __param(6, inversify_1.inject(types_1.TYPES.QuoteCommandHandler)),
+    __param(7, inversify_1.inject(types_1.TYPES.RegisterUserCommandHandler)),
+    __param(8, inversify_1.inject(types_1.TYPES.SendingCommandHandler)),
+    __param(9, inversify_1.inject(types_1.TYPES.WhichCommandHandler)),
+    __param(10, inversify_1.inject(types_1.TYPES.WorldCommandHandler)),
+    __param(11, inversify_1.inject(types_1.TYPES.UserController)),
     __metadata("design:paramtypes", [CalendarCommandHandler_1.CalendarCommandHandler,
         CharacterCommandHandler_1.CharacterCommandHandler,
         DateCommandHandler_1.DateCommandHandler,
         HelpCommandHandler_1.HelpCommandHandler,
         PartyFundCommandHandler_1.PartyFundCommandHandler,
+        PartyCommandHandler_1.PartyCommandHandler,
         QuoteCommandHandler_1.QuoteCommandHandler,
         RegisterCommandHandler_1.RegisterCommandHandler,
         SendingCommandHandler_1.SendingCommandHandler,

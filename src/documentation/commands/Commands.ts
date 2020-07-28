@@ -6,6 +6,7 @@ export class Commands {
     public static DATE = "date";
     public static FUND = "fund";
     public static HELP = "help";
+    public static PARTY = "party";
     public static QUOTE = "quote";
     public static REGISTER = "register";
     public static SENDING = "sending";

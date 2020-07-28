@@ -21,6 +21,7 @@ export const TYPES = {
     CharacterCommandHandler: Symbol("CharacterCommandHandler"),
     DateCommandHandler: Symbol("DateCommandHandler"),
     HelpCommandHandler: Symbol("HelpCommandHandler"),
+    PartyCommandHandler: Symbol("PartyCommandHandler"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     QuoteCommandHandler: Symbol("QuoteCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),

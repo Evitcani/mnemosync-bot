@@ -36,6 +36,7 @@ import {CalendarWeekDayController} from "./controllers/world/calendar/CalendarWe
 import {CurrentDateController} from "./controllers/world/calendar/CurrentDateController";
 import {DateCommandHandler} from "./command-handlers/world/information/DateCommandHandler";
 import {CalendarCommandHandler} from "./command-handlers/world/information/CalendarCommandHandler";
+import {PartyCommandHandler} from "./command-handlers/world/party/PartyCommandHandler";
 
 let container = new Container();
 
@@ -59,6 +60,7 @@ container.bind<CalendarCommandHandler>(TYPES.CalendarCommandHandler).to(Calendar
 container.bind<CharacterCommandHandler>(TYPES.CharacterCommandHandler).to(CharacterCommandHandler).inSingletonScope();
 container.bind<DateCommandHandler>(TYPES.DateCommandHandler).to(DateCommandHandler).inSingletonScope();
 container.bind<HelpCommandHandler>(TYPES.HelpCommandHandler).to(HelpCommandHandler).inSingletonScope();
+container.bind<PartyCommandHandler>(TYPES.PartyCommandHandler).to(PartyCommandHandler).inSingletonScope();
 container.bind<PartyFundCommandHandler>(TYPES.PartyFundCommandHandler).to(PartyFundCommandHandler).inSingletonScope();
 container.bind<QuoteCommandHandler>(TYPES.QuoteCommandHandler).to(QuoteCommandHandler).inSingletonScope();
 container.bind<RegisterCommandHandler>(TYPES.RegisterUserCommandHandler).to(RegisterCommandHandler).inSingletonScope();

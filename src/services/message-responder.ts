@@ -14,6 +14,7 @@ import {WorldCommandHandler} from "../command-handlers/world/information/WorldCo
 import {SendingCommandHandler} from "../command-handlers/world/party/character/SendingCommandHandler";
 import {CalendarCommandHandler} from "../command-handlers/world/information/CalendarCommandHandler";
 import {DateCommandHandler} from "../command-handlers/world/information/DateCommandHandler";
+import {PartyCommandHandler} from "../command-handlers/world/party/PartyCommandHandler";
 
 @injectable()
 export class MessageResponder {
@@ -21,6 +22,7 @@ export class MessageResponder {
     private characterCommandHandler: CharacterCommandHandler;
     private dateCommandHandler: DateCommandHandler;
     private helpCommandHandler: HelpCommandHandler;
+    private partyCommandHandler: PartyCommandHandler;
     private partyFundCommandHandler: PartyFundCommandHandler;
     private quoteCommandHandler: QuoteCommandHandler;
     private registerUserCommandHandler: RegisterCommandHandler;
@@ -34,6 +36,7 @@ export class MessageResponder {
                 @inject(TYPES.DateCommandHandler) dateCommandHandler: DateCommandHandler,
                 @inject(TYPES.HelpCommandHandler) helpCommandHandler: HelpCommandHandler,
                 @inject(TYPES.PartyFundCommandHandler) partyFundCommandHandler: PartyFundCommandHandler,
+                @inject(TYPES.PartyCommandHandler) partyCommandHandler: PartyCommandHandler,
                 @inject(TYPES.QuoteCommandHandler) quoteCommandHandler: QuoteCommandHandler,
                 @inject(TYPES.RegisterUserCommandHandler) registerUserCommandHandler: RegisterCommandHandler,
                 @inject(TYPES.SendingCommandHandler) sendingCommandHandler: SendingCommandHandler,
@@ -44,6 +47,7 @@ export class MessageResponder {
         this.characterCommandHandler = characterCommandHandler;
         this.dateCommandHandler = dateCommandHandler;
         this.helpCommandHandler = helpCommandHandler;
+        this.partyCommandHandler = partyCommandHandler;
         this.partyFundCommandHandler = partyFundCommandHandler;
         this.quoteCommandHandler = quoteCommandHandler;
         this.registerUserCommandHandler = registerUserCommandHandler;
@@ -107,6 +111,8 @@ export class MessageResponder {
                         message.delete({reason: "Fund command deletion."});
                         return msg;
                     });
+                case Commands.PARTY:
+                    return this.partyCommandHandler.handleUserCommand(command, message, user);
                 case Commands.REGISTER:
                     return this.registerUserCommandHandler.handleUserCommand(command, message, user);
                 case Commands.SENDING:

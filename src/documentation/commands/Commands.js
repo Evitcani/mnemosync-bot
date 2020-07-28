@@ -11,6 +11,7 @@ Commands.CHARACTER = "character";
 Commands.DATE = "date";
 Commands.FUND = "fund";
 Commands.HELP = "help";
+Commands.PARTY = "party";
 Commands.QUOTE = "quote";
 Commands.REGISTER = "register";
 Commands.SENDING = "sending";

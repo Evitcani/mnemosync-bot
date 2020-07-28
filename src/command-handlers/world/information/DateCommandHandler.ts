@@ -132,26 +132,20 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("No current date assigned to the party. Must create one first.");
         }
 
-        console.log("CHECKPOINT 1");
-
         // Easy access variable.
         let currentDate = party.currentDate;
         currentDate.date = await MessageUtility.processDateCommand(command, message);
-        console.log("CHECKPOINT 2");
         currentDate.date.calendarId = currentDate.calendarId;
 
         // Save this.
         currentDate = await this.currentDateController.save(currentDate);
-        console.log("CHECKPOINT 3");
 
         // Now get the date.
         let date = await MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
-        console.log("CHECKPOINT 4");
         if  (date == null) {
             return null;
         }
 
-        console.log("CHECKPOINT 5");
         return message.channel.send(`Date changed! Set date to the ${date}.`);
     }
 }
