@@ -55,10 +55,6 @@ __decorate([
     __metadata("design:type", Number)
 ], CalendarMoon.prototype, "shift", void 0);
 __decorate([
-    typeorm_1.Column({ name: "calendar_id" }),
-    __metadata("design:type", String)
-], CalendarMoon.prototype, "calendarId", void 0);
-__decorate([
     typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.moons, {
         cascade: true
     }),

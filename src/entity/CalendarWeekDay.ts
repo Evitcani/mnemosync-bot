@@ -27,9 +27,6 @@ export class CalendarWeekDay {
     @Column()
     order: number;
 
-    @Column({name: "calendar_id"})
-    calendarId: string;
-
     @ManyToOne(type => Calendar, calendar => calendar.week,{
         cascade: true
     })

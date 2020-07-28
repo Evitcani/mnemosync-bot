@@ -46,9 +46,6 @@ export class CalendarMoon {
     @Column()
     shift: number;
 
-    @Column({name: "calendar_id"})
-    calendarId: string;
-
     @ManyToOne(type => Calendar, calendar => calendar.moons,{
         cascade: true
     })

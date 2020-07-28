@@ -40,10 +40,6 @@ __decorate([
     __metadata("design:type", Number)
 ], CalendarMonth.prototype, "order", void 0);
 __decorate([
-    typeorm_1.Column({ name: "calendar_id" }),
-    __metadata("design:type", String)
-], CalendarMonth.prototype, "calendarId", void 0);
-__decorate([
     typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.months, {
         cascade: true
     }),

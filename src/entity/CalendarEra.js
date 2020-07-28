@@ -45,10 +45,6 @@ __decorate([
     __metadata("design:type", GameDate_1.GameDate)
 ], CalendarEra.prototype, "end", void 0);
 __decorate([
-    typeorm_1.Column({ name: "calendar_id" }),
-    __metadata("design:type", String)
-], CalendarEra.prototype, "calendarId", void 0);
-__decorate([
     typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.eras, {
         cascade: true
     }),

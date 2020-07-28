@@ -30,9 +30,6 @@ export class CalendarMonth {
     @Column({name: "order"})
     order: number;
 
-    @Column({name: "calendar_id"})
-    calendarId: string;
-
     @ManyToOne(type => Calendar, calendar => calendar.months,{
         cascade: true
     })

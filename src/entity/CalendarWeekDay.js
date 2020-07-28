@@ -36,10 +36,6 @@ __decorate([
     __metadata("design:type", Number)
 ], CalendarWeekDay.prototype, "order", void 0);
 __decorate([
-    typeorm_1.Column({ name: "calendar_id" }),
-    __metadata("design:type", String)
-], CalendarWeekDay.prototype, "calendarId", void 0);
-__decorate([
     typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.week, {
         cascade: true
     }),
