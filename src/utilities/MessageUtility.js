@@ -176,25 +176,25 @@ class MessageUtility {
         let col2 = ((day + moon.shift) % moon.cycle) * (360 / moon.cycle);
         let col3 = col2 - col1;
         console.log(`Viewing angle of moon (NAME: ${moon.name}): ${col3}`);
-        if (col3 <= 0 && col3 > 45) {
+        if (col3 >= 337.5 && col3 < 22.5) {
             return "Full Moon";
         }
-        if (col3 <= 45 && col3 > 90) {
+        if (col3 >= 22.5 && col3 < 67.5) {
             return "Waxing Gibbous";
         }
-        if (col3 <= 90 && col3 > 135) {
+        if (col3 >= 67.5 && col3 < 112.5) {
             return "First Quarter";
         }
-        if (col3 <= 135 && col3 > 180) {
+        if (col3 >= 112.5 && col3 < 157.5) {
             return "Waxing Crescent";
         }
-        if (col3 <= 180 && col3 > 225) {
+        if (col3 >= 157.5 && col3 < 202.5) {
             return "New Moon";
         }
-        if (col3 <= 225 && col3 > 270) {
+        if (col3 >= 202.5 && col3 < 247.5) {
             return "Waning Crescent";
         }
-        if (col3 <= 270 && col3 > 315) {
+        if (col3 >= 247.5 && col3 < 292.5) {
             return "Last Quarter";
         }
         return "Waning Gibbous";
