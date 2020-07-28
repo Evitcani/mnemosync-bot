@@ -54,17 +54,6 @@ export class World {
     })
     defaultOfUsers?: User[];
 
-    @Column({name: "default_party_id", nullable: true})
-    defaultPartyId?: string;
-
-    @ManyToOne(type => Party, {
-        nullable: true,
-        onDelete: "SET NULL",
-        eager: true
-    })
-    @JoinColumn({name: "default_party_id"})
-    defaultParty?: Party;
-
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {

@@ -44,7 +44,7 @@ export class UserController extends AbstractController<User> {
                 where: {
                     discord_id: discordId
                 },
-                relations: ["defaultCharacter", "defaultWorld"]
+                relations: ["defaultCharacter", "defaultWorld", "defaultParty"]
             })
             .then((user) => {
                 if (!user) {

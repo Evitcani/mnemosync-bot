@@ -61,7 +61,7 @@ let UserController = class UserController extends AbstractController_1.AbstractC
                 where: {
                     discord_id: discordId
                 },
-                relations: ["defaultCharacter", "defaultWorld"]
+                relations: ["defaultCharacter", "defaultWorld", "defaultParty"]
             })
                 .then((user) => {
                 if (!user) {
