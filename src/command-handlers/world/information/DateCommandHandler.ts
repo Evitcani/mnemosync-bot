@@ -53,8 +53,14 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
                 return message.channel.send("No current date for this party. Needs setup.");
             }
 
-            return message.channel.send(CalendarRelatedResponses.PRINT_DATE(party.currentDate, party, message,
-                this.calendarController));
+            let embed = await CalendarRelatedResponses.PRINT_DATE(party.currentDate, party, message,
+                this.calendarController);
+
+            if (embed == null) {
+                return message.channel.send("Something is wrong with the date.");
+            }
+
+            return message.channel.send(embed);
         }
 
         return message.channel.send("Finished processing commands.");
