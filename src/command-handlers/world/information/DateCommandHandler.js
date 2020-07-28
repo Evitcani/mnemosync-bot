@@ -32,6 +32,7 @@ const Subcommands_1 = require("../../../documentation/commands/Subcommands");
 const CurrentDate_1 = require("../../../entity/CurrentDate");
 const GameDate_1 = require("../../../entity/GameDate");
 const MessageUtility_1 = require("../../../utilities/MessageUtility");
+const CalendarRelatedResponses_1 = require("../../../documentation/client-responses/information/CalendarRelatedResponses");
 let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(calendarController, currentDateController, partyController) {
         super();
@@ -53,6 +54,13 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             // User wants to set the date.
             if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
                 yield this.handleSetDateCommand(command, message, user, party);
+            }
+            // Just wants the current date.
+            if (command.getInput() == null) {
+                if (party.currentDate == null) {
+                    return message.channel.send("No current date for this party. Needs setup.");
+                }
+                return message.channel.send(CalendarRelatedResponses_1.CalendarRelatedResponses.PRINT_DATE(party.currentDate, party, message, this.calendarController));
             }
             return message.channel.send("Finished processing commands.");
         });
@@ -127,6 +135,7 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
      */
     handleSetDateCommand(command, message, user, party) {
         return __awaiter(this, void 0, void 0, function* () {
+            // TODO: Only GMs can change the date.
             // Can't process without a current date.
             if (party.currentDate == null) {
                 return message.channel.send("No current date assigned to the party. Must create one first.");
@@ -138,7 +147,7 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             // Save this.
             currentDate = yield this.currentDateController.save(currentDate);
             // Now get the date.
-            let date = yield MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+            let date = yield MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, null, this.calendarController);
             if (date == null) {
                 return null;
             }

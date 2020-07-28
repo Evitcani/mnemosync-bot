@@ -6,6 +6,8 @@ import {GameDate} from "../entity/GameDate";
 import {CurrentDate} from "../entity/CurrentDate";
 import {CalendarController} from "../controllers/world/calendar/CalendarController";
 import {CalendarMonth} from "../entity/CalendarMonth";
+import {Calendar} from "../entity/Calendar";
+import {CalendarMoon} from "../entity/CalendarMoon";
 
 export class MessageUtility {
 
@@ -111,14 +113,15 @@ export class MessageUtility {
         return Promise.resolve(inGameDate)
     }
 
-    public static async getProperDate(date: GameDate, message: Message, calendarController: CalendarController): Promise<string> {
-        let calendar = await calendarController.get(date.calendarId);
+    public static async getProperDate(date: GameDate, message: Message, calendar: Calendar,
+                                      calendarController: CalendarController): Promise<string> {
         if (calendar == null) {
-            await message.channel.send("Could not get a calendar.");
-            return Promise.resolve(null);
+            calendar = await calendarController.get(date.calendarId);
+            if (calendar == null) {
+                await message.channel.send("Could not get a calendar.");
+                return Promise.resolve(null);
+            }
         }
-
-        date.calendarId = calendar.id;
 
         let day = date.day;
         let month = date.month;
@@ -164,5 +167,58 @@ export class MessageUtility {
             default:
                 return "th";
         }
+    }
+
+    /**
+     * day = number of days as time goes on
+     PlanetPeriod = number of days in planet's year
+     Moon1Period = number of days in moon1 cycle
+     Moon2Period = number of days in moon2 cycle
+
+     Col 1: Angle of planet relative to sun = (day MOD PlanetPeriod) * (360/PlanetPeriod)
+     Col 2: Angle of moon1 relative to planet = (day MOD Moon1Period) * (360/Moon1Period)
+     Col 3: Angle of moon2 relative to planet = (day MOD Moon2Period) * (360/Moon2Period)
+     Col 4: Viewing Angle of Moon1 = Col2 minus Col1
+     Col 5: Viewing Angle of Moon2 = Col3 minus Col1
+
+     The Viewing Angle will tell you what phase the moon is in. A Viewing Angle of 0 degrees is a full moon. Viewing angle
+     of 90 degrees is a first quarter moon. 180 degrees is a new moon. Etc, through 360.
+     */
+    public static getMoonPhase(moon: CalendarMoon, day: number, daysInYear: number): string {
+        let col1 = (day % daysInYear) * (360 / daysInYear);
+        let col2 = ((day + moon.shift) % moon.cycle) * (360 / moon.cycle);
+        let col3 = col2 - col1;
+
+        console.log(`Viewing angle of moon (NAME: ${moon.name}): ${col3}`);
+
+        if (col3 <= 0 && col3 > 45) {
+            return "Full Moon";
+        }
+
+        if (col3 <= 45 && col3 > 90) {
+            return "Waxing Gibbous";
+        }
+
+        if (col3 <= 90 && col3 > 135) {
+            return "First Quarter";
+        }
+
+        if (col3 <= 135 && col3 > 180) {
+            return "Waxing Crescent";
+        }
+
+        if (col3 <= 180 && col3 > 225) {
+            return "New Moon";
+        }
+
+        if (col3 <= 225 && col3 > 270) {
+            return "Waning Crescent";
+        }
+
+        if (col3 <= 270 && col3 > 315) {
+            return "Last Quarter";
+        }
+
+        return "Waning Gibbous";
     }
 }

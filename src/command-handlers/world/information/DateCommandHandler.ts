@@ -13,6 +13,7 @@ import {Calendar} from "../../../entity/Calendar";
 import {CurrentDate} from "../../../entity/CurrentDate";
 import {GameDate} from "../../../entity/GameDate";
 import {MessageUtility} from "../../../utilities/MessageUtility";
+import {CalendarRelatedResponses} from "../../../documentation/client-responses/information/CalendarRelatedResponses";
 
 @injectable()
 export class DateCommandHandler extends AbstractUserCommandHandler {
@@ -44,6 +45,16 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         // User wants to set the date.
         if (Subcommands.DATE.isCommand(command)) {
             await this.handleSetDateCommand(command, message, user, party);
+        }
+
+        // Just wants the current date.
+        if (command.getInput() == null) {
+            if (party.currentDate == null) {
+                return message.channel.send("No current date for this party. Needs setup.");
+            }
+
+            return message.channel.send(CalendarRelatedResponses.PRINT_DATE(party.currentDate, party, message,
+                this.calendarController));
         }
 
         return message.channel.send("Finished processing commands.");
@@ -127,6 +138,8 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
      * @param party
      */
     private async handleSetDateCommand(command: Command, message: Message, user: User, party: Party): Promise<Message | Message[]> {
+        // TODO: Only GMs can change the date.
+
         // Can't process without a current date.
         if (party.currentDate == null) {
             return message.channel.send("No current date assigned to the party. Must create one first.");
@@ -141,7 +154,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         currentDate = await this.currentDateController.save(currentDate);
 
         // Now get the date.
-        let date = await MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+        let date = await MessageUtility.getProperDate(currentDate.date, message, null, this.calendarController);
         if  (date == null) {
             return null;
         }
