@@ -55,12 +55,8 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         let json: DonjonCalendar = null;
         if (Subcommands.DONJON.isCommand(command)) {
             let cmd = Subcommands.DONJON.getCommand(command);
-            console.log(cmd.getInput());
             json = JSON.parse(cmd.getInput());
-            console.log(json);
         }
-
-
 
         if (json == null) {
             return message.channel.send("No JSON given, could not continue.");

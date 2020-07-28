@@ -62,9 +62,7 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
             let json = null;
             if (Subcommands_1.Subcommands.DONJON.isCommand(command)) {
                 let cmd = Subcommands_1.Subcommands.DONJON.getCommand(command);
-                console.log(cmd.getInput());
                 json = JSON.parse(cmd.getInput());
-                console.log(json);
             }
             if (json == null) {
                 return message.channel.send("No JSON given, could not continue.");
