@@ -37,7 +37,7 @@ let CalendarController = class CalendarController extends AbstractController_1.A
         return __awaiter(this, void 0, void 0, function* () {
             return this.getRepo().findOne({
                 where: { id: id },
-                relations: ["world", "eras", "months", "moons", "week"]
+                relations: ["eras", "months", "moons", "week"]
             })
                 .catch((err) => {
                 console.error("ERR ::: Could not get calendars with given id.");

@@ -19,7 +19,7 @@ export class CalendarController extends AbstractController<Calendar> {
     public async get(id: string): Promise<Calendar> {
         return this.getRepo().findOne({
                 where: {id: id},
-                relations: ["world", "eras", "months", "moons", "week"]
+                relations: ["eras", "months", "moons", "week"]
             })
             .catch((err: Error) => {
                 console.error("ERR ::: Could not get calendars with given id.");
