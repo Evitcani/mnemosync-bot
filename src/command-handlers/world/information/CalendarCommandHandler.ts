@@ -268,6 +268,8 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             moon = await this.moonController.save(moon);
             calendar.moons.push(moon);
 
+            moon.phases = [];
+
             phase = await this.createNewPhase("Full", 337, 22, 0, moon);
             moon.phases.push(phase);
 

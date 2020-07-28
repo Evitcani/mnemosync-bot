@@ -228,6 +228,7 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
                 // Now we save this calendar.
                 moon = yield this.moonController.save(moon);
                 calendar.moons.push(moon);
+                moon.phases = [];
                 phase = yield this.createNewPhase("Full", 337, 22, 0, moon);
                 moon.phases.push(phase);
                 phase = yield this.createNewPhase("Waxing Gibbous", 22, 67, 1, moon);
