@@ -54,7 +54,7 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
                 yield this.handleSetDateCommand(command, message, user, party);
             }
-            return undefined;
+            return message.channel.send("Finished processing commands.");
         });
     }
     getParty(command, message, user) {
@@ -77,6 +77,9 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
      */
     handleCreateCommand(command, message, user, party) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (party.currentDate != null) {
+                return message.channel.send("Already has a current date.");
+            }
             // First, we need to go get the calendar.
             let calendarName = Subcommands_1.Subcommands.CREATE.getCommand(command).getInput();
             if (calendarName == null) {
@@ -128,17 +131,22 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             if (party.currentDate == null) {
                 return message.channel.send("No current date assigned to the party. Must create one first.");
             }
+            console.log("CHECKPOINT 1");
             // Easy access variable.
             let currentDate = party.currentDate;
             currentDate.date = yield MessageUtility_1.MessageUtility.processDateCommand(command, message);
+            console.log("CHECKPOINT 2");
             currentDate.date.calendarId = currentDate.calendarId;
             // Save this.
             currentDate = yield this.currentDateController.save(currentDate);
+            console.log("CHECKPOINT 3");
             // Now get the date.
             let date = yield MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+            console.log("CHECKPOINT 4");
             if (date == null) {
                 return null;
             }
+            console.log("CHECKPOINT 5");
             return message.channel.send(`Date changed! Set date to the ${date}.`);
         });
     }
