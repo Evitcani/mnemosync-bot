@@ -118,7 +118,7 @@ export class MessageUtility {
             return Promise.resolve(null);
         }
 
-        date.calendar = calendar;
+        date.calendarId = calendar.id;
 
         let day = date.day;
         let month = date.month;

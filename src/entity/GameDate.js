@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameDate = void 0;
 const typeorm_1 = require("typeorm");
-const Calendar_1 = require("./Calendar");
 class GameDate {
 }
 __decorate([
@@ -34,12 +33,5 @@ __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], GameDate.prototype, "calendarId", void 0);
-__decorate([
-    typeorm_1.OneToOne(type => Calendar_1.Calendar, {
-        nullable: true
-    }),
-    typeorm_1.JoinColumn(),
-    __metadata("design:type", Calendar_1.Calendar)
-], GameDate.prototype, "calendar", void 0);
 exports.GameDate = GameDate;
 //# sourceMappingURL=GameDate.js.map

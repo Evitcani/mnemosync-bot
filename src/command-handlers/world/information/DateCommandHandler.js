@@ -105,7 +105,7 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             currentDate.calendar = calendar;
             currentDate.party = party;
             currentDate.date = new GameDate_1.GameDate();
-            currentDate.date.calendar = calendar;
+            currentDate.date.calendarId = calendar.id;
             // Save this.
             currentDate = yield this.currentDateController.save(currentDate);
             // Save the party.

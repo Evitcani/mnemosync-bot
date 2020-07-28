@@ -1,5 +1,4 @@
-import {Column, JoinColumn, ManyToOne, OneToOne} from "typeorm";
-import {Calendar} from "./Calendar";
+import {Column} from "typeorm";
 
 export class GameDate {
     @Column({nullable: true})
@@ -16,10 +15,4 @@ export class GameDate {
 
     @Column({nullable: true})
     calendarId?: string;
-
-    @OneToOne(type => Calendar, {
-        nullable: true
-    })
-    @JoinColumn()
-    calendar?: Calendar;
 }

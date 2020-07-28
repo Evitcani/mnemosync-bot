@@ -116,7 +116,7 @@ class MessageUtility {
                 yield message.channel.send("Could not get a calendar.");
                 return Promise.resolve(null);
             }
-            date.calendar = calendar;
+            date.calendarId = calendar.id;
             let day = date.day;
             let month = date.month;
             let year = date.year;

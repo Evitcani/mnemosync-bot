@@ -102,7 +102,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         currentDate.calendar = calendar;
         currentDate.party = party;
         currentDate.date = new GameDate();
-        currentDate.date.calendar = calendar;
+        currentDate.date.calendarId = calendar.id;
 
         // Save this.
         currentDate = await this.currentDateController.save(currentDate);
