@@ -135,34 +135,34 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             moon.phases = [];
 
             // Full moon.
-            phase = await this.createNewPhase(moonWa.phaseNames.full, 337.5, 22.5, 0, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.full, 337, 22, 0, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingGibbous, 22.5, 67.5, 1, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waxingGibbous, 22, 67, 1, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingQuarter, 67.5, 112.5, 2, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waxingQuarter, 67, 112, 2, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingCrescent, 112.5, 157.5, 3, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waxingCrescent, 112, 157, 3, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.old, 157.5, 167.5, 4, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.old, 157, 167, 4, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.new, 167.5, 192.5, 5, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.new, 167, 192, 5, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.young, 192.5, 202.5, 6, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.young, 192, 202, 6, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningCrescent, 202.5, 247.5, 7, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waningCrescent, 202, 247, 7, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningQuarter, 247.5, 292.5, 8, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waningQuarter, 247, 292, 8, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningGibbous, 292.5, 337.5, 9, moon);
+            phase = await this.createNewPhase(moonWa.phaseNames.waningGibbous, 292, 337, 9, moon);
             moon.phases.push(phase);
         }
 
@@ -268,34 +268,34 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             moon = await this.moonController.save(moon);
             calendar.moons.push(moon);
 
-            phase = await this.createNewPhase("Full", 337.5, 22.5, 0, moon);
+            phase = await this.createNewPhase("Full", 337, 22, 0, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Waxing Gibbous", 22.5, 67.5, 1, moon);
+            phase = await this.createNewPhase("Waxing Gibbous", 22, 67, 1, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("First Quarter", 67.5, 112.5, 2, moon);
+            phase = await this.createNewPhase("First Quarter", 67, 112, 2, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Waxing Crescent", 112.5, 157.5, 3, moon);
+            phase = await this.createNewPhase("Waxing Crescent", 112, 157, 3, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Old", 157.5, 167.5, 4, moon);
+            phase = await this.createNewPhase("Old", 157, 167, 4, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("New", 167.5, 192.5, 5, moon);
+            phase = await this.createNewPhase("New", 167, 192, 5, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Young", 192.5, 202.5, 6, moon);
+            phase = await this.createNewPhase("Young", 192, 202, 6, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Waning Crescent", 202.5, 247.5, 7, moon);
+            phase = await this.createNewPhase("Waning Crescent", 202, 247, 7, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Last Quarter", 247.5, 292.5, 8, moon);
+            phase = await this.createNewPhase("Last Quarter", 247, 292, 8, moon);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase("Waning Gibbous", 292.5, 337.5, 9, moon);
+            phase = await this.createNewPhase("Waning Gibbous", 292, 337, 9, moon);
             moon.phases.push(phase);
         }
 
