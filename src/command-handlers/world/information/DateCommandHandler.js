@@ -131,7 +131,11 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
             // Easy access variable.
             let currentDate = party.currentDate;
             currentDate.date = yield MessageUtility_1.MessageUtility.processDateCommand(command, message);
-            let date = MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+            currentDate.date.calendarId = currentDate.calendarId;
+            // Save this.
+            currentDate = yield this.currentDateController.save(currentDate);
+            // Now get the date.
+            let date = yield MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
             if (date == null) {
                 return null;
             }

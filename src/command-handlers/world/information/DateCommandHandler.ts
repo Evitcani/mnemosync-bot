@@ -131,8 +131,13 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         // Easy access variable.
         let currentDate = party.currentDate;
         currentDate.date = await MessageUtility.processDateCommand(command, message);
+        currentDate.date.calendarId = currentDate.calendarId;
 
-        let date = MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+        // Save this.
+        currentDate = await this.currentDateController.save(currentDate);
+
+        // Now get the date.
+        let date = await MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
         if  (date == null) {
             return null;
         }
