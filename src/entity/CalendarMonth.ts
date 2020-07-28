@@ -31,13 +31,13 @@ export class CalendarMonth {
     order: number;
 
     @Column({name: "calendar_id"})
-    calendarId?: string;
+    calendarId: string;
 
     @ManyToOne(type => Calendar, calendar => calendar.months,{
         cascade: true
     })
     @JoinColumn({name: "calendar_id"})
-    calendar?: Calendar;
+    calendar: Calendar;
 
 
 }

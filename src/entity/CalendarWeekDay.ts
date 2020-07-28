@@ -28,11 +28,11 @@ export class CalendarWeekDay {
     order: number;
 
     @Column({name: "calendar_id"})
-    calendarId?: string;
+    calendarId: string;
 
     @ManyToOne(type => Calendar, calendar => calendar.week,{
         cascade: true
     })
     @JoinColumn({name: "calendar_id"})
-    calendar?: Calendar;
+    calendar: Calendar;
 }
