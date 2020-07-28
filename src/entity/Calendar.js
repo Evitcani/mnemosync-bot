@@ -58,32 +58,28 @@ __decorate([
 __decorate([
     typeorm_1.OneToMany(type => CalendarEra_1.CalendarEra, era => era.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], Calendar.prototype, "eras", void 0);
 __decorate([
     typeorm_1.OneToMany(type => CalendarMonth_1.CalendarMonth, month => month.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], Calendar.prototype, "months", void 0);
 __decorate([
     typeorm_1.OneToMany(type => CalendarWeekDay_1.CalendarWeekDay, day => day.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], Calendar.prototype, "week", void 0);
 __decorate([
     typeorm_1.OneToMany(type => CalendarMoon_1.CalendarMoon, moon => moon.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     }),
     __metadata("design:type", Array)
 ], Calendar.prototype, "moons", void 0);

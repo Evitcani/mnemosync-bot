@@ -46,29 +46,25 @@ export class Calendar {
 
     @OneToMany(type => CalendarEra, era => era.calendar, {
             onDelete: "SET NULL",
-            nullable: true,
-            eager: true
+            nullable: true
         })
     eras?: CalendarEra[];
 
     @OneToMany(type => CalendarMonth, month => month.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     })
     months?: CalendarMonth[];
 
     @OneToMany(type => CalendarWeekDay, day => day.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     })
     week?: CalendarWeekDay[];
 
     @OneToMany(type => CalendarMoon, moon => moon.calendar, {
         onDelete: "SET NULL",
-        nullable: true,
-        eager: true
+        nullable: true
     })
     moons?: CalendarMoon[];
 }
