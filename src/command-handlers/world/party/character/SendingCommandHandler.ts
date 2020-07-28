@@ -302,36 +302,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // Get the in-game date.
         if (Subcommands.DATE.isCommand(command)) {
-            const dateCmd = Subcommands.DATE.getCommand(command);
-            let input = dateCmd.getInput();
-            if (input == null) {
-                await message.channel.send("There was no actual date given.");
-                return null;
-            }
-            // Split the date and process.
-            let dates = input.split("/");
-            if (dates.length < 3) {
-                await message.channel.send("Date was malformed. Should be like `[day]/[month]/[year]`");
-                return null;
-            }
-
-            // TODO: Implement era processing.
-            let day = StringUtility.getNumber(dates[0]),
-                month = StringUtility.getNumber(dates[1]),
-                year = StringUtility.getNumber(dates[2]);
-
-            // TODO: Better response here.
-            if (day == null || month == null || year == null) {
-                await message.channel.send("Date was malformed. Day, month or year was not a number. Should be like " +
-                    "`[# day]/[# month]/[# year]`");
-                return null;
-            }
-
-            // Now put it inside the sending.
-            sending.inGameDate = new GameDate();
-            sending.inGameDate.day = day;
-            sending.inGameDate.month = month;
-            sending.inGameDate.year = year;
+            sending.inGameDate = await MessageUtility.processDateCommand(command, message);
         } else {
             await message.channel.send(SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content));
             return null;

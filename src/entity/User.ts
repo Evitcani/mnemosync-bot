@@ -11,6 +11,7 @@ import {
 import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
 import {Table} from "../documentation/databases/Table";
+import {Party} from "./Party";
 
 @Entity({name: "users"})
 export class User {
@@ -50,6 +51,17 @@ export class User {
     })
     @JoinColumn({name: "default_world_id"})
     defaultWorld?: World;
+
+    @Column({name: "default_party_id", nullable: true})
+    defaultPartyId?: string;
+
+    @ManyToOne(type => Party, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    })
+    @JoinColumn({name: "default_party_id"})
+    defaultParty?: Party;
 
     @ManyToMany(type => World, {nullable: true})
     @JoinTable({name: Table.WORLD_OWNERS})

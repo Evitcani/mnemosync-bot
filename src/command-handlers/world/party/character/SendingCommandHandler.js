@@ -33,7 +33,6 @@ const NPCController_1 = require("../../../../controllers/character/NPCController
 const SendingController_1 = require("../../../../controllers/character/SendingController");
 const SendingHelpRelatedResponses_1 = require("../../../../documentation/client-responses/misc/SendingHelpRelatedResponses");
 const WorldController_1 = require("../../../../controllers/world/WorldController");
-const GameDate_1 = require("../../../../entity/GameDate");
 const CharacterController_1 = require("../../../../controllers/character/CharacterController");
 const MessageUtility_1 = require("../../../../utilities/MessageUtility");
 const StringUtility_1 = require("../../../../utilities/StringUtility");
@@ -271,31 +270,7 @@ let SendingCommandHandler = class SendingCommandHandler extends AbstractUserComm
             sending.world = world;
             // Get the in-game date.
             if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
-                const dateCmd = Subcommands_1.Subcommands.DATE.getCommand(command);
-                let input = dateCmd.getInput();
-                if (input == null) {
-                    yield message.channel.send("There was no actual date given.");
-                    return null;
-                }
-                // Split the date and process.
-                let dates = input.split("/");
-                if (dates.length < 3) {
-                    yield message.channel.send("Date was malformed. Should be like `[day]/[month]/[year]`");
-                    return null;
-                }
-                // TODO: Implement era processing.
-                let day = StringUtility_1.StringUtility.getNumber(dates[0]), month = StringUtility_1.StringUtility.getNumber(dates[1]), year = StringUtility_1.StringUtility.getNumber(dates[2]);
-                // TODO: Better response here.
-                if (day == null || month == null || year == null) {
-                    yield message.channel.send("Date was malformed. Day, month or year was not a number. Should be like " +
-                        "`[# day]/[# month]/[# year]`");
-                    return null;
-                }
-                // Now put it inside the sending.
-                sending.inGameDate = new GameDate_1.GameDate();
-                sending.inGameDate.day = day;
-                sending.inGameDate.month = month;
-                sending.inGameDate.year = year;
+                sending.inGameDate = yield MessageUtility_1.MessageUtility.processDateCommand(command, message);
             }
             else {
                 yield message.channel.send(SendingHelpRelatedResponses_1.SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content));

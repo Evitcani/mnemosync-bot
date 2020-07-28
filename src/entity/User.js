@@ -15,6 +15,7 @@ const typeorm_1 = require("typeorm");
 const StringUtility_1 = require("../utilities/StringUtility");
 const World_1 = require("./World");
 const Table_1 = require("../documentation/databases/Table");
+const Party_1 = require("./Party");
 let User = class User {
     purifyInsertUpdate() {
         this.discord_name = StringUtility_1.StringUtility.escapeSQLInput(this.discord_name);
@@ -67,6 +68,19 @@ __decorate([
     typeorm_1.JoinColumn({ name: "default_world_id" }),
     __metadata("design:type", World_1.World)
 ], User.prototype, "defaultWorld", void 0);
+__decorate([
+    typeorm_1.Column({ name: "default_party_id", nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "defaultPartyId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Party_1.Party, {
+        eager: true,
+        nullable: true,
+        onDelete: "SET NULL"
+    }),
+    typeorm_1.JoinColumn({ name: "default_party_id" }),
+    __metadata("design:type", Party_1.Party)
+], User.prototype, "defaultParty", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => World_1.World, { nullable: true }),
     typeorm_1.JoinTable({ name: Table_1.Table.WORLD_OWNERS }),

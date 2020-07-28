@@ -29,6 +29,9 @@ const PartyController_1 = require("../../../controllers/party/PartyController");
 const CalendarController_1 = require("../../../controllers/world/calendar/CalendarController");
 const CurrentDateController_1 = require("../../../controllers/world/calendar/CurrentDateController");
 const Subcommands_1 = require("../../../documentation/commands/Subcommands");
+const CurrentDate_1 = require("../../../entity/CurrentDate");
+const GameDate_1 = require("../../../entity/GameDate");
+const MessageUtility_1 = require("../../../utilities/MessageUtility");
 let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
     constructor(calendarController, currentDateController, partyController) {
         super();
@@ -38,9 +41,101 @@ let DateCommandHandler = class DateCommandHandler extends AbstractUserCommandHan
     }
     handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Get the party first. Needed for all subcommands.
+            let party = yield this.getParty(command, message, user);
+            if (party == null) {
+                return message.channel.send("Requires a party in a world to assign the date to.");
+            }
+            // User wants to create.
             if (Subcommands_1.Subcommands.CREATE.isCommand(command)) {
+                yield this.handleCreateCommand(command, message, user, party);
+            }
+            // User wants to set the date.
+            if (Subcommands_1.Subcommands.DATE.isCommand(command)) {
+                yield this.handleSetDateCommand(command, message, user, party);
             }
             return undefined;
+        });
+    }
+    getParty(command, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // First, get the party.
+            let party = yield this.partyController.getPartyBasedOnInputOrUser(command, message, user, "add the date to");
+            if (party == null || party.world == null) {
+                return null;
+            }
+            return party;
+        });
+    }
+    /**
+     * Creates a new current date for the given party.
+     *
+     * @param command
+     * @param message
+     * @param user
+     * @param party
+     */
+    handleCreateCommand(command, message, user, party) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // First, we need to go get the calendar.
+            let calendarName = Subcommands_1.Subcommands.CREATE.getCommand(command).getInput();
+            if (calendarName == null) {
+                return message.channel.send("You must provide the name of a calendar for this date.");
+            }
+            // Get the calendar.
+            let calendars = yield this.calendarController.getByName(calendarName, party.world.id);
+            // No calendars found.
+            if (calendars.length <= 0) {
+                return message.channel.send("No calendars exist with that name!");
+            }
+            // Now choose the calendar if we must.
+            let calendar;
+            if (calendars.length > 1) {
+                calendar = yield this.calendarController.calendarSelection(calendars, "use for the party's default calendar", message);
+            }
+            else {
+                calendar = calendars[0];
+            }
+            // Assume a timeout.
+            if (calendar == null) {
+                return null;
+            }
+            // Create the current date.
+            let currentDate = new CurrentDate_1.CurrentDate();
+            currentDate.calendar = calendar;
+            currentDate.party = party;
+            currentDate.date = new GameDate_1.GameDate();
+            currentDate.date.calendar = calendar;
+            // Save this.
+            currentDate = yield this.currentDateController.save(currentDate);
+            // Save the party.
+            party.currentDate = currentDate;
+            yield this.partyController.save(party);
+            return message.channel.send("Saved new date to the party.");
+        });
+    }
+    /**
+     * Handles the command to set the date to a specific date.
+     *
+     * @param command
+     * @param message
+     * @param user
+     * @param party
+     */
+    handleSetDateCommand(command, message, user, party) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Can't process without a current date.
+            if (party.currentDate == null) {
+                return message.channel.send("No current date assigned to the party. Must create one first.");
+            }
+            // Easy access variable.
+            let currentDate = party.currentDate;
+            currentDate.date = yield MessageUtility_1.MessageUtility.processDateCommand(command, message);
+            let date = MessageUtility_1.MessageUtility.getProperDate(currentDate.date, message, this.calendarController);
+            if (date == null) {
+                return null;
+            }
+            return message.channel.send(`Date changed! Set date to the ${date}.`);
         });
     }
 };
