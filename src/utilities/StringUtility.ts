@@ -52,11 +52,8 @@ export class StringUtility {
         if (input == null) {
             return null;
         }
-        console.log("First : " + input);
         let correctedInput = input.replace(this.fancyQuote1, "'");
-        console.log("Second: " + correctedInput);
         correctedInput = correctedInput.replace(this.fancyQuote2, "\"");
-        console.log("Third : " + correctedInput);
         return correctedInput;
     }
 
