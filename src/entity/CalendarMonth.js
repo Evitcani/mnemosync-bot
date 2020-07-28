@@ -13,7 +13,12 @@ exports.CalendarMonth = void 0;
 const typeorm_1 = require("typeorm");
 const Calendar_1 = require("./Calendar");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
 let CalendarMonth = class CalendarMonth {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility_1.StringUtility.escapeSQLInput(this.description);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('uuid'),
@@ -32,6 +37,10 @@ __decorate([
     __metadata("design:type", String)
 ], CalendarMonth.prototype, "name", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], CalendarMonth.prototype, "description", void 0);
+__decorate([
     typeorm_1.Column({ name: "length" }),
     __metadata("design:type", Number)
 ], CalendarMonth.prototype, "length", void 0);
@@ -46,6 +55,13 @@ __decorate([
     typeorm_1.JoinColumn({ name: "calendar_id" }),
     __metadata("design:type", Calendar_1.Calendar)
 ], CalendarMonth.prototype, "calendar", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CalendarMonth.prototype, "purifyInsertUpdate", null);
 CalendarMonth = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.MONTH })
 ], CalendarMonth);

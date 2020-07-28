@@ -175,7 +175,16 @@ class MessageUtility {
         let col1 = (day % daysInYear) * (360 / daysInYear);
         let col2 = ((day + moon.shift) % moon.cycle) * (360 / moon.cycle);
         let col3 = col2 - col1;
-        console.log(`Viewing angle of moon (NAME: ${moon.name}): ${col3}`);
+        if (moon.phases != null) {
+            moon.phases.sort((a, b) => {
+                return a.order - b.order;
+            });
+            moon.phases.forEach((phase) => {
+                if (col3 >= phase.viewingAngleStart && col3 < phase.viewingAngleEnd) {
+                    return phase.name;
+                }
+            });
+        }
         if (col3 >= 337.5 && col3 < 22.5) {
             return "Full Moon";
         }

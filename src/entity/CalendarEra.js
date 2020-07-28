@@ -14,7 +14,11 @@ const typeorm_1 = require("typeorm");
 const Calendar_1 = require("./Calendar");
 const GameDate_1 = require("./GameDate");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
 let CalendarEra = class CalendarEra {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('uuid'),
@@ -51,6 +55,13 @@ __decorate([
     typeorm_1.JoinColumn({ name: "calendar_id" }),
     __metadata("design:type", Calendar_1.Calendar)
 ], CalendarEra.prototype, "calendar", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CalendarEra.prototype, "purifyInsertUpdate", null);
 CalendarEra = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.ERA })
 ], CalendarEra);

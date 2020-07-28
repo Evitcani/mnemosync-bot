@@ -1,4 +1,5 @@
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -14,6 +15,7 @@ import {CalendarMoon} from "./CalendarMoon";
 import {CalendarEra} from "./CalendarEra";
 import {GameDate} from "./GameDate";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.CALENDAR})
 export class Calendar {
@@ -31,6 +33,9 @@ export class Calendar {
 
     @Column({name: "year_length_days"})
     yearLength: number;
+
+    @Column({nullable: true})
+    description: string;
 
     @Column(type => GameDate)
     epoch: GameDate;
@@ -67,4 +72,11 @@ export class Calendar {
         nullable: true
     })
     moons?: CalendarMoon[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility.escapeSQLInput(this.description);
+    }
 }

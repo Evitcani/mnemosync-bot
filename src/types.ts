@@ -35,6 +35,7 @@ export const TYPES = {
     CalendarEraController: Symbol("CalendarEraController"),
     CalendarMonthController: Symbol("CalendarMonthController"),
     CalendarMoonController: Symbol("CalendarMoonController"),
+    CalendarMoonPhaseController: Symbol("CalendarMoonPhaseController"),
     CalendarWeekDayController: Symbol("CalendarWeekDayController"),
     CurrentDateController: Symbol("CurrentDateController"),
     NPCController: Symbol("NPCController"),

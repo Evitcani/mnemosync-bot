@@ -36,13 +36,17 @@ const CalendarMoonController_1 = require("../../../controllers/world/calendar/Ca
 const CalendarWeekDayController_1 = require("../../../controllers/world/calendar/CalendarWeekDayController");
 const CalendarMonth_1 = require("../../../entity/CalendarMonth");
 const CalendarMoon_1 = require("../../../entity/CalendarMoon");
+const StringUtility_1 = require("../../../utilities/StringUtility");
+const CalendarMoonPhase_1 = require("../../../entity/CalendarMoonPhase");
+const CalendarMoonPhaseController_1 = require("../../../controllers/world/calendar/CalendarMoonPhaseController");
 let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
-    constructor(calendarController, calendarEraController, calendarMonthController, calendarMoonController, calendarWeekDayController) {
+    constructor(calendarController, calendarEraController, calendarMonthController, calendarMoonController, calendarMoonPhaseController, calendarWeekDayController) {
         super();
         this.calendarController = calendarController;
         this.eraController = calendarEraController;
         this.monthController = calendarMonthController;
         this.moonController = calendarMoonController;
+        this.phaseController = calendarMoonPhaseController;
         this.weekDayController = calendarWeekDayController;
     }
     handleUserCommand(command, message, user) {
@@ -50,15 +54,114 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
             if (Subcommands_1.Subcommands.DONJON.isCommand(command)) {
                 return this.createNewDonjonCalendar(command, message, user);
             }
+            if (Subcommands_1.Subcommands.WORLD_ANVIL.isCommand(command)) {
+                return this.createNewWorldAnvilCalendar(command, message, user);
+            }
             return undefined;
+        });
+    }
+    createNewWorldAnvilCalendar(command, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let json = null;
+            if (Subcommands_1.Subcommands.WORLD_ANVIL.isCommand(command)) {
+                let cmd = Subcommands_1.Subcommands.WORLD_ANVIL.getCommand(command);
+                json = JSON.parse(cmd.getInput());
+            }
+            if (json == null) {
+                return message.channel.send("No JSON given, could not continue.");
+            }
+            let name = null;
+            if (Subcommands_1.Subcommands.NAME.isCommand(command)) {
+                name = json.name;
+                // TODO: Check for existing calendar.
+            }
+            // Get and save basic calendar.
+            let calendar = yield this.basicCalendar(name, message, user);
+            // Process the week days.
+            calendar.week = yield this.processWeekDays(json.daysPerWeek, json.days, calendar);
+            // Now process the months.
+            let month, monthWa, yearLength = 0, i;
+            for (i = 0; i < json.monthsPerYear; i++) {
+                month = new CalendarMonth_1.CalendarMonth();
+                month.order = i;
+                month.calendar = calendar;
+                monthWa = json.months[i];
+                // Now break down this...
+                month.name = monthWa.name;
+                month.description = monthWa.desc;
+                month.length = StringUtility_1.StringUtility.getNumber(monthWa.length);
+                // Add up the year...
+                yearLength += month.length;
+                // Give generic name if none are there.
+                if (month.name == null) {
+                    month.name = `${i}`;
+                }
+                // Now we save this month.
+                month = yield this.monthController.save(month);
+                calendar.months.push(month);
+            }
+            // Now process the moons.
+            let moon, moonWa, phase;
+            for (i = 0; i < json.celestialBodyCount; i++) {
+                moon = new CalendarMoon_1.CalendarMoon();
+                moon.calendar = calendar;
+                moonWa = json.celestials[i];
+                // Set these up.
+                moon.name = moonWa.name;
+                moon.description = moonWa.desc;
+                moon.shift = StringUtility_1.StringUtility.getNumber(moonWa.shift);
+                moon.cycle = StringUtility_1.StringUtility.getNumber(moonWa.cycle);
+                // Give generic name if none are there.
+                if (moon.name == null) {
+                    moon.name = `${i}`;
+                }
+                // Now we save this calendar.
+                moon = yield this.moonController.save(moon);
+                calendar.moons.push(moon);
+                // Start to process the phases.
+                moon.phases = [];
+                // Full moon.
+                phase = yield this.createNewPhase(moonWa.phaseNames.full, 337.5, 22.5, 0, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waxingGibbous, 22.5, 67.5, 1, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waxingQuarter, 67.5, 112.5, 2, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waxingCrescent, 112.5, 157.5, 3, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.old, 157.5, 167.5, 4, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.new, 167.5, 192.5, 5, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.young, 192.5, 202.5, 6, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waningCrescent, 202.5, 247.5, 7, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waningQuarter, 247.5, 292.5, 8, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase(moonWa.phaseNames.waningGibbous, 292.5, 337.5, 9, moon);
+                moon.phases.push(phase);
+            }
+            // Set the length of the year.
+            calendar.yearLength = yearLength;
+            // Now save again.
+            calendar = yield this.calendarController.save(calendar);
+            return message.channel.send("Saved calendar: " + calendar.name);
+        });
+    }
+    createNewPhase(name, viewingAngleStart, viewingAngleEnd, order, moon) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let phase = new CalendarMoonPhase_1.CalendarMoonPhase();
+            phase.name = name;
+            phase.viewingAngleStart = viewingAngleStart;
+            phase.viewingAngleEnd = viewingAngleEnd;
+            phase.order = order;
+            phase.moon = moon;
+            return this.phaseController.save(phase);
         });
     }
     createNewDonjonCalendar(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Return if no default world.
-            if (user.defaultWorld == null) {
-                return message.channel.send("No default world, could not save calendar.");
-            }
             let json = null;
             if (Subcommands_1.Subcommands.DONJON.isCommand(command)) {
                 let cmd = Subcommands_1.Subcommands.DONJON.getCommand(command);
@@ -68,48 +171,17 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
                 return message.channel.send("No JSON given, could not continue.");
             }
             let name = null;
-            let calendar = new Calendar_1.Calendar();
             if (Subcommands_1.Subcommands.NAME.isCommand(command)) {
                 let cmd = Subcommands_1.Subcommands.NAME.getCommand(command);
                 name = cmd.getInput();
                 // TODO: Check for existing calendar.
             }
-            if (name == null) {
-                return message.channel.send("No name given, could not continue.");
-            }
-            // Start parsing the arguments.
-            calendar.name = name;
-            calendar.world = user.defaultWorld;
-            calendar.epoch = new GameDate_1.GameDate();
-            calendar.epoch.day = 0;
-            calendar.epoch.month = 0;
-            calendar.epoch.year = 0;
-            calendar.yearLength = 0;
-            // Okay, now we need to save this calendar.
-            calendar = yield this.calendarController.save(calendar);
-            // Setup basics.
-            calendar.week = [];
-            calendar.months = [];
-            calendar.moons = [];
+            // Get basic calendar.
+            let calendar = yield this.basicCalendar(name, message, user);
             // Now begin processing the weeks.
-            let i, day;
-            for (i = 0; i < json.week_len; i++) {
-                day = new CalendarWeekDay_1.CalendarWeekDay();
-                day.order = i;
-                day.calendar = calendar;
-                if (json.weekdays.length >= i) {
-                    day.name = json.weekdays[i];
-                }
-                // Give generic name if none are there.
-                if (day.name == null) {
-                    day.name = `${i}`;
-                }
-                // Now we save this calendar.
-                day = yield this.weekDayController.save(day);
-                calendar.week.push(day);
-            }
+            calendar.week = yield this.processWeekDays(json.week_len, json.weekdays, calendar);
             // Now process the months.
-            let month, month_len, yearLength = 0;
+            let month, month_len, yearLength = 0, i;
             for (i = 0; i < json.n_months; i++) {
                 month = new CalendarMonth_1.CalendarMonth();
                 month.order = i;
@@ -132,7 +204,7 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
                 calendar.months.push(month);
             }
             // Now process the moons.
-            let moon, moon_cyc, moon_shf;
+            let moon, moon_cyc, moon_shf, phase;
             for (i = 0; i < json.n_moons; i++) {
                 moon = new CalendarMoon_1.CalendarMoon();
                 moon.calendar = calendar;
@@ -156,12 +228,83 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
                 // Now we save this calendar.
                 moon = yield this.moonController.save(moon);
                 calendar.moons.push(moon);
+                phase = yield this.createNewPhase("Full", 337.5, 22.5, 0, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Waxing Gibbous", 22.5, 67.5, 1, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("First Quarter", 67.5, 112.5, 2, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Waxing Crescent", 112.5, 157.5, 3, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Old", 157.5, 167.5, 4, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("New", 167.5, 192.5, 5, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Young", 192.5, 202.5, 6, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Waning Crescent", 202.5, 247.5, 7, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Last Quarter", 247.5, 292.5, 8, moon);
+                moon.phases.push(phase);
+                phase = yield this.createNewPhase("Waning Gibbous", 292.5, 337.5, 9, moon);
+                moon.phases.push(phase);
             }
             // Set the length of the year.
             calendar.yearLength = yearLength;
             // Now save again.
             calendar = yield this.calendarController.save(calendar);
             return message.channel.send("Saved calendar: " + calendar.name);
+        });
+    }
+    basicCalendar(name, message, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Return if no default world.
+            if (user.defaultWorld == null) {
+                yield message.channel.send("No default world, could not save calendar.");
+                return Promise.resolve(null);
+            }
+            let calendar = new Calendar_1.Calendar();
+            if (name == null) {
+                yield message.channel.send("No name given, could not continue.");
+                return Promise.resolve(null);
+            }
+            // Start parsing the arguments.
+            calendar.name = name;
+            calendar.world = user.defaultWorld;
+            calendar.epoch = new GameDate_1.GameDate();
+            calendar.epoch.day = 0;
+            calendar.epoch.month = 0;
+            calendar.epoch.year = 0;
+            calendar.yearLength = 0;
+            // Okay, now we need to save this calendar.
+            calendar = yield this.calendarController.save(calendar);
+            // Setup basics.
+            calendar.week = [];
+            calendar.months = [];
+            calendar.moons = [];
+            return Promise.resolve(calendar);
+        });
+    }
+    processWeekDays(daysPerWeek, weekdays, calendar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let week = [];
+            let i, day;
+            for (i = 0; i < daysPerWeek; i++) {
+                day = new CalendarWeekDay_1.CalendarWeekDay();
+                day.order = i;
+                day.calendar = calendar;
+                if (weekdays.length >= i) {
+                    day.name = weekdays[i];
+                }
+                // Give generic name if none are there.
+                if (day.name == null) {
+                    day.name = `${i}`;
+                }
+                // Now we save this calendar.
+                day = yield this.weekDayController.save(day);
+                week.push(day);
+            }
+            return Promise.resolve(week);
         });
     }
 };
@@ -171,11 +314,13 @@ CalendarCommandHandler = __decorate([
     __param(1, inversify_1.inject(types_1.TYPES.CalendarEraController)),
     __param(2, inversify_1.inject(types_1.TYPES.CalendarMonthController)),
     __param(3, inversify_1.inject(types_1.TYPES.CalendarMoonController)),
-    __param(4, inversify_1.inject(types_1.TYPES.CalendarWeekDayController)),
+    __param(4, inversify_1.inject(types_1.TYPES.CalendarMoonPhaseController)),
+    __param(5, inversify_1.inject(types_1.TYPES.CalendarWeekDayController)),
     __metadata("design:paramtypes", [CalendarController_1.CalendarController,
         CalendarEraController_1.CalendarEraController,
         CalendarMonthController_1.CalendarMonthController,
         CalendarMoonController_1.CalendarMoonController,
+        CalendarMoonPhaseController_1.CalendarMoonPhaseController,
         CalendarWeekDayController_1.CalendarWeekDayController])
 ], CalendarCommandHandler);
 exports.CalendarCommandHandler = CalendarCommandHandler;

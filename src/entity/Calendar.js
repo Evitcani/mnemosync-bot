@@ -18,7 +18,12 @@ const CalendarMoon_1 = require("./CalendarMoon");
 const CalendarEra_1 = require("./CalendarEra");
 const GameDate_1 = require("./GameDate");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
 let Calendar = class Calendar {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility_1.StringUtility.escapeSQLInput(this.description);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('uuid'),
@@ -40,6 +45,10 @@ __decorate([
     typeorm_1.Column({ name: "year_length_days" }),
     __metadata("design:type", Number)
 ], Calendar.prototype, "yearLength", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], Calendar.prototype, "description", void 0);
 __decorate([
     typeorm_1.Column(type => GameDate_1.GameDate),
     __metadata("design:type", GameDate_1.GameDate)
@@ -83,6 +92,13 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Calendar.prototype, "moons", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Calendar.prototype, "purifyInsertUpdate", null);
 Calendar = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.CALENDAR })
 ], Calendar);

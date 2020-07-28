@@ -11,6 +11,7 @@ Table.CURRENT_DATE = "current_dates";
 Table.ERA = "calendar_eras";
 Table.MONTH = "calendar_months";
 Table.MOON = "calendar_moons";
+Table.MOON_PHASE = "calendar_moon_phases";
 Table.NPC = "npcs";
 Table.PARTY = "parties";
 Table.PARTY_FUND = "party_funds";

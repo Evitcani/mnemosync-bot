@@ -1,20 +1,18 @@
 import {
     BeforeInsert, BeforeUpdate,
     Column,
-    CreateDateColumn,
-    Entity,
+    CreateDateColumn, Entity,
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {Calendar} from "./Calendar";
-import {GameDate} from "./GameDate";
-import {Table} from "../documentation/databases/Table";
+import {CalendarMoon} from "./CalendarMoon";
 import {StringUtility} from "../utilities/StringUtility";
+import {Table} from "../documentation/databases/Table";
 
-@Entity({name: Table.ERA})
-export class CalendarEra {
+@Entity({name: Table.MOON_PHASE})
+export class CalendarMoonPhase {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -24,23 +22,23 @@ export class CalendarEra {
     @UpdateDateColumn({name: "updated_date"})
     updatedDate: Date;
 
-    @Column({name: "name"})
+    @Column()
     name: string;
 
     @Column()
     order: number;
 
-    @Column( type => GameDate)
-    start: GameDate;
+    @Column({name: "viewing_angle_start"})
+    viewingAngleStart: number;
 
-    @Column( type => GameDate)
-    end?: GameDate;
+    @Column({name: "viewing_angle_end"})
+    viewingAngleEnd: number;
 
-    @ManyToOne(type => Calendar, calendar => calendar.eras,{
+    @ManyToOne(type => CalendarMoon, moon => moon.phases,{
         cascade: true
     })
-    @JoinColumn({name: "calendar_id"})
-    calendar: Calendar;
+    @JoinColumn({name: "calendar_moon_id"})
+    moon: CalendarMoon;
 
     @BeforeInsert()
     @BeforeUpdate()

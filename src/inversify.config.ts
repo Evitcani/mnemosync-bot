@@ -37,6 +37,7 @@ import {CurrentDateController} from "./controllers/world/calendar/CurrentDateCon
 import {DateCommandHandler} from "./command-handlers/world/information/DateCommandHandler";
 import {CalendarCommandHandler} from "./command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./command-handlers/world/party/PartyCommandHandler";
+import {CalendarMoonPhaseController} from "./controllers/world/calendar/CalendarMoonPhaseController";
 
 let container = new Container();
 
@@ -74,6 +75,7 @@ container.bind<CalendarController>(TYPES.CalendarController).to(CalendarControll
 container.bind<CalendarEraController>(TYPES.CalendarEraController).to(CalendarEraController).inSingletonScope();
 container.bind<CalendarMonthController>(TYPES.CalendarMonthController).to(CalendarMonthController).inSingletonScope();
 container.bind<CalendarMoonController>(TYPES.CalendarMoonController).to(CalendarMoonController).inSingletonScope();
+container.bind<CalendarMoonPhaseController>(TYPES.CalendarMoonPhaseController).to(CalendarMoonPhaseController).inSingletonScope();
 container.bind<CalendarWeekDayController>(TYPES.CalendarWeekDayController).to(CalendarWeekDayController).inSingletonScope();
 container.bind<CurrentDateController>(TYPES.CurrentDateController).to(CurrentDateController).inSingletonScope();
 container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();

@@ -1,4 +1,5 @@
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -9,6 +10,7 @@ import {
 } from "typeorm";
 import {Calendar} from "./Calendar";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.MONTH})
 export class CalendarMonth {
@@ -24,6 +26,9 @@ export class CalendarMonth {
     @Column({name: "name"})
     name: string;
 
+    @Column({nullable: true})
+    description: string;
+
     @Column({name: "length"})
     length: number;
 
@@ -36,5 +41,10 @@ export class CalendarMonth {
     @JoinColumn({name: "calendar_id"})
     calendar: Calendar;
 
-
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility.escapeSQLInput(this.description);
+    }
 }

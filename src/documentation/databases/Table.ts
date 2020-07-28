@@ -6,6 +6,7 @@ export class Table {
     public static ERA = "calendar_eras";
     public static MONTH = "calendar_months";
     public static MOON = "calendar_moons";
+    public static MOON_PHASE = "calendar_moon_phases";
     public static NPC = "npcs";
     public static PARTY = "parties";
     public static PARTY_FUND = "party_funds";

@@ -1,4 +1,5 @@
 import {
+    BeforeInsert, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -9,6 +10,7 @@ import {
 } from "typeorm";
 import {Calendar} from "./Calendar";
 import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../utilities/StringUtility";
 
 @Entity({name: Table.WEEK_DAY})
 export class CalendarWeekDay {
@@ -24,6 +26,9 @@ export class CalendarWeekDay {
     @Column()
     name: string;
 
+    @Column({nullable: true})
+    description: string;
+
     @Column()
     order: number;
 
@@ -32,4 +37,11 @@ export class CalendarWeekDay {
     })
     @JoinColumn({name: "calendar_id"})
     calendar: Calendar;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    purifyInsertUpdate() {
+        this.name = StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility.escapeSQLInput(this.description);
+    }
 }

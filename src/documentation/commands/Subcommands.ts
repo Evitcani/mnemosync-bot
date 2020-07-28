@@ -25,4 +25,5 @@ export class Subcommands {
     public static WEIGHT = new CommandStrut("weight", "wt");
     public static WEIGHT_INVENTORY = new CommandStrut("inventory-weight", "inv-wt");
     public static WORLD = new CommandStrut("world", null);
+    public static WORLD_ANVIL = new CommandStrut("world-anvil", "wa");
 }

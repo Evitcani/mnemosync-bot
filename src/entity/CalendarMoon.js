@@ -13,7 +13,13 @@ exports.CalendarMoon = void 0;
 const typeorm_1 = require("typeorm");
 const Calendar_1 = require("./Calendar");
 const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../utilities/StringUtility");
+const CalendarMoonPhase_1 = require("./CalendarMoonPhase");
 let CalendarMoon = class CalendarMoon {
+    purifyInsertUpdate() {
+        this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);
+        this.description = StringUtility_1.StringUtility.escapeSQLInput(this.description);
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn('uuid'),
@@ -32,6 +38,10 @@ __decorate([
     __metadata("design:type", String)
 ], CalendarMoon.prototype, "name", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], CalendarMoon.prototype, "description", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], CalendarMoon.prototype, "cycle", void 0);
@@ -40,12 +50,27 @@ __decorate([
     __metadata("design:type", Number)
 ], CalendarMoon.prototype, "shift", void 0);
 __decorate([
+    typeorm_1.OneToMany(type => CalendarMoonPhase_1.CalendarMoonPhase, phase => phase.moon, {
+        onDelete: "SET NULL",
+        nullable: true,
+        eager: true
+    }),
+    __metadata("design:type", Array)
+], CalendarMoon.prototype, "phases", void 0);
+__decorate([
     typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.moons, {
         cascade: true
     }),
     typeorm_1.JoinColumn({ name: "calendar_id" }),
     __metadata("design:type", Calendar_1.Calendar)
 ], CalendarMoon.prototype, "calendar", void 0);
+__decorate([
+    typeorm_1.BeforeInsert(),
+    typeorm_1.BeforeUpdate(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CalendarMoon.prototype, "purifyInsertUpdate", null);
 CalendarMoon = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.MOON })
 ], CalendarMoon);
