@@ -1,7 +1,6 @@
 import {Column, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {CalendarEra} from "./CalendarEra";
 import {Calendar} from "./Calendar";
-import {Character} from "./Character";
 
 export class GameDate {
     @Column({nullable: true})
@@ -16,19 +15,11 @@ export class GameDate {
     @Column({name: "era_id", nullable: true})
     eraId?: string;
 
-    @ManyToOne(type => CalendarEra, {
-        onDelete: "SET NULL",
-        eager: true,
-        nullable: true
-    })
-    @JoinColumn({name: "era_id"})
-    era?: CalendarEra;
-
     @Column({name: "calendar_id", nullable: true})
     calendarId?: string;
 
-    @OneToOne(type => Character, character => character.travel_config, {
-        cascade: true
+    @OneToOne(type => Calendar, {
+        nullable: true
     })
     @JoinColumn({name: "calendar_id"})
     calendar?: Calendar;

@@ -11,9 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameDate = void 0;
 const typeorm_1 = require("typeorm");
-const CalendarEra_1 = require("./CalendarEra");
 const Calendar_1 = require("./Calendar");
-const Character_1 = require("./Character");
 class GameDate {
 }
 __decorate([
@@ -33,21 +31,12 @@ __decorate([
     __metadata("design:type", String)
 ], GameDate.prototype, "eraId", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => CalendarEra_1.CalendarEra, {
-        onDelete: "SET NULL",
-        eager: true,
-        nullable: true
-    }),
-    typeorm_1.JoinColumn({ name: "era_id" }),
-    __metadata("design:type", CalendarEra_1.CalendarEra)
-], GameDate.prototype, "era", void 0);
-__decorate([
     typeorm_1.Column({ name: "calendar_id", nullable: true }),
     __metadata("design:type", String)
 ], GameDate.prototype, "calendarId", void 0);
 __decorate([
-    typeorm_1.OneToOne(type => Character_1.Character, character => character.travel_config, {
-        cascade: true
+    typeorm_1.OneToOne(type => Calendar_1.Calendar, {
+        nullable: true
     }),
     typeorm_1.JoinColumn({ name: "calendar_id" }),
     __metadata("design:type", Calendar_1.Calendar)

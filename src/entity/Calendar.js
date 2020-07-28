@@ -15,6 +15,7 @@ const World_1 = require("./World");
 const CalendarMonth_1 = require("./CalendarMonth");
 const CalendarWeekDay_1 = require("./CalendarWeekDay");
 const CalendarMoon_1 = require("./CalendarMoon");
+const CalendarEra_1 = require("./CalendarEra");
 const GameDate_1 = require("./GameDate");
 const Table_1 = require("../documentation/databases/Table");
 let Calendar = class Calendar {
@@ -54,6 +55,14 @@ __decorate([
     typeorm_1.JoinColumn({ name: "world_id" }),
     __metadata("design:type", World_1.World)
 ], Calendar.prototype, "world", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => CalendarEra_1.CalendarEra, era => era.calendar, {
+        onDelete: "SET NULL",
+        nullable: true,
+        eager: true
+    }),
+    __metadata("design:type", Array)
+], Calendar.prototype, "eras", void 0);
 __decorate([
     typeorm_1.OneToMany(type => CalendarMonth_1.CalendarMonth, month => month.calendar, {
         onDelete: "SET NULL",

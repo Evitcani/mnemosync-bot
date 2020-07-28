@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CalendarEra = void 0;
 const typeorm_1 = require("typeorm");
+const Calendar_1 = require("./Calendar");
 const GameDate_1 = require("./GameDate");
 const Table_1 = require("../documentation/databases/Table");
 let CalendarEra = class CalendarEra {
@@ -43,6 +44,13 @@ __decorate([
     typeorm_1.Column(type => GameDate_1.GameDate),
     __metadata("design:type", GameDate_1.GameDate)
 ], CalendarEra.prototype, "end", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Calendar_1.Calendar, calendar => calendar.eras, {
+        cascade: true
+    }),
+    typeorm_1.JoinColumn({ name: "calendar_id" }),
+    __metadata("design:type", Calendar_1.Calendar)
+], CalendarEra.prototype, "calendar", void 0);
 CalendarEra = __decorate([
     typeorm_1.Entity({ name: Table_1.Table.ERA })
 ], CalendarEra);
