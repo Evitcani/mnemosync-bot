@@ -28,11 +28,11 @@ class StringUtility {
         if (input == null) {
             return null;
         }
-        console.log("First: " + input);
+        console.log("First : " + input);
         let correctedInput = input.replace(this.fancyQuote1, "'");
         console.log("Second: " + correctedInput);
         correctedInput = correctedInput.replace(this.fancyQuote2, "\"");
-        console.log("Third: " + correctedInput);
+        console.log("Third : " + correctedInput);
         return correctedInput;
     }
     /**
@@ -103,9 +103,9 @@ StringUtility.charList = [" ", "\"", "'"];
 /** Pattern for inserting quotes into numbers. */
 StringUtility.pattern = /(-?\d+)(\d{3})/;
 /** The fancy apostrophes to strip. */
-StringUtility.fancyQuote1 = new RegExp("[" + ["‘", "’"] + "]+", "g");
+StringUtility.fancyQuote1 = new RegExp("[‘’]+", "g");
 /** The fancy quotes to strip. */
-StringUtility.fancyQuote2 = new RegExp("[" + ["“", "”"] + "]+", "g");
+StringUtility.fancyQuote2 = new RegExp("[“”]+", "g");
 /** Used for keeping  */
 StringUtility.sanitizeSQL1 = new RegExp("[\\\\']*(?:\\\\+'+)+[\\\\']*", "g");
 /** Removes any dangling quotes. */
