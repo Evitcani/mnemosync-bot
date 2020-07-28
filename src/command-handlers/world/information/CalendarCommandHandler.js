@@ -86,6 +86,7 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
             calendar.epoch.day = 0;
             calendar.epoch.month = 0;
             calendar.epoch.year = 0;
+            calendar.yearLength = 0;
             // Okay, now we need to save this calendar.
             calendar = yield this.calendarController.save(calendar);
             // Setup basics.
