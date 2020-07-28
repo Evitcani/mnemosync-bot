@@ -15,23 +15,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HelpCommandHandler = void 0;
+exports.PartyCommandHandler = void 0;
+const AbstractUserCommandHandler_1 = require("../../base/AbstractUserCommandHandler");
 const inversify_1 = require("inversify");
-const AbstractCommandHandler_1 = require("../base/AbstractCommandHandler");
-const HelpDocumentation_1 = require("../../documentation/commands/help/HelpDocumentation");
-let HelpCommandHandler = class HelpCommandHandler extends AbstractCommandHandler_1.AbstractCommandHandler {
-    handleCommand(command, message) {
+let PartyCommandHandler = class PartyCommandHandler extends AbstractUserCommandHandler_1.AbstractUserCommandHandler {
+    handleUserCommand(command, message, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let input = command.getInput();
-            if (input == null) {
-                return message.channel.send(HelpDocumentation_1.HelpDocumentation.get());
-            }
-            return message.channel.send(HelpDocumentation_1.HelpDocumentation.find(input));
+            return undefined;
         });
     }
 };
-HelpCommandHandler = __decorate([
+PartyCommandHandler = __decorate([
     inversify_1.injectable()
-], HelpCommandHandler);
-exports.HelpCommandHandler = HelpCommandHandler;
-//# sourceMappingURL=HelpCommandHandler.js.map
+], PartyCommandHandler);
+exports.PartyCommandHandler = PartyCommandHandler;
+//# sourceMappingURL=PartyCommandHandler.js.map
