@@ -1,5 +1,4 @@
 import {Column, JoinColumn, ManyToOne, OneToOne} from "typeorm";
-import {CalendarEra} from "./CalendarEra";
 import {Calendar} from "./Calendar";
 
 export class GameDate {
@@ -12,15 +11,15 @@ export class GameDate {
     @Column({nullable: true})
     year: number;
 
-    @Column({name: "era_id", nullable: true})
+    @Column({nullable: true})
     eraId?: string;
 
-    @Column({name: "calendar_id", nullable: true})
+    @Column({nullable: true})
     calendarId?: string;
 
     @OneToOne(type => Calendar, {
         nullable: true
     })
-    @JoinColumn({name: "calendar_id"})
+    @JoinColumn()
     calendar?: Calendar;
 }

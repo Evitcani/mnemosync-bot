@@ -27,18 +27,18 @@ __decorate([
     __metadata("design:type", Number)
 ], GameDate.prototype, "year", void 0);
 __decorate([
-    typeorm_1.Column({ name: "era_id", nullable: true }),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], GameDate.prototype, "eraId", void 0);
 __decorate([
-    typeorm_1.Column({ name: "calendar_id", nullable: true }),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], GameDate.prototype, "calendarId", void 0);
 __decorate([
     typeorm_1.OneToOne(type => Calendar_1.Calendar, {
         nullable: true
     }),
-    typeorm_1.JoinColumn({ name: "calendar_id" }),
+    typeorm_1.JoinColumn(),
     __metadata("design:type", Calendar_1.Calendar)
 ], GameDate.prototype, "calendar", void 0);
 exports.GameDate = GameDate;
