@@ -9,7 +9,7 @@ export class UserApi extends API {
         super(apiConfig);
     }
 
-    public async getById(id: number): Promise<User> {
+    public async getById(id: string): Promise<User> {
         return this.get(`/user/${id}`).then((res) => {
             console.log(res.data);
             return null;
