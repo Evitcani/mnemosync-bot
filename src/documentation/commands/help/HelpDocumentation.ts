@@ -64,13 +64,19 @@ export class HelpDocumentation {
     }
 
     static get(): MessageEmbed {
+        if (this.cmdMap == null) {
+            this.createMap();
+        }
+
         let str = "";
-        str += this.BANK.formatCommand() + "\n\n";
+        this.cmdMap.forEach((value) => {
+            str += "\n\n" + value.formatCommand();
+        });
 
         return BasicEmbed.get()
             .setTitle(`Commands`)
             .setDescription(`Below is a basic overview of all commands. For a more detailed description of a command ` +
-                `type, \`${Bot.PREFIX}${Commands.HELP} [command name]\`.\n\n` +
+                `type, \`${Bot.PREFIX}${Commands.HELP} [command name]\`.` +
                 str);
     }
 }

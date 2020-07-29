@@ -43,12 +43,17 @@ class HelpDocumentation {
         // this.cmdMap.set(this.WORLD.getCommand(), this.WORLD);
     }
     static get() {
+        if (this.cmdMap == null) {
+            this.createMap();
+        }
         let str = "";
-        str += this.BANK.formatCommand() + "\n\n";
+        this.cmdMap.forEach((value) => {
+            str += "\n\n" + value.formatCommand();
+        });
         return BasicEmbed_1.BasicEmbed.get()
             .setTitle(`Commands`)
             .setDescription(`Below is a basic overview of all commands. For a more detailed description of a command ` +
-            `type, \`${bot_1.Bot.PREFIX}${Commands_1.Commands.HELP} [command name]\`.\n\n` +
+            `type, \`${bot_1.Bot.PREFIX}${Commands_1.Commands.HELP} [command name]\`.` +
             str);
     }
 }
