@@ -21,7 +21,7 @@ createConnection({
         console.log('Oh no! ', error)
     });
 }).catch((err: Error) => {
-    console.log('Unable to create connection! ', err.message);
+    console.log('Unable to create connection!');
     console.error(err);
 });
 

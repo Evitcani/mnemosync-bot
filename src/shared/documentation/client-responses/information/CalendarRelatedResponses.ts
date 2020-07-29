@@ -5,27 +5,20 @@ import {Party} from "../../../../backend/entity/Party";
 import {CurrentDate} from "../../../../backend/entity/CurrentDate";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
+import {messageResponse} from "../../messages/MessageResponse";
+import {messageTypes} from "../../messages/MessageTypes";
+import {messageEmbed} from "../../messages/MessageEmbed";
 
 export class CalendarRelatedResponses {
     static SELECT_CALENDAR(calendars: Calendar[], action: string): MessageEmbed {
-        let worldStr = "";
-        let calendar: Calendar, i;
-        for (i = 0; i < calendars.length; i++) {
-            calendar = calendars[i];
-            worldStr += `[\`${i}\`] ${calendar.name}\n`;
-        }
-
-        return BasicEmbed.get()
-            .setTitle(`Please select which calendar you want to ${action}`)
-            .setDescription(`Select from the following calendars by pressing the given number:\n` +
-                worldStr);
+        return messageEmbed.generic.select_from_the_following(messageTypes.calendar, action, calendars);
     }
 
     static async PRINT_DATE(currentDate: CurrentDate, party: Party, message: Message,
                             calendarController: CalendarController): Promise<MessageEmbed> {
         let calendar = await calendarController.get(currentDate.calendarId);
         if (calendar == null) {
-            await message.channel.send("Could not get a calendar.");
+            await message.channel.send(messageResponse.generic.could_not_get.msg(messageTypes.calendar.singular));
             return Promise.resolve(null);
         }
 
@@ -36,8 +29,8 @@ export class CalendarRelatedResponses {
         }
 
         let embed = BasicEmbed.get()
-            .setTitle(`Current date for ${party.name}`)
-            .setDescription(`It's the ${date}.`);
+            .setTitle(messageResponse.date.get.title(party.name))
+            .setDescription(messageResponse.date.get.desc(date));
 
         if (calendar.moons.length > 0 && calendar.moons.length <= 22) {
             calendar.moons.sort((a, b) => {

@@ -7,6 +7,7 @@ import {World} from "../../../../backend/entity/World";
 import {Sending} from "../../../../backend/entity/Sending";
 import {SendingController} from "../../../../backend/controllers/character/SendingController";
 import {EncryptionUtility} from "../../../../backend/utilities/EncryptionUtility";
+import {messageResponse} from "../../messages/MessageResponse";
 
 /**
  * Helps the sending command if something went wrong.
@@ -19,20 +20,14 @@ export class SendingHelpRelatedResponses {
      */
     static MESSAGE_HAS_NO_DATE(messageContents: string): MessageEmbed {
         return BasicEmbed.get()
-            .setTitle(`Message has no date!`)
-            .setDescription(`Message has no date. Add message (in-game) date with ` +
-                `\`${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE.name} [day]/[month]/[year]\`.\n\n` +
-                `Here is your original message with the added date parameter:\n` +
-                `\`\`\`${messageContents} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.DATE.name} [day]/[month]/[year]\`\`\``)
+            .setTitle(messageResponse.sending.error.no_date.title())
+            .setDescription(messageResponse.sending.error.no_date.desc(messageContents))
     }
 
     static MESSAGE_HAS_NO_CONTENT(messageContents: string): MessageEmbed {
         return BasicEmbed.get()
-            .setTitle(`Message has no contents!`)
-            .setDescription(`Message has no content. Add message content with ` +
-                `\`${Bot.PREFIX_SUBCOMMAND}${Subcommands.MESSAGE.name} [message contents]\`.\n\n` +
-                `Here is your original message with the added message parameter:\n` +
-                `\`\`\`${messageContents} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.MESSAGE.name} [message contents]\`\`\``)
+            .setTitle(messageResponse.sending.error.no_message.title())
+            .setDescription(messageResponse.sending.error.no_message.desc(messageContents))
     }
 
     static CHECK_SENDINGS_FOR_WHICH (character: Character, world: World): MessageEmbed {

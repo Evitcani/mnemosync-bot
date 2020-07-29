@@ -3,6 +3,7 @@ import {BasicEmbed} from "../../BasicEmbed";
 import {StringUtility} from "../../../../backend/utilities/StringUtility";
 import {Bot} from "../../../../bot/bot";
 import {Commands} from "../../commands/Commands";
+import {messageResponse} from "../../messages/MessageResponse";
 
 /**
  * The responses related to the quotes command.
@@ -30,8 +31,7 @@ export class QuoteRelatedClientResponses {
             msg
                 .setDescription(message.content)
                 .setTimestamp(message.createdAt)
-                .setFooter(`1 of ${StringUtility.numberWithCommas(Math.abs(numberOfQuotes))} quotes. Type ` +
-                    `\`${Bot.PREFIX}${Commands.QUOTE}\` to get one yourself!`);
+                .setFooter(messageResponse.quote.display.footer(numberOfQuotes));
 
 
             // Set the image if there is one.
