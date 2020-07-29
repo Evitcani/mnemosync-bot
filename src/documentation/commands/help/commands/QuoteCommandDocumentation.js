@@ -20,7 +20,7 @@ class QuoteCommandDocumentation extends BaseCommandDocumentation_1.BaseCommandDo
             `**Setting Up a Quote Channel**\n` +
             `To set up a quote channel, go into the channel you want to quote and type:` +
             `\`\`\`${bot_1.Bot.PREFIX}${this.getCommand()} here\`\`\`` +
-            `The quotes will not populate from this channel. You can delete the command and bot responses from ` +
+            `The quotes will now populate from this channel. You can delete the command and bot responses from ` +
             `the channel.`);
     }
     getSubcommands() {
