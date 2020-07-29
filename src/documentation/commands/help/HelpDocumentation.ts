@@ -1,49 +1,38 @@
-import {BaseCommandDocumentation} from "./BaseCommandDocumentation";
+import {BaseCommandDocumentation} from "./commands/BaseCommandDocumentation";
 import {Subcommands} from "../Subcommands";
 import {Commands} from "../Commands";
 import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
 import {Bot} from "../../../bot";
 import {CommandStrut} from "../CommandStrut";
+import {BankCommandDocumentation} from "./commands/BankCommandDocumentation";
+import {CalendarCommandDocumentation} from "./commands/CalendarCommandDocumentation";
+import {CharacterCommandDocumentation} from "./commands/CharacterCommandDocumentation";
+import {FundCommandDocumentation} from "./commands/FundCommandDocumentation";
+import {DateCommandDocumentation} from "./commands/DateCommandDocumentation";
+import {HelpCommandDocumentation} from "./commands/HelpCommandDocumentation";
+import {PartyCommandDocumentation} from "./commands/PartyCommandDocumentation";
+import {QuoteCommandDocumentation} from "./commands/QuoteCommandDocumentation";
+import {RegisterCommandDocumentation} from "./commands/RegisterCommandDocumentation";
+import {SendingCommandDocumentation} from "./commands/SendingCommandDocumentation";
+import {WhichCommandDocumentation} from "./commands/WhichCommandDocumentation";
+import {WorldCommandDocumentation} from "./commands/WorldCommandDocumentation";
 
 export class HelpDocumentation {
     public static cmdMap: Map<string, BaseCommandDocumentation> = null;
 
-    public static BANK: BaseCommandDocumentation = new class extends BaseCommandDocumentation {
-        getBasicDescription(): string {
-            return `Used to access the funds in the bank for the party.`;
-        }
-
-        getCommand(): string {
-            return Commands.BANK;
-        }
-
-        getFullDescription(): MessageEmbed {
-            return BasicEmbed.get()
-                .setTitle(`Bank Command`)
-                .setDescription(`${this.getBasicDescription()} You must have a character in a party to be able to ` +
-                    `use this command. If given no arguments, it will print the current amount in the bank.\n\n` +
-                    `**Adding Money**\n` +
-                    `If given arguments, it will add or subtract that amount from the current amount. To add more ` +
-                    `money, type out the amount you wish to add like the following:` +
-                    `\`\`\`${Bot.PREFIX}${this.getCommand()} 1g 2 silver 3 cp\`\`\`` +
-                    `This will add \`1 gold, 2 silver and 3 copper\` to the current bank fund.\n\n` +
-                    `**Removing Money**\n` +
-                    `If given arguments, it will add or subtract that amount from the current amount. You must add a ` +
-                    `\`-\` sign to any of the numbers to indicate a removal. To remove money, type out the amount ` +
-                    `you wish to remove like the following:` +
-                    `\`\`\`${Bot.PREFIX}${this.getCommand()} 1g -2 silver 3 cp\`\`\`` +
-                    `This will remove \`1 gold, 2 silver and 3 copper\` from the current bank fund.\n\n` +
-                    `**Subcommands**\n` +
-                    `${this.formatSubcommands()}`);
-        }
-
-        getSubcommands(): Map<CommandStrut, string> {
-            let map = new Map<CommandStrut, string>();
-            map.set(Subcommands.CREATE, `Creates a new bank fund for the party. Requires no arguments.`);
-            return undefined;
-        }
-    };
+    public static BANK: BaseCommandDocumentation = new BankCommandDocumentation();
+    public static CALENDAR: BaseCommandDocumentation = new CalendarCommandDocumentation();
+    public static CHARACTER: BaseCommandDocumentation = new CharacterCommandDocumentation();
+    public static DATE: BaseCommandDocumentation = new DateCommandDocumentation();
+    public static FUND: BaseCommandDocumentation = new FundCommandDocumentation();
+    public static HELP: BaseCommandDocumentation = new HelpCommandDocumentation();
+    public static PARTY: BaseCommandDocumentation = new PartyCommandDocumentation();
+    public static QUOTE: BaseCommandDocumentation = new QuoteCommandDocumentation();
+    public static REGISTER: BaseCommandDocumentation = new RegisterCommandDocumentation();
+    public static SENDING: BaseCommandDocumentation = new SendingCommandDocumentation();
+    public static WHICH: BaseCommandDocumentation = new WhichCommandDocumentation();
+    public static WORLD: BaseCommandDocumentation = new WorldCommandDocumentation();
 
     static find(command: string): MessageEmbed {
         if (this.cmdMap == null) {
@@ -61,6 +50,17 @@ export class HelpDocumentation {
     private static createMap() {
         this.cmdMap = new Map<string, BaseCommandDocumentation>();
         this.cmdMap.set(this.BANK.getCommand(), this.BANK);
+        // this.cmdMap.set(this.CALENDAR.getCommand(), this.CALENDAR);
+        // this.cmdMap.set(this.CHARACTER.getCommand(), this.CHARACTER);
+        // this.cmdMap.set(this.DATE.getCommand(), this.DATE);
+        this.cmdMap.set(this.FUND.getCommand(), this.FUND);
+        // this.cmdMap.set(this.HELP.getCommand(), this.HELP);
+        // this.cmdMap.set(this.PARTY.getCommand(), this.PARTY);
+        this.cmdMap.set(this.QUOTE.getCommand(), this.QUOTE);
+        // this.cmdMap.set(this.REGISTER.getCommand(), this.REGISTER);
+        this.cmdMap.set(this.SENDING.getCommand(), this.SENDING);
+        // this.cmdMap.set(this.WHICH.getCommand(), this.WHICH);
+        // this.cmdMap.set(this.WORLD.getCommand(), this.WORLD);
     }
 
     static get(): MessageEmbed {

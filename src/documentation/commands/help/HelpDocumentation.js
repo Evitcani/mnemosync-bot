@@ -1,11 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HelpDocumentation = void 0;
-const BaseCommandDocumentation_1 = require("./BaseCommandDocumentation");
-const Subcommands_1 = require("../Subcommands");
 const Commands_1 = require("../Commands");
 const BasicEmbed_1 = require("../../BasicEmbed");
 const bot_1 = require("../../../bot");
+const BankCommandDocumentation_1 = require("./commands/BankCommandDocumentation");
+const CalendarCommandDocumentation_1 = require("./commands/CalendarCommandDocumentation");
+const CharacterCommandDocumentation_1 = require("./commands/CharacterCommandDocumentation");
+const FundCommandDocumentation_1 = require("./commands/FundCommandDocumentation");
+const DateCommandDocumentation_1 = require("./commands/DateCommandDocumentation");
+const HelpCommandDocumentation_1 = require("./commands/HelpCommandDocumentation");
+const PartyCommandDocumentation_1 = require("./commands/PartyCommandDocumentation");
+const QuoteCommandDocumentation_1 = require("./commands/QuoteCommandDocumentation");
+const RegisterCommandDocumentation_1 = require("./commands/RegisterCommandDocumentation");
+const SendingCommandDocumentation_1 = require("./commands/SendingCommandDocumentation");
+const WhichCommandDocumentation_1 = require("./commands/WhichCommandDocumentation");
+const WorldCommandDocumentation_1 = require("./commands/WorldCommandDocumentation");
 class HelpDocumentation {
     static find(command) {
         if (this.cmdMap == null) {
@@ -20,6 +30,17 @@ class HelpDocumentation {
     static createMap() {
         this.cmdMap = new Map();
         this.cmdMap.set(this.BANK.getCommand(), this.BANK);
+        // this.cmdMap.set(this.CALENDAR.getCommand(), this.CALENDAR);
+        // this.cmdMap.set(this.CHARACTER.getCommand(), this.CHARACTER);
+        // this.cmdMap.set(this.DATE.getCommand(), this.DATE);
+        this.cmdMap.set(this.FUND.getCommand(), this.FUND);
+        // this.cmdMap.set(this.HELP.getCommand(), this.HELP);
+        // this.cmdMap.set(this.PARTY.getCommand(), this.PARTY);
+        this.cmdMap.set(this.QUOTE.getCommand(), this.QUOTE);
+        // this.cmdMap.set(this.REGISTER.getCommand(), this.REGISTER);
+        this.cmdMap.set(this.SENDING.getCommand(), this.SENDING);
+        // this.cmdMap.set(this.WHICH.getCommand(), this.WHICH);
+        // this.cmdMap.set(this.WORLD.getCommand(), this.WORLD);
     }
     static get() {
         let str = "";
@@ -33,36 +54,16 @@ class HelpDocumentation {
 }
 exports.HelpDocumentation = HelpDocumentation;
 HelpDocumentation.cmdMap = null;
-HelpDocumentation.BANK = new class extends BaseCommandDocumentation_1.BaseCommandDocumentation {
-    getBasicDescription() {
-        return `Used to access the funds in the bank for the party.`;
-    }
-    getCommand() {
-        return Commands_1.Commands.BANK;
-    }
-    getFullDescription() {
-        return BasicEmbed_1.BasicEmbed.get()
-            .setTitle(`Bank Command`)
-            .setDescription(`${this.getBasicDescription()} You must have a character in a party to be able to ` +
-            `use this command. If given no arguments, it will print the current amount in the bank.\n\n` +
-            `**Adding Money**\n` +
-            `If given arguments, it will add or subtract that amount from the current amount. To add more ` +
-            `money, type out the amount you wish to add like the following:` +
-            `\`\`\`${bot_1.Bot.PREFIX}${this.getCommand()} 1g 2 silver 3 cp\`\`\`` +
-            `This will add \`1 gold, 2 silver and 3 copper\` to the current bank fund.\n\n` +
-            `**Removing Money**\n` +
-            `If given arguments, it will add or subtract that amount from the current amount. You must add a ` +
-            `\`-\` sign to any of the numbers to indicate a removal. To remove money, type out the amount ` +
-            `you wish to remove like the following:` +
-            `\`\`\`${bot_1.Bot.PREFIX}${this.getCommand()} 1g -2 silver 3 cp\`\`\`` +
-            `This will remove \`1 gold, 2 silver and 3 copper\` from the current bank fund.\n\n` +
-            `**Subcommands**\n` +
-            `${this.formatSubcommands()}`);
-    }
-    getSubcommands() {
-        let map = new Map();
-        map.set(Subcommands_1.Subcommands.CREATE, `Creates a new bank fund for the party. Requires no arguments.`);
-        return undefined;
-    }
-};
+HelpDocumentation.BANK = new BankCommandDocumentation_1.BankCommandDocumentation();
+HelpDocumentation.CALENDAR = new CalendarCommandDocumentation_1.CalendarCommandDocumentation();
+HelpDocumentation.CHARACTER = new CharacterCommandDocumentation_1.CharacterCommandDocumentation();
+HelpDocumentation.DATE = new DateCommandDocumentation_1.DateCommandDocumentation();
+HelpDocumentation.FUND = new FundCommandDocumentation_1.FundCommandDocumentation();
+HelpDocumentation.HELP = new HelpCommandDocumentation_1.HelpCommandDocumentation();
+HelpDocumentation.PARTY = new PartyCommandDocumentation_1.PartyCommandDocumentation();
+HelpDocumentation.QUOTE = new QuoteCommandDocumentation_1.QuoteCommandDocumentation();
+HelpDocumentation.REGISTER = new RegisterCommandDocumentation_1.RegisterCommandDocumentation();
+HelpDocumentation.SENDING = new SendingCommandDocumentation_1.SendingCommandDocumentation();
+HelpDocumentation.WHICH = new WhichCommandDocumentation_1.WhichCommandDocumentation();
+HelpDocumentation.WORLD = new WorldCommandDocumentation_1.WorldCommandDocumentation();
 //# sourceMappingURL=HelpDocumentation.js.map

@@ -4,10 +4,18 @@ import {Subcommand} from "../../models/generic/Subcommand";
 export class CommandStrut {
     private readonly _name: string;
     private readonly _shortenedName: string;
+    private readonly _args: Map<string, string>;
 
-    constructor(name: string, shortenedName: string) {
+
+
+    constructor(name: string, shortenedName: string, args: Map<string, string>) {
         this._name = name;
         this._shortenedName = shortenedName;
+        this._args = args;
+    }
+
+    get args(): Map<string, string> {
+        return this._args;
     }
 
     get name(): string {

@@ -2,9 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandStrut = void 0;
 class CommandStrut {
-    constructor(name, shortenedName) {
+    constructor(name, shortenedName, args) {
         this._name = name;
         this._shortenedName = shortenedName;
+        this._args = args;
+    }
+    get args() {
+        return this._args;
     }
     get name() {
         return this._name;

@@ -8,7 +8,6 @@ import {Subcommands} from "../../documentation/commands/Subcommands";
 import {Command} from "../../models/generic/Command";
 import {Message} from "discord.js";
 import {User} from "../../entity/User";
-import {WorldRelatedClientResponses} from "../../documentation/client-responses/information/WorldRelatedClientResponses";
 import {PartyRelatedClientResponses} from "../../documentation/client-responses/information/PartyRelatedClientResponses";
 
 @injectable()

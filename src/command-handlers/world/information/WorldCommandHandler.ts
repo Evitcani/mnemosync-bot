@@ -54,7 +54,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         // Command to add the party to this world.
         if (Subcommands.PARTY.isCommand(command)) {
             const ptCmd = Subcommands.PARTY.getCommand(command);
-            this.addPartyToWorld(ptCmd.getInput(), message, user);
+            return this.addPartyToWorld(ptCmd.getInput(), message, user);
         }
 
         return undefined;

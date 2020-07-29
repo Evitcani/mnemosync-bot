@@ -1,6 +1,6 @@
 import {MessageEmbed} from "discord.js";
-import {Bot} from "../../../bot";
-import {CommandStrut} from "../CommandStrut";
+import {Bot} from "../../../../bot";
+import {CommandStrut} from "../../CommandStrut";
 
 export abstract class BaseCommandDocumentation {
     public abstract getCommand(): string;
@@ -30,11 +30,19 @@ export abstract class BaseCommandDocumentation {
             str += `\n\n`;
 
             // Add the name of the prefix.
-            str += `\`${Bot.PREFIX_SUBCOMMAND}${key.name}\``;
-            if (key.shortenedName != null) {
-                str += ` | \`${Bot.PREFIX_SUBCOMMAND}${key.shortenedName}\``;
+            str += `\`${Bot.PREFIX_SUBCOMMAND}${key.name}`;
+            if (key.args != null && key.args.has(this.getCommand())) {
+                str += ` [${key.args.get(this.getCommand())}]`;
             }
-            str += ` - ${value}`;
+            str += `\``;
+            if (key.shortenedName != null) {
+                str += ` | \`${Bot.PREFIX_SUBCOMMAND}${key.shortenedName}`;
+                if (key.args != null && key.args.has(this.getCommand())) {
+                    str += ` [${key.args.get(this.getCommand())}]`;
+                }
+                str += `\``;
+            }
+            str += `\n${value}`;
         });
 
         return str;
