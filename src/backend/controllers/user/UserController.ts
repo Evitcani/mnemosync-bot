@@ -1,18 +1,23 @@
 import {AbstractController} from "../Base/AbstractController";
 import {User} from "../../entity/User";
 import {TableName} from "../../../shared/documentation/databases/TableName";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import {Character} from "../../entity/Character";
 import {World} from "../../entity/World";
 import {getConnection} from "typeorm";
+import {UserApi} from "../../api/UserApi";
+import {TYPES} from "../../../types";
 
 @injectable()
 export class UserController extends AbstractController<User> {
+    private userApi: UserApi;
+
     /**
      * Construct this controller.
      */
-    constructor() {
+    constructor(@inject(TYPES.UserApi) userApi: UserApi) {
         super(TableName.USER);
+        this.userApi = userApi;
     }
 
     /**
@@ -40,6 +45,8 @@ export class UserController extends AbstractController<User> {
      * @param discordName The discord name of user.
      */
     public async get(discordId: string, discordName: string): Promise<User> {
+        await this.userApi.getById(discordId);
+
         return this.getRepo().findOne({
                 where: {
                     discord_id: discordId

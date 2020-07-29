@@ -43,4 +43,6 @@ export const TYPES = {
     SendingController: Symbol("SendingController"),
     UserController: Symbol("UserController"),
     WorldController: Symbol("WorldController"),
+
+    UserApi: Symbol("UserApi"),
 };
