@@ -1,4 +1,4 @@
-import {SpecialChannelDesignation} from "../enums/SpecialChannelDesignation";
+import {SpecialChannelDesignation} from "../shared/enums/SpecialChannelDesignation";
 import {
     BeforeInsert,
     BeforeUpdate,
@@ -8,7 +8,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 
 @Entity({name: "special_channels"})
 export class SpecialChannel {

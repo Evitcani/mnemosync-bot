@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartyFund = void 0;
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
-const StringUtility_1 = require("../utilities/StringUtility");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let PartyFund = class PartyFund {
     constructor() {
         this.isNegative = false;

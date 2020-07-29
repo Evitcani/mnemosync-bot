@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.World = void 0;
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
-const StringUtility_1 = require("../utilities/StringUtility");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 const NonPlayableCharacter_1 = require("./NonPlayableCharacter");
-const Table_1 = require("../documentation/databases/Table");
+const Table_1 = require("../shared/documentation/databases/Table");
 const User_1 = require("./User");
 let World = class World {
     constructor() {

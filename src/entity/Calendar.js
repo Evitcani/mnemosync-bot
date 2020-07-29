@@ -17,8 +17,8 @@ const CalendarWeekDay_1 = require("./CalendarWeekDay");
 const CalendarMoon_1 = require("./CalendarMoon");
 const CalendarEra_1 = require("./CalendarEra");
 const GameDate_1 = require("./GameDate");
-const Table_1 = require("../documentation/databases/Table");
-const StringUtility_1 = require("../utilities/StringUtility");
+const Table_1 = require("../shared/documentation/databases/Table");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let Calendar = class Calendar {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);

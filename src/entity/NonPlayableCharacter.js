@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NonPlayableCharacter = void 0;
 const typeorm_1 = require("typeorm");
 const World_1 = require("./World");
-const Table_1 = require("../documentation/databases/Table");
-const StringUtility_1 = require("../utilities/StringUtility");
+const Table_1 = require("../shared/documentation/databases/Table");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let NonPlayableCharacter = class NonPlayableCharacter {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);

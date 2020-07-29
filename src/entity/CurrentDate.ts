@@ -10,7 +10,7 @@ import {
 import {GameDate} from "./GameDate";
 import {Party} from "./Party";
 import {Calendar} from "./Calendar";
-import {Table} from "../documentation/databases/Table";
+import {Table} from "../shared/documentation/databases/Table";
 
 @Entity({name: Table.CURRENT_DATE})
 export class CurrentDate {

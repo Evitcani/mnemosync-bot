@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CalendarWeekDay = void 0;
 const typeorm_1 = require("typeorm");
 const Calendar_1 = require("./Calendar");
-const Table_1 = require("../documentation/databases/Table");
-const StringUtility_1 = require("../utilities/StringUtility");
+const Table_1 = require("../shared/documentation/databases/Table");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let CalendarWeekDay = class CalendarWeekDay {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);

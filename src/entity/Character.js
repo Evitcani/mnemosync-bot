@@ -14,7 +14,7 @@ const TravelConfig_1 = require("./TravelConfig");
 const typeorm_1 = require("typeorm");
 const Party_1 = require("./Party");
 const Nickname_1 = require("./Nickname");
-const StringUtility_1 = require("../utilities/StringUtility");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 const User_1 = require("./User");
 let Character = class Character {
     constructor() {

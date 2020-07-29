@@ -8,9 +8,9 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Party} from "./Party";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 import {NonPlayableCharacter} from "./NonPlayableCharacter";
-import {Table} from "../documentation/databases/Table";
+import {Table} from "../shared/documentation/databases/Table";
 import {User} from "./User";
 
 @Entity({name: Table.WORLD})

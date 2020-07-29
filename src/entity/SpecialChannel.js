@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpecialChannel = void 0;
-const SpecialChannelDesignation_1 = require("../enums/SpecialChannelDesignation");
+const SpecialChannelDesignation_1 = require("../shared/enums/SpecialChannelDesignation");
 const typeorm_1 = require("typeorm");
-const StringUtility_1 = require("../utilities/StringUtility");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let SpecialChannel = class SpecialChannel {
     purifyInsertUpdate() {
         this.guild_id = StringUtility_1.StringUtility.escapeSQLInput(this.guild_id);

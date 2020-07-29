@@ -14,7 +14,7 @@ const typeorm_1 = require("typeorm");
 const GameDate_1 = require("./GameDate");
 const Party_1 = require("./Party");
 const Calendar_1 = require("./Calendar");
-const Table_1 = require("../documentation/databases/Table");
+const Table_1 = require("../shared/documentation/databases/Table");
 let CurrentDate = class CurrentDate {
 };
 __decorate([

@@ -8,8 +8,8 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {CalendarMoon} from "./CalendarMoon";
-import {StringUtility} from "../utilities/StringUtility";
-import {Table} from "../documentation/databases/Table";
+import {StringUtility} from "../backend/utilities/StringUtility";
+import {Table} from "../shared/documentation/databases/Table";
 
 @Entity({name: Table.MOON_PHASE})
 export class CalendarMoonPhase {

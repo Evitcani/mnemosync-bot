@@ -13,8 +13,8 @@ exports.CalendarEra = void 0;
 const typeorm_1 = require("typeorm");
 const Calendar_1 = require("./Calendar");
 const GameDate_1 = require("./GameDate");
-const Table_1 = require("../documentation/databases/Table");
-const StringUtility_1 = require("../utilities/StringUtility");
+const Table_1 = require("../shared/documentation/databases/Table");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 let CalendarEra = class CalendarEra {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);

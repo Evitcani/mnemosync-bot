@@ -8,9 +8,9 @@ import {
     JoinColumn, JoinTable, ManyToMany, ManyToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 import {World} from "./World";
-import {Table} from "../documentation/databases/Table";
+import {Table} from "../shared/documentation/databases/Table";
 import {Party} from "./Party";
 
 @Entity({name: "users"})

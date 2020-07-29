@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CalendarMoonPhase = void 0;
 const typeorm_1 = require("typeorm");
 const CalendarMoon_1 = require("./CalendarMoon");
-const StringUtility_1 = require("../utilities/StringUtility");
-const Table_1 = require("../documentation/databases/Table");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
+const Table_1 = require("../shared/documentation/databases/Table");
 let CalendarMoonPhase = class CalendarMoonPhase {
     purifyInsertUpdate() {
         this.name = StringUtility_1.StringUtility.escapeSQLInput(this.name);

@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 import {World} from "./World";
 import {Calendar} from "./Calendar";
 import {CurrentDate} from "./CurrentDate";

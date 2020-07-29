@@ -14,8 +14,8 @@ import {CalendarWeekDay} from "./CalendarWeekDay";
 import {CalendarMoon} from "./CalendarMoon";
 import {CalendarEra} from "./CalendarEra";
 import {GameDate} from "./GameDate";
-import {Table} from "../documentation/databases/Table";
-import {StringUtility} from "../utilities/StringUtility";
+import {Table} from "../shared/documentation/databases/Table";
+import {StringUtility} from "../backend/utilities/StringUtility";
 
 @Entity({name: Table.CALENDAR})
 export class Calendar {

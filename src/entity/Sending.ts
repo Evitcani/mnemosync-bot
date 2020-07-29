@@ -10,8 +10,8 @@ import {
 } from "typeorm";
 import {NonPlayableCharacter} from "./NonPlayableCharacter";
 import {Character} from "./Character";
-import {Table} from "../documentation/databases/Table";
-import {StringUtility} from "../utilities/StringUtility";
+import {Table} from "../shared/documentation/databases/Table";
+import {StringUtility} from "../backend/utilities/StringUtility";
 import {World} from "./World";
 import {GameDate} from "./GameDate";
 import {User} from "./User";

@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const Character_1 = require("./Character");
 const typeorm_1 = require("typeorm");
-const StringUtility_1 = require("../utilities/StringUtility");
+const StringUtility_1 = require("../backend/utilities/StringUtility");
 const World_1 = require("./World");
-const Table_1 = require("../documentation/databases/Table");
+const Table_1 = require("../shared/documentation/databases/Table");
 const Party_1 = require("./Party");
 let User = class User {
     purifyInsertUpdate() {

@@ -7,7 +7,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 
 @Entity({name: "user_to_guild"})
 export class Guild {

@@ -9,7 +9,7 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Party} from "./Party";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 
 @Entity({name: "party_funds"})
 export class PartyFund {

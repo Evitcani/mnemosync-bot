@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import {Party} from "./Party";
 import {Nickname} from "./Nickname";
-import {StringUtility} from "../utilities/StringUtility";
+import {StringUtility} from "../backend/utilities/StringUtility";
 import {User} from "./User";
 
 @Entity({name: "characters"})

@@ -10,8 +10,8 @@ import {
 } from "typeorm";
 import {Calendar} from "./Calendar";
 import {GameDate} from "./GameDate";
-import {Table} from "../documentation/databases/Table";
-import {StringUtility} from "../utilities/StringUtility";
+import {Table} from "../shared/documentation/databases/Table";
+import {StringUtility} from "../backend/utilities/StringUtility";
 
 @Entity({name: Table.ERA})
 export class CalendarEra {
