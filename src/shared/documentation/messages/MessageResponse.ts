@@ -4,6 +4,9 @@ import {Subcommands} from "../commands/Subcommands";
 import {NonPlayableCharacter} from "../../../backend/entity/NonPlayableCharacter";
 import {StringUtility} from "../../../backend/utilities/StringUtility";
 
+const PREFIX: string = "$";
+const PREFIX_SUBCOMMAND: string = "~";
+
 export const messageResponse = {
     character: {
         now_playing_as: {
@@ -60,7 +63,7 @@ export const messageResponse = {
 
     party: {
         command: {
-            create: `${Bot.PREFIX}${Commands.PARTY} ${Bot.PREFIX_SUBCOMMAND}${Subcommands.CREATE} [party name]`,
+            create: `${PREFIX}${Commands.PARTY} ${PREFIX_SUBCOMMAND}${Subcommands.CREATE} [party name]`,
         },
     },
 
