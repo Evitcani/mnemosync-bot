@@ -8,7 +8,6 @@ exports.TYPES = {
     CryptKey: Symbol("CryptKey"),
     DatabaseUrl: Symbol("DatabaseUrl"),
     MessageResponder: Symbol("MessageResponder"),
-    PingFinder: Symbol("PingFinder"),
     EncryptionUtility: Symbol("EncryptionUtility"),
     DatabaseService: Symbol("DatabaseService"),
     PartyToGuildService: Symbol("PartyToGuildService"),

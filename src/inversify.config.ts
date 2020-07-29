@@ -4,7 +4,6 @@ import {TYPES} from "./types";
 import {Bot} from "./bot";
 import {Client} from "discord.js";
 import {MessageResponder} from "./services/message-responder";
-import {PingFinder} from "./services/ping-finder";
 import {DatabaseService} from "./database/base/DatabaseService";
 import {PartyFundCommandHandler} from "./command-handlers/world/party/inventory/PartyFundCommandHandler";
 import {RegisterCommandHandler} from "./command-handlers/misc/RegisterCommandHandler";
@@ -47,7 +46,6 @@ container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN);
 container.bind<string>(TYPES.DatabaseUrl).toConstantValue(process.env.DATABASE_URL);
 container.bind<string>(TYPES.CryptKey).toConstantValue(process.env.CRYPT_KEY);
 container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).inSingletonScope();
-container.bind<PingFinder>(TYPES.PingFinder).to(PingFinder).inSingletonScope();
 container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
 
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
