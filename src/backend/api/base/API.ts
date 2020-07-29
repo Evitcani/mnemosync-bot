@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
 import {AxiosRequestConfig} from "axios";
-import {injectable} from "inversify";
+import {injectable, unmanaged} from "inversify";
 
 @injectable()
 export class API {
@@ -10,7 +10,7 @@ export class API {
      *
      * @param [config] - axios configuration.
      */
-    public constructor (config?: AxiosRequestConfig) {
+    public constructor (@unmanaged() config?: AxiosRequestConfig) {
         this.api = axios.create(config);
 
         this.api.interceptors.request.use((param: AxiosRequestConfig) => ({
