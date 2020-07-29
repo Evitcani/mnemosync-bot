@@ -70,11 +70,11 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
             if (json == null) {
                 return message.channel.send("No JSON given, could not continue.");
             }
-            let name = null;
-            if (Subcommands_1.Subcommands.NAME.isCommand(command)) {
-                name = json.name;
-            }
+            let name = json.name;
             let calendar = yield this.getCalendar(name, user, message);
+            if (calendar == null) {
+                return null;
+            }
             // Process the week days.
             calendar.week = yield this.processWeekDays(json.daysPerWeek, json.days, calendar);
             // Now process the months.
@@ -197,6 +197,9 @@ let CalendarCommandHandler = class CalendarCommandHandler extends AbstractUserCo
                 name = cmd.getInput();
             }
             let calendar = yield this.getCalendar(name, user, message);
+            if (calendar == null) {
+                return null;
+            }
             // Now begin processing the weeks.
             calendar.week = yield this.processWeekDays(json.week_len, json.weekdays, calendar);
             // Now process the months.

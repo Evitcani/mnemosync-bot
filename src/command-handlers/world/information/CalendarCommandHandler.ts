@@ -70,12 +70,12 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("No JSON given, could not continue.");
         }
 
-        let name = null;
-        if (Subcommands.NAME.isCommand(command)) {
-            name = json.name;
-        }
+        let name = json.name;
 
         let calendar: Calendar = await this.getCalendar(name, user, message);
+        if (calendar == null) {
+            return null;
+        }
 
         // Process the week days.
         calendar.week = await this.processWeekDays(json.daysPerWeek, json.days, calendar);
@@ -227,6 +227,9 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         }
 
         let calendar: Calendar = await this.getCalendar(name, user, message);
+        if (calendar == null) {
+            return null;
+        }
 
         // Now begin processing the weeks.
         calendar.week = await this.processWeekDays(json.week_len, json.weekdays, calendar);
