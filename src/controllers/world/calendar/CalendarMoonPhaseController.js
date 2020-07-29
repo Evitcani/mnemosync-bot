@@ -31,6 +31,20 @@ let CalendarMoonPhaseController = class CalendarMoonPhaseController extends Abst
             return this.getRepo().save(phase);
         });
     }
+    delete(moon) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().delete({ moon: moon })
+                .then((res) => {
+                console.log(`Deleted ${res.affected} moon phase rows.`);
+                return true;
+            })
+                .catch((err) => {
+                console.log(`Could not delete moon phases.`);
+                console.error(err);
+                return false;
+            });
+        });
+    }
 };
 CalendarMoonPhaseController = __decorate([
     inversify_1.injectable(),

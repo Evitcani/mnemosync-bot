@@ -30,4 +30,5 @@ Subcommands.WEIGHT = new CommandStrut_1.CommandStrut("weight", "wt");
 Subcommands.WEIGHT_INVENTORY = new CommandStrut_1.CommandStrut("inventory-weight", "inv-wt");
 Subcommands.WORLD = new CommandStrut_1.CommandStrut("world", null);
 Subcommands.WORLD_ANVIL = new CommandStrut_1.CommandStrut("world-anvil", "wa");
+Subcommands.WORLD_ANVIL_CELESTIALS = new CommandStrut_1.CommandStrut("world-anvil-celestials", "wa-celestials");
 //# sourceMappingURL=Subcommands.js.map

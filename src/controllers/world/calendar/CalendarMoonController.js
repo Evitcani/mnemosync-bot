@@ -31,6 +31,20 @@ let CalendarMoonController = class CalendarMoonController extends AbstractContro
             return this.getRepo().save(moon);
         });
     }
+    delete(calendar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().delete({ calendar: calendar })
+                .then((res) => {
+                console.log(`Deleted ${res.affected} moon rows.`);
+                return true;
+            })
+                .catch((err) => {
+                console.log(`Could not delete moons.`);
+                console.error(err);
+                return false;
+            });
+        });
+    }
 };
 CalendarMoonController = __decorate([
     inversify_1.injectable(),

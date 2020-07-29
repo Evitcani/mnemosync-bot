@@ -31,6 +31,20 @@ let CalendarWeekDayController = class CalendarWeekDayController extends Abstract
             return this.getRepo().save(weekDay);
         });
     }
+    delete(calendar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().delete({ calendar: calendar })
+                .then((res) => {
+                console.log(`Deleted ${res.affected} week day rows.`);
+                return true;
+            })
+                .catch((err) => {
+                console.log(`Could not delete week days.`);
+                console.error(err);
+                return false;
+            });
+        });
+    }
 };
 CalendarWeekDayController = __decorate([
     inversify_1.injectable(),

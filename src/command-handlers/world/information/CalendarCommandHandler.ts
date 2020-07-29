@@ -73,44 +73,74 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         let name = null;
         if (Subcommands.NAME.isCommand(command)) {
             name = json.name;
-
-            // TODO: Check for existing calendar.
         }
 
-        // Get and save basic calendar.
-        let calendar = await this.basicCalendar(name, message, user);
+        let calendar: Calendar = await this.getCalendar(name, user, message);
 
         // Process the week days.
         calendar.week = await this.processWeekDays(json.daysPerWeek, json.days, calendar);
 
         // Now process the months.
-        let month: CalendarMonth, monthWa:WorldAnvilMonth, yearLength = 0, i;
-        for (i = 0; i < json.monthsPerYear; i++) {
-            month = new CalendarMonth();
-            month.order = i;
-            month.calendar = calendar;
-            monthWa = json.months[i];
+        if (!!json.months) {
+            // Check if months already exist, then delete.
+            if (calendar.months != null && calendar.months.length > 0) {
+                await this.monthController.delete(calendar);
 
-            // Now break down this...
-            month.name = monthWa.name;
-            month.description = monthWa.desc;
-            month.length = StringUtility.getNumber(monthWa.length);
-
-            // Add up the year...
-            yearLength += month.length;
-
-            // Give generic name if none are there.
-            if (month.name == null) {
-                month.name = `${i}`;
+                // Set the length of the year.
+                calendar.yearLength = 0;
             }
 
-            // Now we save this month.
-            month = await this.monthController.save(month);
-            calendar.months.push(month);
+            // Processing.
+            let month: CalendarMonth, monthWa:WorldAnvilMonth, yearLength = 0, i;
+            for (i = 0; i < json.monthsPerYear; i++) {
+                month = new CalendarMonth();
+                month.order = i;
+                month.calendar = calendar;
+                monthWa = json.months[i];
+
+                // Now break down this...
+                month.name = monthWa.name;
+                month.description = monthWa.desc;
+                month.length = StringUtility.getNumber(monthWa.length);
+
+                // Add up the year...
+                yearLength += month.length;
+
+                // Give generic name if none are there.
+                if (month.name == null) {
+                    month.name = `${i}`;
+                }
+
+                // Now we save this month.
+                month = await this.monthController.save(month);
+                calendar.months.push(month);
+            }
+
+            // Set the length of the year.
+            calendar.yearLength = yearLength;
+        }
+
+        calendar = await this.createWorldAnvilCelestials(json, calendar);
+
+        // Now save again.
+        calendar = await this.calendarController.save(calendar);
+
+        return message.channel.send("Saved calendar: " + calendar.name);
+    }
+
+    private async createWorldAnvilCelestials(json: WorldAnvilCalendar, calendar: Calendar): Promise<Calendar> {
+        // Nothing to process.
+        if (json.celestials == undefined || json.celestials.length <= 0) {
+            return Promise.resolve(calendar);
+        }
+
+        // Delete older moons.
+        if (calendar.moons != null && calendar.moons.length > 0) {
+            await this.moonController.delete(calendar);
         }
 
         // Now process the moons.
-        let moon: CalendarMoon, moonWa: WorldAnvilCelestial, phase: CalendarMoonPhase;
+        let moon: CalendarMoon, moonWa: WorldAnvilCelestial, phase: CalendarMoonPhase, i;
         for (i = 0; i < json.celestialBodyCount; i++) {
             moon = new CalendarMoon();
             moon.calendar = calendar;
@@ -166,13 +196,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             moon.phases.push(phase);
         }
 
-        // Set the length of the year.
-        calendar.yearLength = yearLength;
-
-        // Now save again.
-        calendar = await this.calendarController.save(calendar);
-
-        return message.channel.send("Saved calendar: " + calendar.name);
+        return Promise.resolve(calendar);
     }
 
     private async createNewPhase(name: string, viewingAngleStart: number, viewingAngleEnd: number, order: number, moon: CalendarMoon): Promise<CalendarMoonPhase> {
@@ -197,117 +221,157 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         }
 
         let name = null;
-
         if (Subcommands.NAME.isCommand(command)) {
             let cmd = Subcommands.NAME.getCommand(command);
             name = cmd.getInput();
-
-            // TODO: Check for existing calendar.
         }
 
-        // Get basic calendar.
-        let calendar = await this.basicCalendar(name, message, user);
+        let calendar: Calendar = await this.getCalendar(name, user, message);
 
         // Now begin processing the weeks.
         calendar.week = await this.processWeekDays(json.week_len, json.weekdays, calendar);
 
         // Now process the months.
-        let month: CalendarMonth, month_len: number, yearLength = 0, i;
-        for (i = 0; i < json.n_months; i++) {
-            month = new CalendarMonth();
-            month.order = i;
-            month.calendar = calendar;
-            if (json.months.length >= i) {
-                month.name = json.months[i];
+        if (!!json.months) {
+            // Check if months already exist, then delete.
+            if (calendar.months != null && calendar.months.length > 0) {
+                await this.monthController.delete(calendar);
             }
 
-            // Give generic name if none are there.
-            if (month.name == null) {
-                month.name = `${i}`;
+            // Processing.
+            let month: CalendarMonth, month_len: number, yearLength = 0, i;
+            for (i = 0; i < json.n_months; i++) {
+                month = new CalendarMonth();
+                month.order = i;
+                month.calendar = calendar;
+                if (json.months.length >= i) {
+                    month.name = json.months[i];
+                }
+
+                // Give generic name if none are there.
+                if (month.name == null) {
+                    month.name = `${i}`;
+                }
+
+                // Get the length of the month.
+                month_len = json.month_len[month.name];
+                if (month_len != undefined) {
+                    month.length = month_len;
+                    yearLength += month.length;
+                }
+
+                // Now we save this calendar.
+                month = await this.monthController.save(month);
+                calendar.months.push(month);
             }
 
-            // Get the length of the month.
-            month_len = json.month_len[month.name];
-            if (month_len != undefined) {
-                month.length = month_len;
-                yearLength += month.length;
-            }
-
-            // Now we save this calendar.
-            month = await this.monthController.save(month);
-            calendar.months.push(month);
+            // Set the length of the year.
+            calendar.yearLength = yearLength;
         }
 
         // Now process the moons.
-        let moon: CalendarMoon, moon_cyc: number, moon_shf: number, phase: CalendarMoonPhase;
-        for (i = 0; i < json.n_moons; i++) {
-            moon = new CalendarMoon();
-            moon.calendar = calendar;
-            if (json.moons.length >= i) {
-                moon.name = json.moons[i];
+        if  (json.moons != undefined && json.moons.length > 0) {
+            // Delete older moons.
+            if (calendar.moons != null && calendar.moons.length > 0) {
+                await this.moonController.delete(calendar);
             }
 
-            // Give generic name if none are there.
-            if (moon.name == null) {
-                moon.name = `${i}`;
+            // Processing
+            let moon: CalendarMoon, moon_cyc: number, moon_shf: number, phase: CalendarMoonPhase, i;
+            for (i = 0; i < json.n_moons; i++) {
+                moon = new CalendarMoon();
+                moon.calendar = calendar;
+                if (json.moons.length >= i) {
+                    moon.name = json.moons[i];
+                }
+
+                // Give generic name if none are there.
+                if (moon.name == null) {
+                    moon.name = `${i}`;
+                }
+
+                // Get the cycle of the moon.
+                moon_cyc = json.lunar_cyc[moon.name];
+                if (moon_cyc != undefined) {
+                    moon.cycle = moon_cyc;
+                }
+
+                // Get the shift of the moon.
+                moon_shf = json.lunar_shf[moon.name];
+                if (moon_shf != undefined) {
+                    moon.shift = moon_shf;
+                }
+
+                // Now we save this calendar.
+                moon = await this.moonController.save(moon);
+                calendar.moons.push(moon);
+
+                moon.phases = [];
+
+                phase = await this.createNewPhase("Full", 337, 22, 0, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Waxing Gibbous", 22, 67, 1, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("First Quarter", 67, 112, 2, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Waxing Crescent", 112, 157, 3, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Old", 157, 167, 4, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("New", 167, 192, 5, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Young", 192, 202, 6, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Waning Crescent", 202, 247, 7, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Last Quarter", 247, 292, 8, moon);
+                moon.phases.push(phase);
+
+                phase = await this.createNewPhase("Waning Gibbous", 292, 337, 9, moon);
+                moon.phases.push(phase);
             }
-
-            // Get the cycle of the moon.
-            moon_cyc = json.lunar_cyc[moon.name];
-            if (moon_cyc != undefined) {
-                moon.cycle = moon_cyc;
-            }
-
-            // Get the shift of the moon.
-            moon_shf = json.lunar_shf[moon.name];
-            if (moon_shf != undefined) {
-                moon.shift = moon_shf;
-            }
-
-            // Now we save this calendar.
-            moon = await this.moonController.save(moon);
-            calendar.moons.push(moon);
-
-            moon.phases = [];
-
-            phase = await this.createNewPhase("Full", 337, 22, 0, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Waxing Gibbous", 22, 67, 1, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("First Quarter", 67, 112, 2, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Waxing Crescent", 112, 157, 3, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Old", 157, 167, 4, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("New", 167, 192, 5, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Young", 192, 202, 6, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Waning Crescent", 202, 247, 7, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Last Quarter", 247, 292, 8, moon);
-            moon.phases.push(phase);
-
-            phase = await this.createNewPhase("Waning Gibbous", 292, 337, 9, moon);
-            moon.phases.push(phase);
         }
-
-        // Set the length of the year.
-        calendar.yearLength = yearLength;
 
         // Now save again.
         calendar = await this.calendarController.save(calendar);
 
         return message.channel.send("Saved calendar: " + calendar.name);
+    }
+
+    private async getCalendar(name: string, user: User, message: Message): Promise<Calendar> {
+        let calendar: Calendar;
+        // Check for existing calendar.
+        if (name != null && user.defaultWorldId != null) {
+            let calendars = await this.calendarController.getByName(name, user.defaultWorldId);
+            if (calendars != null && calendars.length > 0) {
+                let tempCalendar = new Calendar();
+                tempCalendar.name = "No, create a new calendar";
+                calendars.push(tempCalendar);
+
+                calendar = await this.calendarController.calendarSelection(calendars, "modify", message);
+
+                if (!calendar.id) {
+                    calendar = null;
+                } else {
+                    calendar = await this.calendarController.get(calendar.id);
+                }
+            }
+        }
+
+        // Get basic calendar.
+        if (calendar == null) {
+            calendar = await this.basicCalendar(name, message, user);
+        }
+
+        return Promise.resolve(calendar);
     }
 
     private async basicCalendar(name: string, message: Message, user: User): Promise<Calendar> {
@@ -345,6 +409,15 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
     }
 
     private async processWeekDays(daysPerWeek: number, weekdays: string[], calendar: Calendar): Promise<CalendarWeekDay[]> {
+        if (!weekdays) {
+            return Promise.resolve(null);
+        }
+
+        // Delete the old week days.
+        if (calendar.week != null && calendar.week.length > 0) {
+            await this.weekDayController.delete(calendar);
+        }
+
         let week: CalendarWeekDay[] = [];
         let i, day: CalendarWeekDay;
         for (i = 0; i < daysPerWeek; i++) {

@@ -31,6 +31,20 @@ let CalendarMonthController = class CalendarMonthController extends AbstractCont
             return this.getRepo().save(month);
         });
     }
+    delete(calendar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().delete({ calendar: calendar })
+                .then((res) => {
+                console.log(`Deleted ${res.affected} month rows.`);
+                return true;
+            })
+                .catch((err) => {
+                console.log(`Could not delete months.`);
+                console.error(err);
+                return false;
+            });
+        });
+    }
 };
 CalendarMonthController = __decorate([
     inversify_1.injectable(),

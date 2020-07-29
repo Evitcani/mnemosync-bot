@@ -31,6 +31,20 @@ let CalendarEraController = class CalendarEraController extends AbstractControll
             return this.getRepo().save(era);
         });
     }
+    delete(calendar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getRepo().delete({ calendar: calendar })
+                .then((res) => {
+                console.log(`Deleted ${res.affected} era rows.`);
+                return true;
+            })
+                .catch((err) => {
+                console.log(`Could not delete eras.`);
+                console.error(err);
+                return false;
+            });
+        });
+    }
 };
 CalendarEraController = __decorate([
     inversify_1.injectable(),
