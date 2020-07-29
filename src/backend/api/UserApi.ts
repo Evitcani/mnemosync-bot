@@ -12,6 +12,11 @@ export class UserApi extends API {
     public async getById(id: number): Promise<User> {
         return this.get(`/user/${id}`).then((res) => {
             console.log(res.data);
+            return null;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
         });
     }
 }
