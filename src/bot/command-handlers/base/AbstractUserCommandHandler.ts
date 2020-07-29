@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../entity/User";
+import {User} from "../../../backend/entity/User";
 
 @injectable()
 export abstract class AbstractUserCommandHandler {

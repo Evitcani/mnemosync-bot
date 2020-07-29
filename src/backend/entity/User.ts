@@ -8,12 +8,12 @@ import {
     JoinColumn, JoinTable, ManyToMany, ManyToOne,
     PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
-import {Table} from "../shared/documentation/databases/Table";
+import {TableName} from "../../shared/documentation/databases/TableName";
 import {Party} from "./Party";
 
-@Entity({name: "users"})
+@Entity({name: TableName.USER})
 export class User {
     @PrimaryGeneratedColumn('increment')
     id: number;
@@ -64,7 +64,7 @@ export class User {
     defaultParty?: Party;
 
     @ManyToMany(type => World, {nullable: true})
-    @JoinTable({name: Table.WORLD_OWNERS})
+    @JoinTable({name: TableName.WORLD_OWNERS})
     campaignsDMing?: World[];
 
     @BeforeInsert()

@@ -1,5 +1,5 @@
 import {MessageEmbed} from "discord.js";
-import {Character} from "../../../../entity/Character";
+import {Character} from "../../../../backend/entity/Character";
 import {BasicEmbed} from "../../BasicEmbed";
 import {Bot} from "../../../../bot/bot";
 import {Commands} from "../../commands/Commands";

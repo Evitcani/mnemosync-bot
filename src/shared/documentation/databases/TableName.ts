@@ -1,4 +1,4 @@
-export class Table {
+export class TableName {
     public static CALENDAR = "calendars";
     public static CHARACTER = "characters";
     public static CHARACTER_TO_NICKNAME = "character_to_nickname";

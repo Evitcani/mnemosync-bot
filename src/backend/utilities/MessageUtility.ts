@@ -2,12 +2,12 @@ import {Collection, User as DiscordUser, Message, MessageEmbed, Snowflake} from 
 import {Subcommands} from "../../shared/documentation/commands/Subcommands";
 import {StringUtility} from "./StringUtility";
 import {Command} from "../../shared/models/generic/Command";
-import {GameDate} from "../../entity/GameDate";
-import {CurrentDate} from "../../entity/CurrentDate";
+import {GameDate} from "../entity/GameDate";
+import {CurrentDate} from "../entity/CurrentDate";
 import {CalendarController} from "../controllers/world/calendar/CalendarController";
-import {CalendarMonth} from "../../entity/CalendarMonth";
-import {Calendar} from "../../entity/Calendar";
-import {CalendarMoon} from "../../entity/CalendarMoon";
+import {CalendarMonth} from "../entity/calendar/CalendarMonth";
+import {Calendar} from "../entity/calendar/Calendar";
+import {CalendarMoon} from "../entity/calendar/CalendarMoon";
 
 export class MessageUtility {
 

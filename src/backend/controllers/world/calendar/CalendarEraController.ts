@@ -1,13 +1,13 @@
 import {injectable} from "inversify";
 import {AbstractController} from "../../Base/AbstractController";
-import {Table} from "../../../../shared/documentation/databases/Table";
-import {CalendarEra} from "../../../../entity/CalendarEra";
-import {Calendar} from "../../../../entity/Calendar";
+import {TableName} from "../../../../shared/documentation/databases/TableName";
+import {CalendarEra} from "../../../entity/calendar/CalendarEra";
+import {Calendar} from "../../../entity/calendar/Calendar";
 
 @injectable()
 export class CalendarEraController extends AbstractController<CalendarEra> {
     constructor() {
-        super(Table.ERA);
+        super(TableName.ERA);
     }
 
     public async save(era: CalendarEra): Promise<CalendarEra> {

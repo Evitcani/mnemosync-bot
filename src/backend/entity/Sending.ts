@@ -10,13 +10,13 @@ import {
 } from "typeorm";
 import {NonPlayableCharacter} from "./NonPlayableCharacter";
 import {Character} from "./Character";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {TableName} from "../../shared/documentation/databases/TableName";
+import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
 import {GameDate} from "./GameDate";
 import {User} from "./User";
 
-@Entity({name: Table.SENDING})
+@Entity({name: TableName.SENDING})
 export class Sending {
     @PrimaryGeneratedColumn('uuid')
     id: string;

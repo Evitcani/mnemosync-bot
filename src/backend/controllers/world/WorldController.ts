@@ -1,14 +1,14 @@
 import {AbstractController} from "../Base/AbstractController";
-import {World} from "../../../entity/World";
-import {Table} from "../../../shared/documentation/databases/Table";
+import {World} from "../../entity/World";
+import {TableName} from "../../../shared/documentation/databases/TableName";
 import {injectable} from "inversify";
-import {User} from "../../../entity/User";
+import {User} from "../../entity/User";
 import {StringUtility} from "../../utilities/StringUtility";
 import {Collection, Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
 import {getConnection} from "typeorm";
 import {BaseQueryRunner} from "typeorm/query-runner/BaseQueryRunner";
-import {Nickname} from "../../../entity/Nickname";
+import {Nickname} from "../../entity/Nickname";
 
 @injectable()
 export class WorldController extends AbstractController<World> {
@@ -16,7 +16,7 @@ export class WorldController extends AbstractController<World> {
      * Constructs this controller.
      */
     constructor() {
-        super(Table.WORLD);
+        super(TableName.WORLD);
     }
 
     /**
@@ -94,7 +94,7 @@ export class WorldController extends AbstractController<World> {
         return this
             .getRepo()
             .createQueryBuilder("world")
-            .leftJoinAndSelect(Table.WORLD_OWNERS, "owners", `world.id = "owners"."worldsId"`)
+            .leftJoinAndSelect(TableName.WORLD_OWNERS, "owners", `world.id = "owners"."worldsId"`)
             .where(`"owners"."usersId" = ${user.id}`)
             .andWhere(`LOWER(world.name) LIKE LOWER('%${sanitizedName}%')`)
             .getMany()
@@ -114,7 +114,7 @@ export class WorldController extends AbstractController<World> {
     public getDiscordId(id: string): Promise<Collection<string, string>> {
         return getConnection()
             .createQueryBuilder(User, "user")
-            .leftJoinAndSelect(Table.WORLD_OWNERS, "owners", `user.id = "owners"."usersId"`)
+            .leftJoinAndSelect(TableName.WORLD_OWNERS, "owners", `user.id = "owners"."usersId"`)
             .where(`"owners"."worldsId" = '${id}'`)
             .getMany()
             .then((users) => {

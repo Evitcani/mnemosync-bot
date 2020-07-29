@@ -9,10 +9,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Calendar} from "./Calendar";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {StringUtility} from "../../utilities/StringUtility";
 
-@Entity({name: Table.WEEK_DAY})
+@Entity({name: TableName.WEEK_DAY})
 export class CalendarWeekDay {
     @PrimaryGeneratedColumn('uuid')
     id: string;

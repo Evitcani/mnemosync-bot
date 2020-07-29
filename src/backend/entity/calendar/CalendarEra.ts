@@ -9,11 +9,11 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Calendar} from "./Calendar";
-import {GameDate} from "./GameDate";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {GameDate} from "../GameDate";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {StringUtility} from "../../utilities/StringUtility";
 
-@Entity({name: Table.ERA})
+@Entity({name: TableName.ERA})
 export class CalendarEra {
     @PrimaryGeneratedColumn('uuid')
     id: string;

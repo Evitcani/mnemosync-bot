@@ -9,10 +9,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Calendar} from "./Calendar";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {StringUtility} from "../../utilities/StringUtility";
 
-@Entity({name: Table.MONTH})
+@Entity({name: TableName.MONTH})
 export class CalendarMonth {
     @PrimaryGeneratedColumn('uuid')
     id: string;

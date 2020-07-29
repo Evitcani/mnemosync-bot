@@ -9,10 +9,10 @@ import {
 } from "typeorm";
 import {GameDate} from "./GameDate";
 import {Party} from "./Party";
-import {Calendar} from "./Calendar";
-import {Table} from "../shared/documentation/databases/Table";
+import {Calendar} from "./calendar/Calendar";
+import {TableName} from "../../shared/documentation/databases/TableName";
 
-@Entity({name: Table.CURRENT_DATE})
+@Entity({name: TableName.CURRENT_DATE})
 export class CurrentDate {
     @PrimaryGeneratedColumn('uuid')
     id: string;

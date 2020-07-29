@@ -1,5 +1,5 @@
 import {MessageEmbed} from "discord.js";
-import {World} from "../../../../entity/World";
+import {World} from "../../../../backend/entity/World";
 import {BasicEmbed} from "../../BasicEmbed";
 
 export class WorldRelatedClientResponses {

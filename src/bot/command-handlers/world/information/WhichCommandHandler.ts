@@ -9,7 +9,7 @@ import {WorldController} from "../../../../backend/controllers/world/WorldContro
 import {NPCRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/NPCRelatedClientResponses";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
-import {User} from "../../../../entity/User";
+import {User} from "../../../../backend/entity/User";
 
 /**
  * Handles questions about the state of the world.

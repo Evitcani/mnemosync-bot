@@ -1,6 +1,6 @@
 import {AbstractController} from "../Base/AbstractController";
-import {NonPlayableCharacter} from "../../../entity/NonPlayableCharacter";
-import {Table} from "../../../shared/documentation/databases/Table";
+import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
+import {TableName} from "../../../shared/documentation/databases/TableName";
 import {injectable} from "inversify";
 import {NameValuePair} from "../Base/NameValuePair";
 
@@ -11,7 +11,7 @@ export class NPCController extends AbstractController<NonPlayableCharacter> {
      * Constructs this controller.
      */
     constructor() {
-        super(Table.NPC);
+        super(TableName.NPC);
     }
 
     /**

@@ -9,10 +9,11 @@ import {
 } from "typeorm";
 import {Party} from "./Party";
 import {Nickname} from "./Nickname";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
 import {User} from "./User";
+import {TableName} from "../../shared/documentation/databases/TableName";
 
-@Entity({name: "characters"})
+@Entity({name: TableName.CHARACTER})
 export class Character {
     type = "Character";
 

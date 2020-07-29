@@ -8,10 +8,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {CalendarMoon} from "./CalendarMoon";
-import {StringUtility} from "../backend/utilities/StringUtility";
-import {Table} from "../shared/documentation/databases/Table";
+import {StringUtility} from "../../utilities/StringUtility";
+import {TableName} from "../../../shared/documentation/databases/TableName";
 
-@Entity({name: Table.MOON_PHASE})
+@Entity({name: TableName.MOON_PHASE})
 export class CalendarMoonPhase {
     @PrimaryGeneratedColumn('uuid')
     id: string;

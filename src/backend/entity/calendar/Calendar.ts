@@ -8,24 +8,25 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {World} from "./World";
+import {World} from "../World";
 import {CalendarMonth} from "./CalendarMonth";
 import {CalendarWeekDay} from "./CalendarWeekDay";
 import {CalendarMoon} from "./CalendarMoon";
 import {CalendarEra} from "./CalendarEra";
-import {GameDate} from "./GameDate";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {GameDate} from "../GameDate";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {StringUtility} from "../../utilities/StringUtility";
+import {ColumnName} from "../../../shared/documentation/databases/ColumnName";
 
-@Entity({name: Table.CALENDAR})
+@Entity({name: TableName.CALENDAR})
 export class Calendar {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn('uuid', {name: ColumnName.ID})
     id: string;
 
-    @CreateDateColumn({name: "created_date"})
+    @CreateDateColumn({name: ColumnName.CREATED_DATE})
     createdDate: Date;
 
-    @UpdateDateColumn({name: "updated_date"})
+    @UpdateDateColumn({name: ColumnName.UPDATED_DATE})
     updatedDate: Date;
 
     @Column()

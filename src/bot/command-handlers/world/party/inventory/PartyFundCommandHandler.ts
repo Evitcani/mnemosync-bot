@@ -2,16 +2,16 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../types";
 import {Message} from "discord.js";
 import {MoneyUtility} from "../../../../../backend/utilities/MoneyUtility";
-import {PartyFund} from "../../../../../entity/PartyFund";
+import {PartyFund} from "../../../../../backend/entity/PartyFund";
 import {Command} from "../../../../../shared/models/generic/Command";
 import {FundRelatedClientResponses} from "../../../../../shared/documentation/client-responses/party/FundRelatedClientResponses";
 import {Commands} from "../../../../../shared/documentation/commands/Commands";
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {PartyFundController} from "../../../../../backend/controllers/party/PartyFundController";
-import {Party} from "../../../../../entity/Party";
+import {Party} from "../../../../../backend/entity/Party";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {User} from "../../../../../entity/User";
+import {User} from "../../../../../backend/entity/User";
 
 /**
  * Manages the fund related commands.

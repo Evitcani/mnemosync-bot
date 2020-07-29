@@ -1,6 +1,6 @@
 import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../../../../entity/Character";
+import {Character} from "../../../../backend/entity/Character";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 import {injectable} from "inversify";
 

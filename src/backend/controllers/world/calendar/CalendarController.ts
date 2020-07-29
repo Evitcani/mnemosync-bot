@@ -1,6 +1,6 @@
 import {AbstractController} from "../../Base/AbstractController";
-import {Calendar} from "../../../../entity/Calendar";
-import {Table} from "../../../../shared/documentation/databases/Table";
+import {Calendar} from "../../../entity/calendar/Calendar";
+import {TableName} from "../../../../shared/documentation/databases/TableName";
 import {injectable} from "inversify";
 import {NameValuePair} from "../../Base/NameValuePair";
 import {Message} from "discord.js";
@@ -9,7 +9,7 @@ import {CalendarRelatedResponses} from "../../../../shared/documentation/client-
 @injectable()
 export class CalendarController extends AbstractController<Calendar> {
     constructor() {
-        super(Table.CALENDAR);
+        super(TableName.CALENDAR);
     }
 
     public async save(calendar: Calendar): Promise<Calendar> {

@@ -9,9 +9,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Party} from "./Party";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
+import {TableName} from "../../shared/documentation/databases/TableName";
 
-@Entity({name: "party_funds"})
+@Entity({name: TableName.PARTY_FUND})
 export class PartyFund {
     @PrimaryGeneratedColumn('increment')
     id: number;

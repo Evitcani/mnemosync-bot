@@ -8,12 +8,13 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Party} from "./Party";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
 import {NonPlayableCharacter} from "./NonPlayableCharacter";
-import {Table} from "../shared/documentation/databases/Table";
+import {TableName} from "../../shared/documentation/databases/TableName";
 import {User} from "./User";
+import {ColumnName} from "../../shared/documentation/databases/ColumnName";
 
-@Entity({name: Table.WORLD})
+@Entity({name: TableName.WORLD})
 export class World {
     // Type of this class.
     type = "World";
@@ -21,19 +22,19 @@ export class World {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column("text",{name: "name"})
+    @Column("text",{name: ColumnName.NAME})
     name: string;
 
-    @Column({name: "guild_id"})
+    @Column({name: ColumnName.GUILD_ID})
     guildId: string;
 
-    @CreateDateColumn({name: "created_date"})
+    @CreateDateColumn({name: ColumnName.CREATED_DATE})
     createdDate: Date;
 
-    @UpdateDateColumn({name: "updated_date"})
+    @UpdateDateColumn({name: ColumnName.UPDATED_DATE})
     updatedDate: Date;
 
-    @Column("text",{name: "map_url", nullable: true})
+    @Column("text",{name: ColumnName.MAP_URL, nullable: true})
     mapUrl: string;
 
     @OneToMany(type => Party, party => party.world, {

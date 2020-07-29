@@ -1,19 +1,19 @@
-import {Table} from "../../../shared/documentation/databases/Table";
-import {Party} from "../../../entity/Party";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {Party} from "../../entity/Party";
 import {injectable} from "inversify";
 import {AbstractController} from "../Base/AbstractController";
 import {NameValuePair} from "../Base/NameValuePair";
-import {World} from "../../../entity/World";
+import {World} from "../../entity/World";
 import {Subcommands} from "../../../shared/documentation/commands/Subcommands";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../entity/User";
+import {User} from "../../entity/User";
 import {PartyRelatedClientResponses} from "../../../shared/documentation/client-responses/information/PartyRelatedClientResponses";
 
 @injectable()
 export class PartyController extends AbstractController<Party> {
     constructor() {
-        super(Table.PARTY);
+        super(TableName.PARTY);
     }
 
     /**

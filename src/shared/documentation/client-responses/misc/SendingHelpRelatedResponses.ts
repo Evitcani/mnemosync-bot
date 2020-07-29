@@ -2,9 +2,9 @@ import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
 import {Bot} from "../../../../bot/bot";
 import {Subcommands} from "../../commands/Subcommands";
-import {Character} from "../../../../entity/Character";
-import {World} from "../../../../entity/World";
-import {Sending} from "../../../../entity/Sending";
+import {Character} from "../../../../backend/entity/Character";
+import {World} from "../../../../backend/entity/World";
+import {Sending} from "../../../../backend/entity/Sending";
 import {SendingController} from "../../../../backend/controllers/character/SendingController";
 import {EncryptionUtility} from "../../../../backend/utilities/EncryptionUtility";
 

@@ -1,5 +1,5 @@
 import {Money} from "../../shared/models/database/Money";
-import {PartyFund} from "../../entity/PartyFund";
+import {PartyFund} from "../entity/PartyFund";
 import {MoneyType} from "../../shared/enums/MoneyType";
 import {MoneyArchetype} from "../../shared/models/generic/MoneyArchetype";
 

@@ -1,9 +1,9 @@
 import {AbstractController} from "../Base/AbstractController";
-import {User} from "../../../entity/User";
-import {Table} from "../../../shared/documentation/databases/Table";
+import {User} from "../../entity/User";
+import {TableName} from "../../../shared/documentation/databases/TableName";
 import {injectable} from "inversify";
-import {Character} from "../../../entity/Character";
-import {World} from "../../../entity/World";
+import {Character} from "../../entity/Character";
+import {World} from "../../entity/World";
 import {getConnection} from "typeorm";
 
 @injectable()
@@ -12,7 +12,7 @@ export class UserController extends AbstractController<User> {
      * Construct this controller.
      */
     constructor() {
-        super(Table.USER);
+        super(TableName.USER);
     }
 
     /**

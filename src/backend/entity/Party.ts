@@ -10,12 +10,12 @@ import {
 } from "typeorm";
 import {Character} from "./Character";
 import {PartyFund} from "./PartyFund";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
 import {World} from "./World";
-import {Calendar} from "./Calendar";
 import {CurrentDate} from "./CurrentDate";
+import {TableName} from "../../shared/documentation/databases/TableName";
 
-@Entity({name: "parties"})
+@Entity({name: TableName.PARTY})
 export class Party {
     @PrimaryGeneratedColumn('increment')
     id: number;

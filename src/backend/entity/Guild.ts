@@ -1,4 +1,3 @@
-import {SpecialChannelDesignation} from "../shared/enums/SpecialChannelDesignation";
 import {
     BeforeInsert,
     BeforeUpdate,
@@ -8,10 +7,11 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {StringUtility} from "../utilities/StringUtility";
+import {TableName} from "../../shared/documentation/databases/TableName";
 
-@Entity({name: "special_channels"})
-export class SpecialChannel {
+@Entity({name: TableName.USER_TO_GUILD})
+export class Guild {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
@@ -22,18 +22,15 @@ export class SpecialChannel {
     updatedDate: Date;
 
     @Column("text")
-    guild_id: string;
+    discord_id: string;
 
     @Column("text")
-    channel_id: string;
-
-    @Column()
-    designation: SpecialChannelDesignation;
+    guild_id: string;
 
     @BeforeInsert()
     @BeforeUpdate()
     purifyInsertUpdate() {
+        this.discord_id = StringUtility.escapeSQLInput(this.discord_id);
         this.guild_id = StringUtility.escapeSQLInput(this.guild_id);
-        this.channel_id = StringUtility.escapeSQLInput(this.channel_id);
     }
 }

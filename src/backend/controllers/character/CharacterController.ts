@@ -1,10 +1,10 @@
-import {Character} from "../../../entity/Character";
+import {Character} from "../../entity/Character";
 import {injectable} from "inversify";
-import {Table} from "../../../shared/documentation/databases/Table";
-import {Nickname} from "../../../entity/Nickname";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {Nickname} from "../../entity/Nickname";
 import {AbstractSecondaryController} from "../Base/AbstractSecondaryController";
 import {NameValuePair} from "../Base/NameValuePair";
-import {Party} from "../../../entity/Party";
+import {Party} from "../../entity/Party";
 import {getConnection} from "typeorm";
 import {StringUtility} from "../../utilities/StringUtility";
 import {Collection} from "discord.js";
@@ -12,7 +12,7 @@ import {Collection} from "discord.js";
 @injectable()
 export class CharacterController extends AbstractSecondaryController<Character, Nickname> {
     constructor() {
-        super(Table.CHARACTER, Table.USER_TO_CHARACTER);
+        super(TableName.CHARACTER, TableName.USER_TO_CHARACTER);
     }
 
     /**

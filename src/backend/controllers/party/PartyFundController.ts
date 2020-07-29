@@ -1,17 +1,17 @@
 import {injectable} from "inversify";
-import {Table} from "../../../shared/documentation/databases/Table";
-import {PartyFund} from "../../../entity/PartyFund";
-import {Party} from "../../../entity/Party";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {PartyFund} from "../../entity/PartyFund";
+import {Party} from "../../entity/Party";
 import {AbstractController} from "../Base/AbstractController";
 import {DbColumn} from "../../../shared/models/database/schema/columns/DbColumn";
-import {Column} from "../../../shared/documentation/databases/Column";
+import {ColumnName} from "../../../shared/documentation/databases/ColumnName";
 import {DbTable} from "../../../shared/models/database/schema/DbTable";
 import {DatabaseHelperService} from "../../database/base/DatabaseHelperService";
 
 @injectable()
 export class PartyFundController extends AbstractController<PartyFund> {
     constructor() {
-        super(Table.PARTY_FUND);
+        super(TableName.PARTY_FUND);
     }
 
     /**

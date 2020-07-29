@@ -1,8 +1,8 @@
 import {Message, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
-import {Calendar} from "../../../../entity/Calendar";
-import {Party} from "../../../../entity/Party";
-import {CurrentDate} from "../../../../entity/CurrentDate";
+import {Calendar} from "../../../../backend/entity/calendar/Calendar";
+import {Party} from "../../../../backend/entity/Party";
+import {CurrentDate} from "../../../../backend/entity/CurrentDate";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
 

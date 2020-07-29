@@ -1,6 +1,6 @@
 import {Command} from "../../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../../../../../entity/Character";
+import {Character} from "../../../../../backend/entity/Character";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {Subcommand} from "../../../../../shared/models/generic/Subcommand";
 import {inject} from "inversify";
@@ -9,9 +9,9 @@ import {CharacterRelatedClientResponses} from "../../../../../shared/documentati
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
 import {CharacterController} from "../../../../../backend/controllers/character/CharacterController";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {User} from "../../../../../entity/User";
+import {User} from "../../../../../backend/entity/User";
 import {UserController} from "../../../../../backend/controllers/user/UserController";
-import {NonPlayableCharacter} from "../../../../../entity/NonPlayableCharacter";
+import {NonPlayableCharacter} from "../../../../../backend/entity/NonPlayableCharacter";
 import {NPCController} from "../../../../../backend/controllers/character/NPCController";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
 

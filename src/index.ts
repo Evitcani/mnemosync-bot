@@ -11,7 +11,7 @@ createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
     entities: [
-        __dirname + "/entity/*.js"
+        __dirname + "/backend/entity/**/*.js"
     ],
     synchronize: true,
 }).then(() => {

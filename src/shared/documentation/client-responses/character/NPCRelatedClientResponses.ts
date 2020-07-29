@@ -1,7 +1,7 @@
 import {MessageEmbed} from "discord.js";
-import {NonPlayableCharacter} from "../../../../entity/NonPlayableCharacter";
+import {NonPlayableCharacter} from "../../../../backend/entity/NonPlayableCharacter";
 import {BasicEmbed} from "../../BasicEmbed";
-import {World} from "../../../../entity/World";
+import {World} from "../../../../backend/entity/World";
 import {NPCController} from "../../../../backend/controllers/character/NPCController";
 
 /**

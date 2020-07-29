@@ -9,10 +9,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {Character} from "./Character";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {TableName} from "../../shared/documentation/databases/TableName";
+import {StringUtility} from "../utilities/StringUtility";
 
-@Entity({name: Table.USER_TO_CHARACTER})
+@Entity({name: TableName.USER_TO_CHARACTER})
 export class Nickname {
     @PrimaryGeneratedColumn('increment')
     id: number;

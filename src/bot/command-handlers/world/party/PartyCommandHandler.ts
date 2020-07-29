@@ -2,12 +2,12 @@ import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler"
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../../entity/User";
+import {User} from "../../../../backend/entity/User";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {TYPES} from "../../../../types";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
 import {UserController} from "../../../../backend/controllers/user/UserController";
-import {Party} from "../../../../entity/Party";
+import {Party} from "../../../../backend/entity/Party";
 
 @injectable()
 export class PartyCommandHandler extends AbstractUserCommandHandler {

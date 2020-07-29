@@ -1,12 +1,12 @@
 import {injectable} from "inversify";
 import {AbstractController} from "../../Base/AbstractController";
-import {Table} from "../../../../shared/documentation/databases/Table";
-import {CurrentDate} from "../../../../entity/CurrentDate";
+import {TableName} from "../../../../shared/documentation/databases/TableName";
+import {CurrentDate} from "../../../entity/CurrentDate";
 
 @injectable()
 export class CurrentDateController extends AbstractController<CurrentDate> {
     constructor() {
-        super(Table.CURRENT_DATE);
+        super(TableName.CURRENT_DATE);
     }
 
     public async save(currentDate: CurrentDate): Promise<CurrentDate> {

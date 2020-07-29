@@ -1,10 +1,10 @@
 import {injectable} from "inversify";
 import {AbstractController} from "../Base/AbstractController";
-import {Sending} from "../../../entity/Sending";
-import {Table} from "../../../shared/documentation/databases/Table";
-import {World} from "../../../entity/World";
-import {NonPlayableCharacter} from "../../../entity/NonPlayableCharacter";
-import {Character} from "../../../entity/Character";
+import {Sending} from "../../entity/Sending";
+import {TableName} from "../../../shared/documentation/databases/TableName";
+import {World} from "../../entity/World";
+import {NonPlayableCharacter} from "../../entity/NonPlayableCharacter";
+import {Character} from "../../entity/Character";
 import {Any, getConnection} from "typeorm";
 
 @injectable()
@@ -12,7 +12,7 @@ export class SendingController extends AbstractController<Sending> {
     public static SENDING_LIMIT = 10;
 
     constructor() {
-        super(Table.SENDING);
+        super(TableName.SENDING);
     }
 
     /**

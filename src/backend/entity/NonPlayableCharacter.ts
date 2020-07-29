@@ -9,10 +9,10 @@ import {
     UpdateDateColumn
 } from "typeorm";
 import {World} from "./World";
-import {Table} from "../shared/documentation/databases/Table";
-import {StringUtility} from "../backend/utilities/StringUtility";
+import {TableName} from "../../shared/documentation/databases/TableName";
+import {StringUtility} from "../utilities/StringUtility";
 
-@Entity({name: Table.NPC})
+@Entity({name: TableName.NPC})
 export class NonPlayableCharacter {
     @PrimaryGeneratedColumn('uuid')
     id: string;

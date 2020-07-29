@@ -7,11 +7,11 @@ import {PartyController} from "../../../../backend/controllers/party/PartyContro
 import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
 import {CurrentDateController} from "../../../../backend/controllers/world/calendar/CurrentDateController";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
-import {User} from "../../../../entity/User";
-import {Party} from "../../../../entity/Party";
-import {Calendar} from "../../../../entity/Calendar";
-import {CurrentDate} from "../../../../entity/CurrentDate";
-import {GameDate} from "../../../../entity/GameDate";
+import {User} from "../../../../backend/entity/User";
+import {Party} from "../../../../backend/entity/Party";
+import {Calendar} from "../../../../backend/entity/calendar/Calendar";
+import {CurrentDate} from "../../../../backend/entity/CurrentDate";
+import {GameDate} from "../../../../backend/entity/GameDate";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {CalendarRelatedResponses} from "../../../../shared/documentation/client-responses/information/CalendarRelatedResponses";
 

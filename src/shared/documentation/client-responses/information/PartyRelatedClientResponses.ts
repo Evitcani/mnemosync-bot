@@ -1,6 +1,6 @@
 import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
-import {Party} from "../../../../entity/Party";
+import {Party} from "../../../../backend/entity/Party";
 
 export class PartyRelatedClientResponses {
     static SELECT_PARTY(parties: Party[], action: string): MessageEmbed {
