@@ -27,6 +27,7 @@
     "mysql": "latest",
     "pg": "^8.3.0",
     "reflect-metadata": "^0.1.13",
+    "request": "^2.88.2",
     "request-promise": "^4.2.2",
     "sqlstring": "^2.3.2",
     "typeorm": "^0.2.25",
