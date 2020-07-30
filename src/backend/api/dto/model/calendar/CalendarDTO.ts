@@ -5,10 +5,10 @@ import {CalendarWeekDayDTO} from "./CalendarWeekDayDTO";
 import {CalendarMoonDTO} from "./CalendarMoonDTO";
 
 export class CalendarDTO {
-    id: string;
-    createdDate: Date;
-    updatedDate: Date;
-    name: string;
+    id?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
+    name?: string;
     yearLength?: number;
     description?: string;
     epoch?: DateDTO;

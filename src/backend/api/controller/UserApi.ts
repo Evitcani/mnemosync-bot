@@ -1,8 +1,8 @@
 import {API} from "./base/API";
 import {apiConfig} from "./base/APIConfig";
 import {injectable} from "inversify";
-import {UserDTO} from "../dto/UserDTO";
-import {DataDTO} from "../dto/DataDTO";
+import {UserDTO} from "../dto/model/UserDTO";
+import {DataDTO} from "../dto/model/DataDTO";
 
 @injectable()
 export class UserApi extends API {
