@@ -12,7 +12,7 @@ export class UserApi extends API {
 
     public async getById(discordId: string, discordName: string): Promise<UserDTO> {
         let config = apiConfig;
-        let data = new DataDTO();
+        let data: DataDTO = {};
         let user: UserDTO = {};
         user.discord_id = discordId;
         user.discord_name = discordName;
