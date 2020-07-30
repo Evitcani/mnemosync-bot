@@ -5,7 +5,7 @@ import {inject, injectable} from "inversify";
 import {Character} from "../../entity/Character";
 import {World} from "../../entity/World";
 import {getConnection} from "typeorm";
-import {UserApi} from "../../api/UserApi";
+import {UserApi} from "../../api/controller/UserApi";
 import {TYPES} from "../../../types";
 
 @injectable()

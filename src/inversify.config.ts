@@ -37,7 +37,7 @@ import {DateCommandHandler} from "./bot/command-handlers/world/information/DateC
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
 import {CalendarMoonPhaseController} from "./backend/controllers/world/calendar/CalendarMoonPhaseController";
-import {UserApi} from "./backend/api/UserApi";
+import {UserApi} from "./backend/api/controller/UserApi";
 
 let container = new Container();
 

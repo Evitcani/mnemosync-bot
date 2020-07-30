@@ -11,7 +11,6 @@ import {
 import {Calendar} from "./Calendar";
 import {TableName} from "../../../shared/documentation/databases/TableName";
 import {StringUtility} from "../../utilities/StringUtility";
-import {CalendarMonth} from "./CalendarMonth";
 import {CalendarMoonPhase} from "./CalendarMoonPhase";
 
 @Entity({name: TableName.MOON})

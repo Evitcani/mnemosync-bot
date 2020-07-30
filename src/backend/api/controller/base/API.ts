@@ -1,6 +1,7 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
 import {AxiosRequestConfig} from "axios";
 import {injectable, unmanaged} from "inversify";
+import {Authorization} from "./Authorization";
 
 @injectable()
 export class API {
@@ -13,16 +14,28 @@ export class API {
     public constructor (@unmanaged() config?: AxiosRequestConfig) {
         this.api = axios.create(config);
 
-        this.api.interceptors.request.use((param: AxiosRequestConfig) => ({
-            baseUrl: process.env.API_BASE_URL,
-            ...param
-        }));
+        this.api.interceptors.request.use(async (param: AxiosRequestConfig) => {
+            let auth = await Authorization.AUTHORIZE();
+            return {
+                baseUrl: process.env.API_BASE_URL,
+                headers: {
+                    common: {
+                        "Cache-Control": "no-cache, no-store, must-revalidate",
+                        Pragma: "no-cache",
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    authorization: auth,
+                },
+                ...param
+            };
+        });
     }
 
     /**
      * Get Uri
      *
-     * @param {import("axios").AxiosRequestConfig} [config]
+     * @param config
      * @returns {string}
      * @memberof Api
      */
@@ -36,7 +49,7 @@ export class API {
      * @access public
      * @template T - `TYPE`: expected object.
      * @template R - `RESPONSE`: expected object inside a axios response format.
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP axios response payload.
      * @memberof Api
      *
@@ -62,7 +75,7 @@ export class API {
      * @template T - `TYPE`: expected object.
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} HTTP `axios` response payload.
      * @memberof Api
      */
@@ -77,7 +90,7 @@ export class API {
      * @template T - `TYPE`: expected object.
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
@@ -92,7 +105,7 @@ export class API {
      * @template T - `TYPE`: expected object.
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
@@ -109,7 +122,7 @@ export class API {
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
      * @param {B} data - payload to be send as the `request body`,
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
@@ -126,7 +139,7 @@ export class API {
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
      * @param {B} data - payload to be send as the `request body`,
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
@@ -143,7 +156,7 @@ export class API {
      * @template R - `RESPONSE`: expected object inside a axios response format.
      * @param {string} url - endpoint you want to reach.
      * @param {B} data - payload to be send as the `request body`,
-     * @param {import("axios").AxiosRequestConfig} [config] - axios request configuration.
+     * @param [config] - axios request configuration.
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
@@ -154,7 +167,7 @@ export class API {
     /**
      *
      * @template T - type.
-     * @param {import("axios").AxiosResponse<T>} response - axios response.
+     * @param response - axios response.
      * @returns {T} - expected object.
      * @memberof Api
      */
