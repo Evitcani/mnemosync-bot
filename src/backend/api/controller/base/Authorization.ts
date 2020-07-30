@@ -1,4 +1,5 @@
 import * as request from 'request-promise';
+const btoa = require('btoa');
 
 export class Authorization {
     private static auth = null;
