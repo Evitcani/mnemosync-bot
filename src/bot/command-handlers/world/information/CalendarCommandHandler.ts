@@ -2,26 +2,25 @@ import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
-import {User} from "../../../../backend/entity/User";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
-import {Calendar} from "../../../../backend/entity/calendar/Calendar";
 import {DonjonCalendar} from "../../../../shared/models/generic/DonjonCalendar";
-import {GameDate} from "../../../../backend/entity/GameDate";
-import {CalendarWeekDay} from "../../../../backend/entity/calendar/CalendarWeekDay";
 import {TYPES} from "../../../../types";
 import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
 import {CalendarEraController} from "../../../../backend/controllers/world/calendar/CalendarEraController";
 import {CalendarMonthController} from "../../../../backend/controllers/world/calendar/CalendarMonthController";
 import {CalendarMoonController} from "../../../../backend/controllers/world/calendar/CalendarMoonController";
 import {CalendarWeekDayController} from "../../../../backend/controllers/world/calendar/CalendarWeekDayController";
-import {CalendarMonth} from "../../../../backend/entity/calendar/CalendarMonth";
-import {CalendarMoon} from "../../../../backend/entity/calendar/CalendarMoon";
 import {WorldAnvilCalendar} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCalendar";
 import {WorldAnvilMonth} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilMonth";
 import {StringUtility} from "../../../../backend/utilities/StringUtility";
 import {WorldAnvilCelestial} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCelestial";
-import {CalendarMoonPhase} from "../../../../backend/entity/calendar/CalendarMoonPhase";
 import {CalendarMoonPhaseController} from "../../../../backend/controllers/world/calendar/CalendarMoonPhaseController";
+import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
+import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
+import {CalendarMonthDTO} from "../../../../backend/api/dto/model/calendar/CalendarMonthDTO";
+import {CalendarWeekDayDTO} from "../../../../backend/api/dto/model/calendar/CalendarWeekDayDTO";
+import {CalendarMoonDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonDTO";
+import {CalendarMoonPhaseDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonPhaseDTO";
 
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {
@@ -47,7 +46,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         this.weekDayController = calendarWeekDayController;
     }
 
-    async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         if (Subcommands.DONJON.isCommand(command)) {
             return this.createNewDonjonCalendar(command, message, user);
         }
@@ -59,7 +58,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return undefined;
     }
 
-    private async createNewWorldAnvilCalendar(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    private async createNewWorldAnvilCalendar(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let json: WorldAnvilCalendar = null;
         if (Subcommands.WORLD_ANVIL.isCommand(command)) {
             let cmd = Subcommands.WORLD_ANVIL.getCommand(command);
@@ -72,7 +71,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
         let name = json.name;
 
-        let calendar: Calendar = await this.getCalendar(name, user, message);
+        let calendar: CalendarDTO = await this.getCalendar(name, user, message);
         if (calendar == null) {
             return null;
         }
@@ -91,7 +90,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             }
 
             // Processing.
-            let month: CalendarMonth, monthWa:WorldAnvilMonth, yearLength = 0, i;
+            let month: CalendarMonthDTO, monthWa:WorldAnvilMonth, yearLength = 0, i;
             for (i = 0; i < json.monthsPerYear; i++) {
                 month = new CalendarMonth();
                 month.order = i;
@@ -280,9 +279,9 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             }
 
             // Processing
-            let moon: CalendarMoon, moon_cyc: number, moon_shf: number, phase: CalendarMoonPhase, i;
+            let moon: CalendarMoonDTO, moon_cyc: number, moon_shf: number, phase: CalendarMoonPhaseDTO, i;
             for (i = 0; i < json.n_moons; i++) {
-                moon = new CalendarMoon();
+                moon = {};
                 moon.calendar = calendar;
                 if (json.moons.length >= i) {
                     moon.name = json.moons[i];
@@ -349,13 +348,13 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return message.channel.send("Saved calendar: " + calendar.name);
     }
 
-    private async getCalendar(name: string, user: User, message: Message): Promise<Calendar> {
-        let calendar: Calendar;
+    private async getCalendar(name: string, user: UserDTO, message: Message): Promise<CalendarDTO> {
+        let calendar: CalendarDTO;
         // Check for existing calendar.
         if (name != null && user.defaultWorldId != null) {
             let calendars = await this.calendarController.getByName(name, user.defaultWorldId);
             if (calendars != null && calendars.length > 0) {
-                let tempCalendar = new Calendar();
+                let tempCalendar: CalendarDTO = {};
                 tempCalendar.name = "No, create a new calendar";
                 calendars.push(tempCalendar);
 
@@ -377,14 +376,14 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return Promise.resolve(calendar);
     }
 
-    private async basicCalendar(name: string, message: Message, user: User): Promise<Calendar> {
+    private async basicCalendar(name: string, message: Message, user: UserDTO): Promise<CalendarDTO> {
         // Return if no default world.
         if (user.defaultWorld == null) {
             await message.channel.send("No default world, could not save calendar.");
             return Promise.resolve(null);
         }
 
-        let calendar = new Calendar();
+        let calendar: CalendarDTO = {};
 
         if (name == null) {
             await message.channel.send("No name given, could not continue.");
@@ -394,14 +393,11 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         // Start parsing the arguments.
         calendar.name = name;
         calendar.world = user.defaultWorld;
-        calendar.epoch = new GameDate();
+        calendar.epoch = {};
         calendar.epoch.day = 0;
         calendar.epoch.month = 0;
         calendar.epoch.year = 0;
         calendar.yearLength = 0;
-
-        // Okay, now we need to save this calendar.
-        calendar = await this.calendarController.save(calendar);
 
         // Setup basics.
         calendar.week = [];
@@ -411,7 +407,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return Promise.resolve(calendar);
     }
 
-    private async processWeekDays(daysPerWeek: number, weekdays: string[], calendar: Calendar): Promise<CalendarWeekDay[]> {
+    private async processWeekDays(daysPerWeek: number, weekdays: string[], calendar: CalendarDTO): Promise<CalendarWeekDayDTO[]> {
         if (!weekdays) {
             return Promise.resolve(null);
         }
@@ -421,12 +417,11 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             await this.weekDayController.delete(calendar);
         }
 
-        let week: CalendarWeekDay[] = [];
-        let i, day: CalendarWeekDay;
+        let week: CalendarWeekDayDTO[] = [];
+        let i, day: CalendarWeekDayDTO;
         for (i = 0; i < daysPerWeek; i++) {
-            day = new CalendarWeekDay();
+            day: CalendarWeekDayDTO = {};
             day.order = i;
-            day.calendar = calendar;
             if (weekdays.length >= i) {
                 day.name = weekdays[i];
             }

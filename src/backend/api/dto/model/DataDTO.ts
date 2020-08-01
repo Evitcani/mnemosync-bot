@@ -1,3 +1,3 @@
 export interface DataDTO {
-    data?: any;
+    data?: any[];
 }

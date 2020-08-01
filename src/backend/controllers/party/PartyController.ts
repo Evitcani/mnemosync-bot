@@ -1,19 +1,20 @@
-import {TableName} from "../../../shared/documentation/databases/TableName";
-import {Party} from "../../entity/Party";
 import {injectable} from "inversify";
-import {AbstractController} from "../Base/AbstractController";
-import {NameValuePair} from "../Base/NameValuePair";
-import {World} from "../../entity/World";
 import {Subcommands} from "../../../shared/documentation/commands/Subcommands";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../entity/User";
 import {PartyRelatedClientResponses} from "../../../shared/documentation/client-responses/information/PartyRelatedClientResponses";
+import {PartyDTO} from "../../api/dto/model/PartyDTO";
+import {UserDTO} from "../../api/dto/model/UserDTO";
+import {WorldDTO} from "../../api/dto/model/WorldDTO";
+import {API} from "../../api/controller/base/API";
+import {apiConfig} from "../../api/controller/base/APIConfig";
+import {DataDTO} from "../../api/dto/model/DataDTO";
+import {DTOType} from "../../api/dto/DTOType";
 
 @injectable()
-export class PartyController extends AbstractController<Party> {
+export class PartyController extends API {
     constructor() {
-        super(TableName.PARTY);
+        super(apiConfig);
     }
 
     /**
@@ -23,26 +24,42 @@ export class PartyController extends AbstractController<Party> {
      * @param guildId The ID of the guild for this party to live in.
      * @param discordId The discord id of the creator.
      */
-    public create(partyName: string, guildId: string, discordId: string): Promise<Party> {
-        const party = new Party();
+    public create(partyName: string, guildId: string, discordId: string): Promise<PartyDTO> {
+        const party: PartyDTO = {dtoType: DTOType.PARTY};
         party.name = partyName;
         party.guildId = guildId;
         party.creatorDiscordId = discordId;
 
-        return this.getRepo().save(party).then((party) => {
-            return party;
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(party);
+        config.data = data;
+
+        return this.post(`/party`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
         }).catch((err: Error) => {
-            console.error("ERR ::: Could not create new party.");
+            console.log("Caught error trying to create new party.");
             console.error(err);
             return null;
         });
     }
 
-    public save (party: Party): Promise<Party> {
-        return this.getRepo().save(party).then((party) => {
-            return party;
+    public save (party: PartyDTO): Promise<PartyDTO> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(party);
+        config.data = data;
+
+        return this.post(`/party/${party.id}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
         }).catch((err: Error) => {
-            console.error("ERR ::: Could not save party.");
+            console.log("Caught error.");
             console.error(err);
             return null;
         });
@@ -53,48 +70,54 @@ export class PartyController extends AbstractController<Party> {
      *
      * @param id The ID of the party.
      */
-    public getById (id: number): Promise<Party> {
-        return this.getRepo().findOne({where: {id: id}}).then((party) => {
-            if (party == undefined) {
-                return null;
-            }
-            return party;
+    public getById (id: number): Promise<PartyDTO> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        let party: PartyDTO = {dtoType: DTOType.PARTY};
+        party.id = id;
+        data.data = [];
+        data.data.push(party);
+        config.data = data;
+
+        return this.get<PartyDTO>(`/party/${id}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
         }).catch((err: Error) => {
-            console.error("ERR ::: Could not get party.");
+            console.log("Caught error trying to get party by ID.");
             console.error(err);
             return null;
         });
     }
 
-    public getByGuild (guildId: string): Promise<Party[]> {
-        return this.getRepo().find({where: {guildId: guildId}}).then((parties) => {
-            if (parties == undefined) {
-                return null;
-            }
-            return parties;
+    public getByGuild (guildId: string): Promise<PartyDTO[]> {
+        return this.getByNameAndGuild(null, guildId);
+    }
+
+    public getByWorld (world: WorldDTO): Promise<PartyDTO[]> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        let party: PartyDTO = {dtoType: DTOType.PARTY};
+        party.world = {dtoType: DTOType.WORLD};
+        party.world.id = world.id;
+        data.data = [];
+        data.data.push(party);
+        config.data = data;
+
+        return this.get(`/world/${world.id}/party`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
         }).catch((err: Error) => {
-            console.error("ERR ::: Could not get parties in guild.");
+            console.log("Caught error.");
             console.error(err);
             return null;
         });
     }
 
-    public getByWorld (world: World): Promise<Party[]> {
-        return this.getRepo().find({where: {world: world}}).then((parties) => {
-            if (parties == undefined || parties.length < 1) {
-                return null;
-            }
-            return parties;
-        }).catch((err: Error) => {
-            console.error("ERR ::: Could not get parties in world.");
-            console.error(err);
-            return null;
-        });
-    }
-
-    public updatePartyWorld (party: Party, world: World): Promise<Party> {
+    public updatePartyWorld (party: PartyDTO, world: WorldDTO): Promise<PartyDTO> {
         party.world = world;
-        return this.getRepo().save(party);
+        return this.save(party);
     }
 
     /**
@@ -103,20 +126,30 @@ export class PartyController extends AbstractController<Party> {
      * @param partyName The name of the party to get.
      * @param guildId The ID of the guild the party lives in.
      */
-    public getByNameAndGuild(partyName: string, guildId: string): Promise<Party[]> {
-        return this.getLikeArgs(
-            [new NameValuePair("guild_id", guildId)],
-            [new NameValuePair("name", partyName)])
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not get parties.");
-                console.error(err);
-                return null;
-            });
+    public getByNameAndGuild(partyName: string, guildId: string): Promise<PartyDTO[]> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        let party: PartyDTO = {dtoType: DTOType.PARTY};
+        party.guildId = guildId;
+        party.name = partyName;
+        data.data = [];
+        data.data.push(party);
+        config.data = data;
+
+        return this.get(`/guild/${guildId}/party`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
-    public async getPartyBasedOnInputOrUser(command: Command, message: Message, user: User, action: string): Promise<Party> {
+    public async getPartyBasedOnInputOrUser(command: Command, message: Message, user: UserDTO, action: string): Promise<PartyDTO> {
         // Check the user has assigned a party or has one.
-        let parties: Party[] = null;
+        let parties: PartyDTO[] = null;
         if (Subcommands.PARTY.isCommand(command)) {
             let ptCmd = Subcommands.PARTY.getCommand(command);
             if (ptCmd.getInput() != null) {
@@ -148,7 +181,7 @@ export class PartyController extends AbstractController<Party> {
         return this.partySelection(parties, action, message);
     }
 
-    public async partySelection(parties: Party[], action: string, message: Message): Promise<Party> {
+    public async partySelection(parties: PartyDTO[], action: string, message: Message): Promise<PartyDTO> {
         return message.channel.send(PartyRelatedClientResponses.SELECT_PARTY(parties, action)).then((msg) => {
             return message.channel.awaitMessages(m => m.author.id === message.author.id, {
                 max: 1,

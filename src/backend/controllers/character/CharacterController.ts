@@ -1,18 +1,21 @@
-import {Character} from "../../entity/Character";
 import {injectable} from "inversify";
-import {TableName} from "../../../shared/documentation/databases/TableName";
-import {Nickname} from "../../entity/Nickname";
-import {AbstractSecondaryController} from "../Base/AbstractSecondaryController";
 import {NameValuePair} from "../Base/NameValuePair";
-import {Party} from "../../entity/Party";
 import {getConnection} from "typeorm";
 import {StringUtility} from "../../utilities/StringUtility";
 import {Collection} from "discord.js";
+import {API} from "../../api/controller/base/API";
+import {apiConfig} from "../../api/controller/base/APIConfig";
+import {CharacterDTO} from "../../api/dto/model/CharacterDTO";
+import {DataDTO} from "../../api/dto/model/DataDTO";
+import {NicknameDTO} from "../../api/dto/model/NicknameDTO";
+import {DTOType} from "../../api/dto/DTOType";
+import {PartyDTO} from "../../api/dto/model/PartyDTO";
+import {UserDTO} from "../../api/dto/model/UserDTO";
 
 @injectable()
-export class CharacterController extends AbstractSecondaryController<Character, Nickname> {
+export class CharacterController extends API {
     constructor() {
-        super(TableName.CHARACTER, TableName.USER_TO_CHARACTER);
+        super(apiConfig);
     }
 
     /**
@@ -20,74 +23,74 @@ export class CharacterController extends AbstractSecondaryController<Character, 
      *
      * @param id The ID of the character to get.
      */
-    public async getById(id: number): Promise<Character> {
-        // Not a valid argument.
-        if (id == null || id < 1) {
-            return null;
-        }
+    public async getById(id: number): Promise<CharacterDTO> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        let character: CharacterDTO = {dtoType: DTOType.CHARACTER};
+        character.id = id;
+        data.data = [];
+        data.data.push(character);
+        config.data = data;
 
-        return this.getRepo().findOne({where: {id: id}, relations: ["party", "travel_config"]})
-            .then((character) => {
-                // Check the party is valid.
-
-                return character;
-            })
-            .catch((err: Error) => {
-            console.error("ERR ::: Could not get character by ID.");
+        return this.get(`/character/${id}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
             console.error(err);
             return null;
         });
     }
 
-    public async create(character: Character, discordId: string): Promise<Character> {
+    public async create(character: CharacterDTO, discordId: string): Promise<CharacterDTO> {
         // Create nickname for the mapping.
-        const nickname = new Nickname();
-        nickname.discord_id = discordId;
-        nickname.character = character;
+        const nickname: NicknameDTO = {dtoType: DTOType.NICKNAME};
         nickname.name = character.name;
 
         // Add the nickname to the character.
         character.nicknames = [];
         character.nicknames.push(nickname);
 
-        return this.getRepo().save(character).then((char) => {
-            if (!char) {
-                return null;
-            }
-            return this.createNickname(nickname.name, char, discordId).then((nick) => {
-                if (nick == null) {
-                    return this.getRepo().delete(char).then(() => {
-                        return null;
-                    }).catch((err: Error) => {
-                        console.error("ERR ::: Could not delete character after failed nickname mapping.");
-                        console.log(err.stack);
-                        return null;
-                    });
-                }
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(character);
+        config.data = data;
 
-                return char;
-            });
+        return this.post(`/character`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
         }).catch((err: Error) => {
-            console.error("ERR ::: Could not create the new character.");
-            console.log(err.stack);
-            return null;
-        });
-    }
-
-    public async createNickname (nickname: string, character: Character, discordId: string): Promise<Nickname> {
-        const nn = new Nickname();
-        nn.discord_id = discordId;
-        nn.name = nickname;
-        nn.character = character;
-
-        return this.getSecondaryRepo().save(nn).catch((err: Error) => {
-            console.error("ERR ::: Could not create new nickname.");
+            console.log("Caught error trying to create new party.");
             console.error(err);
             return null;
         });
     }
 
-    public async getCharacterByNameInParties (name: string, parties: Party[]): Promise<Character[]> {
+    public async createNickname (nickname: string, character: CharacterDTO, discordId: string): Promise<NicknameDTO> {
+        // Create nickname for the mapping.
+        const nn: NicknameDTO = {dtoType: DTOType.NICKNAME};
+        nn.name = character.name;
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(nn);
+        config.data = data;
+
+        return this.post(`/character/${character.id}/nickname`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to create new party.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    public async getCharacterByNameInParties (name: string, parties: PartyDTO[]): Promise<CharacterDTO[]> {
         let sanitizedName = StringUtility.escapeSQLInput(name);
         let partyIds: number[] = [], i;
         for (i = 0; i < parties.length; i++) {
@@ -95,7 +98,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
         }
 
         return getConnection()
-            .createQueryBuilder(Character, "character")
+            .createQueryBuilder(CharacterD, "character")
             .leftJoinAndSelect(Nickname, "nick", `character.id = "nick"."characterId"`)
             .where(`LOWER("nick"."name") LIKE LOWER('%${sanitizedName}%')`)
             .andWhere(`"character"."partyId" = ANY(ARRAY[${partyIds.join(",")}])`)
@@ -114,7 +117,7 @@ export class CharacterController extends AbstractSecondaryController<Character, 
             });
     }
 
-    public async getCharacterByName(name: string, discordId: string): Promise<Character> {
+    public async getCharacterByName(name: string, discordId: string): Promise<CharacterDTO> {
         return this.getNicknameByNickname(name, discordId).then((nickname) => {
             if (nickname == null || nickname.length < 1) {
                 return null;

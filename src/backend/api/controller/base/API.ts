@@ -39,7 +39,7 @@ export class API {
      * @returns {string}
      * @memberof Api
      */
-    public getUri (config?: AxiosRequestConfig): string {
+    protected getUri (config?: AxiosRequestConfig): string {
         return this.api.getUri(config);
     }
 
@@ -64,7 +64,7 @@ export class API {
      * }).then((response: AxiosResponse<User>) => response.data)
      *
      */
-    public request<T, R = AxiosResponse<T>> (config: AxiosRequestConfig): Promise<R> {
+    protected request<T, R = AxiosResponse<T>> (config: AxiosRequestConfig): Promise<R> {
         return this.api.request(config);
     }
 
@@ -79,7 +79,7 @@ export class API {
      * @returns {Promise<R>} HTTP `axios` response payload.
      * @memberof Api
      */
-    public get<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+    protected get<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
         return this.api.get(url, config);
     }
 
@@ -94,7 +94,7 @@ export class API {
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
-    public delete<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+    protected delete<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
         return this.api.delete(url, config);
     }
 
@@ -109,7 +109,7 @@ export class API {
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
-    public head<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+    protected head<T, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
         return this.api.head(url, config);
     }
 
@@ -126,7 +126,7 @@ export class API {
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
-    public post<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
+    protected post<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
         return this.api.post(url, data, config);
     }
 
@@ -143,7 +143,7 @@ export class API {
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
-    public put<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
+    protected put<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
         return this.api.put(url, data, config);
     }
 
@@ -160,7 +160,7 @@ export class API {
      * @returns {Promise<R>} - HTTP [axios] response payload.
      * @memberof Api
      */
-    public patch<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
+    protected patch<T, B, R = AxiosResponse<T>> (url: string, data?: B, config?: AxiosRequestConfig): Promise<R> {
         return this.api.patch(url, data, config);
     }
 
@@ -171,11 +171,11 @@ export class API {
      * @returns {T} - expected object.
      * @memberof Api
      */
-    public success<T> (response: AxiosResponse<T>): T {
+    protected success<T> (response: AxiosResponse<T>): T {
         return response.data;
     }
 
-    public error (error: AxiosError<Error>) {
+    protected error (error: AxiosError<Error>) {
         throw error;
     }
 }

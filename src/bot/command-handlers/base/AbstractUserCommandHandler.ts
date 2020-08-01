@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../backend/entity/User";
+import {UserDTO} from "../../../backend/api/dto/model/UserDTO";
 
 @injectable()
 export abstract class AbstractUserCommandHandler {
@@ -15,5 +15,5 @@ export abstract class AbstractUserCommandHandler {
         return undefined;
     }
 
-    abstract async handleUserCommand (command: Command, message: Message, user: User): Promise<Message | Message[]>;
+    abstract async handleUserCommand (command: Command, message: Message, user: UserDTO): Promise<Message | Message[]>;
 }

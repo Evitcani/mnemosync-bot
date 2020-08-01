@@ -1,5 +1,8 @@
+import {DTOType} from "../DTOType";
+
 export interface DateDTO {
     id?: string;
+    dtoType: DTOType.DATE;
     name?: string;
     description?: string;
     recurrence?: string;

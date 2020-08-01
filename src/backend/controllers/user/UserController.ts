@@ -1,41 +1,19 @@
-import {AbstractController} from "../Base/AbstractController";
-import {User} from "../../entity/User";
-import {TableName} from "../../../shared/documentation/databases/TableName";
-import {inject, injectable} from "inversify";
-import {Character} from "../../entity/Character";
-import {World} from "../../entity/World";
-import {getConnection} from "typeorm";
-import {UserApi} from "../../api/controller/UserApi";
-import {TYPES} from "../../../types";
+import {injectable} from "inversify";
+import {UserDTO} from "../../api/dto/model/UserDTO";
+import {CharacterDTO} from "../../api/dto/model/CharacterDTO";
+import {WorldDTO} from "../../api/dto/model/WorldDTO";
+import {API} from "../../api/controller/base/API";
+import {apiConfig} from "../../api/controller/base/APIConfig";
+import {DataDTO} from "../../api/dto/model/DataDTO";
+import {DTOType} from "../../api/dto/DTOType";
 
 @injectable()
-export class UserController extends AbstractController<User> {
-    private userApi: UserApi;
-
+export class UserController extends API {
     /**
      * Construct this controller.
      */
-    constructor(@inject(TYPES.UserApi) userApi: UserApi) {
-        super(TableName.USER);
-        this.userApi = userApi;
-    }
-
-    /**
-     * Creates a new user.
-     *
-     * @param discordId The discord ID of the user.
-     * @param discordName The discord name of user.
-     */
-    private async create(discordId: string, discordName: string): Promise<User> {
-        const tempUser = new User();
-        tempUser.discord_id = discordId;
-        tempUser.discord_name = discordName;
-
-        return this.getRepo().save(tempUser).catch((err: Error) => {
-            console.error("ERR ::: Could not create new user.");
-            console.error(err);
-            return null;
-        });
+    constructor() {
+        super(apiConfig);
     }
 
     /**
@@ -44,32 +22,20 @@ export class UserController extends AbstractController<User> {
      * @param discordId The discord ID of the user.
      * @param discordName The discord name of user.
      */
-    public async get(discordId: string, discordName: string): Promise<User> {
-        await this.userApi.getById(discordId, discordName);
-
-        return this.getRepo().findOne({
-                where: {
-                    discord_id: discordId
-                },
-                relations: ["defaultCharacter", "defaultWorld", "defaultParty"]
-            })
-            .then((user) => {
-                if (!user) {
-                    return this.create(discordId, discordName);
-                }
-
-                // Update the name, if needed.
-                if (user.discord_name != discordName) {
-                    user.discord_name = discordName;
-                    return this.save(user);
-                }
-
-                return user;
-            }).catch((err: Error) => {
-                console.error("ERR ::: Could not get the user.");
-                console.error(err);
-                return null;
-            });
+    public async getById(discordId: string, discordName: string): Promise<UserDTO> {
+        let config = apiConfig;
+        config.params = {
+            discord_name: discordName
+        };
+        return this.get(`/user/${discordId}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
     /**
@@ -78,10 +44,10 @@ export class UserController extends AbstractController<User> {
      * @param user The user to update.
      * @param character The new character to make default.
      */
-    public async updateDefaultCharacter(user: User, character: Character): Promise<User> {
+    public async updateDefaultCharacter(user: UserDTO, character: CharacterDTO): Promise<UserDTO> {
         user.defaultCharacter = character;
-        user.defaultCharacterId = character.id;
-        return this.save(user);
+
+        return this.save(user.discord_id, user);
     }
 
     /**
@@ -90,38 +56,34 @@ export class UserController extends AbstractController<User> {
      * @param user The user to update.
      * @param world The new character to make default.
      */
-    public async updateDefaultWorld(user: User, world: World): Promise<User> {
+    public async updateDefaultWorld(user: UserDTO, world: WorldDTO): Promise<UserDTO> {
         if (world != null) {
             user.defaultWorld = world;
         } else {
             user.defaultWorld = null;
         }
-
-        return this.save(user);
-    }
-
-    public async addWorld(user: User, world: World): Promise<User> {
-        return getConnection()
-            .createQueryBuilder()
-            .relation(User, "campaignsDMing")
-            .of(user)
-            .add(world).then(() => {
-                return user;
-            }).catch((err: Error) => {
-                console.error("ERR ::: Could not add new world.");
-                console.error(err);
-                return null;
-            });
+        return this.save(user.discord_id,user);
     }
 
     /**
      * Saves the user.
      *
-     * @param user The user to save.
+     * @param discordId
+     * @param user
      */
-    public async save(user: User): Promise<User> {
-        return this.getRepo().save(user).catch((err: Error) => {
-            console.error("ERR ::: Could not save the user.");
+    public async save(discordId: string, user: UserDTO): Promise<UserDTO> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(user);
+        config.data = data;
+
+        return this.put(`/user/${discordId}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
             console.error(err);
             return null;
         });

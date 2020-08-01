@@ -37,7 +37,6 @@ import {DateCommandHandler} from "./bot/command-handlers/world/information/DateC
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
 import {CalendarMoonPhaseController} from "./backend/controllers/world/calendar/CalendarMoonPhaseController";
-import {UserApi} from "./backend/api/controller/UserApi";
 
 let container = new Container();
 
@@ -83,7 +82,5 @@ container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundContr
 container.bind<SendingController>(TYPES.SendingController).to(SendingController).inSingletonScope();
 container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
 container.bind<WorldController>(TYPES.WorldController).to(WorldController).inSingletonScope();
-
-container.bind<UserApi>(TYPES.UserApi).to(UserApi).inSingletonScope();
 
 export default container;

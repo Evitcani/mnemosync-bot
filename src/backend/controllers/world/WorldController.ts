@@ -1,22 +1,20 @@
-import {AbstractController} from "../Base/AbstractController";
-import {World} from "../../entity/World";
-import {TableName} from "../../../shared/documentation/databases/TableName";
 import {injectable} from "inversify";
-import {User} from "../../entity/User";
-import {StringUtility} from "../../utilities/StringUtility";
 import {Collection, Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
-import {getConnection} from "typeorm";
-import {BaseQueryRunner} from "typeorm/query-runner/BaseQueryRunner";
-import {Nickname} from "../../entity/Nickname";
+import {WorldDTO} from "../../api/dto/model/WorldDTO";
+import {UserDTO} from "../../api/dto/model/UserDTO";
+import {API} from "../../api/controller/base/API";
+import {apiConfig} from "../../api/controller/base/APIConfig";
+import {DataDTO} from "../../api/dto/model/DataDTO";
+import {DTOType} from "../../api/dto/DTOType";
 
 @injectable()
-export class WorldController extends AbstractController<World> {
+export class WorldController extends API {
     /**
      * Constructs this controller.
      */
     constructor() {
-        super(TableName.WORLD);
+        super(apiConfig);
     }
 
     /**
@@ -24,18 +22,27 @@ export class WorldController extends AbstractController<World> {
      *
      * @param world The world to create.
      */
-    public async create(world: World): Promise<World> {
-        return this.getRepo().save(world)
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not create new world.");
-                console.error(err);
-                return null;
-            });
+    public async create(world: WorldDTO): Promise<WorldDTO> {
+        let config = apiConfig;
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(world);
+        config.data = data;
+
+        return this.post(`/world`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to create new world.");
+            console.error(err);
+            return null;
+        });
     }
 
-    public async worldSelectionFromUser(user: User, message: Message): Promise<World> {
+    public async worldSelectionFromUser(user: UserDTO, message: Message): Promise<WorldDTO> {
         // If the default world is not null, then add the character on that world.
-        let worlds: World[] = [];
+        let worlds: WorldDTO[] = [];
         if (user.defaultWorld != null) {
             worlds.push(user.defaultWorld);
         }
@@ -57,7 +64,7 @@ export class WorldController extends AbstractController<World> {
         return this.worldSelection(worlds, message);
     }
 
-    public async worldSelection(worlds: World[], message: Message): Promise<World> {
+    public async worldSelection(worlds: WorldDTO[], message: Message): Promise<WorldDTO> {
         return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
             return message.channel.awaitMessages(m => m.author.id === message.author.id, {
                 max: 1,
@@ -88,21 +95,22 @@ export class WorldController extends AbstractController<World> {
      * @param name The name of the world to get.
      * @param user
      */
-    public getByNameAndUser(name: string, user: User): Promise<World[]> {
-        let sanitizedName = StringUtility.escapeSQLInput(name);
+    public getByNameAndUser(name: string, user: UserDTO): Promise<WorldDTO[]> {
+        let config = apiConfig;
+        config.params = {
+            name: name,
+            discord_id: user.discord_id
+        };
 
-        return this
-            .getRepo()
-            .createQueryBuilder("world")
-            .leftJoinAndSelect(TableName.WORLD_OWNERS, "owners", `world.id = "owners"."worldsId"`)
-            .where(`"owners"."usersId" = ${user.id}`)
-            .andWhere(`LOWER(world.name) LIKE LOWER('%${sanitizedName}%')`)
-            .getMany()
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not get worlds.");
-                console.error(err);
-                return null;
-            });
+        return this.get(`/worlds`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
     /**
@@ -112,33 +120,35 @@ export class WorldController extends AbstractController<World> {
      * @param user
      */
     public getDiscordId(id: string): Promise<Collection<string, string>> {
-        return getConnection()
-            .createQueryBuilder(User, "user")
-            .leftJoinAndSelect(TableName.WORLD_OWNERS, "owners", `user.id = "owners"."usersId"`)
-            .where(`"owners"."worldsId" = '${id}'`)
-            .getMany()
-            .then((users) => {
-                if (!users || users.length < 1) {
-                    return null;
-                }
-
-                let input = new Collection<string, string>(), user: User, discordId: string, i;
-                for (i = 0; i < users.length; i++) {
-                    user = users[i];
-                    discordId = user.discord_id;
-                    input.set(discordId, discordId);
-                }
-
-                return input;
-            })
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not get worlds.");
-                console.error(err);
-                return null;
-            });
+        return this.get(`/world/${id}/user`).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
-    public static isWorld(obj: any): obj is World {
-        return ((obj as World).type != undefined && (obj as World).type == "World") || typeof (obj as World).id == "string";
+    public async addWorld(user: UserDTO, world: WorldDTO): Promise<WorldDTO> {
+        let config = apiConfig;
+        config.params = {
+            discord_id: user.discord_id
+        };
+
+        return this.post(`/worlds/${world.id}`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    public static isWorld(obj: any): obj is WorldDTO {
+        return ((obj as WorldDTO).dtoType == DTOType.WORLD);
     }
 }
