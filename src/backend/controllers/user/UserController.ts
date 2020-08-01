@@ -5,7 +5,6 @@ import {WorldDTO} from "../../api/dto/model/WorldDTO";
 import {API} from "../../api/controller/base/API";
 import {apiConfig} from "../../api/controller/base/APIConfig";
 import {DataDTO} from "../../api/dto/model/DataDTO";
-import {DTOType} from "../../api/dto/DTOType";
 
 @injectable()
 export class UserController extends API {

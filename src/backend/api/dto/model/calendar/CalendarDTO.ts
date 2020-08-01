@@ -14,7 +14,7 @@ export class CalendarDTO {
     name?: string;
     yearLength?: number;
     description?: string;
-    world?: WorldDTO;
+    worldId?: string;
     epoch?: DateDTO;
     eras?: CalendarEraDTO[];
     months?: CalendarMonthDTO[];

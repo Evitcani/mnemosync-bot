@@ -4,7 +4,7 @@ import {Calendar} from "../../../../backend/entity/calendar/Calendar";
 import {Party} from "../../../../backend/entity/Party";
 import {CurrentDate} from "../../../../backend/entity/CurrentDate";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
-import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
+import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
 import {messageResponse} from "../../messages/MessageResponse";
 import {messageTypes} from "../../messages/MessageTypes";
 import {messageEmbed} from "../../messages/MessageEmbed";

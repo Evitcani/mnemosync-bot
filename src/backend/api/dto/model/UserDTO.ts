@@ -1,6 +1,3 @@
-import {CharacterDTO} from "./CharacterDTO";
-import {WorldDTO} from "./WorldDTO";
-import {PartyDTO} from "./PartyDTO";
 import {DTOType} from "../DTOType";
 
 export interface UserDTO {
@@ -10,7 +7,7 @@ export interface UserDTO {
     updatedDate?: Date;
     discord_name?: string;
     discord_id?: string;
-    defaultCharacter?: CharacterDTO;
-    defaultWorld?: WorldDTO;
-    defaultParty?: PartyDTO;
+    defaultCharacterId?: number;
+    defaultWorldId?: string;
+    defaultPartyId?: number;
 }

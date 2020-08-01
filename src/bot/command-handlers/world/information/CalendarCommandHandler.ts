@@ -5,16 +5,11 @@ import {inject, injectable} from "inversify";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {DonjonCalendar} from "../../../../shared/models/generic/DonjonCalendar";
 import {TYPES} from "../../../../types";
-import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
-import {CalendarEraController} from "../../../../backend/controllers/world/calendar/CalendarEraController";
-import {CalendarMonthController} from "../../../../backend/controllers/world/calendar/CalendarMonthController";
-import {CalendarMoonController} from "../../../../backend/controllers/world/calendar/CalendarMoonController";
-import {CalendarWeekDayController} from "../../../../backend/controllers/world/calendar/CalendarWeekDayController";
+import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
 import {WorldAnvilCalendar} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCalendar";
 import {WorldAnvilMonth} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilMonth";
 import {StringUtility} from "../../../../backend/utilities/StringUtility";
 import {WorldAnvilCelestial} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCelestial";
-import {CalendarMoonPhaseController} from "../../../../backend/controllers/world/calendar/CalendarMoonPhaseController";
 import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
 import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
 import {CalendarMonthDTO} from "../../../../backend/api/dto/model/calendar/CalendarMonthDTO";
@@ -26,25 +21,10 @@ import {DTOType} from "../../../../backend/api/dto/DTOType";
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {
     private calendarController: CalendarController;
-    private eraController: CalendarEraController;
-    private monthController: CalendarMonthController;
-    private moonController: CalendarMoonController;
-    private phaseController: CalendarMoonPhaseController;
-    private weekDayController: CalendarWeekDayController;
 
-    constructor(@inject(TYPES.CalendarController) calendarController: CalendarController,
-                @inject(TYPES.CalendarEraController) calendarEraController: CalendarEraController,
-                @inject(TYPES.CalendarMonthController) calendarMonthController: CalendarMonthController,
-                @inject(TYPES.CalendarMoonController) calendarMoonController: CalendarMoonController,
-                @inject(TYPES.CalendarMoonPhaseController) calendarMoonPhaseController: CalendarMoonPhaseController,
-                @inject(TYPES.CalendarWeekDayController) calendarWeekDayController: CalendarWeekDayController) {
+    constructor(@inject(TYPES.CalendarController) calendarController: CalendarController) {
         super();
         this.calendarController = calendarController;
-        this.eraController = calendarEraController;
-        this.monthController = calendarMonthController;
-        this.moonController = calendarMoonController;
-        this.phaseController = calendarMoonPhaseController;
-        this.weekDayController = calendarWeekDayController;
     }
 
     async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
@@ -78,24 +58,17 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Process the week days.
-        calendar.week = await this.processWeekDays(json.daysPerWeek, json.days, calendar);
+        calendar.week = CalendarCommandHandler.processWeekDays(json.daysPerWeek, json.days, calendar);
 
         // Now process the months.
         if (!!json.months) {
-            // Check if months already exist, then delete.
-            if (calendar.months != null && calendar.months.length > 0) {
-                await this.monthController.delete(calendar);
-
-                // Set the length of the year.
-                calendar.yearLength = 0;
-            }
+            calendar.months = [];
 
             // Processing.
             let month: CalendarMonthDTO, monthWa:WorldAnvilMonth, yearLength = 0, i;
             for (i = 0; i < json.monthsPerYear; i++) {
-                month = new CalendarMonth();
+                month = {dtoType: DTOType.CALENDAR_MONTH};
                 month.order = i;
-                month.calendar = calendar;
                 monthWa = json.months[i];
 
                 // Now break down this...
@@ -112,7 +85,6 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 }
 
                 // Now we save this month.
-                month = await this.monthController.save(month);
                 calendar.months.push(month);
             }
 
@@ -120,7 +92,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             calendar.yearLength = yearLength;
         }
 
-        calendar = await this.createWorldAnvilCelestials(json, calendar);
+        calendar = await CalendarCommandHandler.createWorldAnvilCelestials(json, calendar);
 
         // Now save again.
         calendar = await this.calendarController.save(calendar);
@@ -128,22 +100,18 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return message.channel.send("Saved calendar: " + calendar.name);
     }
 
-    private async createWorldAnvilCelestials(json: WorldAnvilCalendar, calendar: Calendar): Promise<Calendar> {
+    private static createWorldAnvilCelestials(json: WorldAnvilCalendar, calendar: CalendarDTO): CalendarDTO {
         // Nothing to process.
         if (json.celestials == undefined || json.celestials.length <= 0) {
-            return Promise.resolve(calendar);
+            return calendar;
         }
 
-        // Delete older moons.
-        if (calendar.moons != null && calendar.moons.length > 0) {
-            await this.moonController.delete(calendar);
-        }
+        calendar.moons = [];
 
         // Now process the moons.
-        let moon: CalendarMoon, moonWa: WorldAnvilCelestial, phase: CalendarMoonPhase, i;
+        let moon: CalendarMoonDTO, moonWa: WorldAnvilCelestial, phase: CalendarMoonPhaseDTO, i;
         for (i = 0; i < json.celestialBodyCount; i++) {
-            moon = new CalendarMoon();
-            moon.calendar = calendar;
+            moon = {dtoType: DTOType.CALENDAR_MOON};
             moonWa = json.celestials[i];
 
             // Set these up.
@@ -158,58 +126,57 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             }
 
             // Now we save this calendar.
-            moon = await this.moonController.save(moon);
             calendar.moons.push(moon);
 
             // Start to process the phases.
             moon.phases = [];
 
             // Full moon.
-            phase = await this.createNewPhase(moonWa.phaseNames.full, 337, 22, 0, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.full, 337, 22, 0);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingGibbous, 22, 67, 1, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waxingGibbous, 22, 67, 1);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingQuarter, 67, 112, 2, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waxingQuarter, 67, 112, 2);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waxingCrescent, 112, 157, 3, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waxingCrescent, 112, 157, 3);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.old, 157, 167, 4, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.old, 157, 167, 4);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.new, 167, 192, 5, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.new, 167, 192, 5);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.young, 192, 202, 6, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.young, 192, 202, 6);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningCrescent, 202, 247, 7, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waningCrescent, 202, 247, 7);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningQuarter, 247, 292, 8, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waningQuarter, 247, 292, 8);
             moon.phases.push(phase);
 
-            phase = await this.createNewPhase(moonWa.phaseNames.waningGibbous, 292, 337, 9, moon);
+            phase = this.createNewPhase(moonWa.phaseNames.waningGibbous, 292, 337, 9);
             moon.phases.push(phase);
         }
 
-        return Promise.resolve(calendar);
+        return calendar;
     }
 
-    private async createNewPhase(name: string, viewingAngleStart: number, viewingAngleEnd: number, order: number, moon: CalendarMoon): Promise<CalendarMoonPhase> {
-        let phase = new CalendarMoonPhase();
+    private static createNewPhase(name: string, viewingAngleStart: number, viewingAngleEnd: number,
+                                  order: number): CalendarMoonPhaseDTO {
+        let phase: CalendarMoonPhaseDTO = {dtoType: DTOType.CALENDAR_MOON_PHASE};
         phase.name = name;
         phase.viewingAngleStart = viewingAngleStart;
         phase.viewingAngleEnd = viewingAngleEnd;
         phase.order = order;
-        phase.moon = moon;
-        return this.phaseController.save(phase);
+        return phase;
     }
 
-    private async createNewDonjonCalendar(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    private async createNewDonjonCalendar(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let json: DonjonCalendar = null;
         if (Subcommands.DONJON.isCommand(command)) {
             let cmd = Subcommands.DONJON.getCommand(command);
@@ -226,27 +193,23 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             name = cmd.getInput();
         }
 
-        let calendar: Calendar = await this.getCalendar(name, user, message);
+        let calendar: CalendarDTO = await this.getCalendar(name, user, message);
         if (calendar == null) {
             return null;
         }
 
         // Now begin processing the weeks.
-        calendar.week = await this.processWeekDays(json.week_len, json.weekdays, calendar);
+        calendar.week = await CalendarCommandHandler.processWeekDays(json.week_len, json.weekdays, calendar);
 
         // Now process the months.
         if (!!json.months) {
-            // Check if months already exist, then delete.
-            if (calendar.months != null && calendar.months.length > 0) {
-                await this.monthController.delete(calendar);
-            }
+            calendar.months = [];
 
             // Processing.
-            let month: CalendarMonth, month_len: number, yearLength = 0, i;
+            let month: CalendarMonthDTO, month_len: number, yearLength = 0, i;
             for (i = 0; i < json.n_months; i++) {
-                month = new CalendarMonth();
+                month = {dtoType: DTOType.CALENDAR_MONTH};
                 month.order = i;
-                month.calendar = calendar;
                 if (json.months.length >= i) {
                     month.name = json.months[i];
                 }
@@ -264,7 +227,6 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 }
 
                 // Now we save this calendar.
-                month = await this.monthController.save(month);
                 calendar.months.push(month);
             }
 
@@ -274,16 +236,12 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
         // Now process the moons.
         if  (json.moons != undefined && json.moons.length > 0) {
-            // Delete older moons.
-            if (calendar.moons != null && calendar.moons.length > 0) {
-                await this.moonController.delete(calendar);
-            }
+            calendar.moons = [];
 
             // Processing
             let moon: CalendarMoonDTO, moon_cyc: number, moon_shf: number, phase: CalendarMoonPhaseDTO, i;
             for (i = 0; i < json.n_moons; i++) {
-                moon = {};
-                moon.calendar = calendar;
+                moon = {dtoType: DTOType.CALENDAR_MOON};
                 if (json.moons.length >= i) {
                     moon.name = json.moons[i];
                 }
@@ -306,39 +264,38 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 }
 
                 // Now we save this calendar.
-                moon = await this.moonController.save(moon);
                 calendar.moons.push(moon);
 
                 moon.phases = [];
 
-                phase = await this.createNewPhase("Full", 337, 22, 0, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Full", 337, 22, 0);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Waxing Gibbous", 22, 67, 1, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Waxing Gibbous", 22, 67, 1);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("First Quarter", 67, 112, 2, moon);
+                phase = await CalendarCommandHandler.createNewPhase("First Quarter", 67, 112, 2);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Waxing Crescent", 112, 157, 3, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Waxing Crescent", 112, 157, 3);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Old", 157, 167, 4, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Old", 157, 167, 4);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("New", 167, 192, 5, moon);
+                phase = await CalendarCommandHandler.createNewPhase("New", 167, 192, 5);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Young", 192, 202, 6, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Young", 192, 202, 6);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Waning Crescent", 202, 247, 7, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Waning Crescent", 202, 247, 7);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Last Quarter", 247, 292, 8, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Last Quarter", 247, 292, 8);
                 moon.phases.push(phase);
 
-                phase = await this.createNewPhase("Waning Gibbous", 292, 337, 9, moon);
+                phase = await CalendarCommandHandler.createNewPhase("Waning Gibbous", 292, 337, 9);
                 moon.phases.push(phase);
             }
         }
@@ -350,22 +307,22 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
     }
 
     private async getCalendar(name: string, user: UserDTO, message: Message): Promise<CalendarDTO> {
-        let calendar: CalendarDTO;
+        let calendar: CalendarDTO = null;
         // Check for existing calendar.
         if (name != null && user.defaultWorldId != null) {
             let calendars = await this.calendarController.getByName(name, user.defaultWorldId);
             if (calendars != null && calendars.length > 0) {
-                let tempCalendar: CalendarDTO = {};
+                let tempCalendar: CalendarDTO = {dtoType: DTOType.CALENDAR};
                 tempCalendar.name = "No, create a new calendar";
                 calendars.push(tempCalendar);
 
                 calendar = await this.calendarController.calendarSelection(calendars, "modify", message);
+            }
 
-                if (!calendar.id) {
-                    calendar = null;
-                } else {
-                    calendar = await this.calendarController.get(calendar.id);
-                }
+            if (calendar == null || !calendar.id) {
+                calendar = null;
+            } else {
+                calendar = await this.calendarController.getById(calendar.id);
             }
         }
 
@@ -379,7 +336,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private async basicCalendar(name: string, message: Message, user: UserDTO): Promise<CalendarDTO> {
         // Return if no default world.
-        if (user.defaultWorld == null) {
+        if (user.defaultWorldId == null) {
             await message.channel.send("No default world, could not save calendar.");
             return Promise.resolve(null);
         }
@@ -393,7 +350,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
         // Start parsing the arguments.
         calendar.name = name;
-        calendar.world = user.defaultWorld;
+        calendar.worldId = user.defaultWorldId;
         calendar.epoch = {dtoType: DTOType.DATE};
         calendar.epoch.day = 0;
         calendar.epoch.month = 0;
@@ -411,15 +368,13 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return Promise.resolve(calendar);
     }
 
-    private async processWeekDays(daysPerWeek: number, weekdays: string[], calendar: CalendarDTO): Promise<CalendarWeekDayDTO[]> {
+    private static processWeekDays(daysPerWeek: number, weekdays: string[], calendar: CalendarDTO): CalendarWeekDayDTO[] {
         if (!weekdays) {
-            return Promise.resolve(null);
+            return null;
         }
 
         // Delete the old week days.
-        if (calendar.week != null && calendar.week.length > 0) {
-            await this.weekDayController.delete(calendar);
-        }
+        calendar.week = [];
 
         let week: CalendarWeekDayDTO[] = [];
         let i, day: CalendarWeekDayDTO;
@@ -436,10 +391,9 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             }
 
             // Now we save this calendar.
-            day = await this.weekDayController.save(day);
             week.push(day);
         }
 
-        return Promise.resolve(week);
+        return week;
     }
 }

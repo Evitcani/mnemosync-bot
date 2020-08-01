@@ -27,7 +27,7 @@ import {WorldCommandHandler} from "./bot/command-handlers/world/information/Worl
 import {EncryptionUtility} from "./backend/utilities/EncryptionUtility";
 import {SendingController} from "./backend/controllers/character/SendingController";
 import {SendingCommandHandler} from "./bot/command-handlers/world/party/character/SendingCommandHandler";
-import {CalendarController} from "./backend/controllers/world/calendar/CalendarController";
+import {CalendarController} from "./backend/controllers/world/CalendarController";
 import {CalendarEraController} from "./backend/controllers/world/calendar/CalendarEraController";
 import {CalendarMonthController} from "./backend/controllers/world/calendar/CalendarMonthController";
 import {CalendarMoonController} from "./backend/controllers/world/calendar/CalendarMoonController";

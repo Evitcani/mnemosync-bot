@@ -4,7 +4,7 @@ import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler"
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../types";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
-import {CalendarController} from "../../../../backend/controllers/world/calendar/CalendarController";
+import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
 import {CurrentDateController} from "../../../../backend/controllers/world/calendar/CurrentDateController";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";

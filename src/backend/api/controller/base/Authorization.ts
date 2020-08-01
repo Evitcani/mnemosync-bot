@@ -19,7 +19,7 @@ export class Authorization {
         // Get in hours.
         timeElapsed = timeElapsed / 3.6e+6;
 
-        return timeElapsed > 1;
+        return timeElapsed > 3;
     }
 
     private static async GET_NEW_TOKEN() {

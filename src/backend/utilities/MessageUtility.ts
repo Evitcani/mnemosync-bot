@@ -4,7 +4,7 @@ import {StringUtility} from "./StringUtility";
 import {Command} from "../../shared/models/generic/Command";
 import {GameDate} from "../entity/GameDate";
 import {CurrentDate} from "../entity/CurrentDate";
-import {CalendarController} from "../controllers/world/calendar/CalendarController";
+import {CalendarController} from "../controllers/world/CalendarController";
 import {CalendarMonth} from "../entity/calendar/CalendarMonth";
 import {Calendar} from "../entity/calendar/Calendar";
 import {CalendarMoon} from "../entity/calendar/CalendarMoon";
