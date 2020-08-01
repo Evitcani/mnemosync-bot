@@ -5,16 +5,15 @@ import {Message} from "discord.js";
 import {PartyRelatedClientResponses} from "../../../shared/documentation/client-responses/information/PartyRelatedClientResponses";
 import {PartyDTO} from "../../api/dto/model/PartyDTO";
 import {UserDTO} from "../../api/dto/model/UserDTO";
-import {WorldDTO} from "../../api/dto/model/WorldDTO";
-import {API} from "../../api/controller/base/API";
-import {apiConfig} from "../../api/controller/base/APIConfig";
+import {API} from "../base/API";
 import {DataDTO} from "../../api/dto/model/DataDTO";
 import {DTOType} from "../../api/dto/DTOType";
+import {APIConfig} from "../base/APIConfig";
 
 @injectable()
 export class PartyController extends API {
     constructor() {
-        super(apiConfig);
+        super(APIConfig.GET());
     }
 
     /**
@@ -30,13 +29,13 @@ export class PartyController extends API {
         party.guildId = guildId;
         party.creatorDiscordId = discordId;
 
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(party);
         config.data = data;
 
-        return this.post(`/party`, config).then((res) => {
+        return this.post(`/parties`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -48,13 +47,13 @@ export class PartyController extends API {
     }
 
     public save (party: PartyDTO): Promise<PartyDTO> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(party);
         config.data = data;
 
-        return this.post(`/party/${party.id}`, config).then((res) => {
+        return this.put(`/parties/${party.id}`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -71,15 +70,7 @@ export class PartyController extends API {
      * @param id The ID of the party.
      */
     public getById (id: number): Promise<PartyDTO> {
-        let config = apiConfig;
-        let data: DataDTO = {};
-        let party: PartyDTO = {dtoType: DTOType.PARTY};
-        party.id = id;
-        data.data = [];
-        data.data.push(party);
-        config.data = data;
-
-        return this.get<PartyDTO>(`/party/${id}`, config).then((res) => {
+        return this.get<PartyDTO>(`/parties/${id}`).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -90,53 +81,55 @@ export class PartyController extends API {
         });
     }
 
-    public getByGuild (guildId: string): Promise<PartyDTO[]> {
-        return this.getByNameAndGuild(null, guildId);
+    public async getByGuild (guildId: string): Promise<PartyDTO[]> {
+        let params = {
+            guild_id: guildId
+        };
+        return this.getByParams(params);
     }
 
-    public getByWorld (world: WorldDTO): Promise<PartyDTO[]> {
-        let config = apiConfig;
-        let data: DataDTO = {};
-        let party: PartyDTO = {dtoType: DTOType.PARTY};
-        party.world = {dtoType: DTOType.WORLD};
-        party.world.id = world.id;
-        data.data = [];
-        data.data.push(party);
-        config.data = data;
+    public async getByCharacter (characterId: number): Promise<PartyDTO> {
+        let params = {
+            character_id: characterId
+        };
+        let parties = await this.getByParams(params);
+        if (!parties || parties.length <= 0) {
+            return Promise.resolve(null);
+        }
 
-        return this.get(`/world/${world.id}/party`, config).then((res) => {
-            console.log(res.data);
-            // @ts-ignore
-            return res.data.data;
-        }).catch((err: Error) => {
-            console.log("Caught error.");
-            console.error(err);
-            return null;
-        });
+        return Promise.resolve(parties[0]);
     }
 
-    public updatePartyWorld (party: PartyDTO, world: WorldDTO): Promise<PartyDTO> {
-        party.world = world;
+    public async getByNameAndGuild(name: string, guildId: string): Promise<PartyDTO[]> {
+        let params = {
+            name: name,
+            guild_id: guildId
+        };
+        return this.getByParams(params);
+    }
+
+    public async getByWorld (worldId: string): Promise<PartyDTO[]> {
+        let params = {
+            world_id: worldId
+        };
+        return this.getByParams(params);
+    }
+
+    public updatePartyWorld (party: PartyDTO, worldId: string): Promise<PartyDTO> {
+        party.worldId = worldId;
         return this.save(party);
     }
 
     /**
      * Gets all parties in the given guild with a name similar.
      *
-     * @param partyName The name of the party to get.
-     * @param guildId The ID of the guild the party lives in.
+     * @param params
      */
-    public getByNameAndGuild(partyName: string, guildId: string): Promise<PartyDTO[]> {
-        let config = apiConfig;
-        let data: DataDTO = {};
-        let party: PartyDTO = {dtoType: DTOType.PARTY};
-        party.guildId = guildId;
-        party.name = partyName;
-        data.data = [];
-        data.data.push(party);
-        config.data = data;
+    public getByParams(params: any): Promise<PartyDTO[]> {
+        let config = APIConfig.GET();
+        config.params = params;
 
-        return this.get(`/guild/${guildId}/party`, config).then((res) => {
+        return this.get(`/parties`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -159,12 +152,17 @@ export class PartyController extends API {
 
         if (parties == null) {
             parties = [];
-            if (user.defaultCharacter != null && user.defaultCharacter.party != null) {
-                parties.push(user.defaultCharacter.party);
+            let party: PartyDTO;
+            if (user.defaultCharacterId != null) {
+                party = await this.getByCharacter(user.defaultCharacterId);
+                if (!!party) {
+                    parties.push(party);
+                }
             }
 
-            if (user.defaultParty != null) {
-                parties.push(user.defaultParty);
+            if (user.defaultPartyId != null) {
+                party = await this.getById(user.defaultPartyId);
+                parties.push(party);
             }
         }
 

@@ -1,6 +1,4 @@
 import {DateDTO} from "./DateDTO";
-import {CalendarDTO} from "./calendar/CalendarDTO";
-import {PartyDTO} from "./PartyDTO";
 import {DTOType} from "../DTOType";
 
 export interface CurrentDateDTO {

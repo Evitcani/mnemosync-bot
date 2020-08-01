@@ -12,6 +12,7 @@ export enum DTOType {
     NICKNAME = "nickname",
     PARTY = "party",
     PARTY_FUND = "party_fund",
+    SENDING = "sending",
     USER = "user",
     WORLD = "world",
 

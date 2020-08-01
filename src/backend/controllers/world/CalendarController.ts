@@ -1,28 +1,28 @@
 import {injectable} from "inversify";
 import {Message} from "discord.js";
 import {CalendarRelatedResponses} from "../../../shared/documentation/client-responses/information/CalendarRelatedResponses";
-import {apiConfig} from "../../api/controller/base/APIConfig";
 import {CalendarDTO} from "../../api/dto/model/calendar/CalendarDTO";
-import {API} from "../../api/controller/base/API";
+import {API} from "../base/API";
 import {DataDTO} from "../../api/dto/model/DataDTO";
+import {APIConfig} from "../base/APIConfig";
 
 @injectable()
 export class CalendarController extends API {
     constructor() {
-        super(apiConfig);
+        super(APIConfig.GET());
     }
 
     protected async create(calendar: CalendarDTO): Promise<CalendarDTO> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(calendar);
         config.data = data;
         config.params = {
-            world_id: calendar.world.id
+            world_id: calendar.worldId
         };
 
-        return this.post(`/calendar`, config).then((res) => {
+        return this.post(`/calendars`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -38,13 +38,13 @@ export class CalendarController extends API {
             return this.create(calendar);
         }
 
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(calendar);
         config.data = data;
 
-        return this.put(`/calendar/${calendar.id}`, config).then((res) => {
+        return this.put(`/calendars/${calendar.id}`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -56,7 +56,7 @@ export class CalendarController extends API {
     }
 
     public async getById(id: string): Promise<CalendarDTO> {
-        return this.get(`/calendar/${id}`).then((res) => {
+        return this.get(`/calendars/${id}`).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -74,7 +74,7 @@ export class CalendarController extends API {
      * @param worldId The ID of the world the  calendar exists in.
      */
     public async getByName(calendarName: string, worldId: string): Promise<CalendarDTO[]> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         config.params = {
             name: calendarName,
             world_id: worldId

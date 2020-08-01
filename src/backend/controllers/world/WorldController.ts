@@ -3,10 +3,10 @@ import {Collection, Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
 import {WorldDTO} from "../../api/dto/model/WorldDTO";
 import {UserDTO} from "../../api/dto/model/UserDTO";
-import {API} from "../../api/controller/base/API";
-import {apiConfig} from "../../api/controller/base/APIConfig";
+import {API} from "../base/API";
 import {DataDTO} from "../../api/dto/model/DataDTO";
 import {DTOType} from "../../api/dto/DTOType";
+import {APIConfig} from "../base/APIConfig";
 
 @injectable()
 export class WorldController extends API {
@@ -14,7 +14,19 @@ export class WorldController extends API {
      * Constructs this controller.
      */
     constructor() {
-        super(apiConfig);
+        super(APIConfig.GET());
+    }
+
+    public async getById(id: string): Promise<WorldDTO> {
+        return this.get(`/worlds/${id}`).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
     /**
@@ -23,13 +35,13 @@ export class WorldController extends API {
      * @param world The world to create.
      */
     public async create(world: WorldDTO): Promise<WorldDTO> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(world);
         config.data = data;
 
-        return this.post(`/world`, config).then((res) => {
+        return this.post(`/worlds`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -42,13 +54,17 @@ export class WorldController extends API {
 
     public async worldSelectionFromUser(user: UserDTO, message: Message): Promise<WorldDTO> {
         // If the default world is not null, then add the character on that world.
-        let worlds: WorldDTO[] = [];
-        if (user.defaultWorld != null) {
-            worlds.push(user.defaultWorld);
+        let worlds: WorldDTO[] = [], world: WorldDTO;
+        if (user.defaultWorldId != null) {
+            world = await this.getById(user.defaultWorldId);
+            worlds.push(world);
         }
 
-        if (user.defaultCharacter != null && user.defaultCharacter.party != null && user.defaultCharacter.party.world != null) {
-            worlds.push(user.defaultCharacter.party.world);
+        if (user.defaultCharacterId != null) {
+            let tempWorlds: WorldDTO[] = await this.getByCharacterId(user.defaultCharacterId);
+            if (!!tempWorlds && tempWorlds.length > 0) {
+                worlds.concat(tempWorlds);
+            }
         }
 
         if (worlds.length < 1) {
@@ -96,7 +112,7 @@ export class WorldController extends API {
      * @param user
      */
     public getByNameAndUser(name: string, user: UserDTO): Promise<WorldDTO[]> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         config.params = {
             name: name,
             discord_id: user.discord_id
@@ -116,12 +132,33 @@ export class WorldController extends API {
     /**
      * Gets all parties in the given guild with a name similar.
      *
-     * @param id The name of the world to get.
-     * @param user
+     * @param characterId
+     */
+    public getByCharacterId(characterId: number): Promise<WorldDTO[]> {
+        let config = APIConfig.GET();
+        config.params = {
+            character_id: characterId
+        };
+
+        return this.get(`/worlds`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    /**
+     * Gets all parties in the given guild with a name similar.
+     *
+     * @param id The discord ID of the world to get.
      */
     public getDiscordId(id: string): Promise<Collection<string, string>> {
         // TODO: fix this
-        return this.get(`/world/${id}/user`).then((res) => {
+        return this.get(`/worlds/${id}/user`).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -133,7 +170,7 @@ export class WorldController extends API {
     }
 
     public async addWorld(user: UserDTO, world: WorldDTO): Promise<WorldDTO> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         config.params = {
             discord_id: user.discord_id
         };

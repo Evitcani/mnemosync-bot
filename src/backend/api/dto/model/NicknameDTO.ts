@@ -6,4 +6,5 @@ export interface NicknameDTO {
     createdDate?: Date;
     updatedDate?: Date;
     name?: string;
+    discordId?: string;
 }

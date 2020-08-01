@@ -32,7 +32,7 @@ import {CalendarEraController} from "./backend/controllers/world/calendar/Calend
 import {CalendarMonthController} from "./backend/controllers/world/calendar/CalendarMonthController";
 import {CalendarMoonController} from "./backend/controllers/world/calendar/CalendarMoonController";
 import {CalendarWeekDayController} from "./backend/controllers/world/calendar/CalendarWeekDayController";
-import {CurrentDateController} from "./backend/controllers/world/calendar/CurrentDateController";
+import {CurrentDateController} from "./backend/controllers/world/CurrentDateController";
 import {DateCommandHandler} from "./bot/command-handlers/world/information/DateCommandHandler";
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";

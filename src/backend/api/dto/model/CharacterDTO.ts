@@ -1,4 +1,3 @@
-import {PartyDTO} from "./PartyDTO";
 import {NicknameDTO} from "./NicknameDTO";
 import {DTOType} from "../DTOType";
 
@@ -9,6 +8,6 @@ export interface CharacterDTO {
     updatedDate?: Date;
     img_url?: string;
     name?: string;
-    party?: PartyDTO;
+    partyId?: number;
     nicknames?: NicknameDTO[];
 }

@@ -5,7 +5,7 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../types";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
 import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
-import {CurrentDateController} from "../../../../backend/controllers/world/calendar/CurrentDateController";
+import {CurrentDateController} from "../../../../backend/controllers/world/CurrentDateController";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {CalendarRelatedResponses} from "../../../../shared/documentation/client-responses/information/CalendarRelatedResponses";

@@ -1,21 +1,16 @@
 import {injectable} from "inversify";
-import {NameValuePair} from "../Base/NameValuePair";
-import {getConnection} from "typeorm";
-import {StringUtility} from "../../utilities/StringUtility";
 import {Collection} from "discord.js";
-import {API} from "../../api/controller/base/API";
-import {apiConfig} from "../../api/controller/base/APIConfig";
+import {API} from "../base/API";
 import {CharacterDTO} from "../../api/dto/model/CharacterDTO";
 import {DataDTO} from "../../api/dto/model/DataDTO";
 import {NicknameDTO} from "../../api/dto/model/NicknameDTO";
 import {DTOType} from "../../api/dto/DTOType";
-import {PartyDTO} from "../../api/dto/model/PartyDTO";
-import {UserDTO} from "../../api/dto/model/UserDTO";
+import {APIConfig} from "../base/APIConfig";
 
 @injectable()
 export class CharacterController extends API {
     constructor() {
-        super(apiConfig);
+        super(APIConfig.GET());
     }
 
     /**
@@ -24,7 +19,7 @@ export class CharacterController extends API {
      * @param id The ID of the character to get.
      */
     public async getById(id: number): Promise<CharacterDTO> {
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         let character: CharacterDTO = {dtoType: DTOType.CHARACTER};
         character.id = id;
@@ -32,7 +27,7 @@ export class CharacterController extends API {
         data.data.push(character);
         config.data = data;
 
-        return this.get(`/character/${id}`, config).then((res) => {
+        return this.get(`/characters/${id}`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -47,23 +42,24 @@ export class CharacterController extends API {
         // Create nickname for the mapping.
         const nickname: NicknameDTO = {dtoType: DTOType.NICKNAME};
         nickname.name = character.name;
+        nickname.discordId = discordId;
 
         // Add the nickname to the character.
         character.nicknames = [];
         character.nicknames.push(nickname);
 
-        let config = apiConfig;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(character);
         config.data = data;
 
-        return this.post(`/character`, config).then((res) => {
+        return this.post(`/characters`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
-            console.log("Caught error trying to create new party.");
+            console.log("Caught error trying to create character.");
             console.error(err);
             return null;
         });
@@ -72,14 +68,15 @@ export class CharacterController extends API {
     public async createNickname (nickname: string, character: CharacterDTO, discordId: string): Promise<NicknameDTO> {
         // Create nickname for the mapping.
         const nn: NicknameDTO = {dtoType: DTOType.NICKNAME};
-        nn.name = character.name;
-        let config = apiConfig;
+        nn.name = nickname;
+        nn.discordId = discordId;
+        let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(nn);
         config.data = data;
 
-        return this.post(`/character/${character.id}/nickname`, config).then((res) => {
+        return this.post(`/characters/${character.id}/nicknames`, config).then((res) => {
             console.log(res.data);
             // @ts-ignore
             return res.data.data;
@@ -90,45 +87,22 @@ export class CharacterController extends API {
         });
     }
 
-    public async getCharacterByNameInParties (name: string, parties: PartyDTO[]): Promise<CharacterDTO[]> {
-        let sanitizedName = StringUtility.escapeSQLInput(name);
-        let partyIds: number[] = [], i;
-        for (i = 0; i < parties.length; i++) {
-            partyIds.push(parties[i].id);
-        }
-
-        return getConnection()
-            .createQueryBuilder(CharacterD, "character")
-            .leftJoinAndSelect(Nickname, "nick", `character.id = "nick"."characterId"`)
-            .where(`LOWER("nick"."name") LIKE LOWER('%${sanitizedName}%')`)
-            .andWhere(`"character"."partyId" = ANY(ARRAY[${partyIds.join(",")}])`)
-            .getMany()
-            .then((characters) => {
-                if (!characters || characters.length < 1) {
-                    return null;
-                }
-
-                return characters;
-            })
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not get characters.");
-                console.error(err);
-                return null;
-            });
-    }
-
     public async getCharacterByName(name: string, discordId: string): Promise<CharacterDTO> {
-        return this.getNicknameByNickname(name, discordId).then((nickname) => {
-            if (nickname == null || nickname.length < 1) {
-                return null;
-            }
+        let config = APIConfig.GET();
+        config.params = {
+            name: name,
+            discord_id: discordId
+        };
 
-            if (nickname[0].character == null) {
-                return this.getById(nickname[0].characterId);
-            }
-
-            return nickname[0].character;
-        })
+        return this.get(`/characters`, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
+        });
     }
 
     /**
@@ -136,31 +110,32 @@ export class CharacterController extends API {
      * @param characterId
      */
     public async getDiscordId(characterId: number): Promise<Collection<string, string>> {
-        return this.getSecondaryRepo().find({where: {characterId: characterId}}).then((nicknames) => {
-            if (!nicknames || nicknames.length < 1) {
+        let config = APIConfig.GET();
+        config.params = {
+            character_id: characterId
+        };
+
+        return this.get(`/discordIds`, config).then((res) => {
+            // @ts-ignore
+            if (!res || !res.data || !res.data.data) {
                 return null;
             }
 
+            // @ts-ignore
+            let ids: string[] = res.data.data;
+
             let input = new Collection<string, string>();
-            let nickname: Nickname, discordId: string, i;
-            for (i = 0; i < nicknames.length; i++) {
-                nickname = nicknames[i];
-                discordId = nickname.discord_id;
+            let discordId: string, i;
+            for (i = 0; i < ids.length; i++) {
+                discordId = ids[i];
                 input.set(discordId, discordId);
             }
 
             return input;
+        }).catch((err: Error) => {
+            console.log("Caught error.");
+            console.error(err);
+            return null;
         });
-    }
-
-    private async getNicknameByNickname(nickname: string, discordId: string): Promise<Nickname[]> {
-        return this.getSecondaryLikeArgs(
-            [new NameValuePair("discord_id", discordId)],
-            [new NameValuePair("name", nickname)])
-            .catch((err: Error) => {
-                console.error("ERR ::: Could not get nickname.");
-                console.error(err);
-                return null;
-            });
     }
 }
