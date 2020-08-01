@@ -120,6 +120,7 @@ export class WorldController extends API {
      * @param user
      */
     public getDiscordId(id: string): Promise<Collection<string, string>> {
+        // TODO: fix this
         return this.get(`/world/${id}/user`).then((res) => {
             console.log(res.data);
             // @ts-ignore

@@ -2,13 +2,14 @@ import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler"
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../../backend/entity/User";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
-import {World} from "../../../../backend/entity/World";
 import {WorldController} from "../../../../backend/controllers/world/WorldController";
 import {TYPES} from "../../../../types";
 import {UserController} from "../../../../backend/controllers/user/UserController";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
+import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
+import {WorldDTO} from "../../../../backend/api/dto/model/WorldDTO";
+import {DTOType} from "../../../../backend/api/dto/DTOType";
 
 @injectable()
 export class WorldCommandHandler extends AbstractUserCommandHandler {
@@ -32,7 +33,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
      * @param message
      * @param user
      */
-    async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         // Command to create a new world.
         if (Subcommands.CREATE.isCommand(command)) {
             const createCmd = Subcommands.CREATE.getCommand(command);
@@ -60,7 +61,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         return undefined;
     }
 
-    private async addPartyToWorld(partyName: string, message: Message, user: User): Promise<Message | Message[]> {
+    private async addPartyToWorld(partyName: string, message: Message, user: UserDTO): Promise<Message | Message[]> {
         return this.worldController.worldSelectionFromUser(user, message).then((world) => {
             if (world == null) {
                 return null;
@@ -72,7 +73,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
 
     }
 
-    private async continueAddingPartyToWorld(partyName: string, message: Message, world: World): Promise<Message | Message[]> {
+    private async continueAddingPartyToWorld(partyName: string, message: Message, world: WorldDTO): Promise<Message | Message[]> {
         return this.partyController.getByNameAndGuild(partyName, message.guild.id).then((parties) => {
             if (parties == null || parties.length < 1) {
                 return message.channel.send("Could not find party with given name like: " + partyName);
@@ -85,7 +86,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         });
     }
 
-    private async switchDefaultWorld(worldName: string, message: Message, user: User): Promise<Message | Message[]> {
+    private async switchDefaultWorld(worldName: string, message: Message, user: UserDTO): Promise<Message | Message[]> {
         return this.findWorldByName(worldName, user).then((worlds) => {
             if (worlds == null || worlds.length < 1) {
                 return message.channel.send("Could not find world with given name like: " + worldName);
@@ -110,11 +111,11 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         });
     }
 
-    private async findWorldByName(worldName: string, user: User): Promise<World[]> {
+    private async findWorldByName(worldName: string, user: UserDTO): Promise<WorldDTO[]> {
         return this.worldController.getByNameAndUser(worldName, user);
     }
 
-    private async removeDefaultWorld (message: Message, user: User): Promise<Message | Message[]> {
+    private async removeDefaultWorld (message: Message, user: UserDTO): Promise<Message | Message[]> {
         return this.userController.updateDefaultWorld(user, null).then((usr) => {
             if (usr == null) {
                 return message.channel.send("Could not remove default world.");
@@ -124,8 +125,8 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         })
     }
 
-    public async createWorld(worldName: string, command: Command, message: Message, user: User): Promise<Message | Message[]> {
-        const world = new World();
+    public async createWorld(worldName: string, command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
+        const world: WorldDTO = {dtoType: DTOType.WORLD};
         world.name = worldName;
         world.guildId = message.guild.id;
         return this.worldController.create(world).then((newWorld) => {
@@ -133,15 +134,12 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
                 return message.channel.send("Could not create world.");
             }
 
-            return this.userController.addWorld(user, newWorld).then((user) => {
+            return this.worldController.addWorld(user, newWorld).then((user) => {
                 if (user == null) {
                     return message.channel.send("Could not add the world to the map.");
                 }
 
-                // Go and save this.
-                return this.userController.updateDefaultWorld(user, newWorld).then(() => {
-                    return message.channel.send("Created new world: " + newWorld.name);
-                });
+                return message.channel.send("Created new world: " + newWorld.name);
             });
         });
     }

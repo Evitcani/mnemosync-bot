@@ -9,7 +9,7 @@ import {WorldController} from "../../../../backend/controllers/world/WorldContro
 import {NPCRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/NPCRelatedClientResponses";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
-import {User} from "../../../../backend/entity/User";
+import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
 
 /**
  * Handles questions about the state of the world.
@@ -40,7 +40,7 @@ export class WhichCommandHandler extends AbstractUserCommandHandler {
         });
     }
 
-    async fetchNPCs (command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    async fetchNPCs (command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let page = MessageUtility.getPage(command);
         let world = await this.worldController.worldSelectionFromUser(user, message);
 

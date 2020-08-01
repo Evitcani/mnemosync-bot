@@ -9,6 +9,5 @@ export interface CurrentDateDTO {
     createdDate?: Date;
     updatedDate?: Date;
     date?: DateDTO;
-    calendar?: CalendarDTO;
-    party?: PartyDTO;
+    calendarId?: string;
 }

@@ -21,6 +21,7 @@ import {CalendarMonthDTO} from "../../../../backend/api/dto/model/calendar/Calen
 import {CalendarWeekDayDTO} from "../../../../backend/api/dto/model/calendar/CalendarWeekDayDTO";
 import {CalendarMoonDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonDTO";
 import {CalendarMoonPhaseDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonPhaseDTO";
+import {DTOType} from "../../../../backend/api/dto/DTOType";
 
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {
@@ -383,7 +384,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             return Promise.resolve(null);
         }
 
-        let calendar: CalendarDTO = {};
+        let calendar: CalendarDTO = {dtoType: DTOType.CALENDAR};
 
         if (name == null) {
             await message.channel.send("No name given, could not continue.");
@@ -393,11 +394,14 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         // Start parsing the arguments.
         calendar.name = name;
         calendar.world = user.defaultWorld;
-        calendar.epoch = {};
+        calendar.epoch = {dtoType: DTOType.DATE};
         calendar.epoch.day = 0;
         calendar.epoch.month = 0;
         calendar.epoch.year = 0;
         calendar.yearLength = 0;
+
+        // TODO: Should be "Create"
+        calendar = await this.calendarController.save(calendar);
 
         // Setup basics.
         calendar.week = [];
@@ -420,7 +424,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         let week: CalendarWeekDayDTO[] = [];
         let i, day: CalendarWeekDayDTO;
         for (i = 0; i < daysPerWeek; i++) {
-            day: CalendarWeekDayDTO = {};
+            day = {dtoType: DTOType.CALENDAR_WEEK_DAY};
             day.order = i;
             if (weekdays.length >= i) {
                 day.name = weekdays[i];

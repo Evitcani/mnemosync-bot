@@ -1,8 +1,8 @@
 import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../../../../backend/entity/Character";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 import {injectable} from "inversify";
+import {CharacterDTO} from "../../../../backend/api/dto/model/CharacterDTO";
 
 /**
  * The "travel" command is used to calculate the most efficient gear to travel with over a period of days.
@@ -18,7 +18,7 @@ export class TravelCommandHandler extends AbstractUserCommandHandler {
      *
      * @param partyId The party ID to fetch all the members of.
      */
-    private async getPartyMembers(partyId: number): Promise<Character[]> {
+    private async getPartyMembers(partyId: number): Promise<CharacterDTO[]> {
         return undefined;
     }
 }
