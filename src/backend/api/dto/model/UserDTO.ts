@@ -7,7 +7,7 @@ export interface UserDTO {
     updatedDate?: Date;
     discord_name?: string;
     discord_id?: string;
-    defaultCharacterId?: number;
+    defaultCharacterId?: string;
     defaultWorldId?: string;
     defaultPartyId?: number;
 }

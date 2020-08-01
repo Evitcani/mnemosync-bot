@@ -3,7 +3,6 @@ import {AbstractCommandHandler} from "../base/AbstractCommandHandler";
 import {Command} from "../../../shared/models/generic/Command";
 import {Client, Collection, Message, Snowflake, TextChannel} from "discord.js";
 import {TYPES} from "../../../types";
-import {SpecialChannelService} from "../../../backend/database/SpecialChannelService";
 import {SpecialChannelDesignation} from "../../../shared/enums/SpecialChannelDesignation";
 import {QuoteRelatedClientResponses} from "../../../shared/documentation/client-responses/misc/QuoteRelatedClientResponses";
 import {Bot} from "../../bot";

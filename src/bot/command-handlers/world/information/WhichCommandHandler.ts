@@ -4,27 +4,27 @@ import {Message} from "discord.js";
 import {WhichRelatedClientResponses} from "../../../../shared/documentation/client-responses/information/WhichRelatedClientResponses";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
-import {NPCController} from "../../../../backend/controllers/character/NPCController";
 import {WorldController} from "../../../../backend/controllers/world/WorldController";
 import {NPCRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/NPCRelatedClientResponses";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
 import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
+import {CharacterController} from "../../../../backend/controllers/character/CharacterController";
 
 /**
  * Handles questions about the state of the world.
  */
 @injectable()
 export class WhichCommandHandler extends AbstractUserCommandHandler {
-    private npcController: NPCController;
+    private characterController: CharacterController;
     private partyController: PartyController;
     private worldController: WorldController;
 
-    constructor(@inject(TYPES.NPCController) npcController: NPCController,
+    constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
-        this.npcController = npcController;
+        this.characterController = characterController;
         this.partyController = partyController;
         this.worldController = worldController;
     }
@@ -48,7 +48,7 @@ export class WhichCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("No world associated with  account.");
         }
 
-        let npcs = await this.npcController.getByWorld(world.id, page);
+        let npcs = await this.characterController.getNPCByWorld(world.id);
 
         if (npcs == null || npcs.length < 1) {
             return message.channel.send("No NPCs are in this world.");

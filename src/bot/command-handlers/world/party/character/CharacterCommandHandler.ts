@@ -1,6 +1,5 @@
 import {Command} from "../../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {Character} from "../../../../../backend/entity/Character";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {Subcommand} from "../../../../../shared/models/generic/Subcommand";
 import {inject} from "inversify";
@@ -9,27 +8,25 @@ import {CharacterRelatedClientResponses} from "../../../../../shared/documentati
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
 import {CharacterController} from "../../../../../backend/controllers/character/CharacterController";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {User} from "../../../../../backend/entity/User";
 import {UserController} from "../../../../../backend/controllers/user/UserController";
-import {NonPlayableCharacter} from "../../../../../backend/entity/NonPlayableCharacter";
-import {NPCController} from "../../../../../backend/controllers/character/NPCController";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
+import {DTOType} from "../../../../../backend/api/dto/DTOType";
+import {CharacterDTO} from "../../../../../backend/api/dto/model/CharacterDTO";
+import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
+import {messageResponse} from "../../../../../shared/documentation/messages/MessageResponse";
 
 export class CharacterCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
-    private npcController: NPCController;
     private partyController: PartyController;
     private userController: UserController;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
-                @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.UserController) userController: UserController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
-        this.npcController = npcController;
         this.partyController = partyController;
         this.userController = userController;
         this.worldController = worldController;
@@ -37,19 +34,23 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
 
     async handleUserCommand(command, message, user): Promise<Message | Message[]> {
         if (Subcommands.CREATE.isCommand(command)) {
+            let character: CharacterDTO;
             if (Subcommands.NPC.isCommand(command)) {
-                return this.constructNPC(command, message, user, new NonPlayableCharacter()).then((npc) => {
-                    return this.npcController.create(npc).then((character) => {
-                        if (character == null) {
-                            return message.channel.send("Could not create new NPC.");
-                        }
-
-                        return message.channel.send("Created new NPC: " + character.name);
-                    });
-                });
+                let world = await this.worldController.worldSelectionFromUser(user, message);
+                if (!world) {
+                    return null;
+                }
+                character = {
+                    dtoType: DTOType.CHARACTER,
+                    isNpc: true,
+                    worldId: world.id,
+                };
+            } else {
+                character = user.defaultCharacter == null ?
+                    {dtoType: DTOType.CHARACTER, isNpc: false} : user.defaultCharacter;
             }
 
-            return this.constructCharacter(command, message, user, true).then((character) => {
+            return this.constructCharacter(command, message, character).then((character) => {
                 return this.createCharacter(message, character, user);
             });
         }
@@ -75,13 +76,24 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
      * @param cmd
      * @param user
      */
-    private async switchCharacter(message: Message, cmd: Subcommand, user: User): Promise<Message | Message[]> {
+    private async switchCharacter(message: Message, cmd: Subcommand, user: UserDTO): Promise<Message | Message[]> {
         // Go out and get the character.
-        let char = await this.characterController.getCharacterByName(cmd.getInput(), message.author.id);
+        let characters: CharacterDTO[] = await this.characterController.getCharacterByName(cmd.getInput(), message.author.id);
 
         // Couldn't find character.
-        if (char == null) {
+        if (characters == null || characters.length < 1) {
             return message.channel.send(`No character exists with a name like '${cmd.getInput()}'`);
+        }
+
+        let char: CharacterDTO;
+        if (characters.length > 1) {
+            char = await this.characterController.selectCharacter(characters,
+                messageResponse.generic.action.switch_to, message);
+            if (char == null) {
+                return null;
+            }
+        } else {
+            char = characters[0];
         }
 
         // Update the default character.
@@ -91,12 +103,12 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
         return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
     }
 
-    private async addNickname(command: Subcommand, message: Message, user: User): Promise<Message | Message[]> {
-        if (user == null || user.defaultCharacter == null) {
+    private async addNickname(command: Subcommand, message: Message, user: UserDTO): Promise<Message | Message[]> {
+        if (user == null || user.defaultCharacterId == null) {
             return message.channel.send("Unable to add nickname to character. No default character.");
         }
 
-        let nick = await this.characterController.createNickname(command.getInput(), user.defaultCharacter, message.author.id);
+        let nick = await this.characterController.createNickname(command.getInput(), user.defaultCharacterId, message.author.id);
 
         if (nick == null) {
             return message.channel.send("Unable to add nickname to character.");
@@ -112,7 +124,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
      * @param character The character to create.
      * @param user The user
      */
-    private async createCharacter(message: Message, character: Character, user: User): Promise<Message | Message[]> {
+    private async createCharacter(message: Message, character: CharacterDTO, user: UserDTO): Promise<Message | Message[]> {
         if (character == null || character.name == null) {
             return message.channel.send("You must provide a name for the character!");
         }
@@ -123,39 +135,17 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
                     return message.channel.send("Could not create character.");
                 }
 
+                if (char.isNpc) {
+                    return message.channel.send("Created new NPC.");
+                }
+
                 return this.userController.updateDefaultCharacter(user, char).then(() => {
                     return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
                 });
             });
     }
 
-    /**
-     * Constructs an NPC.
-     *
-     * @param command The command originally sent.
-     * @param message Message object of the originating command.
-     * @param user The user doing the command.
-     * @param character The character to update with the given command.
-     */
-    private async constructNPC(command: Command, message: Message, user: User, character: NonPlayableCharacter): Promise<NonPlayableCharacter> {
-        const nameCmd = CharacterCommandHandler.getNameCmd(command);
-        if (nameCmd != null) {
-            character.name = nameCmd.getInput();
-        }
-
-        return this.worldController.worldSelectionFromUser(user, message).then((world) => {
-            if (world != null) {
-                character.world = world;
-            }
-
-            return character;
-        })
-    }
-
-    private async constructCharacter(command: Command, message: Message, user: User, isNew: boolean): Promise<Character> {
-        // Construct the character and add the name.
-        const character: Character = (isNew || user.defaultCharacter == null) ? new Character() : user.defaultCharacter;
-
+    private async constructCharacter(command: Command, message: Message, character: CharacterDTO): Promise<CharacterDTO> {
         // Set the image URL.
         if (Subcommands.IMG_URL.isCommand(command)) {
             const imgCmd = Subcommands.IMG_URL.getCommand(command);
@@ -178,7 +168,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
                         return null;
                     }
 
-                    character.party = parties[0];
+                    character.partyId = parties[0].id;
 
                     return character;
                 });

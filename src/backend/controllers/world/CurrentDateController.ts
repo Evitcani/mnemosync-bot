@@ -6,7 +6,7 @@ import {PartyDTO} from "../../api/dto/model/PartyDTO";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class CurrentDateController extends API {
+export class CurrentDateController extends API<CurrentDateDTO> {
     constructor() {
         super(APIConfig.GET());
     }
@@ -23,7 +23,7 @@ export class CurrentDateController extends API {
         });
     }
 
-    public async create(currentDate: CurrentDateDTO, party: PartyDTO): Promise<CurrentDateDTO> {
+    public async createNew(currentDate: CurrentDateDTO, party: PartyDTO): Promise<CurrentDateDTO> {
         let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];

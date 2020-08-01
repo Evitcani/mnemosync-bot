@@ -12,4 +12,5 @@ export interface PartyFundDTO {
     gold?: number;
     silver?: number;
     copper?: number;
+    isNegative?: boolean;
 }

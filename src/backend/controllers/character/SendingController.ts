@@ -5,7 +5,7 @@ import {DataDTO} from "../../api/dto/model/DataDTO";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class SendingController extends API {
+export class SendingController extends API<SendingDTO> {
     public static SENDING_LIMIT = 10;
 
     constructor() {
@@ -17,7 +17,7 @@ export class SendingController extends API {
      *
      * @param sending
      */
-    private async create(sending: SendingDTO): Promise<SendingDTO> {
+    protected async create(sending: SendingDTO): Promise<SendingDTO> {
         let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
@@ -71,7 +71,7 @@ export class SendingController extends API {
             ids: ids.join(",")
         };
 
-        return this.getByParams(params);
+        return this.getByParameters(params);
     }
 
     public async getOne(page: number, worldId: string, toCharacterId?: string): Promise<SendingDTO> {
@@ -84,7 +84,7 @@ export class SendingController extends API {
         });
     }
 
-    public async getAll(page: number, worldId: string, toCharacterId?: string): Promise<SendingDTO[]> {
+    public async getAllOf(page: number, worldId: string, toCharacterId?: string): Promise<SendingDTO[]> {
         return this.getBySpecs(page * SendingController.SENDING_LIMIT, SendingController.SENDING_LIMIT,
             worldId, toCharacterId);
     }
@@ -102,9 +102,9 @@ export class SendingController extends API {
             to_character_id: toCharacterId
         };
 
-        return this.getByParams(params);
+        return this.getByParameters(params);
     }
-    private async getByParams(params: any): Promise<SendingDTO[]> {
+    private async getByParameters(params: any): Promise<SendingDTO[]> {
         if (!params) {
             return Promise.resolve(null);
         }

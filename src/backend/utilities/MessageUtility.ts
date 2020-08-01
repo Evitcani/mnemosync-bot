@@ -1,13 +1,12 @@
-import {Collection, User as DiscordUser, Message, MessageEmbed, Snowflake} from "discord.js";
+import {Collection, Message, MessageEmbed, Snowflake, User as DiscordUser} from "discord.js";
 import {Subcommands} from "../../shared/documentation/commands/Subcommands";
 import {StringUtility} from "./StringUtility";
 import {Command} from "../../shared/models/generic/Command";
-import {GameDate} from "../entity/GameDate";
-import {CurrentDate} from "../entity/CurrentDate";
-import {CalendarController} from "../controllers/world/CalendarController";
-import {CalendarMonth} from "../entity/calendar/CalendarMonth";
-import {Calendar} from "../entity/calendar/Calendar";
-import {CalendarMoon} from "../entity/calendar/CalendarMoon";
+import {DateDTO} from "../api/dto/model/DateDTO";
+import {CalendarDTO} from "../api/dto/model/calendar/CalendarDTO";
+import {CalendarMonthDTO} from "../api/dto/model/calendar/CalendarMonthDTO";
+import {DTOType} from "../api/dto/DTOType";
+import {CalendarMoonDTO} from "../api/dto/model/calendar/CalendarMoonDTO";
 
 export class MessageUtility {
 
@@ -78,7 +77,7 @@ export class MessageUtility {
         return page;
     }
 
-    public static async processDateCommand(command: Command, message: Message): Promise<GameDate> {
+    public static async processDateCommand(command: Command, message: Message): Promise<DateDTO> {
         const dateCmd = Subcommands.DATE.getCommand(command);
         let input = dateCmd.getInput();
         if (input == null) {
@@ -105,7 +104,7 @@ export class MessageUtility {
         }
 
         // Now put it inside the sending.
-        let inGameDate = new GameDate();
+        let inGameDate: DateDTO = {dtoType: DTOType.DATE};
         inGameDate.day = day;
         inGameDate.month = month;
         inGameDate.year = year;
@@ -113,14 +112,10 @@ export class MessageUtility {
         return Promise.resolve(inGameDate)
     }
 
-    public static async getProperDate(date: GameDate, message: Message, calendar: Calendar,
-                                      calendarController: CalendarController): Promise<string> {
+    public static async getProperDate(date: DateDTO, message: Message, calendar: CalendarDTO): Promise<string> {
         if (calendar == null) {
-            calendar = await calendarController.get(date.calendarId);
-            if (calendar == null) {
-                await message.channel.send("Could not get a calendar.");
-                return Promise.resolve(null);
-            }
+            await message.channel.send("Could not get a calendar.");
+            return Promise.resolve(null);
         }
 
         let day = date.day;
@@ -130,7 +125,7 @@ export class MessageUtility {
         return `${day}${this.nthOfNumber(day)} of ${this.getMonthName(month, calendar.months)}, ${year} `;
     }
 
-    public static getMonthName(month: number, months: CalendarMonth[]): string {
+    public static getMonthName(month: number, months: CalendarMonthDTO[]): string {
         if (months == null) {
             return null;
         }
@@ -184,7 +179,7 @@ export class MessageUtility {
      The Viewing Angle will tell you what phase the moon is in. A Viewing Angle of 0 degrees is a full moon. Viewing angle
      of 90 degrees is a first quarter moon. 180 degrees is a new moon. Etc, through 360.
      */
-    public static getMoonPhase(moon: CalendarMoon, day: number, daysInYear: number): string {
+    public static getMoonPhase(moon: CalendarMoonDTO, day: number, daysInYear: number): string {
         let col1: number = (day % daysInYear) * (360 / daysInYear);
         let col2: number = ((day + moon.shift) % moon.cycle) * (360 / moon.cycle);
         let col3: number = col2 - col1;

@@ -9,12 +9,6 @@ export const TYPES = {
     MessageResponder: Symbol("MessageResponder"),
     EncryptionUtility: Symbol("EncryptionUtility"),
 
-    DatabaseService: Symbol("DatabaseService"),
-    PartyToGuildService: Symbol("PartyToGuildService"),
-    SpecialChannelService: Symbol("SpecialChannelService"),
-    UserDefaultPartyService: Symbol("UserDefaultPartyService"),
-    UserToGuildService: Symbol("UserToGuildService"),
-
     BagCommandHandler: Symbol("BagCommandHandler"),
     CalendarCommandHandler: Symbol("CalendarCommandHandler"),
     CharacterCommandHandler: Symbol("CharacterCommandHandler"),
@@ -31,13 +25,7 @@ export const TYPES = {
 
     CharacterController: Symbol("CharacterController"),
     CalendarController: Symbol("CalendarController"),
-    CalendarEraController: Symbol("CalendarEraController"),
-    CalendarMonthController: Symbol("CalendarMonthController"),
-    CalendarMoonController: Symbol("CalendarMoonController"),
-    CalendarMoonPhaseController: Symbol("CalendarMoonPhaseController"),
-    CalendarWeekDayController: Symbol("CalendarWeekDayController"),
     CurrentDateController: Symbol("CurrentDateController"),
-    NPCController: Symbol("NPCController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
     SendingController: Symbol("SendingController"),

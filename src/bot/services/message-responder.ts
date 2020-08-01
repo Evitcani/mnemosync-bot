@@ -92,7 +92,7 @@ export class MessageResponder {
         // Get the base command.
         const cmd = command.getName();
 
-        return this.userController.get(message.author.id, message.author.username).then((user) => {
+        return this.userController.getById(message.author.id, message.author.username).then((user) => {
             // Determine which handler to call.
             switch (cmd) {
                 case Commands.BANK:

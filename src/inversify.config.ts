@@ -4,14 +4,9 @@ import {TYPES} from "./types";
 import {Bot} from "./bot/bot";
 import {Client} from "discord.js";
 import {MessageResponder} from "./bot/services/message-responder";
-import {DatabaseService} from "./backend/database/base/DatabaseService";
 import {PartyFundCommandHandler} from "./bot/command-handlers/world/party/inventory/PartyFundCommandHandler";
 import {RegisterCommandHandler} from "./bot/command-handlers/misc/RegisterCommandHandler";
-import {PartyToGuildService} from "./backend/database/PartyToGuildService";
-import {UserDefaultPartyService} from "./backend/database/UserDefaultPartyService";
-import {UserToGuildService} from "./backend/database/UserToGuildService";
 import {WhichCommandHandler} from "./bot/command-handlers/world/information/WhichCommandHandler";
-import {SpecialChannelService} from "./backend/database/SpecialChannelService";
 import {HelpCommandHandler} from "./bot/command-handlers/misc/HelpCommandHandler";
 import {QuoteCommandHandler} from "./bot/command-handlers/misc/QuoteCommandHandler";
 import {BagCommandHandler} from "./bot/command-handlers/world/party/inventory/BagCommandHandler";
@@ -22,21 +17,15 @@ import {PartyFundController} from "./backend/controllers/party/PartyFundControll
 import {CharacterController} from "./backend/controllers/character/CharacterController";
 import {UserController} from "./backend/controllers/user/UserController";
 import {WorldController} from "./backend/controllers/world/WorldController";
-import {NPCController} from "./backend/controllers/character/NPCController";
 import {WorldCommandHandler} from "./bot/command-handlers/world/information/WorldCommandHandler";
 import {EncryptionUtility} from "./backend/utilities/EncryptionUtility";
 import {SendingController} from "./backend/controllers/character/SendingController";
 import {SendingCommandHandler} from "./bot/command-handlers/world/party/character/SendingCommandHandler";
 import {CalendarController} from "./backend/controllers/world/CalendarController";
-import {CalendarEraController} from "./backend/controllers/world/calendar/CalendarEraController";
-import {CalendarMonthController} from "./backend/controllers/world/calendar/CalendarMonthController";
-import {CalendarMoonController} from "./backend/controllers/world/calendar/CalendarMoonController";
-import {CalendarWeekDayController} from "./backend/controllers/world/calendar/CalendarWeekDayController";
 import {CurrentDateController} from "./backend/controllers/world/CurrentDateController";
 import {DateCommandHandler} from "./bot/command-handlers/world/information/DateCommandHandler";
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
-import {CalendarMoonPhaseController} from "./backend/controllers/world/calendar/CalendarMoonPhaseController";
 
 let container = new Container();
 
@@ -47,12 +36,6 @@ container.bind<string>(TYPES.DatabaseUrl).toConstantValue(process.env.DATABASE_U
 container.bind<string>(TYPES.CryptKey).toConstantValue(process.env.CRYPT_KEY);
 container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).inSingletonScope();
 container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
-
-container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
-container.bind<PartyToGuildService>(TYPES.PartyToGuildService).to(PartyToGuildService).inSingletonScope();
-container.bind<SpecialChannelService>(TYPES.SpecialChannelService).to(SpecialChannelService).inSingletonScope();
-container.bind<UserDefaultPartyService>(TYPES.UserDefaultPartyService).to(UserDefaultPartyService).inSingletonScope();
-container.bind<UserToGuildService>(TYPES.UserToGuildService).to(UserToGuildService).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();
 container.bind<CalendarCommandHandler>(TYPES.CalendarCommandHandler).to(CalendarCommandHandler).inSingletonScope();
@@ -70,13 +53,7 @@ container.bind<WorldCommandHandler>(TYPES.WorldCommandHandler).to(WorldCommandHa
 
 container.bind<CharacterController>(TYPES.CharacterController).to(CharacterController).inSingletonScope();
 container.bind<CalendarController>(TYPES.CalendarController).to(CalendarController).inSingletonScope();
-container.bind<CalendarEraController>(TYPES.CalendarEraController).to(CalendarEraController).inSingletonScope();
-container.bind<CalendarMonthController>(TYPES.CalendarMonthController).to(CalendarMonthController).inSingletonScope();
-container.bind<CalendarMoonController>(TYPES.CalendarMoonController).to(CalendarMoonController).inSingletonScope();
-container.bind<CalendarMoonPhaseController>(TYPES.CalendarMoonPhaseController).to(CalendarMoonPhaseController).inSingletonScope();
-container.bind<CalendarWeekDayController>(TYPES.CalendarWeekDayController).to(CalendarWeekDayController).inSingletonScope();
 container.bind<CurrentDateController>(TYPES.CurrentDateController).to(CurrentDateController).inSingletonScope();
-container.bind<NPCController>(TYPES.NPCController).to(NPCController).inSingletonScope();
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
 container.bind<SendingController>(TYPES.SendingController).to(SendingController).inSingletonScope();

@@ -3,22 +3,20 @@ import {inject, injectable} from "inversify";
 import {Command} from "../../../../../shared/models/generic/Command";
 import {Collection, Message, MessageEmbed} from "discord.js";
 import {TYPES} from "../../../../../types";
-import {User} from "../../../../../backend/entity/User";
 import {EncryptionUtility} from "../../../../../backend/utilities/EncryptionUtility";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
-import {Sending} from "../../../../../backend/entity/Sending";
-import {NPCController} from "../../../../../backend/controllers/character/NPCController";
-import {World} from "../../../../../backend/entity/World";
 import {SendingController} from "../../../../../backend/controllers/character/SendingController";
 import {SendingHelpRelatedResponses} from "../../../../../shared/documentation/client-responses/misc/SendingHelpRelatedResponses";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
-import {Character} from "../../../../../backend/entity/Character";
-import {GameDate} from "../../../../../backend/entity/GameDate";
 import {CharacterController} from "../../../../../backend/controllers/character/CharacterController";
 import {MessageUtility} from "../../../../../backend/utilities/MessageUtility";
-import {NonPlayableCharacter} from "../../../../../backend/entity/NonPlayableCharacter";
 import {StringUtility} from "../../../../../backend/utilities/StringUtility";
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
+import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
+import {DTOType} from "../../../../../backend/api/dto/DTOType";
+import {WorldDTO} from "../../../../../backend/api/dto/model/WorldDTO";
+import {CharacterDTO} from "../../../../../backend/api/dto/model/CharacterDTO";
+import {SendingDTO} from "../../../../../backend/api/dto/model/SendingDTO";
 
 /**
  * Handles sending related commands.
@@ -28,27 +26,24 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;
     private readonly encryptionUtility: EncryptionUtility;
     private partyController: PartyController;
-    private npcController: NPCController;
     private sendingController: SendingController;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
                 @inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
                 @inject(TYPES.PartyController) partyController: PartyController,
-                @inject(TYPES.NPCController) npcController: NPCController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
         this.encryptionUtility = encryptionUtility;
         this.partyController = partyController;
-        this.npcController = npcController;
         this.sendingController = sendingController;
         this.worldController = worldController;
     }
 
 
-    async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         // Want to view sendings.
         if (command.getSubcommands() == null || command.getSubcommands().size < 1 || Subcommands.GET.isCommand(command)) {
             return this.getUnrepliedSendings(command, user, message);
@@ -82,7 +77,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
      * @param message Message object of the originating command.
      * @param user The user doing the command.
      */
-    private async createNewSending(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    private async createNewSending(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         // Go and get the world.
         let world = await this.worldController.worldSelectionFromUser(user, message);
 
@@ -92,7 +87,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Construct the sending.
-        let sending = await this.constructNewSending(command, user, world, new Sending(), message);
+        let sending = await this.constructNewSending(command, user, world, {dtoType: DTOType.SENDING}, message);
 
         // Some sort of failure happened.
         if (sending == null) {
@@ -100,7 +95,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Put the sending in the database.
-        const sent = await this.sendingController.create(sending);
+        const sent = await this.sendingController.save(sending);
 
         // If could not send, respond in kind.
         if (sent == null) {
@@ -120,7 +115,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
      * @param message Message object of the originating command.
      * @param user The user doing the command.
      */
-    private async replyToSending (command: Command, user: User, message: Message): Promise<Message | Message[]> {
+    private async replyToSending (command: Command, user: UserDTO, message: Message): Promise<Message | Message[]> {
         let replyCmd = Subcommands.REPLY.getCommand(command);
         if (replyCmd == null || replyCmd.getInput() == null) {
             return message.channel.send("No reply ID.");
@@ -131,14 +126,14 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("ID isn't a number.");
         }
 
-        let arr = await this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
+        let arr = await this.getSendingArray(user.defaultWorldId, user.defaultCharacterId, message);
 
         // If both are null, return a standard message.
         if (arr.world == null && arr.character == null) {
             return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        let msg = await this.sendingController.getOne(page, arr.world, arr.npc, arr.character);
+        let msg = await this.sendingController.getOne(page, arr.world.id, arr.character.id);
 
         // If no message, couldn't find it.
         if (msg == null) {
@@ -154,7 +149,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Get the sending from creating a new one.
-        sending = await this.sendingController.create(sending);
+        sending = await this.sendingController.save(sending);
 
         // Now craft the embed and send to users.
         let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
@@ -164,15 +159,21 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
     /**
      * Gets who the message should be retrieved for.
-     * @param world
-     * @param character
-     * @param npc
+     * @param worldId
+     * @param characterId
      * @param message
      */
-    private async getSendingArray(world: World, character: Character, npc: NonPlayableCharacter, message: Message): Promise<{world: World,
-        character: Character,
-        npc: NonPlayableCharacter}> {
-        // TODO: Implement for NPC.
+    private async getSendingArray(worldId: string, characterId: string, message: Message): Promise<{world: WorldDTO,
+        character: CharacterDTO}> {
+        let world: WorldDTO = null;
+        if (worldId != null) {
+            world = await this.worldController.getById(worldId);
+        }
+
+        let character: CharacterDTO = null;
+        if (characterId != null) {
+            character = await this.characterController.getById(characterId);
+        }
 
         // If both are not null, give user a choice.
         if (world != null && character != null) {
@@ -192,7 +193,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             }
         }
 
-        return {world: world, character: character, npc: npc};
+        return {world: world, character: character};
     }
 
     /**
@@ -205,14 +206,14 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
      * @param to
      * @param user
      */
-    private async signalUserOfMessage(sending: Sending, message: Message,
+    private async signalUserOfMessage(sending: SendingDTO, message: Message,
                                       completionMessage: MessageEmbed, messageToSend: MessageEmbed,
-                                      to: boolean, user: User): Promise<Message | Message[]> {
+                                      to: boolean, user: UserDTO): Promise<Message | Message[]> {
         // Get discord ids of users to send messages to.
         let discordIds: Collection<string, string> = new Collection<string, string>();
 
         // Are we getting from a player character?
-        let playerCharacter = sending.fromPlayerCharacterId;
+        let playerCharacter = sending.fromCharacterId;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
@@ -220,21 +221,11 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Are we getting from a player character?
-        playerCharacter = sending.toPlayerCharacterId;
+        playerCharacter = sending.toCharacterId;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
             discordIds = discordIds.concat(await this.characterController.getDiscordId(playerCharacter));
-        }
-
-        // Are we getting from an NPC?
-        let npc = (sending.fromNpc != null) ?
-            sending.fromNpc :
-            ((sending.toNpc != null) ? sending.toNpc : null);
-
-        // From an NPC.
-        if (npc != null) {
-            discordIds = discordIds.concat(await this.worldController.getDiscordId(npc.worldId));
         }
 
         // Check for the world.
@@ -258,18 +249,18 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
      * @param message Message object of the originating command.
      * @param user The user doing the command.
      */
-    private async getUnrepliedSendings(command: Command, user: User, message: Message): Promise<Message | Message[]> {
+    private async getUnrepliedSendings(command: Command, user: UserDTO, message: Message): Promise<Message | Message[]> {
         // Process the next  command.
         let page = MessageUtility.getPage(command);
 
-        let arr = await this.getSendingArray(user.defaultWorld, user.defaultCharacter, null, message);
+        let arr = await this.getSendingArray(user.defaultWorldId, user.defaultCharacterId, null);
 
         // If both are null, return a standard message.
         if (arr.world == null && arr.character == null) {
             return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        const messages = await this.sendingController.get(page, arr.world, arr.npc, arr.character);
+        const messages = await this.sendingController.getAllOf(page, arr.world.id, arr.character.id);
         let embed: MessageEmbed;
         if (arr.character != null) {
             embed = SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, arr.character, page, this.encryptionUtility);
@@ -280,16 +271,17 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         return message.channel.send(embed);
     }
 
-    private async constructNewSending(command: Command, user: User, world: World, sending: Sending, message: Message): Promise<Sending> {
+    private async constructNewSending(command: Command, user: UserDTO, world: WorldDTO,
+                                      sending: SendingDTO, message: Message): Promise<SendingDTO> {
         // Get the content.
         if (Subcommands.MESSAGE.isCommand(command)) {
             const msgCmd = Subcommands.MESSAGE.getCommand(command);
             if (!Subcommands.REPLY.isCommand(command)) {
                 sending.content = this.encryptionUtility.encrypt(msgCmd.getInput());
-                sending.sendingMessageFromUser = user;
+                sending.sendingMessageFromDiscordId = user.discord_id;
             } else {
                 sending.reply = this.encryptionUtility.encrypt(msgCmd.getInput());
-                sending.sendingReplyFromUser = user;
+                sending.sendingReplyFromDiscordId = user.discord_id;
                 return sending;
             }
         } else {
@@ -298,7 +290,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Set the world.
-        sending.world = world;
+        if (world != null) {
+            sending.worldId = world.id;
+        }
 
         // Get the in-game date.
         if (Subcommands.DATE.isCommand(command)) {
@@ -311,13 +305,25 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // If going to an NPC, need to see which one.
         if (Subcommands.TO_NPC.isCommand(command)) {
             const tonCmd = Subcommands.TO_NPC.getCommand(command);
-            sending.toNpc = await this.npcController.getByName(tonCmd.getInput(), world.id);
+            let toCharacters = await this.characterController.getNPCByNameAndWorld(tonCmd.getInput(), world.id);
 
             // Could not find the NPC.
-            if (sending.toNpc == null) {
+            if (!toCharacters || toCharacters.length <= 0) {
                 await message.channel.send("Could not find the given NPC you were trying to send to.");
                 return null;
             }
+
+            let toCharacter: CharacterDTO;
+            if (toCharacters.length > 1) {
+                toCharacter = await this.characterController.selectCharacter(toCharacters, "send message to", message);
+                if (toCharacter == null) {
+                    return null;
+                }
+            } else {
+                toCharacter = toCharacters[0];
+            }
+
+            sending.toCharacterId = toCharacter.id;
         } else {
             // Message is for another player character.
             if (Subcommands.TO.isCommand(command)) {
@@ -325,46 +331,65 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
                 // Get all the parties in this world.
                 if (world == null) {
-                    return null;
+                    return Promise.resolve(null);
                 }
 
-                const parties = await this.partyController.getByWorld(world);
-                if (parties == null) {
-                    await message.channel.send("No parties exist in world.");
-                    return null;
-                }
-
-                const characters = await this.characterController.getCharacterByNameInParties(toCmd.getInput(), parties);
+                const characters = await this.characterController.getCharacterByName(toCmd.getInput(), world.id);
                 if (characters == null) {
                     await message.channel.send("No characters exist in world with name like: " + toCmd.getInput());
-                    return null;
+                    return Promise.resolve(null);
                 }
 
-                // TODO: Allow multiselect characters.
-                sending.toPlayerCharacter = characters[0];
+                let character: CharacterDTO;
+                if (characters.length > 1) {
+                    character = await this.characterController.selectCharacter(characters, "send message to", message);
+                    if (character == null) {
+                        return null;
+                    }
+                } else {
+                    character = characters[0];
+                }
+
+                sending.toCharacterId = character.id;
             } else {
-                return null;
+                return Promise.resolve(null);
             }
         }
 
         // Get who the message is from.
         if (Subcommands.FROM.isCommand(command)) {
             const fromCmd = Subcommands.FROM.getCommand(command);
-            sending.fromNpc = await this.npcController.getByName(fromCmd.getInput(), world.id);
+            let fromCharacters = await this.characterController.getNPCByNameAndWorld(fromCmd.getInput(), world.id);
+            if (!fromCharacters || fromCharacters.length <= 0) {
+                await message.channel.send("Couldn't figure out who this message was meant to be from!");
+                return Promise.resolve(null);
+            }
+
+            let fromCharacter: CharacterDTO;
+            if (fromCharacters.length > 1) {
+                fromCharacter = await this.characterController.selectCharacter(fromCharacters, "send message to", message);
+                if (fromCharacter == null) {
+                    return null;
+                }
+            } else {
+                fromCharacter = fromCharacters[0];
+            }
+
+            sending.fromCharacterId = fromCharacter.id;
         } else {
-            if (user.defaultCharacter != null) {
-                sending.fromPlayerCharacter = user.defaultCharacter;
+            if (user.defaultCharacterId != null) {
+                sending.fromCharacterId = user.defaultCharacterId;
             } else {
                 // From no one...
                 await message.channel.send("Couldn't figure out who this message was meant to be from!");
-                return null;
+                return Promise.resolve(null);
             }
         }
 
         return sending;
     }
 
-    public async worldOrCharacter(world: World, character: Character, message: Message): Promise<World | Character> {
+    public async worldOrCharacter(world: WorldDTO, character: CharacterDTO, message: Message): Promise<WorldDTO | CharacterDTO> {
         return message.channel.send(SendingHelpRelatedResponses.CHECK_SENDINGS_FOR_WHICH(character, world)).then((msg) => {
             return message.channel.awaitMessages(m => m.author.id === message.author.id, {
                 max: 1,

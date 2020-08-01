@@ -1,10 +1,14 @@
-import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
-import {AxiosRequestConfig} from "axios";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import {injectable, unmanaged} from "inversify";
 import {Authorization} from "./Authorization";
+import {Message, MessageEmbed} from "discord.js";
+import {APIConfig} from "./APIConfig";
+import {DataDTO} from "../../api/dto/model/DataDTO";
+import {messageEmbed} from "../../../shared/documentation/messages/MessageEmbed";
+import {messageTypes} from "../../../shared/documentation/messages/MessageTypes";
 
 @injectable()
-export class API {
+export class API<U extends {id?: any}> {
     private api: AxiosInstance;
     /**
      * Creates an instance of Api.
@@ -177,5 +181,107 @@ export class API {
 
     protected error (error: AxiosError<Error>) {
         throw error;
+    }
+
+    protected async getByParams(url: string, params?: any): Promise<U> {
+        let config = APIConfig.GET();
+        config.params = params;
+
+        return this.get(url, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to get item.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    protected async getAll(url: string, params?: any): Promise<U[]> {
+        let config = APIConfig.GET();
+        if (!!params) {
+            config.params = params;
+        }
+
+        return this.get(url, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to get item.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    protected async create(item: U, url: string, params?: any): Promise<U> {
+        let config = APIConfig.GET();
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(item);
+        config.data = data;
+        config.params = params;
+
+        return this.post(url, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to create new item.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    protected async save(item: U, url: string, params?: any): Promise<U> {
+        if (!item.id) {
+            return this.create(item, url, params);
+        }
+
+        let config = APIConfig.GET();
+        let data: DataDTO = {};
+        data.data = [];
+        data.data.push(item);
+        config.data = data;
+        config.params = params;
+
+        return this.put(url, config).then((res) => {
+            console.log(res.data);
+            // @ts-ignore
+            return res.data.data;
+        }).catch((err: Error) => {
+            console.log("Caught error trying to update item.");
+            console.error(err);
+            return null;
+        });
+    }
+
+    protected async selection(items: U[], action: string,
+                              type: {singular: string, plural: string}, message: Message): Promise<U> {
+        let embed: MessageEmbed = messageEmbed.generic.select_from_the_following(type, action, items);
+
+        return message.channel.send(embed).then((msg) => {
+            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                max: 1,
+                time: 10e3,
+                errors: ['time'],
+            }).then((input) => {
+                msg.delete({reason: "Removed processing command."});
+                let content = input.first().content;
+                let choice = Number(content);
+                if (isNaN(choice) || choice >= items.length || choice < 0) {
+                    message.channel.send("Input doesn't make sense!");
+                    return null;
+                }
+
+                input.first().delete();
+                return items[choice];
+            }).catch(()=> {
+                msg.delete({reason: "Removed processing command."});
+                message.channel.send("Message timed out.");
+                return null;
+            });
+        });
     }
 }

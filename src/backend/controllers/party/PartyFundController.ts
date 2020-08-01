@@ -7,7 +7,7 @@ import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class PartyFundController extends API {
+export class PartyFundController extends API<PartyFundDTO> {
     constructor() {
         super(APIConfig.GET());
     }
@@ -18,7 +18,7 @@ export class PartyFundController extends API {
      * @param partyId
      * @param type The type of fund this is.
      */
-    public async create(partyId: number, type: string): Promise<PartyFundDTO> {
+    public async createNew(partyId: number, type: string): Promise<PartyFundDTO> {
         let fund: PartyFundDTO = {dtoType: DTOType.PARTY_FUND};
         fund.type = type;
         fund.party = {dtoType: DTOType.PARTY};
@@ -74,14 +74,14 @@ export class PartyFundController extends API {
         });
     }
 
-    public async updateFunds (party: PartyDTO, fund: PartyFundDTO): Promise<PartyFundDTO> {
+    public async updateFunds (partyId: number, fund: PartyFundDTO): Promise<PartyFundDTO> {
         let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(fund);
         config.data = data;
 
-        return this.post(`/parties/${party.id}/funds/${fund.id}`, config)
+        return this.post(`/parties/${partyId}/funds/${fund.id}`, config)
             .then((res) => {
                 console.log(res.data);
                 // @ts-ignore

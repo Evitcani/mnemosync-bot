@@ -1,5 +1,6 @@
 import {DateDTO} from "./DateDTO";
 import {DTOType} from "../DTOType";
+import {CalendarDTO} from "./calendar/CalendarDTO";
 
 export interface CurrentDateDTO {
     id?: string;
@@ -7,5 +8,5 @@ export interface CurrentDateDTO {
     createdDate?: Date;
     updatedDate?: Date;
     date?: DateDTO;
-    calendarId?: string;
+    calendar?: CalendarDTO;
 }

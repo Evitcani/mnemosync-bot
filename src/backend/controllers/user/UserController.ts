@@ -7,7 +7,7 @@ import {DataDTO} from "../../api/dto/model/DataDTO";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class UserController extends API {
+export class UserController extends API<UserDTO> {
     /**
      * Construct this controller.
      */
@@ -46,7 +46,7 @@ export class UserController extends API {
     public async updateDefaultCharacter(user: UserDTO, character: CharacterDTO): Promise<UserDTO> {
         user.defaultCharacterId = character.id;
 
-        return this.save(user.discord_id, user);
+        return this.saveOff(user.discord_id, user);
     }
 
     /**
@@ -61,7 +61,7 @@ export class UserController extends API {
         } else {
             user.defaultWorldId = null;
         }
-        return this.save(user.discord_id,user);
+        return this.saveOff(user.discord_id,user);
     }
 
     /**
@@ -70,7 +70,7 @@ export class UserController extends API {
      * @param discordId
      * @param user
      */
-    public async save(discordId: string, user: UserDTO): Promise<UserDTO> {
+    public async saveOff(discordId: string, user: UserDTO): Promise<UserDTO> {
         let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];

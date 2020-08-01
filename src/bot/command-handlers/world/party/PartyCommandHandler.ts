@@ -2,12 +2,12 @@ import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler"
 import {inject, injectable} from "inversify";
 import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {User} from "../../../../backend/entity/User";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {TYPES} from "../../../../types";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
 import {UserController} from "../../../../backend/controllers/user/UserController";
-import {Party} from "../../../../backend/entity/Party";
+import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
+import {PartyDTO} from "../../../../backend/api/dto/model/PartyDTO";
 
 @injectable()
 export class PartyCommandHandler extends AbstractUserCommandHandler {
@@ -21,7 +21,7 @@ export class PartyCommandHandler extends AbstractUserCommandHandler {
         this.userController = userController;
     }
 
-    async handleUserCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         if (Subcommands.SWITCH.isCommand(command)) {
             return this.handleSwitchCommand(command, message, user);
         }
@@ -29,11 +29,11 @@ export class PartyCommandHandler extends AbstractUserCommandHandler {
         return undefined;
     }
 
-    private async handleSwitchCommand(command: Command, message: Message, user: User): Promise<Message | Message[]> {
+    private async handleSwitchCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let ptCmd = Subcommands.SWITCH.getCommand(command);
         if (ptCmd.getInput() == null) {
-            user.defaultParty = null;
-            await this.userController.save(user);
+            user.defaultPartyId = null;
+            await this.userController.saveOff(user.discord_id, user);
             return message.channel.send("Removed default party.");
         }
 
@@ -42,7 +42,7 @@ export class PartyCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("Could not find party with that name.");
         }
 
-        let party: Party;
+        let party: PartyDTO;
         if (parties.length == 1) {
             party = parties[0];
         } else {
@@ -53,9 +53,9 @@ export class PartyCommandHandler extends AbstractUserCommandHandler {
             return null;
         }
 
-        user.defaultParty = party;
+        user.defaultPartyId = party.id;
 
-        await this.userController.save(user);
+        await this.userController.saveOff(user.discord_id, user);
 
         return message.channel.send("Switched default party to: " + party.name);
     }

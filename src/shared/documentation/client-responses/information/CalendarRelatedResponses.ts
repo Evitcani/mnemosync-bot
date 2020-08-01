@@ -1,29 +1,22 @@
 import {Message, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
-import {Calendar} from "../../../../backend/entity/calendar/Calendar";
-import {Party} from "../../../../backend/entity/Party";
-import {CurrentDate} from "../../../../backend/entity/CurrentDate";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
-import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
 import {messageResponse} from "../../messages/MessageResponse";
 import {messageTypes} from "../../messages/MessageTypes";
-import {messageEmbed} from "../../messages/MessageEmbed";
+import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
+import {CurrentDateDTO} from "../../../../backend/api/dto/model/CurrentDateDTO";
+import {PartyDTO} from "../../../../backend/api/dto/model/PartyDTO";
 
 export class CalendarRelatedResponses {
-    static SELECT_CALENDAR(calendars: Calendar[], action: string): MessageEmbed {
-        return messageEmbed.generic.select_from_the_following(messageTypes.calendar, action, calendars);
-    }
-
-    static async PRINT_DATE(currentDate: CurrentDate, party: Party, message: Message,
-                            calendarController: CalendarController): Promise<MessageEmbed> {
-        let calendar = await calendarController.get(currentDate.calendarId);
+    static async PRINT_DATE(currentDate: CurrentDateDTO, party: PartyDTO, message: Message,
+                            calendar: CalendarDTO): Promise<MessageEmbed> {
         if (calendar == null) {
             await message.channel.send(messageResponse.generic.could_not_get.msg(messageTypes.calendar.singular));
             return Promise.resolve(null);
         }
 
         // Now get the date.
-        let date = await MessageUtility.getProperDate(currentDate.date, message, calendar, calendarController);
+        let date = await MessageUtility.getProperDate(currentDate.date, message, calendar);
         if  (date == null) {
             return null;
         }

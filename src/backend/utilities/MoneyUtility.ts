@@ -1,7 +1,8 @@
 import {Money} from "../../shared/models/database/Money";
-import {PartyFund} from "../entity/PartyFund";
 import {MoneyType} from "../../shared/enums/MoneyType";
 import {MoneyArchetype} from "../../shared/models/generic/MoneyArchetype";
+import {PartyFundDTO} from "../api/dto/model/PartyFundDTO";
+import {DTOType} from "../api/dto/DTOType";
 
 /**
  * Utility for counting money.
@@ -12,7 +13,7 @@ export class MoneyUtility {
      *
      * @param fund The fund to turn into copper.
      */
-    static pileIntoCopper (fund: PartyFund): number {
+    static pileIntoCopper (fund: PartyFundDTO): number {
         if (fund == null) {
             return 0;
         }
@@ -49,8 +50,8 @@ export class MoneyUtility {
      *
      * @param amt The amount
      */
-    static copperToFund(amt: number): PartyFund {
-        let fund: PartyFund = new PartyFund();
+    static copperToFund(amt: number): PartyFundDTO {
+        let fund: PartyFundDTO = {dtoType: DTOType.PARTY_FUND};
 
         fund.platinum = 0;
 
@@ -71,9 +72,9 @@ export class MoneyUtility {
      *
      * @param args The arguments sent by the user to make sense of.
      */
-     static processMoneyArguments (args: string[]): PartyFund {
+     static processMoneyArguments (args: string[]): PartyFundDTO {
          // Creates a new fund.
-        let fund: PartyFund = new PartyFund();
+        let fund: PartyFundDTO = {dtoType: DTOType.PARTY_FUND};
 
         // Starting amount.
         let amt = -1;
@@ -155,7 +156,7 @@ export class MoneyUtility {
      * @param money The money to put into the fund.
      * @param fund The fund to put the money into.
      */
-     static addToFund (money: Money, fund: PartyFund): PartyFund {
+     static addToFund (money: Money, fund: PartyFundDTO): PartyFundDTO {
         switch (money.type) {
             case MoneyType.PLATINUM:
                 fund.platinum = money.amount;

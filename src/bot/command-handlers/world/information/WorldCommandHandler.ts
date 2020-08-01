@@ -80,7 +80,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
             }
 
             // TODO: Allow user to select party if ambiguous.
-            return this.partyController.updatePartyWorld(parties[0], world).then((party) => {
+            return this.partyController.updatePartyWorld(parties[0], world.id).then((party) => {
                 return message.channel.send(`Party ('${party.name}') added to world: ${world.name}`);
             });
         });

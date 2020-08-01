@@ -2,8 +2,6 @@ import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../../types";
-import {UserDefaultPartyService} from "../../../backend/database/UserDefaultPartyService";
-import {UserToGuildService} from "../../../backend/database/UserToGuildService";
 import {PartyController} from "../../../backend/controllers/party/PartyController";
 import {Subcommands} from "../../../shared/documentation/commands/Subcommands";
 import {WorldController} from "../../../backend/controllers/world/WorldController";
@@ -16,28 +14,22 @@ import {UserController} from "../../../backend/controllers/user/UserController";
 @injectable()
 export class RegisterCommandHandler extends AbstractUserCommandHandler {
     private partyController: PartyController;
-    private userDefaultPartyService: UserDefaultPartyService;
     private userController: UserController;
-    private userToGuildService: UserToGuildService;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.PartyController) partyController: PartyController,
-                @inject(TYPES.UserDefaultPartyService) userDefaultPartyService: UserDefaultPartyService,
                 @inject(TYPES.UserController) userController: UserController,
-                @inject(TYPES.UserToGuildService) userToGuildService: UserToGuildService,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.partyController = partyController;
-        this.userDefaultPartyService = userDefaultPartyService;
         this.userController = userController;
-        this.userToGuildService = userToGuildService;
         this.worldController = worldController;
     }
 
     async handleUserCommand(command: Command, message: Message, user): Promise<Message | Message[]> {
         if (Subcommands.PARTY.isCommand(command)) {
             const createParty = Subcommands.PARTY.getCommand(command);
-            return this.partyController.create(createParty.getInput(), message.guild.id, message.author.id)
+            return this.partyController.createNew(createParty.getInput(), message.guild.id, message.author.id)
                 .then((party) => {
                     return message.channel.send("Created new party: " + party.name);
                 });
@@ -58,18 +50,8 @@ export class RegisterCommandHandler extends AbstractUserCommandHandler {
      * @param message The message used for this message.
      */
     async registerUserToGuild (command: Command, message: Message): Promise<boolean> {
-        const user = message.author;
-        const guild = message.guild.id;
-
-        // First get the user.
-        return this.userController.get(user.id, user.username).then((res) => {
-            if (res == null) {
-                return false;
-            }
-            return this.userToGuildService.registerUserOnGuild(guild, user.id).then((map) => {
-                return map != null;
-            });
-        })
+        // TODO: Decide if we reimplement this.
+        return Promise.resolve(false);
     }
 
 }

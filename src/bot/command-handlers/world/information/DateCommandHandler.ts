@@ -13,6 +13,7 @@ import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
 import {PartyDTO} from "../../../../backend/api/dto/model/PartyDTO";
 import {CurrentDateDTO} from "../../../../backend/api/dto/model/CurrentDateDTO";
 import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
+import {DTOType} from "../../../../backend/api/dto/DTOType";
 
 @injectable()
 export class DateCommandHandler extends AbstractUserCommandHandler {
@@ -41,19 +42,22 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
             await this.handleCreateCommand(command, message, user, party);
         }
 
+        if (party.currentDateId == null) {
+            return message.channel.send("No current date for this party. Needs setup.");
+        }
+
+        let currentDate = await this.currentDateController.getById(party.currentDateId);
+
         // User wants to set the date.
         if (Subcommands.DATE.isCommand(command)) {
-            await this.handleSetDateCommand(command, message, user, party);
+            await this.handleSetDateCommand(command, message, user, party, currentDate);
         }
 
         // Just wants the current date.
         if (command.getInput() == null) {
-            if (party.currentDate == null) {
-                return message.channel.send("No current date for this party. Needs setup.");
-            }
 
-            let embed = await CalendarRelatedResponses.PRINT_DATE(party.currentDate, party, message,
-                this.calendarController);
+
+            let embed = await CalendarRelatedResponses.PRINT_DATE(currentDate, party, message, currentDate.calendar);
 
             if (embed == null) {
                 return message.channel.send("Something is wrong with the date.");
@@ -70,7 +74,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         let party = await this.partyController.getPartyBasedOnInputOrUser(command, message, user,
             "add the date to");
 
-        if (party == null || party.world == null) {
+        if (party == null || party.worldId == null) {
             return null;
         }
 
@@ -85,8 +89,9 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
      * @param user
      * @param party
      */
-    private async handleCreateCommand(command: Command, message: Message, user: UserDTO, party: PartyDTO): Promise<Message | Message[]> {
-        if (party.currentDate != null) {
+    private async handleCreateCommand(command: Command, message: Message,
+                                      user: UserDTO, party: PartyDTO): Promise<Message | Message[]> {
+        if (party.currentDateId != null) {
             return message.channel.send("Already has a current date.");
         }
 
@@ -97,7 +102,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Get the calendar.
-        let calendars = await this.calendarController.getByName(calendarName, party.world.id);
+        let calendars = await this.calendarController.getByName(calendarName, party.worldId);
 
         // No calendars found.
         if (calendars.length <= 0) {
@@ -118,17 +123,17 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Create the current date.
-        let currentDate: CurrentDateDTO = {};
-        currentDate.calendar = calendar;
-        currentDate.party = party;
-        currentDate.date = {};
+        let currentDate: CurrentDateDTO = {dtoType: DTOType.CURRENT_DATE};
+        currentDate.calendar = {dtoType: DTOType.CALENDAR};
+        currentDate.calendar.id = calendar.id;
+        currentDate.date = {dtoType: DTOType.DATE};
         currentDate.date.calendarId = calendar.id;
 
         // Save this.
         currentDate = await this.currentDateController.save(currentDate);
 
         // Save the party.
-        party.currentDate = currentDate;
+        party.currentDateId = currentDate.id;
         await this.partyController.save(party);
 
         return message.channel.send("Saved new date to the party.");
@@ -141,17 +146,13 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
      * @param message
      * @param user
      * @param party
+     * @param currentDate
      */
-    private async handleSetDateCommand(command: Command, message: Message, user: UserDTO, party: PartyDTO): Promise<Message | Message[]> {
+    private async handleSetDateCommand(command: Command, message: Message, user: UserDTO,
+                                       party: PartyDTO, currentDate: CurrentDateDTO): Promise<Message | Message[]> {
         // TODO: Only GMs can change the date.
 
-        // Can't process without a current date.
-        if (party.currentDate == null) {
-            return message.channel.send("No current date assigned to the party. Must create one first.");
-        }
-
         // Easy access variable.
-        let currentDate = party.currentDate;
         currentDate.date = await MessageUtility.processDateCommand(command, message);
         currentDate.date.calendarId = currentDate.calendar.id;
 
@@ -159,7 +160,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
         currentDate = await this.currentDateController.save(currentDate);
 
         // Now get the date.
-        let date = await MessageUtility.getProperDate(currentDate.date, message, null, this.calendarController);
+        let date = await MessageUtility.getProperDate(currentDate.date, message, currentDate.calendar);
         if  (date == null) {
             return null;
         }

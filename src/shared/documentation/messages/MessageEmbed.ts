@@ -1,10 +1,10 @@
 import {BasicEmbed} from "../BasicEmbed";
 import {messageResponse} from "./MessageResponse";
-import {Character} from "../../../backend/entity/Character";
+import {CharacterDTO} from "../../../backend/api/dto/model/CharacterDTO";
 
 export const messageEmbed = {
     character: {
-        now_playing_as: (character: Character, newlyCreated: boolean) => {
+        now_playing_as: (character: CharacterDTO, newlyCreated: boolean) => {
             const embed = BasicEmbed.get();
             embed.setTitle(messageResponse.character.now_playing_as.title(character.name));
             if (character.img_url != null) {

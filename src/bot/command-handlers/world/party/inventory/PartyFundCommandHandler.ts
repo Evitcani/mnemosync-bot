@@ -2,16 +2,16 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../types";
 import {Message} from "discord.js";
 import {MoneyUtility} from "../../../../../backend/utilities/MoneyUtility";
-import {PartyFund} from "../../../../../backend/entity/PartyFund";
 import {Command} from "../../../../../shared/models/generic/Command";
 import {FundRelatedClientResponses} from "../../../../../shared/documentation/client-responses/party/FundRelatedClientResponses";
 import {Commands} from "../../../../../shared/documentation/commands/Commands";
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {PartyFundController} from "../../../../../backend/controllers/party/PartyFundController";
-import {Party} from "../../../../../backend/entity/Party";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {User} from "../../../../../backend/entity/User";
+import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
+import {PartyDTO} from "../../../../../backend/api/dto/model/PartyDTO";
+import {PartyFundDTO} from "../../../../../backend/api/dto/model/PartyFundDTO";
 
 /**
  * Manages the fund related commands.
@@ -37,13 +37,15 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
      * @param message The message calling this command.
      * @param user
      */
-    public async handleUserCommand(command, message, user): Promise<Message | Message[]> {
-        if (user == null || user.defaultCharacter == null) {
+    public async handleUserCommand(command, message, user: UserDTO): Promise<Message | Message[]> {
+        if (user == null || user.defaultCharacterId == null) {
             return message.channel.send(FundRelatedClientResponses.NO_DEFAULT_CHARACTER());
         }
 
-        if (user.defaultCharacter.party == null) {
-            return message.channel.send(FundRelatedClientResponses.CHARACTER_NOT_IN_PARTY(user.defaultCharacter.name));
+        let party: PartyDTO = await this.partyController.getByCharacter(user.defaultCharacterId);
+
+        if (party == null) {
+            return message.channel.send(FundRelatedClientResponses.CHARACTER_NOT_IN_PARTY(user.defaultCharacterId));
         }
 
         // Figure out which command to use.
@@ -51,24 +53,24 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
 
         // If there are no args, assume the user just wants a bank statement.
         if (command.getInput() == null) {
-            return this.getFunds(message, type, user);
+            return this.getFunds(message, type, party);
         }
 
         const createCommand = Subcommands.CREATE.isCommand(command);
         if (createCommand != null) {
-            return this.partyFundController.create(user.defaultCharacter.party, type).then(() => {
+            return this.partyFundController.createNew(party.id, type).then(() => {
                 return message.channel.send("Created new party fund!");
             });
         }
 
         // Now we send the amount off to be processed.
-        return this.updateFunds(command, message, type, user.defaultCharacter.party);
+        return this.updateFunds(command, message, type, party.id);
     }
 
-    private async getFunds(message: Message, type: string, user: User): Promise<Message | Message[]> {
-        return this.findFunds(user.defaultCharacter.party, type, message).then((fund) => {
+    private async getFunds(message: Message, type: string, party: PartyDTO): Promise<Message | Message[]> {
+        return this.findFunds(party.id, type, message).then((fund) => {
             let total = MoneyUtility.pileIntoCopper(fund) / 100;
-            return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, user.defaultCharacter.party.name));
+            return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
         });
     }
 
@@ -79,23 +81,23 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     /**
      * Finds the fund for the given party of the given type.
      *
-     * @param party
+     * @param partyId
      * @param type The type of fund to find. Defaults to 'FUND'.
      * @param message The message object that originally sent the command.
      */
-    private async findFunds (party: Party, type: string | null, message: Message): Promise<PartyFund> {
+    private async findFunds (partyId: number, type: string | null, message: Message): Promise<PartyFundDTO> {
         if (type == null) {
             type = "FUND";
         }
 
-        return this.partyFundController.getByPartyAndType(party, type);
+        return this.partyFundController.getByPartyAndType(partyId, type);
     }
 
     ////////////////////////////////////////////////////////////
     ///// UPDATING
     ////////////////////////////////////////////////////////////
 
-    private async updateFunds(command: Command, message: Message, fundType: string, party: Party): Promise<Message | Message[]> {
+    private async updateFunds(command: Command, message: Message, fundType: string, partyId: number): Promise<Message | Message[]> {
         // Process the arguments.
         const newFund = MoneyUtility.processMoneyArguments(command.getInput().split(" "));
 
@@ -104,7 +106,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Find and then update these funds.
-        let fund: PartyFund = await this.findFunds(party, fundType, message);
+        let fund: PartyFundDTO = await this.findFunds(partyId, fundType, message);
 
         if (fund == null) {
             return message.channel.send("Could not find fund!");
@@ -128,7 +130,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         fund.silver = finalFund.silver;
         fund.copper = finalFund.copper;
 
-        let updatedFund = await this.partyFundController.updateFunds(fund);
+        let updatedFund = await this.partyFundController.updateFunds(partyId, fund);
 
         const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
         return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,

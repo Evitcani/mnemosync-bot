@@ -9,7 +9,7 @@ import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class WorldController extends API {
+export class WorldController extends API<WorldDTO> {
     /**
      * Constructs this controller.
      */
@@ -134,7 +134,7 @@ export class WorldController extends API {
      *
      * @param characterId
      */
-    public getByCharacterId(characterId: number): Promise<WorldDTO[]> {
+    public getByCharacterId(characterId: string): Promise<WorldDTO[]> {
         let config = APIConfig.GET();
         config.params = {
             character_id: characterId

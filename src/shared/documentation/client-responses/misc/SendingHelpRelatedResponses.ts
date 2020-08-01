@@ -1,13 +1,11 @@
 import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
-import {Bot} from "../../../../bot/bot";
-import {Subcommands} from "../../commands/Subcommands";
-import {Character} from "../../../../backend/entity/Character";
-import {World} from "../../../../backend/entity/World";
-import {Sending} from "../../../../backend/entity/Sending";
 import {SendingController} from "../../../../backend/controllers/character/SendingController";
 import {EncryptionUtility} from "../../../../backend/utilities/EncryptionUtility";
 import {messageResponse} from "../../messages/MessageResponse";
+import {CharacterDTO} from "../../../../backend/api/dto/model/CharacterDTO";
+import {WorldDTO} from "../../../../backend/api/dto/model/WorldDTO";
+import {SendingDTO} from "../../../../backend/api/dto/model/SendingDTO";
 
 /**
  * Helps the sending command if something went wrong.
@@ -30,7 +28,7 @@ export class SendingHelpRelatedResponses {
             .setDescription(messageResponse.sending.error.no_message.desc(messageContents))
     }
 
-    static CHECK_SENDINGS_FOR_WHICH (character: Character, world: World): MessageEmbed {
+    static CHECK_SENDINGS_FOR_WHICH (character: CharacterDTO, world: WorldDTO): MessageEmbed {
         return BasicEmbed.get()
             .setTitle("Choose the which you'd like to see messages for.")
             .setDescription(`Reply with the given number to decide which you'd like to sendings for.\n` +
@@ -44,7 +42,7 @@ export class SendingHelpRelatedResponses {
             .setDescription("Can't fetch messages for no one or nothing!");
     }
 
-    static PRINT_MESSAGES_FROM_WORLD (messages: Sending[], world: World, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
+    static PRINT_MESSAGES_FROM_WORLD (messages: SendingDTO[], world: WorldDTO, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessages(messages, page, true, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to NPCs in ${world.name}`)
@@ -52,7 +50,7 @@ export class SendingHelpRelatedResponses {
             .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, (messages == null? 0 : messages.length)));
     }
 
-    static PRINT_MESSAGES_TO_CHARACTER (messages: Sending[], character: Character, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
+    static PRINT_MESSAGES_TO_CHARACTER (messages: SendingDTO[], character: CharacterDTO, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessages(messages, page, false, true, false, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Unreplied Messages Sent to ${character.name}`)
@@ -60,14 +58,14 @@ export class SendingHelpRelatedResponses {
             .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, (messages == null? 0 : messages.length)));
     }
 
-    static PRINT_MESSAGE_REPLY_TO_PLAYER (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
+    static PRINT_MESSAGE_REPLY_TO_PLAYER (message: SendingDTO, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Got a message reply!`)
             .setDescription(`Here is the reply:\n\n${messageStr}`);
     }
 
-    static PRINT_MESSAGE_TO_PLAYER (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
+    static PRINT_MESSAGE_TO_PLAYER (message: SendingDTO, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Got a new message!`)
@@ -75,21 +73,21 @@ export class SendingHelpRelatedResponses {
                 `Here is the message:\n\n${messageStr}`);
     }
 
-    static PRINT_FINISHED_INFORMING (message: Sending, encryptionUtility: EncryptionUtility): MessageEmbed {
+    static PRINT_FINISHED_INFORMING (message: SendingDTO, encryptionUtility: EncryptionUtility): MessageEmbed {
         let messageStr = this.processMessage(message, 0, true, true, true, encryptionUtility);
         return BasicEmbed.get()
             .setTitle(`Finished informing all users of the reply.`)
             .setDescription(`Here is the message you just sent:\n\n${messageStr}`);
     }
 
-    private static processMessages(messages: Sending[], page: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
+    private static processMessages(messages: SendingDTO[], page: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
         if (!messages || messages.length < 1) {
             return "No messages!";
         }
 
         let additional = page * SendingController.SENDING_LIMIT;
         let str = "";
-        let i, message: Sending;
+        let i, message: SendingDTO;
         for (i = 0; i < messages.length; i++) {
             message = messages[i];
             str += this.processMessage(message, additional + i, includeTo, includeFrom, includeReply, encryptionUtility);
@@ -98,18 +96,18 @@ export class SendingHelpRelatedResponses {
         return str;
     }
 
-    private static processMessage(message: Sending, location: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
+    private static processMessage(message: SendingDTO, location: number, includeTo: boolean, includeFrom: boolean, includeReply: boolean, encryptionUtility: EncryptionUtility): string {
         let str = "";
         str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
         if (includeFrom) {
-            str += `> **FROM:** ${message.fromPlayerCharacter != null ? message.fromPlayerCharacter.name : message.fromNpc.name} `;
-            str += `(*${message.sendingMessageFromUser.discord_name}*)\n`;
+            str += `> **FROM:** ${message.fromCharacter != null ? message.fromCharacter.name : null} `;
+            str += `(*${message.sendingMessageFromDiscordName}*)\n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         if (includeTo) {
-            str += `> **TO  :** ${message.toPlayerCharacter != null ? message.toPlayerCharacter.name : message.toNpc.name}`;
+            str += `> **TO  :** ${message.toCharacter != null ? message.toCharacter.name : null}`;
             if (includeReply && message.reply != null) {
-                str += `(*${message.sendingReplyFromUser.discord_name}*)\n`;
+                str += `(*${message.sendingReplyFromDiscordId}*)\n`;
                 str += `> ${encryptionUtility.decrypt(message.reply)}\n`;
             } else {
                 str += `\n`;

@@ -1,8 +1,8 @@
 import {Bot} from "../../../bot/bot";
 import {Commands} from "../commands/Commands";
 import {Subcommands} from "../commands/Subcommands";
-import {NonPlayableCharacter} from "../../../backend/entity/NonPlayableCharacter";
 import {StringUtility} from "../../../backend/utilities/StringUtility";
+import {CharacterDTO} from "../../../backend/api/dto/model/CharacterDTO";
 
 const PREFIX: string = "$";
 const PREFIX_SUBCOMMAND: string = "~";
@@ -28,6 +28,9 @@ export const messageResponse = {
     },
 
     generic: {
+        action: {
+            switch_to: `switch to`
+        },
         command: {
             create: (type: string, createCommand: string) =>
                 `To create a new ${type}, type, \`${createCommand}\`.`
@@ -56,7 +59,7 @@ export const messageResponse = {
     npc: {
         display_all: {
             title: (worldName: string) => `NPCs in the world of ${worldName}`,
-            desc: (worldName: string, npcs: NonPlayableCharacter[]) =>
+            desc: (worldName: string, npcs: CharacterDTO[]) =>
                 `The following NPCs live in ${worldName}:\n${displayAll(npcs, true)}`,
         }
     },

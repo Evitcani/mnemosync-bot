@@ -3,6 +3,10 @@ export const messageTypes = {
         singular: "calendar",
         plural: "calendars"
     },
+    character: {
+        singular: "character",
+        plural: "characters"
+    },
     party: {
         singular: "party",
         plural: "parties"

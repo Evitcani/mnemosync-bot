@@ -11,7 +11,7 @@ import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
 
 @injectable()
-export class PartyController extends API {
+export class PartyController extends API<PartyDTO> {
     constructor() {
         super(APIConfig.GET());
     }
@@ -23,7 +23,7 @@ export class PartyController extends API {
      * @param guildId The ID of the guild for this party to live in.
      * @param discordId The discord id of the creator.
      */
-    public create(partyName: string, guildId: string, discordId: string): Promise<PartyDTO> {
+    public createNew(partyName: string, guildId: string, discordId: string): Promise<PartyDTO> {
         const party: PartyDTO = {dtoType: DTOType.PARTY};
         party.name = partyName;
         party.guildId = guildId;
@@ -85,14 +85,14 @@ export class PartyController extends API {
         let params = {
             guild_id: guildId
         };
-        return this.getByParams(params);
+        return this.getByParameters(params);
     }
 
-    public async getByCharacter (characterId: number): Promise<PartyDTO> {
+    public async getByCharacter (characterId: string): Promise<PartyDTO> {
         let params = {
             character_id: characterId
         };
-        let parties = await this.getByParams(params);
+        let parties = await this.getByParameters(params);
         if (!parties || parties.length <= 0) {
             return Promise.resolve(null);
         }
@@ -105,14 +105,14 @@ export class PartyController extends API {
             name: name,
             guild_id: guildId
         };
-        return this.getByParams(params);
+        return this.getByParameters(params);
     }
 
     public async getByWorld (worldId: string): Promise<PartyDTO[]> {
         let params = {
             world_id: worldId
         };
-        return this.getByParams(params);
+        return this.getByParameters(params);
     }
 
     public updatePartyWorld (party: PartyDTO, worldId: string): Promise<PartyDTO> {
@@ -125,7 +125,7 @@ export class PartyController extends API {
      *
      * @param params
      */
-    public getByParams(params: any): Promise<PartyDTO[]> {
+    public getByParameters(params: any): Promise<PartyDTO[]> {
         let config = APIConfig.GET();
         config.params = params;
 
