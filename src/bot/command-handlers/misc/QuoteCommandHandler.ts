@@ -3,12 +3,12 @@ import {AbstractCommandHandler} from "../base/AbstractCommandHandler";
 import {Command} from "../../../shared/models/generic/Command";
 import {Client, Collection, Message, Snowflake, TextChannel} from "discord.js";
 import {TYPES} from "../../../types";
-import {SpecialChannelDesignation} from "../../../shared/enums/SpecialChannelDesignation";
 import {QuoteRelatedClientResponses} from "../../../shared/documentation/client-responses/misc/QuoteRelatedClientResponses";
 import {Bot} from "../../bot";
 import {SpecialChannelController} from "../../../backend/controllers/user/SpecialChannelController";
-import {DTOType} from "../../../backend/api/dto/DTOType";
-import {SpecialChannelDTO} from "../../../backend/api/dto/model/SpecialChannelDTO";
+import {SpecialChannelDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SpecialChannelDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {SpecialChannelDesignation} from "@evitcani/mnemoshared/dist/src/enums/SpecialChannelDesignation";
 
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and

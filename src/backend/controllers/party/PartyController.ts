@@ -3,12 +3,12 @@ import {Subcommands} from "../../../shared/documentation/commands/Subcommands";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
 import {PartyRelatedClientResponses} from "../../../shared/documentation/client-responses/information/PartyRelatedClientResponses";
-import {PartyDTO} from "../../api/dto/model/PartyDTO";
-import {UserDTO} from "../../api/dto/model/UserDTO";
 import {API} from "../base/API";
-import {DataDTO} from "../../api/dto/model/DataDTO";
-import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
 
 @injectable()
 export class PartyController extends API<PartyDTO> {

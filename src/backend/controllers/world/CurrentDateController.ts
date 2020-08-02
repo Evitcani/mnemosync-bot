@@ -1,9 +1,9 @@
 import {injectable} from "inversify";
 import {API} from "../base/API";
-import {DataDTO} from "../../api/dto/model/DataDTO";
-import {CurrentDateDTO} from "../../api/dto/model/CurrentDateDTO";
-import {PartyDTO} from "../../api/dto/model/PartyDTO";
 import {APIConfig} from "../base/APIConfig";
+import {CurrentDateDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CurrentDateDTO";
+import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class CurrentDateController extends API<CurrentDateDTO> {

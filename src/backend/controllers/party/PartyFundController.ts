@@ -1,10 +1,9 @@
 import {injectable} from "inversify";
-import {PartyFundDTO} from "../../api/dto/model/PartyFundDTO";
-import {PartyDTO} from "../../api/dto/model/PartyDTO";
 import {API} from "../base/API";
-import {DataDTO} from "../../api/dto/model/DataDTO";
-import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
+import {PartyFundDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyFundDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class PartyFundController extends API<PartyFundDTO> {

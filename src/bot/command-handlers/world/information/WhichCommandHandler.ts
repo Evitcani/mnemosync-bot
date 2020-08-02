@@ -8,8 +8,8 @@ import {WorldController} from "../../../../backend/controllers/world/WorldContro
 import {NPCRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/NPCRelatedClientResponses";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
-import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
 import {CharacterController} from "../../../../backend/controllers/character/CharacterController";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
 
 /**
  * Handles questions about the state of the world.

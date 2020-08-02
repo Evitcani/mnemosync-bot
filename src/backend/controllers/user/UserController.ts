@@ -1,10 +1,10 @@
 import {injectable} from "inversify";
-import {UserDTO} from "../../api/dto/model/UserDTO";
-import {CharacterDTO} from "../../api/dto/model/CharacterDTO";
-import {WorldDTO} from "../../api/dto/model/WorldDTO";
 import {API} from "../base/API";
-import {DataDTO} from "../../api/dto/model/DataDTO";
 import {APIConfig} from "../base/APIConfig";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
+import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
+import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
 
 @injectable()
 export class UserController extends API<UserDTO> {

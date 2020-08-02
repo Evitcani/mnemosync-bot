@@ -2,7 +2,7 @@ import {MessageEmbed} from "discord.js";
 import {messageEmbed} from "../../messages/MessageEmbed";
 import {messageTypes} from "../../messages/MessageTypes";
 import {messageResponse} from "../../messages/MessageResponse";
-import {PartyDTO} from "../../../../backend/api/dto/model/PartyDTO";
+import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
 
 export class WhichRelatedClientResponses {
     static LIST_ALL_PARTIES (parties: PartyDTO[]): MessageEmbed {

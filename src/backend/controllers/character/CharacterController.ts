@@ -1,12 +1,12 @@
 import {injectable} from "inversify";
 import {Collection, Message} from "discord.js";
 import {API} from "../base/API";
-import {CharacterDTO} from "../../api/dto/model/CharacterDTO";
-import {DataDTO} from "../../api/dto/model/DataDTO";
-import {NicknameDTO} from "../../api/dto/model/NicknameDTO";
-import {DTOType} from "../../api/dto/DTOType";
 import {APIConfig} from "../base/APIConfig";
 import {messageTypes} from "../../../shared/documentation/messages/MessageTypes";
+import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
+import {NicknameDTO} from "@evitcani/mnemoshared/dist/src/dto/model/NicknameDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class CharacterController extends API<CharacterDTO> {

@@ -18,7 +18,6 @@ import {CharacterController} from "./backend/controllers/character/CharacterCont
 import {UserController} from "./backend/controllers/user/UserController";
 import {WorldController} from "./backend/controllers/world/WorldController";
 import {WorldCommandHandler} from "./bot/command-handlers/world/information/WorldCommandHandler";
-import {EncryptionUtility} from "./backend/utilities/EncryptionUtility";
 import {SendingController} from "./backend/controllers/character/SendingController";
 import {SendingCommandHandler} from "./bot/command-handlers/world/party/character/SendingCommandHandler";
 import {CalendarController} from "./backend/controllers/world/CalendarController";
@@ -27,6 +26,7 @@ import {DateCommandHandler} from "./bot/command-handlers/world/information/DateC
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
 import {SpecialChannelController} from "./backend/controllers/user/SpecialChannelController";
+import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
 
 let container = new Container();
 

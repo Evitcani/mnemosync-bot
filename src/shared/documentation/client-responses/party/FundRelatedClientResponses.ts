@@ -1,9 +1,9 @@
-import {StringUtility} from "../../../../backend/utilities/StringUtility";
 import {Collection, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
 import {Bot} from "../../../../bot/bot";
 import {Commands} from "../../commands/Commands";
 import {Subcommands} from "../../commands/Subcommands";
+import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
 
 /**
  * A class for formatting responses related to the `$FUND` and `$BANK` commands.

@@ -3,20 +3,20 @@ import {inject, injectable} from "inversify";
 import {Command} from "../../../../../shared/models/generic/Command";
 import {Collection, Message, MessageEmbed} from "discord.js";
 import {TYPES} from "../../../../../types";
-import {EncryptionUtility} from "../../../../../backend/utilities/EncryptionUtility";
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {SendingController} from "../../../../../backend/controllers/character/SendingController";
 import {SendingHelpRelatedResponses} from "../../../../../shared/documentation/client-responses/misc/SendingHelpRelatedResponses";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
 import {CharacterController} from "../../../../../backend/controllers/character/CharacterController";
 import {MessageUtility} from "../../../../../backend/utilities/MessageUtility";
-import {StringUtility} from "../../../../../backend/utilities/StringUtility";
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
-import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
-import {DTOType} from "../../../../../backend/api/dto/DTOType";
-import {WorldDTO} from "../../../../../backend/api/dto/model/WorldDTO";
-import {CharacterDTO} from "../../../../../backend/api/dto/model/CharacterDTO";
-import {SendingDTO} from "../../../../../backend/api/dto/model/SendingDTO";
+import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
+import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
+import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
+import {SendingDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SendingDTO";
 
 /**
  * Handles sending related commands.

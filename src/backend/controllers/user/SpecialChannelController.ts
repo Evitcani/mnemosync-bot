@@ -1,8 +1,8 @@
 import {API} from "../base/API";
-import {SpecialChannelDTO} from "../../api/dto/model/SpecialChannelDTO";
 import {injectable} from "inversify";
 import {APIConfig} from "../base/APIConfig";
-import {SpecialChannelDesignation} from "../../../shared/enums/SpecialChannelDesignation";
+import {SpecialChannelDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SpecialChannelDTO";
+import {SpecialChannelDesignation} from "@evitcani/mnemoshared/dist/src/enums/SpecialChannelDesignation";
 
 @injectable()
 export class SpecialChannelController extends API<SpecialChannelDTO> {
@@ -21,7 +21,7 @@ export class SpecialChannelController extends API<SpecialChannelDTO> {
     public async getByGuildIdAndDesignation(guildId: string, type: SpecialChannelDesignation): Promise<SpecialChannelDTO> {
         let params = {
             guild_id: guildId,
-            designation: SpecialChannelDesignation
+            designation: type
         };
         return this.getByParams(`/specialChannels`, params);
     }

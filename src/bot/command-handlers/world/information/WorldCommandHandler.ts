@@ -7,9 +7,9 @@ import {WorldController} from "../../../../backend/controllers/world/WorldContro
 import {TYPES} from "../../../../types";
 import {UserController} from "../../../../backend/controllers/user/UserController";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
-import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
-import {WorldDTO} from "../../../../backend/api/dto/model/WorldDTO";
-import {DTOType} from "../../../../backend/api/dto/DTOType";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
 
 @injectable()
 export class WorldCommandHandler extends AbstractUserCommandHandler {

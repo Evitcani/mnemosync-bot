@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import {API} from "../base/API";
-import {SendingDTO} from "../../api/dto/model/SendingDTO";
-import {DataDTO} from "../../api/dto/model/DataDTO";
 import {APIConfig} from "../base/APIConfig";
+import {SendingDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SendingDTO";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class SendingController extends API<SendingDTO> {

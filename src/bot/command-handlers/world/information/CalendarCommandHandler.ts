@@ -8,15 +8,15 @@ import {TYPES} from "../../../../types";
 import {CalendarController} from "../../../../backend/controllers/world/CalendarController";
 import {WorldAnvilCalendar} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCalendar";
 import {WorldAnvilMonth} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilMonth";
-import {StringUtility} from "../../../../backend/utilities/StringUtility";
 import {WorldAnvilCelestial} from "../../../../shared/models/generic/world-anvil/calendar/WorldAnvilCelestial";
-import {UserDTO} from "../../../../backend/api/dto/model/UserDTO";
-import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
-import {CalendarMonthDTO} from "../../../../backend/api/dto/model/calendar/CalendarMonthDTO";
-import {CalendarWeekDayDTO} from "../../../../backend/api/dto/model/calendar/CalendarWeekDayDTO";
-import {CalendarMoonDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonDTO";
-import {CalendarMoonPhaseDTO} from "../../../../backend/api/dto/model/calendar/CalendarMoonPhaseDTO";
-import {DTOType} from "../../../../backend/api/dto/DTOType";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
+import {CalendarMonthDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMonthDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
+import {CalendarMoonDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMoonDTO";
+import {CalendarMoonPhaseDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMoonPhaseDTO";
+import {CalendarWeekDayDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarWeekDayDTO";
 
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {

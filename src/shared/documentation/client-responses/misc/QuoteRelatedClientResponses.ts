@@ -1,8 +1,5 @@
 import {Message, MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
-import {StringUtility} from "../../../../backend/utilities/StringUtility";
-import {Bot} from "../../../../bot/bot";
-import {Commands} from "../../commands/Commands";
 import {messageResponse} from "../../messages/MessageResponse";
 
 /**

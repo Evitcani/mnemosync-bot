@@ -1,5 +1,5 @@
 import {DbColumn} from "./columns/DbColumn";
-import {DatabaseDivider} from "../../../enums/DatabaseDivider";
+import {DatabaseDivider} from "@evitcani/mnemoshared/dist/src/enums/DatabaseDivider";
 
 export class DbTable {
     private designation: number;

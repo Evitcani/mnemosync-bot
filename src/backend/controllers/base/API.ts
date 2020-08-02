@@ -3,9 +3,8 @@ import {injectable, unmanaged} from "inversify";
 import {Authorization} from "./Authorization";
 import {Message, MessageEmbed} from "discord.js";
 import {APIConfig} from "./APIConfig";
-import {DataDTO} from "../../api/dto/model/DataDTO";
 import {messageEmbed} from "../../../shared/documentation/messages/MessageEmbed";
-import {messageTypes} from "../../../shared/documentation/messages/MessageTypes";
+import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class API<U extends {id?: any}> {

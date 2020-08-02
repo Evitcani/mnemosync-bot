@@ -2,7 +2,7 @@ import {Command} from "../../../../shared/models/generic/Command";
 import {Message} from "discord.js";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 import {injectable} from "inversify";
-import {CharacterDTO} from "../../../../backend/api/dto/model/CharacterDTO";
+import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
 
 /**
  * The "travel" command is used to calculate the most efficient gear to travel with over a period of days.

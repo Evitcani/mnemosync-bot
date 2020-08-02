@@ -3,9 +3,9 @@ import {BasicEmbed} from "../../BasicEmbed";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {messageResponse} from "../../messages/MessageResponse";
 import {messageTypes} from "../../messages/MessageTypes";
-import {CalendarDTO} from "../../../../backend/api/dto/model/calendar/CalendarDTO";
-import {CurrentDateDTO} from "../../../../backend/api/dto/model/CurrentDateDTO";
-import {PartyDTO} from "../../../../backend/api/dto/model/PartyDTO";
+import {CurrentDateDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CurrentDateDTO";
+import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
+import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
 
 export class CalendarRelatedResponses {
     static async PRINT_DATE(currentDate: CurrentDateDTO, party: PartyDTO, message: Message,

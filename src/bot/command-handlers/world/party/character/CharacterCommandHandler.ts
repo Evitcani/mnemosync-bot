@@ -10,10 +10,10 @@ import {CharacterController} from "../../../../../backend/controllers/character/
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
 import {UserController} from "../../../../../backend/controllers/user/UserController";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
-import {DTOType} from "../../../../../backend/api/dto/DTOType";
-import {CharacterDTO} from "../../../../../backend/api/dto/model/CharacterDTO";
-import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
 import {messageResponse} from "../../../../../shared/documentation/messages/MessageResponse";
+import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
+import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
 
 export class CharacterCommandHandler extends AbstractUserCommandHandler {
     private characterController: CharacterController;

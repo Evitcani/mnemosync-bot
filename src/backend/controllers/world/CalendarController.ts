@@ -1,9 +1,9 @@
 import {injectable} from "inversify";
 import {Message} from "discord.js";
-import {CalendarDTO} from "../../api/dto/model/calendar/CalendarDTO";
 import {API} from "../base/API";
 import {APIConfig} from "../base/APIConfig";
 import {messageTypes} from "../../../shared/documentation/messages/MessageTypes";
+import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
 
 @injectable()
 export class CalendarController extends API<CalendarDTO> {

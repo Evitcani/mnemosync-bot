@@ -1,7 +1,6 @@
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../types";
 import {Message} from "discord.js";
-import {MoneyUtility} from "../../../../../backend/utilities/MoneyUtility";
 import {Command} from "../../../../../shared/models/generic/Command";
 import {FundRelatedClientResponses} from "../../../../../shared/documentation/client-responses/party/FundRelatedClientResponses";
 import {Commands} from "../../../../../shared/documentation/commands/Commands";
@@ -9,9 +8,10 @@ import {PartyController} from "../../../../../backend/controllers/party/PartyCon
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {PartyFundController} from "../../../../../backend/controllers/party/PartyFundController";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {UserDTO} from "../../../../../backend/api/dto/model/UserDTO";
-import {PartyDTO} from "../../../../../backend/api/dto/model/PartyDTO";
-import {PartyFundDTO} from "../../../../../backend/api/dto/model/PartyFundDTO";
+import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
+import {MoneyUtility} from "@evitcani/mnemoshared/dist/src/utilities/MoneyUtility";
+import {PartyFundDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyFundDTO";
 
 /**
  * Manages the fund related commands.
