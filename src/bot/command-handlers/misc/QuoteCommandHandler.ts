@@ -6,6 +6,9 @@ import {TYPES} from "../../../types";
 import {SpecialChannelDesignation} from "../../../shared/enums/SpecialChannelDesignation";
 import {QuoteRelatedClientResponses} from "../../../shared/documentation/client-responses/misc/QuoteRelatedClientResponses";
 import {Bot} from "../../bot";
+import {SpecialChannelController} from "../../../backend/controllers/user/SpecialChannelController";
+import {DTOType} from "../../../backend/api/dto/DTOType";
+import {SpecialChannelDTO} from "../../../backend/api/dto/model/SpecialChannelDTO";
 
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
@@ -16,19 +19,19 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
     /** The bot client. */
     private client: Client;
     /** The service for getting the special channels. */
-    private specialChannelService: SpecialChannelService;
+    private specialChannelController: SpecialChannelController;
 
     /**
      * Constructs this command handler.
      *
      * @param client The bot's client.
-     * @param specialChannelService The special channel service.
+     * @param specialChannelController
      */
     constructor(@inject(TYPES.Client) client: Client,
-                @inject(TYPES.SpecialChannelService) specialChannelService: SpecialChannelService,) {
+                @inject(TYPES.SpecialChannelController) specialChannelController: SpecialChannelController,) {
         super();
         this.client = client;
-        this.specialChannelService = specialChannelService;
+        this.specialChannelController = specialChannelController;
     }
 
     /**
@@ -53,7 +56,11 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
      * @param message The message the command originated from.
      */
     private async registerQuoteChannel (message: Message): Promise<Message | Message[]> {
-        return this.specialChannelService.addSpecialChannel(message.guild.id, SpecialChannelDesignation.QUOTE_CHANNEL, message.channel.id)
+        let specialChannel: SpecialChannelDTO = {dtoType: DTOType.SPECIAL_CHANNEL};
+        specialChannel.channel_id = message.channel.id;
+        specialChannel.guild_id = message.guild.id;
+        specialChannel.designation = SpecialChannelDesignation.QUOTE_CHANNEL;
+        return this.specialChannelController.update(specialChannel)
             .then(() => {
                 return message.channel.send("Registered this channel as your quotes channel!");
             });
@@ -90,7 +97,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
      * @param message The message the command originated from.
      */
     private async getQuoteChannel(message: Message): Promise<string> {
-        return this.specialChannelService.getSpecialChannel(message.guild.id, SpecialChannelDesignation.QUOTE_CHANNEL)
+        return this.specialChannelController.getByGuildIdAndDesignation(message.guild.id, SpecialChannelDesignation.QUOTE_CHANNEL)
             .then((channel) => {
                 if (channel == null) {
                     return null;

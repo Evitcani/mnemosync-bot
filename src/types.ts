@@ -29,6 +29,7 @@ export const TYPES = {
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
     SendingController: Symbol("SendingController"),
+    SpecialChannelController: Symbol("SpecialChannelController"),
     UserController: Symbol("UserController"),
     WorldController: Symbol("WorldController"),
 };

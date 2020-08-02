@@ -26,6 +26,7 @@ import {CurrentDateController} from "./backend/controllers/world/CurrentDateCont
 import {DateCommandHandler} from "./bot/command-handlers/world/information/DateCommandHandler";
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
+import {SpecialChannelController} from "./backend/controllers/user/SpecialChannelController";
 
 let container = new Container();
 
@@ -57,6 +58,7 @@ container.bind<CurrentDateController>(TYPES.CurrentDateController).to(CurrentDat
 container.bind<PartyController>(TYPES.PartyController).to(PartyController).inSingletonScope();
 container.bind<PartyFundController>(TYPES.PartyFundController).to(PartyFundController).inSingletonScope();
 container.bind<SendingController>(TYPES.SendingController).to(SendingController).inSingletonScope();
+container.bind<SpecialChannelController>(TYPES.SpecialChannelController).to(SpecialChannelController).inSingletonScope();
 container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();
 container.bind<WorldController>(TYPES.WorldController).to(WorldController).inSingletonScope();
 
