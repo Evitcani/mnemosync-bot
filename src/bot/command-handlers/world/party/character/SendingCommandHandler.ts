@@ -17,6 +17,7 @@ import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtil
 import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
 import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
 import {SendingDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SendingDTO";
+import {Encryption} from "../../../../../backend/controllers/base/Encryption";
 
 /**
  * Handles sending related commands.
@@ -30,7 +31,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
-                @inject(TYPES.EncryptionUtility) encryptionUtility: EncryptionUtility,
+                @inject(TYPES.EncryptionUtility) encryptionUtility: Encryption,
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
                 @inject(TYPES.WorldController) worldController: WorldController) {

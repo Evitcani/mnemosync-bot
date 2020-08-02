@@ -26,7 +26,7 @@ import {DateCommandHandler} from "./bot/command-handlers/world/information/DateC
 import {CalendarCommandHandler} from "./bot/command-handlers/world/information/CalendarCommandHandler";
 import {PartyCommandHandler} from "./bot/command-handlers/world/party/PartyCommandHandler";
 import {SpecialChannelController} from "./backend/controllers/user/SpecialChannelController";
-import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
+import {Encryption} from "./backend/controllers/base/Encryption";
 
 let container = new Container();
 
@@ -36,7 +36,7 @@ container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN);
 container.bind<string>(TYPES.DatabaseUrl).toConstantValue(process.env.DATABASE_URL);
 container.bind<string>(TYPES.CryptKey).toConstantValue(process.env.CRYPT_KEY);
 container.bind<MessageResponder>(TYPES.MessageResponder).to(MessageResponder).inSingletonScope();
-container.bind<EncryptionUtility>(TYPES.EncryptionUtility).to(EncryptionUtility).inSingletonScope();
+container.bind<Encryption>(TYPES.EncryptionUtility).to(Encryption).inSingletonScope();
 
 container.bind<BagCommandHandler>(TYPES.BagCommandHandler).to(BagCommandHandler).inSingletonScope();
 container.bind<CalendarCommandHandler>(TYPES.CalendarCommandHandler).to(CalendarCommandHandler).inSingletonScope();
