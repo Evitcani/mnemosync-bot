@@ -7,3 +7,4 @@ temp/
 
 **/*.js
 **/*.js.map
+/.env
