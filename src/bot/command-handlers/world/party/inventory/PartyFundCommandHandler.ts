@@ -46,6 +46,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         let party: PartyDTO = await this.partyController.getByCharacter(user.defaultCharacterId);
 
         if (party == null) {
+            console.log(party);
             return message.channel.send(FundRelatedClientResponses.CHARACTER_NOT_IN_PARTY(user.defaultCharacterId));
         }
 
@@ -58,7 +59,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         const createCommand = Subcommands.CREATE.isCommand(command);
-        if (createCommand != null) {
+        if (createCommand) {
             return this.partyFundController.createNew(party.id, type).then(() => {
                 return message.channel.send("Created new party fund!");
             });
