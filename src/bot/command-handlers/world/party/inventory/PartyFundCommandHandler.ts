@@ -70,10 +70,27 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     }
 
     private async getFunds(message: Message, type: string, party: PartyDTO): Promise<Message | Message[]> {
-        return this.findFunds(party.id, type, message).then((fund) => {
-            let total = MoneyUtility.pileIntoCopper(fund) / 100;
-            return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
-        });
+        if (type == null) {
+            type = "FUND";
+        }
+
+        let funds = party.funds || null;
+        let fund: PartyFundDTO = null;
+        if (funds != null) {
+            funds.forEach((value) => {
+                if (value.type == type) {
+                    fund = value;
+                    return;
+                }
+            });
+        }
+
+        let total: number = 0;
+        if (fund != null) {
+            total = MoneyUtility.pileIntoCopper(fund) / 100;
+        }
+
+        return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
     }
 
     ////////////////////////////////////////////////////////////
