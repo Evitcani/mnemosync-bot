@@ -39,6 +39,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
      */
     public async handleUserCommand(command, message, user: UserDTO): Promise<Message | Message[]> {
         if (user == null || user.defaultCharacterId == null) {
+            console.log(user);
             return message.channel.send(FundRelatedClientResponses.NO_DEFAULT_CHARACTER());
         }
 
