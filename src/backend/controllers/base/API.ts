@@ -19,7 +19,7 @@ export class API<U extends {id?: any}> {
 
         this.api.interceptors.request.use(async (param: AxiosRequestConfig) => {
             let auth = await Authorization.AUTHORIZE();
-            return {
+            let ret = {
                 baseUrl: process.env.API_BASE_URL,
                 headers: {
                     common: {
@@ -28,10 +28,11 @@ export class API<U extends {id?: any}> {
                         "Content-Type": "application/json",
                         Accept: "application/json",
                     },
-                    authorization: auth,
                 },
                 ...param
             };
+            ret.headers.common['Authorization'] = auth;
+            return ret;
         });
     }
 

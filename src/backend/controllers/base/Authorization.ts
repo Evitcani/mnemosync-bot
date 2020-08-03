@@ -7,6 +7,7 @@ export class Authorization {
 
     public static async AUTHORIZE (): Promise<string> {
         if (this.auth == null || this.isTokenExpired()) {
+            console.log("Fetching new token...");
             await this.GET_NEW_TOKEN();
         }
 
@@ -37,6 +38,8 @@ export class Authorization {
                 scope: SCOPE
             }
         });
+
+        console.log("Finished fetching new token.");
 
         this.authTime = new Date();
     }
