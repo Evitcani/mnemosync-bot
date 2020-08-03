@@ -87,7 +87,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
 
         let total: number = 0;
         if (fund != null) {
-            total = MoneyUtility.pileIntoCopper(fund) / 100;
+            total = fund.copper / 100;
         }
 
         return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
