@@ -13,7 +13,6 @@ export class CurrentDateController extends API<CurrentDateDTO> {
 
     public async getById(id: string): Promise<CurrentDateDTO> {
         return this.get(`/currentDates/${id}`).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -34,7 +33,6 @@ export class CurrentDateController extends API<CurrentDateDTO> {
         };
 
         return this.post(`/currentDates`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -52,7 +50,6 @@ export class CurrentDateController extends API<CurrentDateDTO> {
         config.data = data;
 
         return this.put(`/currentDates/${currentDate.id}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

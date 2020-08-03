@@ -188,7 +188,6 @@ export class API<U extends {id?: any}> {
         config.params = params;
 
         return this.get(url, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -205,7 +204,6 @@ export class API<U extends {id?: any}> {
         }
 
         return this.get(url, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -224,7 +222,6 @@ export class API<U extends {id?: any}> {
         config.params = params;
 
         return this.post(url, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -247,7 +244,6 @@ export class API<U extends {id?: any}> {
         config.params = params;
 
         return this.put(url, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

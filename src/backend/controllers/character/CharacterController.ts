@@ -62,7 +62,6 @@ export class CharacterController extends API<CharacterDTO> {
         config.data = data;
 
         return this.post(`/characters/${characterId}/nicknames`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

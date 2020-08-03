@@ -25,7 +25,6 @@ export class SendingController extends API<SendingDTO> {
         config.data = data;
 
         return this.post(`/sendings`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -51,7 +50,6 @@ export class SendingController extends API<SendingDTO> {
         config.data = data;
 
         return this.post(`/sendings/${sending.id}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

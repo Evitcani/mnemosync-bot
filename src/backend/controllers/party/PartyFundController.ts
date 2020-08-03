@@ -33,7 +33,6 @@ export class PartyFundController extends API<PartyFundDTO> {
         config.data = data;
 
         return this.post(`/parties/${partyId}/funds`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -59,7 +58,6 @@ export class PartyFundController extends API<PartyFundDTO> {
         };
 
         return this.get(`/parties/${partyId}/funds`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             let funds: PartyFundDTO[] = res.data.data;
             if (!funds || funds.length <= 0) {
@@ -82,7 +80,6 @@ export class PartyFundController extends API<PartyFundDTO> {
 
         return this.post(`/parties/${partyId}/funds/${fund.id}`, config)
             .then((res) => {
-                console.log(res.data);
                 // @ts-ignore
                 return res.data.data;
             }).catch((err: Error) => {

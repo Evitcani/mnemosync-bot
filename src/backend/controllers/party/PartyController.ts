@@ -36,7 +36,6 @@ export class PartyController extends API<PartyDTO> {
         config.data = data;
 
         return this.post(`/parties`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -54,7 +53,6 @@ export class PartyController extends API<PartyDTO> {
         config.data = data;
 
         return this.put(`/parties/${party.id}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -71,7 +69,6 @@ export class PartyController extends API<PartyDTO> {
      */
     public getById (id: number): Promise<PartyDTO> {
         return this.get<PartyDTO>(`/parties/${id}`).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -130,7 +127,6 @@ export class PartyController extends API<PartyDTO> {
         config.params = params;
 
         return this.get(`/parties`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

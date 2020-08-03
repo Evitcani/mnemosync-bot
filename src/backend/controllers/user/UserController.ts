@@ -27,7 +27,6 @@ export class UserController extends API<UserDTO> {
             discord_name: discordName
         };
         return this.get(`/users/${discordId}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -78,7 +77,6 @@ export class UserController extends API<UserDTO> {
         config.data = data;
 
         return this.put(`/users/${discordId}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {

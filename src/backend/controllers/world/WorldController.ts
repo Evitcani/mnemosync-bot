@@ -19,7 +19,6 @@ export class WorldController extends API<WorldDTO> {
 
     public async getById(id: string): Promise<WorldDTO> {
         return this.get(`/worlds/${id}`).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -42,7 +41,6 @@ export class WorldController extends API<WorldDTO> {
         config.data = data;
 
         return this.post(`/worlds`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -119,11 +117,10 @@ export class WorldController extends API<WorldDTO> {
         };
 
         return this.get(`/worlds`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
-            console.log("Caught error.");
+            console.error("Caught error.");
             console.error(err);
             return null;
         });
@@ -141,7 +138,6 @@ export class WorldController extends API<WorldDTO> {
         };
 
         return this.get(`/worlds`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -159,7 +155,6 @@ export class WorldController extends API<WorldDTO> {
     public getDiscordId(id: string): Promise<Collection<string, string>> {
         // TODO: fix this
         return this.get(`/worlds/${id}/user`).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
@@ -176,7 +171,6 @@ export class WorldController extends API<WorldDTO> {
         };
 
         return this.post(`/worlds/${world.id}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
