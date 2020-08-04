@@ -8,7 +8,8 @@
     "build": "tsc",
     "postinstall": "npm run build",
     "watch": "tsc -p tsconfig.json -w",
-    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
+    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
+    "heroku-prebuild": "sh ./release.sh"
   },
   "keywords": [],
   "author": "",
