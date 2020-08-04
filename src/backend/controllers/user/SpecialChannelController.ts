@@ -12,7 +12,7 @@ export class SpecialChannelController extends API<SpecialChannelDTO> {
 
     public async update(specialChannel: SpecialChannelDTO): Promise<SpecialChannelDTO> {
         if (!specialChannel.id) {
-            return this.create(specialChannel, `specialChannels`)
+            return this.create(specialChannel, `/specialChannels`)
         }
 
         return this.save(specialChannel, `/specialChannels/${specialChannel.id}`);
