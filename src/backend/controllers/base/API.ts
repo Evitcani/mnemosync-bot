@@ -188,12 +188,11 @@ export class API<U extends {id?: any}> {
         config.params = params;
 
         return this.get(url, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
             console.log("Caught error trying to get item.");
-            console.error(err);
+            console.error(err.message);
             return null;
         });
     }
@@ -209,7 +208,7 @@ export class API<U extends {id?: any}> {
             return res.data.data;
         }).catch((err: Error) => {
             console.log("Caught error trying to get item.");
-            console.error(err);
+            console.error(err.message);
             return null;
         });
     }
@@ -227,7 +226,7 @@ export class API<U extends {id?: any}> {
             return res.data.data;
         }).catch((err: Error) => {
             console.log("Caught error trying to create new item.");
-            console.error(err);
+            console.error(err.message);
             return null;
         });
     }
@@ -249,7 +248,7 @@ export class API<U extends {id?: any}> {
             return res.data.data;
         }).catch((err: Error) => {
             console.log("Caught error trying to update item.");
-            console.error(err);
+            console.error(err.message);
             return null;
         });
     }
