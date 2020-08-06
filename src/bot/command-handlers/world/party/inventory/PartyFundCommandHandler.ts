@@ -64,10 +64,21 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Now we send the amount off to be processed.
-        return this.updateFunds(command, message, type, party.id);
+        return this.updateFunds(command, message, type, party);
     }
 
     private async getFunds(message: Message, type: string, party: PartyDTO): Promise<Message | Message[]> {
+        let fund = this.getFundsFromParty(type, party);
+
+        let total: number = 0;
+        if (fund != null) {
+            total = fund.copper / 100;
+        }
+
+        return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
+    }
+
+    private getFundsFromParty(type: string, party: PartyDTO): PartyFundDTO {
         if (type == null) {
             type = "FUND";
         }
@@ -83,12 +94,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
             });
         }
 
-        let total: number = 0;
-        if (fund != null) {
-            total = fund.copper / 100;
-        }
-
-        return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
+        return fund;
     }
 
     ////////////////////////////////////////////////////////////
@@ -114,7 +120,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
     ///// UPDATING
     ////////////////////////////////////////////////////////////
 
-    private async updateFunds(command: Command, message: Message, fundType: string, partyId: number): Promise<Message | Message[]> {
+    private async updateFunds(command: Command, message: Message, fundType: string, party: PartyDTO): Promise<Message | Message[]> {
         // Process the arguments.
         const newFund = MoneyUtility.processMoneyArguments(command.getInput().split(" "));
 
@@ -123,7 +129,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Find and then update these funds.
-        let fund: PartyFundDTO = await this.findFunds(partyId, fundType, message);
+        let fund = this.getFundsFromParty(fundType, party);
 
         if (fund == null) {
             return message.channel.send("Could not find fund!");
@@ -147,7 +153,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         fund.silver = finalFund.silver;
         fund.copper = finalFund.copper;
 
-        let updatedFund = await this.partyFundController.updateFunds(partyId, fund);
+        let updatedFund = await this.partyFundController.updateFunds(party.id, fund);
 
         const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
         return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
