@@ -51,18 +51,23 @@ export class WorldController extends API<WorldDTO> {
     }
 
     public async worldSelectionFromUser(user: UserDTO, message: Message): Promise<WorldDTO> {
+        let flag = false;
+        let params: any = {};
+
         // If the default world is not null, then add the character on that world.
         let worlds: WorldDTO[] = [], world: WorldDTO;
-        if (user.defaultWorldId != null) {
-            world = await this.getById(user.defaultWorldId);
-            worlds.push(world);
+        if (user.defaultWorldId != null && user.defaultWorldId.length <= 0) {
+            params.id = user.defaultWorldId;
+            flag = true;
         }
 
         if (user.defaultCharacterId != null) {
-            let tempWorlds: WorldDTO[] = await this.getByCharacterId(user.defaultCharacterId);
-            if (!!tempWorlds && tempWorlds.length > 0) {
-                worlds.concat(tempWorlds);
-            }
+            params.character_id = user.defaultCharacterId;
+            flag = true;
+        }
+
+        if (flag) {
+            worlds = await this.getByParameters(params);
         }
 
         if (worlds.length < 1) {
@@ -145,6 +150,10 @@ export class WorldController extends API<WorldDTO> {
             console.error(err);
             return null;
         });
+    }
+
+    public getByParameters(params: any): Promise<WorldDTO[]> {
+        return this.getAll(`/worlds`, params);
     }
 
     /**
