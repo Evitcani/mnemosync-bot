@@ -78,13 +78,13 @@ export class PartyFundController extends API<PartyFundDTO> {
         data.data.push(fund);
         config.data = data;
 
-        return this.post(`/parties/${partyId}/funds/${fund.id}`, config)
+        return this.put(`/parties/${partyId}/funds/${fund.id}`, config)
             .then((res) => {
                 // @ts-ignore
                 return res.data.data;
             }).catch((err: Error) => {
                 console.log("Caught error trying to update fund.");
-                console.error(err);
+                console.error(err.message);
                 return null;
             });
     }
