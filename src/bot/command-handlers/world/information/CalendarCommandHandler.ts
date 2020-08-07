@@ -402,6 +402,11 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         // TODO: Should be "Create"
         calendar = await this.calendarController.save(calendar);
 
+        if (!calendar) {
+            await message.channel.send("Something went wrong while saving...");
+            return Promise.resolve(null);
+        }
+
         // Setup basics.
         calendar.week = [];
         calendar.months = [];
