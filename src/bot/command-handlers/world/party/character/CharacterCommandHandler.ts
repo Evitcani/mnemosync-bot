@@ -15,8 +15,13 @@ import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDT
 import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
 import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
 
+/**
+ * Handles commands related to characters.
+ */
 export class CharacterCommandHandler extends AbstractUserCommandHandler {
+    /** The controller to communicate to the backend about the character. */
     private characterController: CharacterController;
+    /** Command related to parties. */
     private partyController: PartyController;
     private userController: UserController;
     private worldController: WorldController;

@@ -29,6 +29,9 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         if (Subcommands.DONJON.isCommand(command)) {
+            message.attachments.forEach((attachment) => {
+                console.log(attachment.toJSON());
+            });
             return this.createNewDonjonCalendar(command, message, user);
         }
 
