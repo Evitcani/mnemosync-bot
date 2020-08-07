@@ -15,14 +15,14 @@ export class CalendarController extends API<CalendarDTO> {
         let params = {
             world_id: calendar.worldId
         };
-        return super.create(calendar, `/calendars`, params, 10000);
+        return super.create(calendar, `/calendars`, params, 120000);
     }
 
     public async save(calendar: CalendarDTO): Promise<CalendarDTO> {
         let params = {
             world_id: calendar.worldId
         };
-        return super.save(calendar, `/calendars/${calendar.id}`, params, 10000);
+        return super.save(calendar, `/calendars/${calendar.id}`, params, 120000);
     }
 
     public async getById(id: string): Promise<CalendarDTO> {
