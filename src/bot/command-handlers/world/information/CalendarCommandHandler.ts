@@ -1,5 +1,5 @@
 import {Command} from "../../../../shared/models/generic/Command";
-import {Message} from "discord.js";
+import {Message, MessageAttachment} from "discord.js";
 import {AbstractUserCommandHandler} from "../../base/AbstractUserCommandHandler";
 import {inject, injectable} from "inversify";
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
@@ -17,6 +17,7 @@ import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtil
 import {CalendarMoonDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMoonDTO";
 import {CalendarMoonPhaseDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMoonPhaseDTO";
 import {CalendarWeekDayDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarWeekDayDTO";
+import * as request from 'request-promise';
 
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {
@@ -28,13 +29,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
     }
 
     async handleUserCommand(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
-        message.attachments.forEach((attachment) => {
-            console.log("Found attachments!");
-            console.log(attachment.toJSON());
-        });
-
         if (Subcommands.DONJON.isCommand(command)) {
-
             return this.createNewDonjonCalendar(command, message, user);
         }
 
@@ -45,9 +40,31 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return undefined;
     }
 
+    private static async getAttachmentContent(attachment: MessageAttachment): Promise<string> {
+        if (!attachment.url.endsWith('.txt')) {
+            return Promise.resolve(null);
+        }
+        return request({
+            uri: `${attachment.url}`,
+            json: true,
+            method: 'GET'
+        });
+    }
+
     private async createNewWorldAnvilCalendar(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let json: WorldAnvilCalendar = null;
-        if (Subcommands.WORLD_ANVIL.isCommand(command)) {
+
+        // Big calendar request.
+        if (message.attachments != null) {
+            for (const attachment of message.attachments) {
+                // @ts-ignore
+                let content = await CalendarCommandHandler.getAttachmentContent(attachment);
+                console.log(content);
+                if (content != null) {
+                    json = JSON.parse(content);
+                }
+            }
+        } else if (Subcommands.WORLD_ANVIL.isCommand(command)) {
             let cmd = Subcommands.WORLD_ANVIL.getCommand(command);
             json = JSON.parse(cmd.getInput());
         }
@@ -184,7 +201,16 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private async createNewDonjonCalendar(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let json: DonjonCalendar = null;
-        if (Subcommands.DONJON.isCommand(command)) {
+        if (message.attachments != null) {
+            for (const attachment of message.attachments) {
+                // @ts-ignore
+                let content = await CalendarCommandHandler.getAttachmentContent(attachment);
+                console.log(content);
+                if (content != null) {
+                    json = JSON.parse(content);
+                }
+            }
+        } else if (Subcommands.DONJON.isCommand(command)) {
             let cmd = Subcommands.DONJON.getCommand(command);
             json = JSON.parse(cmd.getInput());
         }
