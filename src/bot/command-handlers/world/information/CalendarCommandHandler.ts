@@ -21,6 +21,7 @@ import * as request from 'request-promise';
 
 @injectable()
 export class CalendarCommandHandler extends AbstractUserCommandHandler {
+    /** Controller for the calendar. */
     private calendarController: CalendarController;
 
     constructor(@inject(TYPES.CalendarController) calendarController: CalendarController) {
@@ -42,9 +43,6 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private static async getAttachmentContent(attachment: MessageAttachment): Promise<JSON> {
         if (attachment.proxyURL == null || !attachment.proxyURL.endsWith('.txt')) {
-
-            console.log(attachment.proxyURL);
-            console.log(attachment.url);
             return Promise.resolve(null);
         }
         return request({
@@ -63,7 +61,6 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             for (i = 0; i < keys.length; i++) {
                 attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
-                console.log(content);
                 if (content != null) {
                     // @ts-ignore
                     json = content;
@@ -215,7 +212,6 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
             for (i = 0; i < keys.length; i++) {
                 attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
-                console.log(content);
                 if (content != null) {
                     // @ts-ignore
                     json = content;
