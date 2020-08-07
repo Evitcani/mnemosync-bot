@@ -42,6 +42,8 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private static async getAttachmentContent(attachment: MessageAttachment): Promise<string> {
         if (attachment.proxyURL == null || !attachment.proxyURL.endsWith('.txt')) {
+            console.log(attachment.proxyURL);
+            console.log(attachment.url);
             return Promise.resolve(null);
         }
         return request({
@@ -62,9 +64,12 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 console.log(content);
                 if (content != null) {
                     json = JSON.parse(content);
+                    break;
                 }
             }
-        } else if (Subcommands.WORLD_ANVIL.isCommand(command)) {
+        }
+
+        if (json == null && Subcommands.WORLD_ANVIL.isCommand(command)) {
             let cmd = Subcommands.WORLD_ANVIL.getCommand(command);
             json = JSON.parse(cmd.getInput());
         }
