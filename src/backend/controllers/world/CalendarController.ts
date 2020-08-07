@@ -15,6 +15,7 @@ export class CalendarController extends API<CalendarDTO> {
         let params = {
             world_id: calendar.worldId
         };
+        console.debug(calendar);
         return super.create(calendar, `/calendars`, params, 120000);
     }
 
@@ -22,6 +23,7 @@ export class CalendarController extends API<CalendarDTO> {
         let params = {
             world_id: calendar.worldId
         };
+        console.debug(calendar);
         return super.save(calendar, `/calendars/${calendar.id}`, params, 120000);
     }
 
