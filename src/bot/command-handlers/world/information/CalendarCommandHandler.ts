@@ -208,16 +208,21 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private async createNewDonjonCalendar(command: Command, message: Message, user: UserDTO): Promise<Message | Message[]> {
         let json: DonjonCalendar = null;
+        // Big calendar request.
         if (message.attachments != null) {
-            for (const attachment of message.attachments) {
-                // @ts-ignore
+            let i, keys = message.attachments.keyArray(), attachment: MessageAttachment;
+            for (i = 0; i < keys.length; i++) {
+                attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
                 console.log(content);
                 if (content != null) {
                     json = JSON.parse(content);
+                    break;
                 }
             }
-        } else if (Subcommands.DONJON.isCommand(command)) {
+        }
+
+        if (Subcommands.DONJON.isCommand(command)) {
             let cmd = Subcommands.DONJON.getCommand(command);
             json = JSON.parse(cmd.getInput());
         }
