@@ -41,7 +41,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
     }
 
     private static async getAttachmentContent(attachment: MessageAttachment): Promise<string> {
-        if (!attachment.url.endsWith('.txt')) {
+        if (attachment.proxyURL == null || !attachment.proxyURL.endsWith('.txt')) {
             return Promise.resolve(null);
         }
         return request({
