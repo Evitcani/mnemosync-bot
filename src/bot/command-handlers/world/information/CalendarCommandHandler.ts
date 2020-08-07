@@ -40,7 +40,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         return undefined;
     }
 
-    private static async getAttachmentContent(attachment: MessageAttachment): Promise<string> {
+    private static async getAttachmentContent(attachment: MessageAttachment): Promise<JSON> {
         if (attachment.proxyURL == null || !attachment.proxyURL.endsWith('.txt')) {
 
             console.log(attachment.proxyURL);
@@ -65,7 +65,8 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
                 console.log(content);
                 if (content != null) {
-                    json = JSON.parse(content);
+                    // @ts-ignore
+                    json = content;
                     break;
                 }
             }
@@ -216,7 +217,8 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
                 console.log(content);
                 if (content != null) {
-                    json = JSON.parse(content);
+                    // @ts-ignore
+                    json = content;
                     break;
                 }
             }
