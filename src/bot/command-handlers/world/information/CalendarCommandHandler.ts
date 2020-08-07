@@ -42,6 +42,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
     private static async getAttachmentContent(attachment: MessageAttachment): Promise<string> {
         if (attachment.proxyURL == null || !attachment.proxyURL.endsWith('.txt')) {
+
             console.log(attachment.proxyURL);
             console.log(attachment.url);
             return Promise.resolve(null);
@@ -58,8 +59,9 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
         // Big calendar request.
         if (message.attachments != null) {
-            for (const attachment of message.attachments) {
-                // @ts-ignore
+            let i, keys = message.attachments.keyArray(), attachment: MessageAttachment;
+            for (i = 0; i < keys.length; i++) {
+                attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
                 console.log(content);
                 if (content != null) {
