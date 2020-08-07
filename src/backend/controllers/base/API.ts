@@ -213,13 +213,17 @@ export class API<U extends {id?: any}> {
         });
     }
 
-    protected async create(item: U, url: string, params?: any): Promise<U> {
+    protected async create(item: U, url: string, params?: any, timeout?: number): Promise<U> {
         let config = APIConfig.GET();
         let data: DataDTO = {};
         data.data = [];
         data.data.push(item);
         config.data = data;
         config.params = params;
+
+        if (timeout != null) {
+            config.timeout = timeout;
+        }
 
         return this.post(url, config).then((res) => {
             // @ts-ignore
@@ -231,7 +235,7 @@ export class API<U extends {id?: any}> {
         });
     }
 
-    protected async save(item: U, url: string, params?: any): Promise<U> {
+    protected async save(item: U, url: string, params?: any, timeout?: number): Promise<U> {
         if (!item.id) {
             return this.create(item, url, params);
         }
@@ -242,6 +246,10 @@ export class API<U extends {id?: any}> {
         data.data.push(item);
         config.data = data;
         config.params = params;
+
+        if (timeout != null) {
+            config.timeout = timeout;
+        }
 
         return this.put(url, config).then((res) => {
             // @ts-ignore
