@@ -59,19 +59,6 @@ export class SendingController extends API<SendingDTO> {
         });
     }
 
-    public async getByIds(ids: string[]): Promise<SendingDTO[]> {
-        // Not a valid argument.
-        if (ids == null || ids.length < 1) {
-            return null;
-        }
-
-        let params = {
-            ids: ids.join(",")
-        };
-
-        return this.getByParameters(params);
-    }
-
     public async getOne(page: number, worldId: string, toCharacterId?: string): Promise<SendingDTO> {
         return this.getBySpecs(page, 1, worldId, toCharacterId).then((messages) => {
             if (messages == null || messages.length < 1) {
