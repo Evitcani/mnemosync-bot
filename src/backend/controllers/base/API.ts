@@ -4,7 +4,7 @@ import {Authorization} from "./Authorization";
 import {Message, MessageEmbed} from "discord.js";
 import {APIConfig} from "./APIConfig";
 import {messageEmbed} from "../../../shared/documentation/messages/MessageEmbed";
-import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
+import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
 
 @injectable()
 export class API<U extends {id?: any}> {

@@ -1,8 +1,8 @@
 import {Bot} from "../../../bot/bot";
 import {Commands} from "../commands/Commands";
 import {Subcommands} from "../commands/Subcommands";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
-import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
 
 const PREFIX: string = "$";
 const PREFIX_SUBCOMMAND: string = "~";

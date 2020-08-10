@@ -5,10 +5,10 @@ import {Message} from "discord.js";
 import {PartyRelatedClientResponses} from "../../../shared/documentation/client-responses/information/PartyRelatedClientResponses";
 import {API} from "../base/API";
 import {APIConfig} from "../base/APIConfig";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
-import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
-import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
+import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
 
 @injectable()
 export class PartyController extends API<PartyDTO> {

@@ -2,8 +2,8 @@ import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
 import {messageResponse} from "../../messages/MessageResponse";
 import {SendingController} from "../../../../backend/controllers/character/SendingController";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
-import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
 
 /**
  * NPC responses to the client.

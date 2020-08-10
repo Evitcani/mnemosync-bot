@@ -6,9 +6,9 @@ import {TYPES} from "../../../types";
 import {QuoteRelatedClientResponses} from "../../../shared/documentation/client-responses/misc/QuoteRelatedClientResponses";
 import {Bot} from "../../bot";
 import {SpecialChannelController} from "../../../backend/controllers/user/SpecialChannelController";
-import {SpecialChannelDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SpecialChannelDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
-import {SpecialChannelDesignation} from "@evitcani/mnemoshared/dist/src/enums/SpecialChannelDesignation";
+import {SpecialChannelDTO} from "mnemoshared/dist/src/dto/model/SpecialChannelDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {SpecialChannelDesignation} from "mnemoshared/dist/src/enums/SpecialChannelDesignation";
 
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and

@@ -8,10 +8,10 @@ import {PartyController} from "../../../../../backend/controllers/party/PartyCon
 import {Subcommands} from "../../../../../shared/documentation/commands/Subcommands";
 import {PartyFundController} from "../../../../../backend/controllers/party/PartyFundController";
 import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandler";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
-import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
-import {MoneyUtility} from "@evitcani/mnemoshared/dist/src/utilities/MoneyUtility";
-import {PartyFundDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyFundDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
+import {MoneyUtility} from "mnemoshared/dist/src/utilities/MoneyUtility";
+import {PartyFundDTO} from "mnemoshared/dist/src/dto/model/PartyFundDTO";
 
 /**
  * Manages the fund related commands.

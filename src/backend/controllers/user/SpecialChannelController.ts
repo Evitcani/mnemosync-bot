@@ -1,8 +1,8 @@
 import {API} from "../base/API";
 import {injectable} from "inversify";
 import {APIConfig} from "../base/APIConfig";
-import {SpecialChannelDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SpecialChannelDTO";
-import {SpecialChannelDesignation} from "@evitcani/mnemoshared/dist/src/enums/SpecialChannelDesignation";
+import {SpecialChannelDTO} from "mnemoshared/dist/src/dto/model/SpecialChannelDTO";
+import {SpecialChannelDesignation} from "mnemoshared/dist/src/enums/SpecialChannelDesignation";
 
 @injectable()
 export class SpecialChannelController extends API<SpecialChannelDTO> {

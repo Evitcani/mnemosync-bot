@@ -10,13 +10,13 @@ import {WorldController} from "../../../../../backend/controllers/world/WorldCon
 import {CharacterController} from "../../../../../backend/controllers/character/CharacterController";
 import {MessageUtility} from "../../../../../backend/utilities/MessageUtility";
 import {PartyController} from "../../../../../backend/controllers/party/PartyController";
-import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
-import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
-import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
-import {SendingDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SendingDTO";
+import {EncryptionUtility} from "mnemoshared/dist/src/utilities/EncryptionUtility";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
+import {SendingDTO} from "mnemoshared/dist/src/dto/model/SendingDTO";
 import {Encryption} from "../../../../../backend/controllers/base/Encryption";
 
 /**

@@ -11,9 +11,9 @@ import {AbstractUserCommandHandler} from "../../../base/AbstractUserCommandHandl
 import {UserController} from "../../../../../backend/controllers/user/UserController";
 import {WorldController} from "../../../../../backend/controllers/world/WorldController";
 import {messageResponse} from "../../../../../shared/documentation/messages/MessageResponse";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
 
 /**
  * Handles commands related to characters.

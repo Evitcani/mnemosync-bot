@@ -1,5 +1,5 @@
-import {DatabaseDivider} from "@evitcani/mnemoshared/dist/src/enums/DatabaseDivider";
-import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
+import {DatabaseDivider} from "mnemoshared/dist/src/enums/DatabaseDivider";
+import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
 
 export class DbColumn {
     private readonly name: string;

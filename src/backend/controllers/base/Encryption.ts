@@ -1,4 +1,4 @@
-import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
+import {EncryptionUtility} from "mnemoshared/dist/src/utilities/EncryptionUtility";
 import {injectable} from "inversify";
 
 @injectable()

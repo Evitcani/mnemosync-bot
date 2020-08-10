@@ -1,6 +1,6 @@
 import {BasicEmbed} from "../BasicEmbed";
 import {messageResponse} from "./MessageResponse";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
 
 export const messageEmbed = {
     character: {

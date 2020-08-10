@@ -1,12 +1,12 @@
 import {Collection, Message, MessageEmbed, Snowflake, User as DiscordUser} from "discord.js";
 import {Subcommands} from "../../shared/documentation/commands/Subcommands";
 import {Command} from "../../shared/models/generic/Command";
-import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
-import {DateDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DateDTO";
-import {CalendarMonthDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMonthDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
-import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
-import {CalendarMoonDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarMoonDTO";
+import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
+import {DateDTO} from "mnemoshared/dist/src/dto/model/DateDTO";
+import {CalendarMonthDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarMonthDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {CalendarDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
+import {CalendarMoonDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarMoonDTO";
 
 export class MessageUtility {
 

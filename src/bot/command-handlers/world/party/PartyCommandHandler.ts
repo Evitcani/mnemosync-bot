@@ -6,8 +6,8 @@ import {Subcommands} from "../../../../shared/documentation/commands/Subcommands
 import {TYPES} from "../../../../types";
 import {PartyController} from "../../../../backend/controllers/party/PartyController";
 import {UserController} from "../../../../backend/controllers/user/UserController";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
-import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
 
 @injectable()
 export class PartyCommandHandler extends AbstractUserCommandHandler {

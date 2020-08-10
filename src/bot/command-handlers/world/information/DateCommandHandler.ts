@@ -9,11 +9,11 @@ import {CurrentDateController} from "../../../../backend/controllers/world/Curre
 import {Subcommands} from "../../../../shared/documentation/commands/Subcommands";
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {CalendarRelatedResponses} from "../../../../shared/documentation/client-responses/information/CalendarRelatedResponses";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
-import {PartyDTO} from "@evitcani/mnemoshared/dist/src/dto/model/PartyDTO";
-import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
-import {CurrentDateDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CurrentDateDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
+import {CalendarDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
+import {CurrentDateDTO} from "mnemoshared/dist/src/dto/model/CurrentDateDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 
 @injectable()
 export class DateCommandHandler extends AbstractUserCommandHandler {

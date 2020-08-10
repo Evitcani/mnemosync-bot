@@ -2,7 +2,7 @@ import {Command} from "../../shared/models/generic/Command";
 import {Subcommand} from "../../shared/models/generic/Subcommand";
 import {Bot} from "../../bot/bot";
 import {Commands} from "../../shared/documentation/commands/Commands";
-import {StringUtility} from "@evitcani/mnemoshared/dist/src/utilities/StringUtility";
+import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
 
 /**
  * A utility for processing and understanding commands.

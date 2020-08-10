@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import {Command} from "../../../shared/models/generic/Command";
 import {Message} from "discord.js";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
 
 @injectable()
 export abstract class AbstractUserCommandHandler {

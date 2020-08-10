@@ -3,7 +3,7 @@ import {Message} from "discord.js";
 import {API} from "../base/API";
 import {APIConfig} from "../base/APIConfig";
 import {messageTypes} from "../../../shared/documentation/messages/MessageTypes";
-import {CalendarDTO} from "@evitcani/mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
+import {CalendarDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
 
 @injectable()
 export class CalendarController extends API<CalendarDTO> {

@@ -3,10 +3,10 @@ import {Collection, Message} from "discord.js";
 import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
 import {API} from "../base/API";
 import {APIConfig} from "../base/APIConfig";
-import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
-import {DataDTO} from "@evitcani/mnemoshared/dist/src/dto/model/DataDTO";
-import {DTOType} from "@evitcani/mnemoshared/dist/src/dto/DTOType";
+import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
+import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 
 @injectable()
 export class WorldController extends API<WorldDTO> {

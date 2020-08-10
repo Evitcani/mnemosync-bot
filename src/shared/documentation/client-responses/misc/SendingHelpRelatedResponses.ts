@@ -2,10 +2,10 @@ import {MessageEmbed} from "discord.js";
 import {BasicEmbed} from "../../BasicEmbed";
 import {SendingController} from "../../../../backend/controllers/character/SendingController";
 import {messageResponse} from "../../messages/MessageResponse";
-import {CharacterDTO} from "@evitcani/mnemoshared/dist/src/dto/model/CharacterDTO";
-import {WorldDTO} from "@evitcani/mnemoshared/dist/src/dto/model/WorldDTO";
-import {SendingDTO} from "@evitcani/mnemoshared/dist/src/dto/model/SendingDTO";
-import {EncryptionUtility} from "@evitcani/mnemoshared/dist/src/utilities/EncryptionUtility";
+import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
+import {SendingDTO} from "mnemoshared/dist/src/dto/model/SendingDTO";
+import {EncryptionUtility} from "mnemoshared/dist/src/utilities/EncryptionUtility";
 
 /**
  * Helps the sending command if something went wrong.

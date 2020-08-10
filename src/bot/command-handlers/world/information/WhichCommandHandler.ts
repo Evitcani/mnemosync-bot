@@ -9,7 +9,7 @@ import {NPCRelatedClientResponses} from "../../../../shared/documentation/client
 import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
 import {CharacterController} from "../../../../backend/controllers/character/CharacterController";
-import {UserDTO} from "@evitcani/mnemoshared/dist/src/dto/model/UserDTO";
+import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
 
 /**
  * Handles questions about the state of the world.
