@@ -1,0 +1,16 @@
+import {AbstractTable} from "./AbstractTable";
+import {TableName} from "../../../documentation/databases/TableName";
+import {IdColumn} from "./columns/IdColumn";
+import {NameColumn} from "./columns/NameColumn";
+import {TravelConfigColumn} from "./columns/TravelConfigColumn";
+import {PartyIdColumn} from "./columns/PartyIdColumn";
+
+export class CharacterTable extends AbstractTable {
+    constructor() {
+        super(TableName.CHARACTER, [
+            new IdColumn(),
+            new NameColumn(),
+            new TravelConfigColumn(),
+            new PartyIdColumn()]);
+    }
+}
