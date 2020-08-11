@@ -1,4 +1,4 @@
-import {PartyFundController} from "./controllers/party/PartyFundController";
+import {PartyFundController} from "./backend/controllers/party/PartyFundController";
 
 export const TYPES = {
     Bot: Symbol("Bot"),
@@ -7,18 +7,14 @@ export const TYPES = {
     CryptKey: Symbol("CryptKey"),
     DatabaseUrl: Symbol("DatabaseUrl"),
     MessageResponder: Symbol("MessageResponder"),
-    PingFinder: Symbol("PingFinder"),
     EncryptionUtility: Symbol("EncryptionUtility"),
 
-    DatabaseService: Symbol("DatabaseService"),
-    PartyToGuildService: Symbol("PartyToGuildService"),
-    SpecialChannelService: Symbol("SpecialChannelService"),
-    UserDefaultPartyService: Symbol("UserDefaultPartyService"),
-    UserToGuildService: Symbol("UserToGuildService"),
-
     BagCommandHandler: Symbol("BagCommandHandler"),
+    CalendarCommandHandler: Symbol("CalendarCommandHandler"),
     CharacterCommandHandler: Symbol("CharacterCommandHandler"),
+    DateCommandHandler: Symbol("DateCommandHandler"),
     HelpCommandHandler: Symbol("HelpCommandHandler"),
+    PartyCommandHandler: Symbol("PartyCommandHandler"),
     PartyFundCommandHandler: Symbol("PartyFundCommandHandler"),
     QuoteCommandHandler: Symbol("QuoteCommandHandler"),
     RegisterUserCommandHandler: Symbol("RegisterUserCommandHandler"),
@@ -28,10 +24,12 @@ export const TYPES = {
     WorldCommandHandler: Symbol("WorldCommandHandler"),
 
     CharacterController: Symbol("CharacterController"),
-    NPCController: Symbol("NPCController"),
+    CalendarController: Symbol("CalendarController"),
+    CurrentDateController: Symbol("CurrentDateController"),
     PartyController: Symbol("PartyController"),
     PartyFundController: Symbol("PartyFundController"),
     SendingController: Symbol("SendingController"),
+    SpecialChannelController: Symbol("SpecialChannelController"),
     UserController: Symbol("UserController"),
     WorldController: Symbol("WorldController"),
 };
