@@ -218,20 +218,20 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         let discordIds: Collection<string, string>;
 
         // Are we getting from a player character?
-        let playerCharacter = sending.fromCharacterId;
+        let playerCharacter = sending.fromCharacter;
         let ids = new Set<string>();
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
-            ids.add(playerCharacter);
+            ids.add(playerCharacter.id);
         }
 
         // Are we getting from a player character?
-        playerCharacter = sending.toCharacterId;
+        playerCharacter = sending.toCharacter;
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
-            ids.add(playerCharacter);
+            ids.add(playerCharacter.id);
         }
 
         // Check for the world.
