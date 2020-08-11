@@ -49,9 +49,9 @@ export class SendingController extends API<SendingDTO> {
         data.data.push(sending);
         config.data = data;
 
+        console.log(sending);
+
         return this.put(`/sendings/${sending.id}`, config).then((res) => {
-            // @ts-ignore
-            console.log(res.data.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
