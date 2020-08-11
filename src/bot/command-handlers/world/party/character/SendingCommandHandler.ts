@@ -283,10 +283,10 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             const msgCmd = Subcommands.MESSAGE.getCommand(command);
             if (!Subcommands.REPLY.isCommand(command)) {
                 sending.content = this.encryptionUtility.encrypt(msgCmd.getInput());
-                sending.sendingMessageFromDiscordId = user.discord_id;
+                sending.sendingMessageFromUser = user;
             } else {
                 sending.reply = this.encryptionUtility.encrypt(msgCmd.getInput());
-                sending.sendingReplyFromDiscordId = user.discord_id;
+                sending.sendingReplyFromUser = user;
                 return sending;
             }
         } else {

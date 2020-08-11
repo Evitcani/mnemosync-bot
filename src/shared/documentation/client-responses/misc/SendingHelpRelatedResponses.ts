@@ -101,13 +101,13 @@ export class SendingHelpRelatedResponses {
         str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
         if (includeFrom) {
             str += `> **FROM:** ${message.fromCharacter != null ? message.fromCharacter.name : null} `;
-            str += `(*${message.sendingMessageFromDiscordName}*)\n`;
+            str += `(*${message.sendingMessageFromUser == null ? "UNKNOWN" : message.sendingMessageFromUser.discord_name}*)\n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         if (includeTo) {
             str += `> **TO  :** ${message.toCharacter != null ? message.toCharacter.name : null}`;
             if (includeReply && message.reply != null) {
-                str += `(*${message.sendingReplyFromDiscordId}*)\n`;
+                str += `(*${message.sendingReplyFromUser == null ? "UNKNOWN" : message.sendingReplyFromUser.discord_name}*)\n`;
                 str += `> ${encryptionUtility.decrypt(message.reply)}\n`;
             } else {
                 str += `\n`;
