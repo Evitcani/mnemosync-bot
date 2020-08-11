@@ -265,7 +265,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        const messages = await this.sendingController.getAllOf(page, arr.world.id, arr.character.id);
+        const messages = await this.sendingController.getAllOf(page,
+            arr.world == null ? null : arr.world.id,
+            arr.character == null ? null : arr.character.id);
         let embed: MessageEmbed;
         if (arr.character != null) {
             embed = SendingHelpRelatedResponses.PRINT_MESSAGES_TO_CHARACTER(messages, arr.character, page, this.encryptionUtility);
