@@ -49,7 +49,7 @@ export class SendingController extends API<SendingDTO> {
         data.data.push(sending);
         config.data = data;
 
-        return this.post(`/sendings/${sending.id}`, config).then((res) => {
+        return this.put(`/sendings/${sending.id}`, config).then((res) => {
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
