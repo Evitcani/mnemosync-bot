@@ -51,6 +51,8 @@ export class SendingController extends API<SendingDTO> {
 
         return this.put(`/sendings/${sending.id}`, config).then((res) => {
             // @ts-ignore
+            console.log(res.data.data);
+            // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
             console.error("Caught error trying to create new sending.");
