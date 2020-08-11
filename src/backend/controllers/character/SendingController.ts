@@ -25,11 +25,10 @@ export class SendingController extends API<SendingDTO> {
         config.data = data;
 
         return this.post(`/sendings`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
-            console.log("Caught error trying to create new sending.");
+            console.error("Caught error trying to create new sending.");
             console.error(err);
             return null;
         });
@@ -51,11 +50,10 @@ export class SendingController extends API<SendingDTO> {
         config.data = data;
 
         return this.post(`/sendings/${sending.id}`, config).then((res) => {
-            console.log(res.data);
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
-            console.log("Caught error trying to create new sending.");
+            console.error("Caught error trying to create new sending.");
             console.error(err);
             return null;
         });
@@ -108,7 +106,7 @@ export class SendingController extends API<SendingDTO> {
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
-            console.log("Caught error trying to get sendings.");
+            console.error("Caught error trying to get sendings.");
             console.error(err);
             return null;
         });

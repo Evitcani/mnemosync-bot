@@ -239,7 +239,6 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // Now, go out and get it.
         discordIds = await this.userController.getDiscordId(Array.from(ids.values()), world);
-        console.log("IDS: " + discordIds.array().join(", "));
 
         // Remove the current user.
         discordIds.delete(user.discord_id);
