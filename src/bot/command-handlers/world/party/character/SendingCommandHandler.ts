@@ -18,6 +18,7 @@ import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
 import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
 import {SendingDTO} from "mnemoshared/dist/src/dto/model/SendingDTO";
 import {Encryption} from "../../../../../backend/controllers/base/Encryption";
+import {UserController} from "../../../../../backend/controllers/user/UserController";
 
 /**
  * Handles sending related commands.
@@ -28,18 +29,21 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     private readonly encryptionUtility: EncryptionUtility;
     private partyController: PartyController;
     private sendingController: SendingController;
+    private userController: UserController;
     private worldController: WorldController;
 
     constructor(@inject(TYPES.CharacterController) characterController: CharacterController,
                 @inject(TYPES.EncryptionUtility) encryptionUtility: Encryption,
                 @inject(TYPES.PartyController) partyController: PartyController,
                 @inject(TYPES.SendingController) sendingController: SendingController,
+                @inject(TYPES.UserController) userController: UserController,
                 @inject(TYPES.WorldController) worldController: WorldController) {
         super();
         this.characterController = characterController;
         this.encryptionUtility = encryptionUtility;
         this.partyController = partyController;
         this.sendingController = sendingController;
+        this.userController = userController;
         this.worldController = worldController;
     }
 
@@ -215,10 +219,11 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // Are we getting from a player character?
         let playerCharacter = sending.fromCharacterId;
+        let ids = new Set<string>();
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
-            discordIds = discordIds.concat(await this.characterController.getDiscordId(playerCharacter));
+            ids.add(playerCharacter);
         }
 
         // Are we getting from a player character?
@@ -226,16 +231,15 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // Notify the player of the reply.
         if (playerCharacter != null) {
-            discordIds = discordIds.concat(await this.characterController.getDiscordId(playerCharacter));
+            ids.add(playerCharacter);
         }
 
         // Check for the world.
-        let world = sending.worldId;
+        let world = sending.worldId || null;
 
-        // We'll want to inform the GM as well.
-        if (world != null) {
-            discordIds = discordIds.concat(await this.worldController.getDiscordId(world));
-        }
+        // Now, go out and get it.
+        discordIds = await this.userController.getDiscordId(Array.from(ids.values()), world);
+
 
         // Remove the current user.
         discordIds.delete(user.discord_id);

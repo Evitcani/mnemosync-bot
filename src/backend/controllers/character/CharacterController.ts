@@ -112,40 +112,6 @@ export class CharacterController extends API<CharacterDTO> {
         return super.getAll(`/characters`, params);
     }
 
-    /**
-     * Gets all the discord IDs related to this character.
-     * @param characterId
-     */
-    public async getDiscordId(characterId: string): Promise<Collection<string, string>> {
-        let config = APIConfig.GET();
-        config.params = {
-            character_id: characterId
-        };
-
-        return this.get(`/discordIds`, config).then((res) => {
-            // @ts-ignore
-            if (!res || !res.data || !res.data.data) {
-                return null;
-            }
-
-            // @ts-ignore
-            let ids: string[] = res.data.data;
-
-            let input = new Collection<string, string>();
-            let discordId: string, i;
-            for (i = 0; i < ids.length; i++) {
-                discordId = ids[i];
-                input.set(discordId, discordId);
-            }
-
-            return input;
-        }).catch((err: Error) => {
-            console.log("Caught error.");
-            console.error(err);
-            return null;
-        });
-    }
-
     public async selectCharacter(characters: CharacterDTO[], action: string, message: Message): Promise<CharacterDTO> {
         return this.selection(characters, action, messageTypes.character, message);
     }
