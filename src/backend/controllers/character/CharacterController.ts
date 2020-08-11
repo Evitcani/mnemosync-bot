@@ -90,6 +90,15 @@ export class CharacterController extends API<CharacterDTO> {
         return this.getByParameters(params);
     }
 
+    public async getCharacterByNameAndWorld(name: string, worldId: string): Promise<CharacterDTO[]> {
+        let params = {
+            name: name,
+            world_id: worldId
+        };
+
+        return this.getByParameters(params);
+    }
+
     public async getCharacterByName(name: string, discordId: string): Promise<CharacterDTO[]> {
         let params = {
             name: name,

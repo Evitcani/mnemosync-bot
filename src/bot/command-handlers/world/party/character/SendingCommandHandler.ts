@@ -335,7 +335,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                     return Promise.resolve(null);
                 }
 
-                const characters = await this.characterController.getCharacterByName(toCmd.getInput(), world.id);
+                const characters = await this.characterController.getCharacterByNameAndWorld(toCmd.getInput(), world.id);
                 if (characters == null) {
                     await message.channel.send("No characters exist in world with name like: " + toCmd.getInput());
                     return Promise.resolve(null);
