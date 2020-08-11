@@ -156,12 +156,12 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Get the sending from creating a new one.
-        sending = await this.sendingController.save(sending);
+        let sent = await this.sendingController.save(sending);
 
         // Now craft the embed and send to users.
-        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sending, this.encryptionUtility);
-        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
-        return this.signalUserOfMessage(sending, message, onComplete, toSend, true, user);
+        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_REPLY_TO_PLAYER(sent, this.encryptionUtility);
+        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sent, this.encryptionUtility);
+        return this.signalUserOfMessage(sent, message, onComplete, toSend, true, user);
     }
 
     /**
