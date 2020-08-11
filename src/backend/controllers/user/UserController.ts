@@ -99,6 +99,8 @@ export class UserController extends API<UserDTO> {
             world_id: worldId
         };
 
+        console.log("Character IDs: " + characterIds.join(", "));
+
         return this.get(`/discordIds`, config).then((res) => {
             // @ts-ignore
             if (!res || !res.data || !res.data.data) {
@@ -107,6 +109,7 @@ export class UserController extends API<UserDTO> {
 
             // @ts-ignore
             let ids: string[] = res.data.data;
+            console.log("IDs from return: " + ids.join(", "));
 
             let input = new Collection<string, string>();
             let discordId: string, i;

@@ -108,8 +108,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         }
 
         // Create embed and notify users.
-        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sending, this.encryptionUtility);
-        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sending, this.encryptionUtility);
+        let toSend = SendingHelpRelatedResponses.PRINT_MESSAGE_TO_PLAYER(sent, this.encryptionUtility);
+        let onComplete = SendingHelpRelatedResponses.PRINT_FINISHED_INFORMING(sent, this.encryptionUtility);
         return this.signalUserOfMessage(sent, message, onComplete, toSend, false, user);
     }
 
@@ -215,7 +215,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                                       completionMessage: MessageEmbed, messageToSend: MessageEmbed,
                                       to: boolean, user: UserDTO): Promise<Message | Message[]> {
         // Get discord ids of users to send messages to.
-        let discordIds: Collection<string, string> = new Collection<string, string>();
+        let discordIds: Collection<string, string>;
 
         // Are we getting from a player character?
         let playerCharacter = sending.fromCharacterId;
@@ -244,7 +244,8 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // Remove the current user.
         discordIds.delete(user.discord_id);
 
-        return MessageUtility.sendPrivateMessages(discordIds.array(), message, completionMessage, messageToSend);
+        return MessageUtility.sendPrivateMessages(discordIds == null ? null : discordIds.array(), message,
+            completionMessage, messageToSend);
     }
 
     /**
