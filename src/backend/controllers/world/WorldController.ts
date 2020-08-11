@@ -162,15 +162,27 @@ export class WorldController extends API<WorldDTO> {
      * @param id The discord ID of the world to get.
      */
     public getDiscordId(id: string): Promise<Collection<string, string>> {
-        // TODO: fix this
-        return this.get(`/worlds/${id}/user`).then((res) => {
-            // @ts-ignore
-            return res.data.data;
-        }).catch((err: Error) => {
-            console.log("Caught error.");
-            console.error(err);
-            return null;
-        });
+        return this.getAll(`/discordIds`, {world_id: id})
+            .then((ids) => {
+                if (ids == null) {
+                    return null;
+                }
+
+                let input = new Collection<string, string>();
+                let discordId: string, i;
+                for (i = 0; i < ids.length; i++) {
+                    // @ts-ignore
+                    discordId = ids[i];
+                    input.set(discordId, discordId);
+                }
+
+                return input;
+            })
+            .catch((err: Error) => {
+                console.log("Caught error.");
+                console.error(err);
+                return null;
+            });
     }
 
     public async addWorld(user: UserDTO, world: WorldDTO): Promise<WorldDTO> {
