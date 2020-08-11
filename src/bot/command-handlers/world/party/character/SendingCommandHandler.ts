@@ -258,7 +258,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // Process the next  command.
         let page = MessageUtility.getPage(command);
 
-        let arr = await this.getSendingArray(user.defaultWorldId, user.defaultCharacterId, null);
+        let arr = await this.getSendingArray(user.defaultWorldId, user.defaultCharacterId, message);
 
         // If both are null, return a standard message.
         if (arr.world == null && arr.character == null) {
