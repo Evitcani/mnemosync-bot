@@ -138,7 +138,9 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
         }
 
-        let msg = await this.sendingController.getOne(page, arr.world.id, arr.character.id);
+        let msg = await this.sendingController.getOne(page,
+            arr.world == null ? null : arr.world.id,
+            arr.character == null ? null : arr.character.id);
 
         // If no message, couldn't find it.
         if (msg == null) {
