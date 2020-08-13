@@ -14,6 +14,8 @@ import {messageResponse} from "../../../../../shared/documentation/messages/Mess
 import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
 import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {NicknameDTO} from "mnemoshared/dist/src/dto/model/NicknameDTO";
+import {WorldToCharacterDTO} from "mnemoshared/dist/src/dto/model/WorldToCharacterDTO";
 
 /**
  * Handles commands related to characters.
@@ -45,14 +47,17 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
                 if (!world) {
                     return null;
                 }
-                character = {
-                    dtoType: DTOType.CHARACTER,
-                    isNpc: true,
-                    worldId: world.id,
-                };
+                character = {dtoType: DTOType.CHARACTER};
+                character.worldToCharacter = {dtoType: DTOType.WORLD_TO_CHARACTER};
+                character.worldToCharacter.worldId = world.id;
+                character.worldToCharacter.isNpc = true;
             } else {
-                character = user.defaultCharacter == null ?
-                    {dtoType: DTOType.CHARACTER, isNpc: false} : user.defaultCharacter;
+                if (user.defaultCharacterId == null) {
+
+                }
+                character = {dtoType: DTOType.CHARACTER};
+                character.worldToCharacter = {dtoType: DTOType.WORLD_TO_CHARACTER};
+                character.worldToCharacter.isNpc = false;
             }
 
             return this.constructCharacter(command, message, character).then((character) => {
@@ -130,7 +135,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
      * @param user The user
      */
     private async createCharacter(message: Message, character: CharacterDTO, user: UserDTO): Promise<Message | Message[]> {
-        if (character == null || character.name == null) {
+        if (character == null || character.nicknames == null || character.nicknames.length <= 0) {
             return message.channel.send("You must provide a name for the character!");
         }
 
@@ -160,7 +165,10 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
         // Set the character name
         const nameCmd = CharacterCommandHandler.getNameCmd(command);
         if (nameCmd != null) {
-            character.name = nameCmd.getInput();
+            character.nicknames = [];
+            let nickname: NicknameDTO = {dtoType: DTOType.NICKNAME};
+            nickname.name = nameCmd.getInput();
+            character.nicknames.push(nickname);
         }
 
         // Get the party if there is one.
@@ -172,11 +180,13 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
                         console.debug("Found either no parties or too many parties!");
                         return null;
                     }
-
-                    character.partyId = parties[0].id;
+                    character.worldToCharacter.partyId = parties[0].id;
 
                     return character;
                 });
+        } else if (!character.worldToCharacter.isNpc) {
+            await message.channel.send("Must provide a party for this character!");
+            return null;
         }
 
         return Promise.resolve(character);

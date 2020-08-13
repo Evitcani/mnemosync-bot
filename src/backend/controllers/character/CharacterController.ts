@@ -24,35 +24,16 @@ export class CharacterController extends API<CharacterDTO> {
     }
 
     public async create(character: CharacterDTO, discordId?: string, worldId?: string): Promise<CharacterDTO> {
-        // Create nickname for the mapping.
-        const nickname: NicknameDTO = {dtoType: DTOType.NICKNAME};
-        nickname.name = character.name;
-        if (discordId != null) {
-            nickname.discordId = discordId;
-        }
-
-        if (worldId != null) {
-            nickname.worldId = worldId;
-        }
-
-        // Add the nickname to the character.
-        character.nicknames = [];
-        character.nicknames.push(nickname);
-
         return super.create(character, `/characters`);
     }
 
-    public async createNickname (nickname: string, characterId: string, discordId?: string, worldId?: string): Promise<NicknameDTO> {
+    public async createNickname (nickname: string, characterId: string, discordId?: string): Promise<NicknameDTO> {
         // Create nickname for the mapping.
         const nn: NicknameDTO = {dtoType: DTOType.NICKNAME};
         nn.name = nickname;
         nn.characterId = characterId;
         if (!!discordId) {
             nn.discordId = discordId;
-        }
-
-        if (!!worldId) {
-            nn.worldId = worldId;
         }
 
         let config = APIConfig.GET();
