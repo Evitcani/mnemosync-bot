@@ -6,6 +6,7 @@ import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
 import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
 import {SendingDTO} from "mnemoshared/dist/src/dto/model/SendingDTO";
 import {EncryptionUtility} from "mnemoshared/dist/src/utilities/EncryptionUtility";
+import {NicknameDTO} from "mnemoshared/dist/src/dto/model/NicknameDTO";
 
 /**
  * Helps the sending command if something went wrong.
@@ -29,11 +30,14 @@ export class SendingHelpRelatedResponses {
     }
 
     static CHECK_SENDINGS_FOR_WHICH (character: CharacterDTO, world: WorldDTO): MessageEmbed {
+        let name: NicknameDTO = (character.nicknames == null || character.nicknames.length <= 0) ?
+            null : character.nicknames[0];
+
         return BasicEmbed.get()
             .setTitle("Choose the which you'd like to see messages for.")
             .setDescription(`Reply with the given number to decide which you'd like to sendings for.\n` +
                 `[\`1\`] (\`World    \`) ${world.name}\n` +
-                `[\`2\`] (\`Character\`) ${character.name}\n`);
+                `[\`2\`] (\`Character\`) ${name.name}\n`);
     }
 
     static NO_DEFAULT_WORLD_OR_CHARACTER (): MessageEmbed {
@@ -51,9 +55,12 @@ export class SendingHelpRelatedResponses {
     }
 
     static PRINT_MESSAGES_TO_CHARACTER (messages: SendingDTO[], character: CharacterDTO, page: number, encryptionUtility: EncryptionUtility): MessageEmbed {
+        let name: NicknameDTO = (character.nicknames == null || character.nicknames.length <= 0) ?
+            null : character.nicknames[0];
+
         let messageStr = this.processMessages(messages, page, false, true, false, encryptionUtility);
         return BasicEmbed.get()
-            .setTitle(`Unreplied Messages Sent to ${character.name}`)
+            .setTitle(`Unreplied Messages Sent to ${name.name}`)
             .setDescription(`Here are the messages sent to you:\n\n${messageStr}`)
             .setFooter(BasicEmbed.getPageFooter(page, SendingController.SENDING_LIMIT, (messages == null? 0 : messages.length)));
     }
@@ -100,12 +107,25 @@ export class SendingHelpRelatedResponses {
         let str = "";
         str += `**[${location}] DATE: ${message.inGameDate.day}/${message.inGameDate.month}/${message.inGameDate.year}**\n`;
         if (includeFrom) {
-            str += `> **FROM:** ${message.fromCharacter != null ? message.fromCharacter.name : null} `;
+            let fromName: string = null;
+            if (message.fromCharacter &&
+                message.fromCharacter.nicknames != null &&
+                message.fromCharacter.nicknames.length > 0) {
+                fromName = message.fromCharacter.nicknames[0].name;
+            }
+
+            str += `> **FROM:** ${fromName} `;
             str += `(*${message.sendingMessageFromUser == null ? "UNKNOWN" : message.sendingMessageFromUser.discord_name}*)\n`;
             str += `> ${encryptionUtility.decrypt(message.content)}\n\n`;
         }
         if (includeTo) {
-            str += `> **TO  :** ${message.toCharacter != null ? message.toCharacter.name : null}`;
+            let toName: string = null;
+            if (message.toCharacter &&
+                message.toCharacter.nicknames != null &&
+                message.toCharacter.nicknames.length > 0) {
+                toName = message.toCharacter.nicknames[0].name;
+            }
+            str += `> **TO  :** ${toName} `;
             if (includeReply && message.reply != null) {
                 str += `(*${message.sendingReplyFromUser == null ? "UNKNOWN" : message.sendingReplyFromUser.discord_name}*)\n`;
                 str += `> ${encryptionUtility.decrypt(message.reply)}\n`;
