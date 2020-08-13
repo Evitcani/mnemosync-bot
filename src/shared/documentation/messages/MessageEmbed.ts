@@ -1,18 +1,22 @@
 import {BasicEmbed} from "../BasicEmbed";
 import {messageResponse} from "./MessageResponse";
 import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
+import {NicknameDTO} from "mnemoshared/dist/src/dto/model/NicknameDTO";
 
 export const messageEmbed = {
     character: {
         now_playing_as: (character: CharacterDTO, newlyCreated: boolean) => {
             const embed = BasicEmbed.get();
-            embed.setTitle(messageResponse.character.now_playing_as.title(character.name));
+            let name: NicknameDTO = (character.nicknames == null || character.nicknames.length <= 0) ?
+                null : character.nicknames[0];
+
+            embed.setTitle(messageResponse.character.now_playing_as.title(name.name));
             if (character.img_url != null) {
                 embed.setThumbnail(character.img_url);
             }
 
             embed.setDescription(messageResponse.character.now_playing_as.desc(newlyCreated,
-                character.name));
+                name.name));
 
             return embed;
         }
