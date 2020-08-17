@@ -3,6 +3,7 @@ import {Commands} from "../commands/Commands";
 import {Subcommands} from "../commands/Subcommands";
 import {CharacterDTO} from "mnemoshared/dist/src/dto/model/CharacterDTO";
 import {StringUtility} from "mnemoshared/dist/src/utilities/StringUtility";
+import {NicknameDTO} from "mnemoshared/dist/src/dto/model/NicknameDTO";
 
 const PREFIX: string = "$";
 const PREFIX_SUBCOMMAND: string = "~";
@@ -60,7 +61,7 @@ export const messageResponse = {
         display_all: {
             title: (worldName: string) => `NPCs in the world of ${worldName}`,
             desc: (worldName: string, npcs: CharacterDTO[]) =>
-                `The following NPCs live in ${worldName}:\n${displayAll(npcs, true)}`,
+                `The following NPCs live in ${worldName}:\n${displayAllCharacters(npcs, true)}`,
         }
     },
 
@@ -99,6 +100,8 @@ export const messageResponse = {
     },
 };
 
+
+
 function displayAll(items: any[], displayStar: boolean): string {
     if (items == null || items.length <= 0) {
         return "";
@@ -117,4 +120,16 @@ function displayAll(items: any[], displayStar: boolean): string {
     }
 
     return str;
+}
+
+function displayAllCharacters(characters: CharacterDTO[], displayStar: boolean): string {
+    if (characters == null || characters.length <= 0) {
+        return null;
+    }
+    let nicknames: NicknameDTO[] = [];
+    characters.forEach((character) => {
+        nicknames.push(character.nicknames[0]);
+    });
+
+    return displayAll(nicknames, displayStar);
 }
