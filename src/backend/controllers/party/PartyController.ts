@@ -9,6 +9,7 @@ import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
 import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
 import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {PartyQuery} from "mnemoshared/dist/src/models/queries/PartyQuery";
 
 @injectable()
 export class PartyController extends API<PartyDTO> {
@@ -85,29 +86,34 @@ export class PartyController extends API<PartyDTO> {
         return this.getByParameters(params);
     }
 
-    public async getByCharacter (characterId: string): Promise<PartyDTO> {
-        let params = {
-            character_id: characterId
-        };
+    public async getByCharacterAndId (characterId: string, id: number): Promise<PartyDTO[]> {
+        let params: PartyQuery = {};
+        let flag = false;
+        if (characterId != null) {
+            params.character_id = characterId;
+            flag = true;
+        }
+        if (id != null) {
+            params.id = id + "";
+            flag = true;
+        }
+
+        if (!flag) {
+            return Promise.resolve(null);
+        }
+
         let parties = await this.getByParameters(params);
         if (!parties || parties.length <= 0) {
             return Promise.resolve(null);
         }
 
-        return Promise.resolve(parties[0]);
+        return Promise.resolve(parties);
     }
 
     public async getByNameAndGuild(name: string, guildId: string): Promise<PartyDTO[]> {
         let params = {
             name: name,
             guild_id: guildId
-        };
-        return this.getByParameters(params);
-    }
-
-    public async getByWorld (worldId: string): Promise<PartyDTO[]> {
-        let params = {
-            world_id: worldId
         };
         return this.getByParameters(params);
     }
@@ -147,23 +153,11 @@ export class PartyController extends API<PartyDTO> {
         }
 
         if (parties == null) {
-            parties = [];
-            let party: PartyDTO;
-            if (user.defaultCharacterId != null) {
-                party = await this.getByCharacter(user.defaultCharacterId);
-                if (!!party) {
-                    parties.push(party);
-                }
-            }
-
-            if (user.defaultPartyId != null) {
-                party = await this.getById(user.defaultPartyId);
-                parties.push(party);
-            }
+            parties = await this.getByCharacterAndId(user.defaultCharacterId, user.defaultPartyId);
         }
 
         // Nothing to return.
-        if (parties.length <= 0) {
+        if (parties == null || parties.length <= 0) {
             return Promise.resolve(null);
         }
 
