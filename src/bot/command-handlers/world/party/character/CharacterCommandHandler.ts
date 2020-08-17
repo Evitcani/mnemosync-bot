@@ -135,9 +135,13 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
      * @param user The user
      */
     private async createCharacter(message: Message, character: CharacterDTO, user: UserDTO): Promise<Message | Message[]> {
+        // Check there's a name first.
         if (character == null || character.nicknames == null || character.nicknames.length <= 0) {
             return message.channel.send("You must provide a name for the character!");
         }
+
+        // Now, we want to add the discord ID to the nickname area.
+        character.nicknames[0].discordId = user.discord_id;
 
         return this.characterController.create(character, message.author.id)
             .then((char) => {
@@ -168,6 +172,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
             character.nicknames = [];
             let nickname: NicknameDTO = {dtoType: DTOType.NICKNAME};
             nickname.name = nameCmd.getInput();
+            nickname.isPrimaryName = true;
             character.nicknames.push(nickname);
         }
 
