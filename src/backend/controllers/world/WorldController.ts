@@ -43,9 +43,7 @@ export class WorldController extends API<WorldDTO> {
         data.data.push(world);
         config.data = data;
 
-        console.log("Discord ID is in params: " + config.params);
-
-        return this.post(`/worlds`, config).then((res) => {
+        return this.post(`/worlds?discord_id=${user.discord_id}`, config).then((res) => {
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
