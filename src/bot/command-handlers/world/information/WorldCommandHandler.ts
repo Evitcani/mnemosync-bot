@@ -129,7 +129,7 @@ export class WorldCommandHandler extends AbstractUserCommandHandler {
         const world: WorldDTO = {dtoType: DTOType.WORLD};
         world.name = worldName;
         world.guildId = message.guild.id;
-        return this.worldController.create(world).then((newWorld) => {
+        return this.worldController.createWorld(world, user).then((newWorld) => {
             if (newWorld == null) {
                 return message.channel.send("Could not create world.");
             }
