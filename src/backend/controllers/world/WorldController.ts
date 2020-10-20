@@ -33,14 +33,17 @@ export class WorldController extends API<WorldDTO> {
      *
      * @param world The world to create.
      */
-    public async create(world: WorldDTO): Promise<WorldDTO> {
+    public async createWorld(world: WorldDTO, user: UserDTO): Promise<WorldDTO> {
         let config = APIConfig.GET();
+        config.params = {
+            discord_id: user.discord_id
+        };
         let data: DataDTO = {};
         data.data = [];
         data.data.push(world);
         config.data = data;
 
-        return this.post(`/worlds`, config).then((res) => {
+        return this.post(`/worlds?discord_id=${user.discord_id}`, config).then((res) => {
             // @ts-ignore
             return res.data.data;
         }).catch((err: Error) => {
