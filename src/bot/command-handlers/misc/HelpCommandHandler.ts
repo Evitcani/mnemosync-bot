@@ -10,10 +10,10 @@ export class HelpCommandHandler extends AbstractCommandHandler {
         let input = command.getInput();
 
         if (input == null) {
-            return message.channel.send(HelpDocumentation.get());
+            return message.channel.send({ embeds: [HelpDocumentation.get()]});
         }
 
-        return message.channel.send(HelpDocumentation.find(input));
+        return message.channel.send({ embeds: [HelpDocumentation.find(input)]});
     }
 
 }

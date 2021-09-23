@@ -10,6 +10,7 @@ import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
 import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
 import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
 import {PartyQuery} from "mnemoshared/dist/src/models/queries/PartyQuery";
+import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
 
 @injectable()
 export class PartyController extends API<PartyDTO> {
@@ -170,13 +171,14 @@ export class PartyController extends API<PartyDTO> {
     }
 
     public async partySelection(parties: PartyDTO[], action: string, message: Message): Promise<PartyDTO> {
-        return message.channel.send(PartyRelatedClientResponses.SELECT_PARTY(parties, action)).then((msg) => {
-            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+        return message.channel.send({ embeds: [PartyRelatedClientResponses.SELECT_PARTY(parties, action)]}).then((msg) => {
+            return message.channel.awaitMessages({
+                filter: m => m.author.id === message.author.id,
                 max: 1,
                 time: 10e3,
                 errors: ['time'],
             }).then((input) => {
-                msg.delete({reason: "Removed party processing command."});
+                msg.delete();
                 let content = input.first().content;
                 let choice = Number(content);
                 if (isNaN(choice) || choice >= parties.length || choice < 0) {
@@ -187,7 +189,7 @@ export class PartyController extends API<PartyDTO> {
                 input.first().delete();
                 return parties[choice];
             }).catch(()=> {
-                msg.delete({reason: "Removed party processing command."});
+                msg.delete();
                 message.channel.send("Message timed out.");
                 return null;
             });

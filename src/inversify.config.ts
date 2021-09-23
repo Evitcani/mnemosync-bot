@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Container} from "inversify";
 import {TYPES} from "./types";
 import {Bot} from "./bot/bot";
-import {Client} from "discord.js";
+import {Client, Intents} from "discord.js";
 import {MessageResponder} from "./bot/services/message-responder";
 import {PartyFundCommandHandler} from "./bot/command-handlers/world/party/inventory/PartyFundCommandHandler";
 import {RegisterCommandHandler} from "./bot/command-handlers/misc/RegisterCommandHandler";
@@ -31,7 +31,7 @@ import {Encryption} from "./backend/controllers/base/Encryption";
 let container = new Container();
 
 container.bind<Bot>(TYPES.Bot).to(Bot).inSingletonScope();
-container.bind<Client>(TYPES.Client).toConstantValue(new Client());
+container.bind<Client>(TYPES.Client).toConstantValue(new Client({intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS]}));
 container.bind<string>(TYPES.Token).toConstantValue(process.env.TOKEN);
 container.bind<string>(TYPES.DatabaseUrl).toConstantValue(process.env.DATABASE_URL);
 container.bind<string>(TYPES.CryptKey).toConstantValue(process.env.CRYPT_KEY);

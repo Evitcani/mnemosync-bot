@@ -87,13 +87,14 @@ export class WorldController extends API<WorldDTO> {
     }
 
     public async worldSelection(worlds: WorldDTO[], message: Message): Promise<WorldDTO> {
-        return message.channel.send(WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")).then((msg) => {
-            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+        return message.channel.send({ embeds: [WorldRelatedClientResponses.SELECT_WORLD(worlds, "switch")]}).then((msg) => {
+            return message.channel.awaitMessages({
+                filter: m => m.author.id === message.author.id,
                 max: 1,
                 time: 10e3,
                 errors: ['time'],
             }).then((input) => {
-                msg.delete({reason: "Removed world processing command."});
+                msg.delete();
                 let content = input.first().content;
                 let choice = Number(content);
                 if (isNaN(choice) || choice >= worlds.length || choice < 0) {
@@ -104,7 +105,7 @@ export class WorldController extends API<WorldDTO> {
                 input.first().delete();
                 return worlds[choice];
             }).catch(()=> {
-                msg.delete({reason: "Removed world processing command."});
+                msg.delete();
                 message.channel.send("Message timed out.");
                 return null;
             });

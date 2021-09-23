@@ -75,14 +75,14 @@ export class MessageResponder {
                 return this.helpCommandHandler.handleCommand(command, message);
             case Commands.QUOTE:
                 return this.quoteCommandHandler.handleCommand(command, message).then((msg) => {
-                    message.delete({reason: "Quote command deletion."});
+                    message.delete();
                     return msg;
                 });
         }
 
         return message.channel.send("Processing command...").then((msg) => {
             return this.processUserCommand(command, message).then((retMsg) => {
-                msg.delete({reason: "Delete processed command."});
+                msg.delete();
                 return retMsg;
             });
         });
@@ -97,7 +97,7 @@ export class MessageResponder {
             switch (cmd) {
                 case Commands.BANK:
                     return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
-                        message.delete({reason: "Bank command deletion."});
+                        message.delete();
                         return msg;
                     });
                 case Commands.CALENDAR:
@@ -108,7 +108,7 @@ export class MessageResponder {
                     return this.dateCommandHandler.handleUserCommand(command, message, user);
                 case Commands.FUND:
                     return this.partyFundCommandHandler.handleUserCommand(command, message, user).then((msg) => {
-                        message.delete({reason: "Fund command deletion."});
+                        message.delete();
                         return msg;
                     });
                 case Commands.PARTY:
@@ -119,7 +119,7 @@ export class MessageResponder {
                     return this.sendingCommandHandler.handleUserCommand(command, message, user);
                 case Commands.WHICH:
                     return this.whichCommandHandler.handleUserCommand(command, message, user).then((msg) => {
-                        message.delete({reason: "Which command deletion."});
+                        message.delete();
                         return msg;
                     });
                 case Commands.WORLD:

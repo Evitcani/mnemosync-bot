@@ -76,7 +76,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
             total = fund.copper / 100;
         }
 
-        return message.channel.send(FundRelatedClientResponses.GET_MONEY(total, type, party.name));
+        return message.channel.send({embeds: [FundRelatedClientResponses.GET_MONEY(total, type, party.name)]});
     }
 
     private getFundsFromParty(type: string, party: PartyDTO): PartyFundDTO {
@@ -144,8 +144,8 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
 
         if (newAmt < 0) {
             let newAmtInGold = newAmt / 100;
-            return message.channel.send(FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100,
-                newAmtTotal / 100, newAmtInGold));
+            return message.channel.send({embeds: [FundRelatedClientResponses.NOT_ENOUGH_MONEY(oldAmt / 100,
+                newAmtTotal / 100, newAmtInGold)]});
         }
 
         const finalFund = MoneyUtility.copperToFund(newAmt);
@@ -157,7 +157,7 @@ export class PartyFundCommandHandler extends AbstractUserCommandHandler {
         let updatedFund = await this.partyFundController.updateFunds(party.id, fund);
 
         const currentMoney = MoneyUtility.pileIntoCopper(updatedFund) / 100;
-        return message.channel.send(FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
-            oldAmt / 100, newAmtTotal /100, newAmtTotal < 0));
+        return message.channel.send({embeds: [FundRelatedClientResponses.UPDATED_MONEY(currentMoney,
+            oldAmt / 100, newAmtTotal /100, newAmtTotal < 0)]});
     }
 }

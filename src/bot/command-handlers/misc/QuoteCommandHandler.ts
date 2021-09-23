@@ -9,6 +9,7 @@ import {SpecialChannelController} from "../../../backend/controllers/user/Specia
 import {SpecialChannelDTO} from "mnemoshared/dist/src/dto/model/SpecialChannelDTO";
 import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 import {SpecialChannelDesignation} from "mnemoshared/dist/src/enums/SpecialChannelDesignation";
+import {CharacterRelatedClientResponses} from "../../../shared/documentation/client-responses/character/CharacterRelatedClientResponses";
 
 /**
  * Handles the "quote" command from users. This command allows a user to designate a channel as the "quote" channel and
@@ -85,7 +86,7 @@ export class QuoteCommandHandler extends AbstractCommandHandler {
                 const msg = messages.random();
 
                 return QuoteRelatedClientResponses.QUOTED_MESSAGE(msg, messages.size).then((msg) => {
-                    return message.channel.send(msg);
+                    return message.channel.send({ embeds: [msg]});
                 });
             });
         });

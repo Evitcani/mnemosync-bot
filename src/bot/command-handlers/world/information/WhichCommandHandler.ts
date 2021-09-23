@@ -10,6 +10,7 @@ import {MessageUtility} from "../../../../backend/utilities/MessageUtility";
 import {Command} from "../../../../shared/models/generic/Command";
 import {CharacterController} from "../../../../backend/controllers/character/CharacterController";
 import {UserDTO} from "mnemoshared/dist/src/dto/model/UserDTO";
+import {CharacterRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/CharacterRelatedClientResponses";
 
 /**
  * Handles questions about the state of the world.
@@ -54,6 +55,6 @@ export class WhichCommandHandler extends AbstractUserCommandHandler {
             return message.channel.send("No NPCs are in this world.");
         }
 
-        return message.channel.send(NPCRelatedClientResponses.DISPLAY_ALL(npcs, world, page));
+        return message.channel.send({ embeds: [NPCRelatedClientResponses.DISPLAY_ALL(npcs, world, page)]});
     }
 }

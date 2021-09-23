@@ -13,7 +13,7 @@ export class QuoteRelatedClientResponses {
      * @param numberOfQuotes
      */
     static QUOTED_MESSAGE (message: Message, numberOfQuotes: number): Promise<MessageEmbed> {
-        return message.guild.member(message.author).fetch().then((member) => {
+        return message.guild.members.fetch(message.author).then((member) => {
             const msg = BasicEmbed.get();
 
             if (member == null) {

@@ -5,6 +5,7 @@ import {Message, MessageEmbed} from "discord.js";
 import {APIConfig} from "./APIConfig";
 import {messageEmbed} from "../../../shared/documentation/messages/MessageEmbed";
 import {DataDTO} from "mnemoshared/dist/src/dto/model/DataDTO";
+import {WorldRelatedClientResponses} from "../../../shared/documentation/client-responses/information/WorldRelatedClientResponses";
 
 @injectable()
 export class API<U extends {id?: any}> {
@@ -265,13 +266,14 @@ export class API<U extends {id?: any}> {
                               type: {singular: string, plural: string}, message: Message): Promise<U> {
         let embed: MessageEmbed = messageEmbed.generic.select_from_the_following(type, action, items);
 
-        return message.channel.send(embed).then((msg) => {
-            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+        return message.channel.send({ embeds: [embed]}).then((msg) => {
+            return message.channel.awaitMessages({
+                filter: m => m.author.id === message.author.id,
                 max: 1,
                 time: 10e3,
                 errors: ['time'],
             }).then((input) => {
-                msg.delete({reason: "Removed processing command."});
+                msg.delete();
                 let content = input.first().content;
                 let choice = Number(content);
                 if (isNaN(choice) || choice >= items.length || choice < 0) {
@@ -282,7 +284,7 @@ export class API<U extends {id?: any}> {
                 input.first().delete();
                 return items[choice];
             }).catch(()=> {
-                msg.delete({reason: "Removed processing command."});
+                msg.delete();
                 message.channel.send("Message timed out.");
                 return null;
             });

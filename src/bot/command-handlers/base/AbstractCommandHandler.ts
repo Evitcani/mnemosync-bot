@@ -4,5 +4,5 @@ import {injectable} from "inversify";
 
 @injectable()
 export abstract class AbstractCommandHandler {
-    abstract async handleCommand (command: Command, message: Message): Promise<Message | Message[]>;
+    abstract handleCommand (command: Command, message: Message): Promise<Message | Message[]>;
 }

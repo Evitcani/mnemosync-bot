@@ -57,7 +57,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
 
         // Big calendar request.
         if (message.attachments != null) {
-            let i, keys = message.attachments.keyArray(), attachment: MessageAttachment;
+            let i, keys = Array.from(message.attachments.keys()), attachment: MessageAttachment;
             for (i = 0; i < keys.length; i++) {
                 attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);
@@ -208,7 +208,7 @@ export class CalendarCommandHandler extends AbstractUserCommandHandler {
         let json: DonjonCalendar = null;
         // Big calendar request.
         if (message.attachments != null) {
-            let i, keys = message.attachments.keyArray(), attachment: MessageAttachment;
+            let i, keys = Array.from(message.attachments.keys()), attachment: MessageAttachment;
             for (i = 0; i < keys.length; i++) {
                 attachment = message.attachments.get(keys[i]);
                 let content = await CalendarCommandHandler.getAttachmentContent(attachment);

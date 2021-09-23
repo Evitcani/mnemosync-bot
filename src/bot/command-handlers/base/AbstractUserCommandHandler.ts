@@ -15,5 +15,5 @@ export abstract class AbstractUserCommandHandler {
         return undefined;
     }
 
-    abstract async handleUserCommand (command: Command, message: Message, user: UserDTO): Promise<Message | Message[]>;
+    abstract handleUserCommand (command: Command, message: Message, user: UserDTO): Promise<Message | Message[]>;
 }

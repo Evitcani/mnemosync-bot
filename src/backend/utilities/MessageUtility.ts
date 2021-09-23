@@ -7,6 +7,7 @@ import {CalendarMonthDTO} from "mnemoshared/dist/src/dto/model/calendar/Calendar
 import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
 import {CalendarDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
 import {CalendarMoonDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarMoonDTO";
+import {CharacterRelatedClientResponses} from "../../shared/documentation/client-responses/character/CharacterRelatedClientResponses";
 
 export class MessageUtility {
 
@@ -21,7 +22,7 @@ export class MessageUtility {
             discordId = discordIds[i];
             this.sendPrivateMessage(discordId, message, messageToSend);
         }
-        return message.channel.send(completionMessage);
+        return message.channel.send({ embeds: [completionMessage]});
     }
 
     /**
@@ -45,14 +46,8 @@ export class MessageUtility {
             return null;
         }
 
-        // Set the cache.
-        if (message.client.users.cache == null) {
-            message.client.users.cache = new Collection<Snowflake, DiscordUser>();
-        }
-        message.client.users.cache.set(member.id, member);
-
         // Send the message.
-        return member.send(messageToSend);
+        return member.send({ embeds: [messageToSend]});
     }
 
     /**

@@ -17,11 +17,14 @@
   "dependencies": {
     "mnemoshared": "^0.1.11",
     "@okta/okta-sdk-nodejs": "^4.0.0",
-    "@types/node": "^14.0.23",
+    "@types/node": "^16.9.6",
     "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "crypto": "^1.0.1",
-    "discord.js": "^12.2.0",
+    "discord-api-types": "^0.23.1",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "@discordjs/opus": "^0.6.0",
+    "discord.js": "^13.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "g": "^2.0.1",
@@ -33,7 +36,7 @@
     "request-promise": "^4.2.2",
     "sqlstring": "^2.3.2",
     "typeorm": "^0.2.25",
-    "typescript": "^3.9.6"
+    "typescript": "^4.4.3"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",

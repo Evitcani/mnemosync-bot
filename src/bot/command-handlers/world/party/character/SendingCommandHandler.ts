@@ -19,6 +19,7 @@ import {WorldDTO} from "mnemoshared/dist/src/dto/model/WorldDTO";
 import {SendingDTO} from "mnemoshared/dist/src/dto/model/SendingDTO";
 import {Encryption} from "../../../../../backend/controllers/base/Encryption";
 import {UserController} from "../../../../../backend/controllers/user/UserController";
+import {FundRelatedClientResponses} from "../../../../../shared/documentation/client-responses/party/FundRelatedClientResponses";
 
 /**
  * Handles sending related commands.
@@ -135,7 +136,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // If both are null, return a standard message.
         if (arr.world == null && arr.character == null) {
-            return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
+            return message.channel.send({embeds: [SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER()]});
         }
 
         let msg = await this.sendingController.getOne(page,
@@ -245,7 +246,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         // Remove the current user.
         discordIds.delete(user.discord_id);
 
-        return MessageUtility.sendPrivateMessages(discordIds == null ? null : discordIds.array(), message,
+        return MessageUtility.sendPrivateMessages(discordIds == null ? null : Array.from(discordIds.keys()), message,
             completionMessage, messageToSend);
     }
 
@@ -264,7 +265,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
 
         // If both are null, return a standard message.
         if (arr.world == null && arr.character == null) {
-            return message.channel.send(SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER());
+            return message.channel.send({embeds: [SendingHelpRelatedResponses.NO_DEFAULT_WORLD_OR_CHARACTER()]});
         }
 
         const messages = await this.sendingController.getAllOf(page,
@@ -277,7 +278,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
             embed = SendingHelpRelatedResponses.PRINT_MESSAGES_FROM_WORLD(messages, arr.world, page, this.encryptionUtility);
         }
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
     }
 
     private async constructNewSending(command: Command, user: UserDTO, world: WorldDTO,
@@ -294,7 +295,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 return sending;
             }
         } else {
-            await message.channel.send(SendingHelpRelatedResponses.MESSAGE_HAS_NO_CONTENT(message.content));
+            await message.channel.send({embeds: [SendingHelpRelatedResponses.MESSAGE_HAS_NO_CONTENT(message.content)]});
             return null;
         }
 
@@ -307,7 +308,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
         if (Subcommands.DATE.isCommand(command)) {
             sending.inGameDate = await MessageUtility.processDateCommand(command, message);
         } else {
-            await message.channel.send(SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content));
+            await message.channel.send({embeds: [SendingHelpRelatedResponses.MESSAGE_HAS_NO_DATE(message.content)]});
             return null;
         }
 
@@ -399,13 +400,15 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
     }
 
     public async worldOrCharacter(world: WorldDTO, character: CharacterDTO, message: Message): Promise<WorldDTO | CharacterDTO> {
-        return message.channel.send(SendingHelpRelatedResponses.CHECK_SENDINGS_FOR_WHICH(character, world)).then((msg) => {
-            return message.channel.awaitMessages(m => m.author.id === message.author.id, {
+        return message.channel.send({embeds: [SendingHelpRelatedResponses.CHECK_SENDINGS_FOR_WHICH(character, world)]}).then((msg) => {
+
+            return message.channel.awaitMessages({
+                filter: m => m.author.id === message.author.id,
                 max: 1,
                 time: 10e3,
                 errors: ['time'],
             }).then((input) => {
-                msg.delete({reason: "Removed processing command."});
+                msg.delete();
                 let content = input.first().content;
                 let choice = Number(content);
                 if (isNaN(choice) || choice > 2 || choice < 1) {
@@ -416,7 +419,7 @@ export class SendingCommandHandler extends AbstractUserCommandHandler {
                 input.first().delete();
                 return choice == 1 ? world : character;
             }).catch(()=> {
-                msg.delete({reason: "Removed processing command."});
+                msg.delete();
                 message.channel.send("Message timed out.");
                 return null;
             });

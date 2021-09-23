@@ -14,6 +14,7 @@ import {PartyDTO} from "mnemoshared/dist/src/dto/model/PartyDTO";
 import {CalendarDTO} from "mnemoshared/dist/src/dto/model/calendar/CalendarDTO";
 import {CurrentDateDTO} from "mnemoshared/dist/src/dto/model/CurrentDateDTO";
 import {DTOType} from "mnemoshared/dist/src/dto/DTOType";
+import {CharacterRelatedClientResponses} from "../../../../shared/documentation/client-responses/character/CharacterRelatedClientResponses";
 
 @injectable()
 export class DateCommandHandler extends AbstractUserCommandHandler {
@@ -63,7 +64,7 @@ export class DateCommandHandler extends AbstractUserCommandHandler {
                 return message.channel.send("Something is wrong with the date.");
             }
 
-            return message.channel.send(embed);
+            return message.channel.send({ embeds: [embed]});
         }
 
         return message.channel.send("Finished processing commands.");

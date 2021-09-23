@@ -110,7 +110,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
         await this.userController.updateDefaultCharacter(user, char);
 
         // Return message.
-        return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false));
+        return message.channel.send({ embeds: [CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(char, false)]});
     }
 
     private async addNickname(command: Subcommand, message: Message, user: UserDTO): Promise<Message | Message[]> {
@@ -150,7 +150,7 @@ export class CharacterCommandHandler extends AbstractUserCommandHandler {
                 }
 
                 return this.userController.updateDefaultCharacter(user, char).then(() => {
-                    return message.channel.send(CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true));
+                    return message.channel.send({ embeds: [CharacterRelatedClientResponses.NOW_PLAYING_AS_CHARACTER(character, true)]});
                 });
             });
     }
