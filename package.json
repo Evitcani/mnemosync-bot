@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "node src/index.js",
     "build": "tsc",
