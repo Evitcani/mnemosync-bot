@@ -21,7 +21,7 @@
     "mnemoshared": "^0.1.11",
     "@okta/okta-sdk-nodejs": "^4.0.0",
     "@types/node": "^16.9.6",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "btoa": "^1.2.1",
     "crypto": "^1.0.1",
     "discord-api-types": "^0.23.1",
